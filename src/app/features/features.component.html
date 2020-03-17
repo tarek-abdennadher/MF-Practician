@@ -1,0 +1,12 @@
+<lib-hlsNavBar [fullName]="fullName" [imageSource]="imageSource" (accountButton)="openAccountInterface()"
+  (signOut)="signOutAction()" (searchAction)="searchActionClicked($event)" [listNotifications]="featuresService.listNotifications"
+  (notificationsOpened)="openNotifications()" (notificationSelected)="selectNotification($event)"></lib-hlsNavBar>
+<lib-hlsSideBar [role]="role" (collapsedEvent)="receiveCollapsed($event)" (inboxEvent)="displayInboxAction()"
+  (sendEvent)="displaySendAction()" (sentEvent)="displaySentAction()" (archieveEvent)="displayArchieveAction()"
+  (myPatientsEvent)="displayMyPatientsAction()" (myProContactsEvent)="displayMyMedicalsAction()"
+  (myMedicalsEvent)="displayMyProContactsAction()" (myDocumentsEvent)="displayMyDocumentsAction()"
+  (helpEvent)="displayHelpAction()"></lib-hlsSideBar>
+<section class="main-container" [ngClass]="{collapsed: collapedSideBar}">
+  <!-- components will be implemented here -->
+  <router-outlet></router-outlet>
+</section>
