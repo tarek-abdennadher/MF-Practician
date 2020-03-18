@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, ErrorHandler } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FeaturesRoutingModule } from "./features-routing.module";
 import { FeaturesComponent } from "./features.component";
@@ -6,8 +6,10 @@ import { HlsNavBarModule } from "hls-nav-bar";
 import { HlsSideBarModule } from "hls-side-bar";
 import { MessagingListComponent } from "./messaging-list/messaging-list.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-
+import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
+import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
+import { HlsLinksModule } from "hls-links";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -50,7 +52,8 @@ const notifierOptions: NotifierOptions = {
 @NgModule({
   declarations: [
     FeaturesComponent,
-    MessagingListComponent
+    MessagingListComponent,
+    MessagingDetailComponent
   ],
   imports: [
     FormsModule,
@@ -59,7 +62,9 @@ const notifierOptions: NotifierOptions = {
     FeaturesRoutingModule,
     HlsNavBarModule,
     HlsSideBarModule,
-    NotifierModule.withConfig(notifierOptions)
+    NotifierModule.withConfig(notifierOptions),
+    HlsMessagingDetailModule,
+    HlsLinksModule
   ],
 
   providers: []

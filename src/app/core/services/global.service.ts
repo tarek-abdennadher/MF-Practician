@@ -4,7 +4,9 @@ import { environment } from "@env/environment";
 import { Observable } from "rxjs";
 import { RequestType } from "@app/shared/enmus/requestType";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class GlobalService {
   constructor(private httpClient: HttpClient) {}
   public BASE_URL: string = environment.BASE_END_POINT;
