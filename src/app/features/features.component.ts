@@ -29,7 +29,7 @@ export class FeaturesComponent implements OnInit {
   }
 
 
- 
+
   openAccountInterface() {
     this.router.navigate(["/features/account"]);
   }

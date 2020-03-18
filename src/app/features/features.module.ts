@@ -10,7 +10,9 @@ import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
-
+import { SentMessagesComponent } from './sent-messages/sent-messages.component';
+import { MessageService } from './services/message.service';
+import { HlsMessagingListModule } from 'hls-messaging-list';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -53,7 +55,8 @@ const notifierOptions: NotifierOptions = {
   declarations: [
     FeaturesComponent,
     MessagingListComponent,
-    MessagingDetailComponent
+    MessagingDetailComponent,
+    SentMessagesComponent
   ],
   imports: [
     FormsModule,
@@ -64,9 +67,10 @@ const notifierOptions: NotifierOptions = {
     HlsSideBarModule,
     NotifierModule.withConfig(notifierOptions),
     HlsMessagingDetailModule,
+    HlsMessagingListModule,
     HlsLinksModule
   ],
 
-  providers: []
+  providers: [MessageService]
 })
 export class FeaturesModule {}
