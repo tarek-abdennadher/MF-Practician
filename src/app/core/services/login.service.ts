@@ -21,7 +21,8 @@ export class LoginService {
     reset_password_success: `Un mail vient de vous être envoyé
     Cliquez sur le lien contenu dans cet email afin de réinitialiser votre mot de passe`,
     change_password_success: "Mot de passe modifié avec succès",
-    change_password_failure: "Erreur lors de la modification du mot de passe"
+    change_password_failure: "Erreur lors de la modification du mot de passe",
+    card_title: "Connexion Praticien"
   };
   authenticate(body) {
     return this.globalService.call(

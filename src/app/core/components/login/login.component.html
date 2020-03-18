@@ -1,7 +1,7 @@
 <div class="card responsivelogin">
   <img id="helssy-logo" class="logo" src="assets/imgs/helssy_bleu_long.png" alt="Helssy" />
   <div class="card-inner">
-    <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage" (submitAction)="submit($event)"
+    <lib-hls-connexion [errorMessage]="errorMessage" [title]="messages.card_title" [successMessage]="successMessage" (submitAction)="submit($event)"
       (signUpAction)="signUp()" (forgotPasswordAction)="forgotPassword()"></lib-hls-connexion>
   </div>
 
