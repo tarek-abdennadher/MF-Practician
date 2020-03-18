@@ -8,8 +8,11 @@ import { RouterModule } from "@angular/router";
 import localeFr from "@angular/common/locales/fr";
 import { registerLocaleData } from "@angular/common";
 import { CoreModule } from "./core/core.module";
+import { LoginService } from "./core/services/login.service";
 import { GlobalService } from "./core/services/global.service";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { AuthGuard } from "./app.guard";
+import { TokenInterceptor } from "./core/interceptors/token.interceptor";
 
 registerLocaleData(localeFr, "fr");
 @NgModule({
@@ -19,11 +22,21 @@ registerLocaleData(localeFr, "fr");
     AppRoutingModule,
     BrowserModule,
     RouterModule,
+    HttpClientModule,
     CoreModule,
-    FeaturesModule,
-    HttpClientModule
+    FeaturesModule
   ],
-  providers: [{ provide: LOCALE_ID, useValue: "fr-Fr" }],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    { provide: LOCALE_ID, useValue: "fr-Fr" },
+    LoginService,
+    GlobalService,
+    AuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
