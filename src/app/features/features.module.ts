@@ -11,7 +11,8 @@ import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
 import { MyPatientsComponent } from "./my-patients/my-patients.component";
-import { AvatarModule } from "ngx-avatar";
+import { HlsMessagingListModule } from "hls-messaging-list";
+import { HlsSearchModule } from "hls-search";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -68,7 +69,8 @@ const notifierOptions: NotifierOptions = {
     NotifierModule.withConfig(notifierOptions),
     HlsMessagingDetailModule,
     HlsLinksModule,
-    AvatarModule
+    HlsMessagingListModule,
+    HlsSearchModule
   ],
 
   providers: []
