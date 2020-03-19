@@ -10,6 +10,8 @@ import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
+import { MyPatientsComponent } from "./my-patients/my-patients.component";
+import { AvatarModule } from "ngx-avatar";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -53,7 +55,8 @@ const notifierOptions: NotifierOptions = {
   declarations: [
     FeaturesComponent,
     MessagingListComponent,
-    MessagingDetailComponent
+    MessagingDetailComponent,
+    MyPatientsComponent
   ],
   imports: [
     FormsModule,
@@ -64,7 +67,8 @@ const notifierOptions: NotifierOptions = {
     HlsSideBarModule,
     NotifierModule.withConfig(notifierOptions),
     HlsMessagingDetailModule,
-    HlsLinksModule
+    HlsLinksModule,
+    AvatarModule
   ],
 
   providers: []

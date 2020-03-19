@@ -3,6 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { FeaturesComponent } from "./features.component";
 import { MessagingListComponent } from "./messaging-list/messaging-list.component";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
+import { MyPatientsComponent } from "./my-patients/my-patients.component";
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
       {
         path: "detail/:id",
         component: MessagingDetailComponent
+      },
+      {
+        path: "my-patients",
+        component: MyPatientsComponent
       }
     ]
   }
