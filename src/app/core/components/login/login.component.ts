@@ -45,7 +45,6 @@ export class LoginComponent implements OnInit {
   }
 
   handleResponseToken = token => {
-    console.log(token);
     this.localStorage.clear('token');
     if (token && token.id_token) {
       this.localStorage.store('token', token.id_token);
@@ -63,7 +62,6 @@ export class LoginComponent implements OnInit {
   }
 
   handleError = err => {
-    console.log(err);
     if (err && err.error && err.error.apierror) {
       this.errorMessage = err.error.apierror.message;
     } else {

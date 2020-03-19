@@ -1,0 +1,16 @@
+<lib-hlsLinks
+  [links]="links"
+  (selectAllAction)="selectAllActionClicked()"
+  (seenAction)="seenActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (importantAction)="importantActionClicked()"
+  (deleteAction)="deleteActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (addNoteAction)="addNoteActionClicked()"
+  (filterAction)="filterActionClicked($event)"
+></lib-hlsLinks>
+<lib-hlsMessagingList
+  [list]="itemsList"
+  (cardAction)="cardClicked($event)"
+  [imageSource]="imageSource"
+></lib-hlsMessagingList>

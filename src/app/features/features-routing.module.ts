@@ -4,6 +4,7 @@ import { FeaturesComponent } from "./features.component";
 import { MessagingListComponent } from "./messaging-list/messaging-list.component";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { MyPatientsComponent } from "./my-patients/my-patients.component";
+import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
       {
         path: "my-patients",
         component: MyPatientsComponent
-      }
+      },
+      { path: "sent", component: SentMessagesComponent }
     ]
   }
 ];

@@ -13,6 +13,8 @@ import { HlsLinksModule } from "hls-links";
 import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { HlsMessagingListModule } from "hls-messaging-list";
 import { HlsSearchModule } from "hls-search";
+import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
+import { MessageService } from "./services/message.service";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -57,7 +59,8 @@ const notifierOptions: NotifierOptions = {
     FeaturesComponent,
     MessagingListComponent,
     MessagingDetailComponent,
-    MyPatientsComponent
+    MyPatientsComponent,
+    SentMessagesComponent
   ],
   imports: [
     FormsModule,
@@ -73,6 +76,6 @@ const notifierOptions: NotifierOptions = {
     HlsSearchModule
   ],
 
-  providers: []
+  providers: [MessageService]
 })
 export class FeaturesModule {}
