@@ -21,7 +21,7 @@ const routes: Routes = [
         component: MessagingDetailComponent
       },
       {
-        path: "my-patients",
+        path: "mes-patients",
         component: MyPatientsComponent
       },
       { path: "sent", component: SentMessagesComponent }

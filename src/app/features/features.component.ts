@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { FeaturesService } from './features.service';
+import { FeaturesService } from "./features.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -8,11 +8,7 @@ import { FeaturesService } from './features.service';
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
-  constructor(
-    public router: Router,
-    public featuresService: FeaturesService,
-  ) {
-  }
+  constructor(public router: Router, public featuresService: FeaturesService) {}
 
   fullName = "test test";
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -23,12 +19,7 @@ export class FeaturesComponent implements OnInit {
     isFilter: true
   };
 
-
-  ngOnInit(): void {
-
-  }
-
-
+  ngOnInit(): void {}
 
   openAccountInterface() {
     this.router.navigate(["/features/account"]);
@@ -47,10 +38,10 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["features/sent"]);
   }
   displayArchieveAction() {
-    this.router.navigate(["/features/archieve"]);
+    this.router.navigate(["/features/mes-patients"]);
   }
   displayMyPatientsAction() {
-    console.log("displayMyPatientsAction");
+    this.router.navigate(["/features/mes-patients"]);
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/features/favorites"]);
