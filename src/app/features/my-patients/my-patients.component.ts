@@ -10,6 +10,7 @@ import { MyPatients } from "./my-patients";
 export class MyPatientsComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
   myPatients = [];
+  isMyPatients = true;
   constructor(private myPatientsService: MyPatientsService) {}
 
   ngOnInit(): void {
