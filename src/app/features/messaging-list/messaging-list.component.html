@@ -1,1 +1,18 @@
-<p>messaging-list works!</p>
+<lib-hlsLinks
+  [links]="links"
+  (selectAllAction)="selectAllActionClicked()"
+  (seenAction)="seenActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (importantAction)="importantActionClicked()"
+  (deleteAction)="deleteActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (addNoteAction)="addNoteActionClicked()"
+  (filterAction)="filterActionClicked($event)"
+></lib-hlsLinks>
+<lib-hlsMessagingList
+  [list]="itemsList"
+  (cardAction)="cardClicked($event)"
+  (markAsSeenAction)="markMessageAsSeen($event)"
+  (archieveAction)="archieveMessage($event)"
+  [imageSource]="imageSource"
+></lib-hlsMessagingList>
