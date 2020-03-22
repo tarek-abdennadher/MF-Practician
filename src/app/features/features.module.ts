@@ -14,6 +14,8 @@ import { SentMessagesComponent } from './sent-messages/sent-messages.component';
 import { MessageService } from './services/message.service';
 import { HlsMessagingListModule } from 'hls-messaging-list';
 import { ContactsComponent } from './contacts/contacts.component';
+import { ContactsService } from './services/contacts.service';
+import { ContactDetailComponent } from './contacts/contact-detail/contact-detail.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -58,7 +60,8 @@ const notifierOptions: NotifierOptions = {
     MessagingListComponent,
     MessagingDetailComponent,
     SentMessagesComponent,
-    ContactsComponent
+    ContactsComponent,
+    ContactDetailComponent
   ],
   imports: [
     FormsModule,
@@ -73,6 +76,6 @@ const notifierOptions: NotifierOptions = {
     HlsLinksModule
   ],
 
-  providers: [MessageService]
+  providers: [MessageService,ContactsService]
 })
 export class FeaturesModule {}

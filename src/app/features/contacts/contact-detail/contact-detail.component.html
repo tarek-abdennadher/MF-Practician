@@ -1,0 +1,186 @@
+
+<div class="card">
+<div class="card-body">
+  <form [formGroup]="infoForm" (ngSubmit)="submitted" #f="ngForm">
+      <div class="container">
+          <div class="row">
+              <div class="col">
+                  <div class="form-group row">
+                      <div class="col-8 col-sm-6">
+                          <select formControlName="type" class="civility custom-select"
+                              [ngClass]="{ 'is-invalid': submitted && ctr.type.errors }">
+                              <option value="null" disabled="true">{{labels.type_contact}}</option>
+                              <option value="Praticien">Praticien</option>
+                              <option value="Cabinet">Cabinet</option>
+                              <option value="Secretaire">Secretaire</option>
+                          </select>
+                          <div *ngIf="submitted && ctr.type.errors" class="invalid-feedback">
+                              <div *ngIf="ctr.type.errors.required">{{labels.required}}</div>
+                          </div>
+                      </div>
+                      <div class="col-4 col-sm-6">
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group row">
+            <label for="facility_name"
+                class="col-sm-3 col-form-label">{{labels.facility_name}}</label>
+            <div class="col-sm-9">
+                <input type="text" formControlName="name" class="form-control"
+                    id="facility_name"  [ngClass]="{ 'is-invalid': submitted  }" />
+                    <div *ngIf="submitted && ctr.name.errors" class="invalid-feedback">
+                      <div *ngIf="ctr.name.errors.required">{{labels.required}}</div>
+                  </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+              <div class="form-group row">
+                <label for="title" class="col-sm-3 col-form-label">{{labels.title}}</label>
+                <div class="col-sm-9">
+                <select formControlName="title" class="civility custom-select"
+                [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id=title>
+                <option value="null" disabled="true">{{labels.title}}</option>
+                <option value="DR">Dr</option>
+                <option value="PR">Pr</option>
+               </select>
+                    <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
+                       <div *ngIf="ctr.title.errors.required">{{labels.required}}</div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label for="speciality" class="col-sm-3 col-form-label">{{labels.speciality}}</label>
+                <div class="col-sm-9">
+                <select formControlName="speciality" class="civility custom-select"
+                [ngClass]="{ 'is-invalid': submitted && ctr.speciality.errors }" id=speciality>
+                <option value="null" disabled="true">{{labels.speciality}}</option>
+                <option *ngFor="let s of specialities"  value="s.id">{{s.name}}</option>
+               </select>
+                    <div *ngIf="submitted && ctr.speciality.errors" class="invalid-feedback">
+                       <div *ngIf="ctr.speciality.errors.required">{{labels.required}}</div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+          <div class="row">
+              <div class="col">
+
+                  <div class="form-group row">
+                      <label for="first_name" class="col-sm-3 col-form-label">{{labels.first_name}}</label>
+                      <div class="col-sm-9">
+                          <input type="text" formControlName="first_name" class="form-control" id="first_name"
+                              [ngClass]="{ 'is-invalid': submitted && ctr.first_name.errors }" />
+                          <div *ngIf="submitted && ctr.first_name.errors" class="invalid-feedback">
+                              <div *ngIf="ctr.first_name.errors.required">{{labels.required}}</div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="phone" class="col-sm-3 col-form-label">{{labels.phone}}</label>
+                      <div class="col-sm-9">
+                          <input type="text" formControlName="phone" class="form-control" id="phone" [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }" />
+                          <div *ngIf="submitted && ctr.phone.errors" class="invalid-feedback">
+                            <div *ngIf="ctr.phone.errors.required">{{labels.required}}</div>
+                            <div *ngIf="ctr.phone.errors.pattern">{{labels.phone_invalid}}</div>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="address" class="col-sm-3 col-form-label">{{labels.address}}</label>
+                    <div class="col-sm-9">
+                        <input type="text" formControlName="address" class="form-control" id="address" />
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group row">
+                  <label for="last_name" class="col-sm-3 col-form-label">{{labels.last_name}}</label>
+                  <div class="col-sm-9">
+                      <input type="text" formControlName="last_name" class="form-control" id="last_name"
+                          [ngClass]="{ 'is-invalid': submitted && ctr.last_name.errors }" />
+                      <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+                          <div *ngIf="ctr.last_name.errors.required">{{labels.required}}</div>
+                      </div>
+                  </div>
+              </div>
+                  <div class="form-group row">
+                      <label for="email" class="col-sm-3 col-form-label">{{labels.email_input}}</label>
+                      <div class="col-sm-9">
+                          <input type="text" formControlName="email" class="form-control" id="email"
+                              [ngClass]="{ 'is-invalid': submitted  }" />
+                              <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                                <div *ngIf="ctr.email.errors.required">{{labels.required}}</div>
+                                <div *ngIf="ctr.email.errors.email">{{labels.email_invalid_format}}</div>
+                            </div>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="additional_address" class="col-sm-3 col-form-label">{{labels.additional_address}}</label>
+                    <div class="col-sm-9">
+                        <input type="text" formControlName="additional_address" class="form-control" id="additional_address"
+                            [ngClass]="{ 'is-invalid': submitted  }" />
+                    </div>
+                </div>
+                </div>
+              </div>
+                  <div class="row">
+                    <div class="col">
+                      <label for="other_phone" class="col-sm-3 col-form-label">{{labels.other_phone}}</label>
+                      <div class="col-sm-9">
+                          <div class="row">
+                              <div class="col-md-6">
+                                  <div class="form-group row">
+                                      <div class="col-md-12">
+                                          <input type="text" formControlName="other_phone" class="form-control"
+                                              id="other_phone"
+                                              [ngClass]="{ 'is-invalid': submitted  }" />
+                                          <div *ngIf="submitted && ctr.other_phone.errors" class="invalid-feedback">
+                                              <div *ngIf="ctr.other_phone.errors.pattern">{{labels.phone_invalid}}
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group row">
+                                      <div class="col-md-12">
+                                          <input type="text" class="form-control" formControlName="other_phone_note"
+                                              placeholder="Note" id="note" />
+                                      </div>
+                                  </div>
+                              </div>
+                              <a (click)="resetOtherPhone()"
+                                  class="btn btn-xs btn-icon mb-2 col-md-1">
+                                  <i class="far fa-trash-alt"></i>
+                            </a>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+      </div>
+      <br />
+      <div class="row justify-content-center">
+          <button (click)="submit()" type="submit" class="btn btn-validate">
+              {{labels.validate}}
+          </button>
+      </div>
+      <div class="row justify-content-center">
+          <div *ngIf="errorMessage && errorMessage!=''" class="center margin isa_error">
+              <p class=" w-100"> <i class="fa fa-times-circle"></i>
+                  {{errorMessage}}</p>
+          </div>
+          <div *ngIf="successMessage && successMessage!=''" class="center margin isa_success">
+              <p class=" w-100"><i class="fa fa-check-circle"></i>
+                  {{successMessage}}</p>
+          </div>
+      </div>
+  </form>
+</div>
+</div>
