@@ -5,6 +5,7 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { SentMessagesComponent } from './sent-messages/sent-messages.component';
 import { ContactsComponent } from './contacts/contacts.component';
+import { ContactDetailComponent } from './contacts/contact-detail/contact-detail.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
       {
         path: "contacts",
         component: ContactsComponent
+      },
+      {
+        path: "contact-detail/:id",
+        component: ContactDetailComponent
       }
     ]
   }
