@@ -8,7 +8,7 @@ import { MessagingDetailService } from "./messaging-detail.service";
   styleUrls: ["./messaging-detail.component.scss"]
 })
 export class MessagingDetailComponent implements OnInit {
-  role: string = "Practician";
+  role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox = true;
   messagingDetail: any;
@@ -34,5 +34,4 @@ export class MessagingDetailComponent implements OnInit {
         this.messagingDetail = message;
       });
   }
-
 }
