@@ -5,6 +5,8 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
+import { ContactsComponent } from "./contacts/contacts.component";
+import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 
 const routes: Routes = [
   {
@@ -24,7 +26,18 @@ const routes: Routes = [
         path: "mes-patients",
         component: MyPatientsComponent
       },
-      { path: "sent", component: SentMessagesComponent }
+      {
+        path: "messagerie-envoyes",
+        component: SentMessagesComponent
+      },
+      {
+        path: "contacts",
+        component: ContactsComponent
+      },
+      {
+        path: "contact-detail/:id",
+        component: ContactDetailComponent
+      }
     ]
   }
 ];

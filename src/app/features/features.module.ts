@@ -10,12 +10,14 @@ import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
-import { MyPatientsComponent } from "./my-patients/my-patients.component";
-import { HlsMessagingListModule } from "hls-messaging-list";
 import { HlsSearchModule } from "hls-search";
+import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
-
+import { HlsMessagingListModule } from "hls-messaging-list";
+import { ContactsComponent } from "./contacts/contacts.component";
+import { ContactsService } from "./services/contacts.service";
+import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -59,8 +61,10 @@ const notifierOptions: NotifierOptions = {
     FeaturesComponent,
     MessagingListComponent,
     MessagingDetailComponent,
+    SentMessagesComponent,
     MyPatientsComponent,
-    SentMessagesComponent
+    ContactsComponent,
+    ContactDetailComponent
   ],
   imports: [
     FormsModule,
@@ -76,6 +80,6 @@ const notifierOptions: NotifierOptions = {
     HlsSearchModule
   ],
 
-  providers: [MessageService]
+  providers: [MessageService, ContactsService]
 })
 export class FeaturesModule {}

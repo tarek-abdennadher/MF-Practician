@@ -35,7 +35,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/send"]);
   }
   displaySentAction() {
-    this.router.navigate(["features/sent"]);
+    this.router.navigate(["features/messagerie-envoyes"]);
   }
   displayArchieveAction() {
     this.router.navigate(["/features/mes-patients"]);
@@ -47,7 +47,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/favorites"]);
   }
   displayMyProContactsAction() {
-    console.log("displayMyProContactsAction");
+    this.router.navigate(["features/contacts"]);
   }
   displayMyDocumentsAction() {
     console.log("displayMyDocumentsAction");
