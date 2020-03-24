@@ -1,6 +1,12 @@
 <lib-hlsLinks
   [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
   (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAction)="seenActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
   (importantAction)="importantActionClicked()"
