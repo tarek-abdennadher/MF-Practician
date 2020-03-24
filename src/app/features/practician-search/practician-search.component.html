@@ -1,0 +1,7 @@
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+    [backButton]="backButton" ></lib-hlsLinks>
+<lib-hlsMessagingList 
+[list]="itemsList" 
+(cardAction)="cardClicked($event)" 
+(selectItemAction)="selectItem($event)"
+[imageSource]="imageSource"></lib-hlsMessagingList>

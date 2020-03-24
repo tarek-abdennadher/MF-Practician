@@ -1,0 +1,97 @@
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { PracticianSearchService } from './practician-search.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PracticianSearch } from './practician-search.model';
+import { search } from './search.model';
+
+@Component({
+  selector: 'app-practician-search',
+  templateUrl: './practician-search.component.html',
+  styleUrls: ['./practician-search.component.scss']
+})
+export class PracticianSearchComponent implements OnInit {
+  
+  imageSource = "assets/imgs/IMG_3944.jpg";
+  itemsList = [];
+  page = "SEARCH";
+  number = 0;
+  topText = "Résultats de recherche";
+  bottomText = "résultats";
+  backButton = false;
+  links = {
+
+  };
+  constructor(public router: Router, private route: ActivatedRoute, private practicianSearchService: PracticianSearchService) { }
+
+  ngOnInit(): void {
+    this.practicianSearchService.currentSearch.subscribe((data: search) => {
+      this.getPractians(data.text, data.city);
+
+    })
+  }
+  getPractians(text, city) {
+    this.itemsList = [];
+    if (!text && !city) {
+      this.practicianSearchService.getAllPracticians().subscribe(list => {
+        this.number = list.length;
+        list.forEach(message => {
+          let practician = this.mappingPracticians(message);
+          this.itemsList.push(practician);
+        });
+      });
+    } else if (!text && city) {
+      this.practicianSearchService.getPracticiansByCity(city).subscribe(list => {
+        list.forEach(message => {
+          let practician = this.mappingPracticians(message);
+          this.itemsList.push(practician);
+        });
+      })
+    } else {
+      this.practicianSearchService.getPracticiansBytextAndCity(text, city).subscribe(list => {
+        list.forEach(message => {
+          let practician = this.mappingPracticians(message);
+          this.itemsList.push(practician);
+        });
+      })
+    }
+    
+  }
+  mappingPracticians(message) {
+    const practician = new PracticianSearch();
+    practician.id = message.id;
+    practician.isSeen = true;
+    practician.users = [
+      {
+        fullName: message.fullName,
+        img: message.photoId
+          ? "assets/imgs/IMG_3944.jpg"
+          : "assets/imgs/user.png",
+        title: message.title,
+        type: "MEDICAL"
+      }
+    ];
+    practician.object = {
+      name: message.address,
+      isImportant: false,
+      isLocalisation: true
+    };
+    practician.time = null;
+    practician.isImportant = false;
+    practician.hasFiles = false;
+    practician.isViewDetail = true;
+    practician.isChecked = false;
+    return practician;
+  }
+  cardClicked(item) {
+    this.router.navigate(["/features/practician-detail/" + item.id]);
+  }
+  selectItem(event) {
+    this.itemsList.forEach(a => {
+      if (event.filter(b => b.id == a.id).length >= 1) {
+        a.isChecked=true;
+      } else {
+        a.isChecked=false;
+      }
+    })
+  }
+}
