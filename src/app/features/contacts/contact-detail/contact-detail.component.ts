@@ -86,7 +86,6 @@ export class ContactDetailComponent implements OnInit {
       return;
     }
     const value = this.infoForm.value;
-   // const contactSpeciality = this.specialities.find(s => s.id == value.speciality);
     const contact = {
       id: value.id,
       contactType: value.type,
