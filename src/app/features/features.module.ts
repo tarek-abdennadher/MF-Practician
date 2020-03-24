@@ -18,6 +18,7 @@ import { HlsMessagingListModule } from "hls-messaging-list";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactsService } from "./services/contacts.service";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
+import { PracticianSearchComponent } from './practician-search/practician-search.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -64,7 +65,8 @@ const notifierOptions: NotifierOptions = {
     SentMessagesComponent,
     MyPatientsComponent,
     ContactsComponent,
-    ContactDetailComponent
+    ContactDetailComponent,
+    PracticianSearchComponent
   ],
   imports: [
     FormsModule,

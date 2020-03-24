@@ -7,6 +7,7 @@ import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
+import { PracticianSearchComponent } from './practician-search/practician-search.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
       {
         path: "contact-detail/:id",
         component: ContactDetailComponent
+      },
+      {
+        path: "search",
+        component: PracticianSearchComponent
       }
     ]
   }
