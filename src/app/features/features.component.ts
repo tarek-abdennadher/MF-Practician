@@ -92,7 +92,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   searchActionClicked(event) {
-     this.searchService.changeSearch(new search(event.text, event.city));
+     this.searchService.changeSearch(new search(event.search, event.city));
      this.router.navigate(["/features/search"]);
   }
 

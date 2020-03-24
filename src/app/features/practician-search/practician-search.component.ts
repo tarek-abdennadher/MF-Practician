@@ -10,7 +10,7 @@ import { search } from './search.model';
   styleUrls: ['./practician-search.component.scss']
 })
 export class PracticianSearchComponent implements OnInit {
-  
+
   imageSource = "assets/imgs/IMG_3944.jpg";
   itemsList = [];
   page = "SEARCH";
@@ -30,9 +30,10 @@ export class PracticianSearchComponent implements OnInit {
     })
   }
   getPractians(text, city) {
-    this.itemsList = [];
+
     if (!text && !city) {
       this.practicianSearchService.getAllPracticians().subscribe(list => {
+        this.itemsList = [];
         this.number = list.length;
         list.forEach(message => {
           let practician = this.mappingPracticians(message);
@@ -41,6 +42,8 @@ export class PracticianSearchComponent implements OnInit {
       });
     } else if (!text && city) {
       this.practicianSearchService.getPracticiansByCity(city).subscribe(list => {
+        this.itemsList = [];
+        this.number = list.length;
         list.forEach(message => {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
@@ -48,13 +51,15 @@ export class PracticianSearchComponent implements OnInit {
       })
     } else {
       this.practicianSearchService.getPracticiansBytextAndCity(text, city).subscribe(list => {
+        this.itemsList = [];
+        this.number = list.length;
         list.forEach(message => {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
         });
       })
     }
-    
+
   }
   mappingPracticians(message) {
     const practician = new PracticianSearch();
