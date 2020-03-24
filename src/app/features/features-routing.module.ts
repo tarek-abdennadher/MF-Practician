@@ -3,7 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { FeaturesComponent } from "./features.component";
 import { MessagingListComponent } from "./messaging-list/messaging-list.component";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
-import { SentMessagesComponent } from './sent-messages/sent-messages.component';
+import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 
 const routes: Routes = [
   {
