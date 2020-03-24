@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ContactsService } from '@app/features/services/contacts.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Speciality } from '@app/shared/models/speciality';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-contact-detail',
   templateUrl: './contact-detail.component.html',
@@ -16,14 +16,21 @@ export class ContactDetailComponent implements OnInit {
   labels;
   public infoForm: FormGroup;
   submitted = false;
-  constructor(private route: ActivatedRoute, private router: Router, private contactsService: ContactsService) {
+  topText = "Mes contacts PRO";
+  page = "MY_PRO_CONTACTS";
+  backButton = true;
+  param ;
+  constructor(private _location: Location,private route: ActivatedRoute, private router: Router, private contactsService: ContactsService) {
     this.labels = this.contactsService.messages;
     this.initForm();
    }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.getContact(params["id"]);
+      this.param = params["id"];
+      if(this.param != "add") {
+        this.getContact(this.param);
+      }
       this.getAllSpeciality();
     });
   }
@@ -58,7 +65,7 @@ export class ContactDetailComponent implements OnInit {
         first_name: contact.firstName,
         email: contact.email,
         title: contact.title,
-        speciality: contact.speciality,
+        speciality: contact.speciality ? contact.speciality.id : null,
         address:   contact.address,
         additional_address: contact.additionalAddress,
         phone: contact.phoneNumber,
@@ -78,12 +85,38 @@ export class ContactDetailComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
-    ///
+    const value = this.infoForm.value;
+   // const contactSpeciality = this.specialities.find(s => s.id == value.speciality);
+    const contact = {
+      id: value.id,
+      contactType: value.type,
+      facilityName: value.name,
+      title: value.title,
+      speciality: value.speciality != null ? this.specialities.find(s => s.id == value.speciality) : null,
+      firstName: value.first_name,
+      lastName: value.last_name,
+      phoneNumber: value.phone,
+      email : value.email,
+      address: value.address,
+      additionalAddress: value.additional_address,
+      otherPhoneNumber: value.other_phone,
+      note: value.other_phone_note
+    };
+    let successResult = false;
+    if (this.param == "add") {
+      this.contactsService.addContact(contact).subscribe(res => successResult = res);
+    } else {
+      this.contactsService.updateContact(contact).subscribe(res => successResult = res);
+    }
+    this.router.navigate(['features/contacts']).then(() => window.location.reload());
   }
   resetOtherPhone() {
     this.infoForm.patchValue({
       other_phone: null,
       other_phone_note: null
     });
+  }
+  BackButton() {
+    this._location.back();
   }
 }

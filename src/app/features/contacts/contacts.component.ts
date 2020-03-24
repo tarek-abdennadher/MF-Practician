@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ContactsService } from '../services/contacts.service';
 import { Router } from '@angular/router';
 import { Speciality } from '@app/shared/models/speciality';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.component.html',
@@ -11,12 +11,17 @@ import { Speciality } from '@app/shared/models/speciality';
 export class ContactsComponent implements OnInit {
   specialities: Array<Speciality>;
   users: Array<any>;
-  itemsList: Array<any>;
-  filtredItemsList: Array<any>;
-  types : Array<string>;
+  itemsList: Array<any> = [];
+  filtredItemsList: Array<any> = [];
+  types : Array<string> = [];
   imageSource = "assets/imgs/IMG_3944.jpg";
-  links = { isAllSelect: true, isDelete: true, isTypeFilter: true }
-  constructor(public router: Router, private contactsService: ContactsService) { }
+  links = { isAllSelect: true, isDelete: true, isTypeFilter: true, isAdd: true };
+  selectedObjects: Array<any>;
+  topText = "Mes contacts PRO";
+  page = "MY_PRO_CONTACTS";
+  backButton = true;
+  constructor(private _location: Location, private router: Router, private contactsService: ContactsService) {
+   }
 
   ngOnInit(): void {
     this.itemsList = new Array();
@@ -38,7 +43,7 @@ export class ContactsComponent implements OnInit {
             img: "assets/imgs/IMG_3944.jpg",
             title: elm.title,
             type: "MEDICAL",
-            speciality: elm.speciality.name
+            speciality: elm.speciality ? elm.speciality.name : "Tout"
           }],
           object: {
             name: elm.facilityName,
@@ -101,15 +106,6 @@ export class ContactsComponent implements OnInit {
   archieveClicked(event) {
     console.log("hello " + event.users[0].id)
   }
-  selectItem(event) {
-    this.itemsList.forEach(a => {
-      if (event.filter(b => b.id == a.id).length >= 1) {
-        a.isChecked = true;
-      } else {
-        a.isChecked = false;
-      }
-    });
-  }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe(specialitiesList =>{
         this.specialities = specialitiesList;
@@ -119,4 +115,14 @@ export class ContactsComponent implements OnInit {
       console.log("en attendant un model de popup à afficher");
     });
   }
+  addContact(){
+    this.router.navigate(["/features/contact-detail/add"]);
+  }
+  selectItem(event) {
+    this.selectedObjects = event.filter(a => a.isChecked == true);
+  }
+  BackButton() {
+    this._location.back();
+  }
+
 }
