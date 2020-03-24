@@ -1,4 +1,9 @@
-
+<lib-hlsLinks
+    [topText]="topText"
+    [page]="page"
+    [backButton]="backButton"
+    (backButtonAction)="BackButton()">
+</lib-hlsLinks>
 <div class="card">
 <div class="card-body">
   <form [formGroup]="infoForm" (ngSubmit)="submitted" #f="ngForm">
@@ -58,7 +63,7 @@
                 <select formControlName="speciality" class="civility custom-select"
                 [ngClass]="{ 'is-invalid': submitted && ctr.speciality.errors }" id=speciality>
                 <option value="null" disabled="true">{{labels.speciality}}</option>
-                <option *ngFor="let s of specialities"  value="s.id">{{s.name}}</option>
+                <option *ngFor="let s of specialities"  [value]="s.id">{{s.name}}</option>
                </select>
                     <div *ngIf="submitted && ctr.speciality.errors" class="invalid-feedback">
                        <div *ngIf="ctr.speciality.errors.required">{{labels.required}}</div>
