@@ -38,7 +38,10 @@ export class GlobalService {
     //Messaging Application URLs
     archived_messages: this.BASE_URL_MA + "/messagesArchived/",
     messages: this.BASE_URL_MA + "/messages/",
-    receiver: this.BASE_URL_MA + "/receivers/"
+    receiver: this.BASE_URL_MA + "/receivers/",
+    contact_pro: this.BASE_URL_CA + "/contact",
+    contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
+    contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé. ",

@@ -1,0 +1,17 @@
+<lib-hlsLinks
+    [links]="links"
+    [types]="types"
+    (deleteAction)="deleteActionClicked()"
+    (selectAllAction)="selectAllActionClicked()"
+    (deSelectAllAction)="deselectAllActionClicked()"
+    (typeAction)="listFilter($event)">
+</lib-hlsLinks>
+
+<lib-hlsMessagingList
+    [list]="filtredItemsList"
+    (cardAction)="cardClicked($event)"
+    (markAsSeenAction)="markAsSeenClicked($event)"
+    (archieveAction)="archieveClicked($event)"
+    (selectItemAction)="selectItem($event)"
+    [imageSource]="imageSource">
+</lib-hlsMessagingList>
