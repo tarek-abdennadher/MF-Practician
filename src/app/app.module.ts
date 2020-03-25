@@ -13,6 +13,7 @@ import { GlobalService } from "./core/services/global.service";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthGuard } from "./app.guard";
 import { TokenInterceptor } from "./core/interceptors/token.interceptor";
+import { AccountModule } from './features/account/account.module';
 
 registerLocaleData(localeFr, "fr");
 @NgModule({
@@ -24,7 +25,8 @@ registerLocaleData(localeFr, "fr");
     RouterModule,
     HttpClientModule,
     CoreModule,
-    FeaturesModule
+    FeaturesModule,
+    AccountModule
   ],
   providers: [
     {

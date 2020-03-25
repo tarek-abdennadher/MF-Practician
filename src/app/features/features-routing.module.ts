@@ -47,7 +47,11 @@ const routes: Routes = [
       {
         path: "practician-detail/:id",
         component: PracticianDetailComponent
-      }
+      },
+      {
+        path: 'compte',
+        loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+      },
     ]
   }
 ];
