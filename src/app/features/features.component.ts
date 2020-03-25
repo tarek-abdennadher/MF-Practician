@@ -94,6 +94,9 @@ export class FeaturesComponent implements OnInit {
   searchActionClicked(event) {
      this.searchService.changeSearch(new search(event.search, event.city));
      this.router.navigate(["/features/search"]);
+     jQuery(document).ready(function (e) {
+      jQuery(this).find('#dropdownMenuLinkSearch').trigger("click");
+    });
   }
 
   selectNotification(notification) {

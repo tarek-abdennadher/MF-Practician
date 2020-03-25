@@ -1,7 +1,25 @@
 <lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
-    [backButton]="backButton" ></lib-hlsLinks>
-<lib-hlsMessagingList 
-[list]="itemsList" 
-(cardAction)="cardClicked($event)" 
+[backButton]="backButton" ></lib-hlsLinks>
+
+<div class="col-md-12 search-side">
+    <div class="col-md-3 form-inline">
+        <button class="btn" id="back-button"><i class="far fa-user-md"></i></button>
+        <p>{{texts.searchText}}<br>
+            <span>{{text}}</span>
+        </p>
+    </div>
+    <div class="col-md-2 form-inline">
+        <button class="btn" id="back-button"><i class="far fa-map-marker"></i></button>
+        <p>{{texts.city}}<br>
+            <span>{{city}}</span>
+        </p>
+    </div>
+    <div class="col-md-2">
+            <button class="btn" id="edit-button" (click)="edit()"><i class="far fa-pen">&nbsp;&nbsp;</i>{{texts.edit}}</button>
+    </div>
+</div>
+<lib-hlsMessagingList
+[list]="itemsList"
+(cardAction)="cardClicked($event)"
 (selectItemAction)="selectItem($event)"
 [imageSource]="imageSource"></lib-hlsMessagingList>
