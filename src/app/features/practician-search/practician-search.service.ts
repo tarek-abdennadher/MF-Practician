@@ -13,6 +13,15 @@ export class PracticianSearchService {
 
   text: string;
   city: string;
+  texts = {
+
+    searchText: "Nom, prénom, spécialité",
+
+    city: "Ville",
+
+    edit: "Modifier ma recherche"
+
+  }
   constructor(private globalService: GlobalService) { }
   getPracticiansBytextAndCity(text, city): Observable<any> {
     return this.globalService.call(

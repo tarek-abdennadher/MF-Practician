@@ -3,6 +3,7 @@ import { PracticianSearchService } from './practician-search.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PracticianSearch } from './practician-search.model';
 import { search } from './search.model';
+import { FeaturesService } from '../features.service';
 
 @Component({
   selector: 'app-practician-search',
@@ -18,15 +19,21 @@ export class PracticianSearchComponent implements OnInit {
   topText = "Résultats de recherche";
   bottomText = "résultats";
   backButton = false;
+  text: string;
+  city: string;
   links = {
 
   };
-  constructor(public router: Router, private route: ActivatedRoute, private practicianSearchService: PracticianSearchService) { }
+  texts: any;
+  constructor(public router: Router, private route: ActivatedRoute, private practicianSearchService: PracticianSearchService) {
+    this.texts = practicianSearchService.texts;
+  }
 
   ngOnInit(): void {
     this.practicianSearchService.currentSearch.subscribe((data: search) => {
+      this.text = data.text;
+      this.city = data.city;
       this.getPractians(data.text, data.city);
-
     })
   }
   getPractians(text, city) {
@@ -61,6 +68,11 @@ export class PracticianSearchComponent implements OnInit {
     }
 
   }
+  edit() {
+    jQuery(document).ready(function (e) {
+      jQuery(this).find('#dropdownMenuLinkSearch').trigger("click");
+    });
+  }
   mappingPracticians(message) {
     const practician = new PracticianSearch();
     practician.id = message.id;
@@ -93,9 +105,9 @@ export class PracticianSearchComponent implements OnInit {
   selectItem(event) {
     this.itemsList.forEach(a => {
       if (event.filter(b => b.id == a.id).length >= 1) {
-        a.isChecked=true;
+        a.isChecked = true;
       } else {
-        a.isChecked=false;
+        a.isChecked = false;
       }
     })
   }
