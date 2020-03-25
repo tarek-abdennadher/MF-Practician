@@ -34,22 +34,23 @@ export class MessagingListComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach(a=> {
+    this.filtredItemList.forEach(a=> {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach(a=> {
+    this.filtredItemList.forEach(a=> {
       a.isChecked = false;
     });
   }
   seenAllActionClicked() {
-    const messagesId = this.itemsList.map(e => e.id);
+    const messagesId = this.filtredItemList.map(e => e.id);
     if (messagesId.length > 0) {
       this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
         resp => {
           if (resp == true) {
             this.itemsList.forEach(item => item.isSeen = true);
+            this.filtredItemList.forEach(item => item.isSeen = true);
           }
         },
         error => {
@@ -60,12 +61,14 @@ export class MessagingListComponent implements OnInit {
   }
 
   archieveActionClicked() {
-    const messagesId = this.itemsList.filter(e => e.isChecked == true).map(e => e.id);
-    console.log(messagesId);
+    const messagesId = this.filtredItemList.filter(e => e.isChecked == true).map(e => e.id);
     if (messagesId.length > 0) {
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         resp => {
           this.itemsList = this.itemsList.filter(function(elm, ind) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+          this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
             return messagesId.indexOf(elm.id) == -1;
           });
         },
@@ -76,8 +79,7 @@ export class MessagingListComponent implements OnInit {
     }
   }
   filterActionClicked(event) {
-    console.log(event);
-    this.filtredItemList = (event=="all") ? this.itemsList : this.itemsList.filter(item => item.users[0].type.toLowerCase()  == event);
+    this.filtredItemList = (event=="all") ? this.itemsList : (this.itemsList.filter(item => item.users[0].type.toLowerCase()  == ((event == "doctor") ? "medical" : event)));
   }
 
   getMyInbox() {
@@ -126,6 +128,10 @@ export class MessagingListComponent implements OnInit {
           if (index != -1) {
             this.itemsList[index].isSeen = true;
           }
+          let filtredIndex = this.filtredItemList.findIndex(item => item.id == messageId);
+          if (index != -1) {
+            this.filtredItemList[filtredIndex].isSeen = true;
+          }
         }
       },
       error => {
@@ -141,6 +147,9 @@ export class MessagingListComponent implements OnInit {
         this.itemsList = this.itemsList.filter(function(elm, ind) {
           return elm.id != event.id;
         });
+        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+          return elm.id != event.id;
+        });
       },
       error => {
         console.log("We have to find a way to notify user by this error");
@@ -149,7 +158,7 @@ export class MessagingListComponent implements OnInit {
   }
   selectItem(event) {
     this.selectedObjects = event;
-    this.itemsList.forEach(a => {
+    this.filtredItemList.forEach(a => {
       if (event.filter(b => b.id == a.id).length >= 1) {
         a.isChecked=true;
       } else {
