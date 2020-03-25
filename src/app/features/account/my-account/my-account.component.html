@@ -1,0 +1,42 @@
+
+<lib-hlsLinks
+    [topText]="topText"
+    [page]="page"
+    [backButton]="backButton"
+    (backButtonAction)="BackButton()">
+</lib-hlsLinks>
+
+<nav mat-tab-nav-bar >
+      <a mat-tab-link
+          [routerLink]="'personal-info'"
+          routerLinkActive #rla="routerLinkActive"
+          [active]="rla.isActive">
+          <i class="far fa-cog my-tab-icon"></i> {{labels.info_tab}}
+      </a>
+      <a mat-tab-link
+        [routerLink]="'secretaries'"
+        routerLinkActive #rlb="routerLinkActive"
+        [active]="rlb.isActive">
+        <i class="far fa-user-headset my-tab-icon"></i> {{labels.my_secretaries_tab}}
+      </a>
+      <a mat-tab-link
+        [routerLink]="'tele-secretaries'"
+        routerLinkActive #rlc="routerLinkActive"
+        [active]="rlc.isActive">
+        <i class="far fa-user-md my-tab-icon"></i> {{labels.tele_secretariat_tab}}
+      </a>
+      <a mat-tab-link
+        [routerLink]="'factures'"
+        routerLinkActive #rld="routerLinkActive"
+        [active]="rld.isActive">
+        <i class="far fa-file-alt my-tab-icon"></i> {{labels.factures_tab}}
+      </a>
+      <a mat-tab-link
+        [routerLink]="'stats'"
+        routerLinkActive #rle="routerLinkActive"
+        [active]="rle.isActive">
+        <i class="far fa-chart-pie-alt my-tab-icon"></i> {{labels.stats_tab}}
+      </a>
+</nav>
+
+<router-outlet></router-outlet>
