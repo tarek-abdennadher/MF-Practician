@@ -57,7 +57,9 @@ export class LoginComponent implements OnInit {
   }
 
   handleResponseUser = account => {
-    this.localStorage.store('pratician', account.practician);
+    const userType = account.practician != null ? "practician" : "secretary";
+    const userData = account.practician != null ? account.practician : account.secretary;
+    this.localStorage.store(userType, userData);
     this.router.navigate([this.previousURL]);
   }
 
