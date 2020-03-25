@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
   }
 
   handleResponseUser = account => {
-    this.localStorage.store('praticien', account.patient);
+    this.localStorage.store('pratician', account.practician);
     this.router.navigate([this.previousURL]);
   }
 
@@ -76,6 +76,6 @@ export class LoginComponent implements OnInit {
   forgotPassword() {
     this.errorMessage = '';
     this.successMessage = '';
-
+    this.router.navigate(['/reset-password']);
   }
 }
