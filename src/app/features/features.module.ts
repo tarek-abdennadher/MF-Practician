@@ -10,9 +10,17 @@ import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
-import { SentMessagesComponent } from './sent-messages/sent-messages.component';
-import { MessageService } from './services/message.service';
-import { HlsMessagingListModule } from 'hls-messaging-list';
+import { HlsSearchModule } from "hls-search";
+import { MyPatientsComponent } from "./my-patients/my-patients.component";
+import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
+import { MessageService } from "./services/message.service";
+import { HlsMessagingListModule } from "hls-messaging-list";
+import { ContactsComponent } from "./contacts/contacts.component";
+import { ContactsService } from "./services/contacts.service";
+import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
+import { PracticianSearchComponent } from './practician-search/practician-search.component';
+import { PracticianDetailComponent } from './practician-detail/practician-detail.component';
+import { HlsPracticianDetailModule } from 'hls-practician-detail';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -56,7 +64,12 @@ const notifierOptions: NotifierOptions = {
     FeaturesComponent,
     MessagingListComponent,
     MessagingDetailComponent,
-    SentMessagesComponent
+    SentMessagesComponent,
+    MyPatientsComponent,
+    ContactsComponent,
+    ContactDetailComponent,
+    PracticianSearchComponent,
+    PracticianDetailComponent
   ],
   imports: [
     FormsModule,
@@ -67,10 +80,12 @@ const notifierOptions: NotifierOptions = {
     HlsSideBarModule,
     NotifierModule.withConfig(notifierOptions),
     HlsMessagingDetailModule,
+    HlsLinksModule,
     HlsMessagingListModule,
-    HlsLinksModule
+    HlsSearchModule,
+    HlsPracticianDetailModule
   ],
 
-  providers: [MessageService]
+  providers: [MessageService, ContactsService]
 })
 export class FeaturesModule {}

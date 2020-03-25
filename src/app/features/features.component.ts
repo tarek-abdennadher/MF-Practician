@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { FeaturesService } from './features.service';
+import { FeaturesService } from "./features.service";
+import { PracticianSearchService } from './practician-search/practician-search.service';
+import { search } from './practician-search/search.model';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -8,11 +10,9 @@ import { FeaturesService } from './features.service';
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
-  constructor(
-    public router: Router,
-    public featuresService: FeaturesService,
-  ) {
-  }
+  constructor(public router: Router,
+              public featuresService: FeaturesService,
+              private searchService: PracticianSearchService) {}
 
   fullName = "test test";
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -23,12 +23,7 @@ export class FeaturesComponent implements OnInit {
     isFilter: true
   };
 
-
-  ngOnInit(): void {
-
-  }
-
-
+  ngOnInit(): void {}
 
   openAccountInterface() {
     this.router.navigate(["/features/account"]);
@@ -44,19 +39,19 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/send"]);
   }
   displaySentAction() {
-    this.router.navigate(["features/sent"]);
+    this.router.navigate(["features/messagerie-envoyes"]);
   }
   displayArchieveAction() {
     this.router.navigate(["/features/archieve"]);
   }
   displayMyPatientsAction() {
-    console.log("displayMyPatientsAction");
+    this.router.navigate(["/features/mes-patients"]);
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/features/favorites"]);
   }
   displayMyProContactsAction() {
-    console.log("displayMyProContactsAction");
+    this.router.navigate(["features/contacts"]);
   }
   displayMyDocumentsAction() {
     console.log("displayMyDocumentsAction");
@@ -97,8 +92,8 @@ export class FeaturesComponent implements OnInit {
   }
 
   searchActionClicked(event) {
-    // this.searchService.changeSearch(new search(event.text, event.city));
-    // this.router.navigate(["/features/search"]);
+     this.searchService.changeSearch(new search(event.search, event.city));
+     this.router.navigate(["/features/search"]);
   }
 
   selectNotification(notification) {
