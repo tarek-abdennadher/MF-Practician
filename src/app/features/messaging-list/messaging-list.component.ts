@@ -11,12 +11,15 @@ export class MessagingListComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
   messages: Array<any>;
   itemsList: Array<any>;
+  filtredItemList: Array<any> = new Array();
+  selectedObjects: Array<any>;
   links = {
+    isAllSelect: true,
     isAllSeen: true,
-    isSeen: true,
+    isSeen: false,
     isArchieve: true,
-    isImportant: true
-    // isFilter: true
+    isImportant: false,
+    isFilter: true
   };
   constructor(private messagesServ: MessagingListService, public router: Router) { }
 
@@ -31,28 +34,50 @@ export class MessagingListComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    console.log("selectAllAction");
+    this.itemsList.forEach(a=> {
+      a.isChecked = true;
+    });
   }
-  seenActionClicked() {
-    console.log("seenAction");
+  deSelectAllActionClicked() {
+    this.itemsList.forEach(a=> {
+      a.isChecked = false;
+    });
   }
   seenAllActionClicked() {
-    console.log("seenAllAction");
+    const messagesId = this.itemsList.map(e => e.id);
+    if (messagesId.length > 0) {
+      this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
+        resp => {
+          if (resp == true) {
+            this.itemsList.forEach(item => item.isSeen = true);
+          }
+        },
+        error => {
+          console.log("We have to find a way to notify user by this error");
+        }
+      );
+    }
   }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
+
   archieveActionClicked() {
-    console.log("archieveAction");
-  }
-  addNoteActionClicked() {
-    console.log("addNoteAction");
+    const messagesId = this.itemsList.filter(e => e.isChecked == true).map(e => e.id);
+    console.log(messagesId);
+    if (messagesId.length > 0) {
+      this.messagesServ.markMessageAsArchived(messagesId).subscribe(
+        resp => {
+          this.itemsList = this.itemsList.filter(function(elm, ind) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+        },
+        error => {
+          console.log("We have to find a way to notify user by this error");
+        }
+      );
+    }
   }
   filterActionClicked(event) {
     console.log(event);
+    this.filtredItemList = (event=="all") ? this.itemsList : this.itemsList.filter(item => item.users[0].type.toLowerCase()  == event);
   }
 
   getMyInbox() {
@@ -62,6 +87,7 @@ export class MessagingListComponent implements OnInit {
           return new Date(m2.updatedAt).getTime()- new Date(m1.updatedAt).getTime()
         })
         this.itemsList = this.messages.map(item => this.parseMessage(item));
+        this.filtredItemList = this.itemsList;
       })
   }
 
@@ -75,7 +101,7 @@ export class MessagingListComponent implements OnInit {
           fullName: message.sender.fullName,
           img: "assets/imgs/IMG_3944.jpg",
           title: message.sender.jobTitle,
-          type: message.sender.title != "" ? "MEDICAL" : "PATIENT"
+          type: message.sender.role == "PRACTICIAN" ? "MEDICAL" : message.sender.role
         }
       ],
       object: {
@@ -110,7 +136,7 @@ export class MessagingListComponent implements OnInit {
 
   archieveMessage(event) {
     let messageId = event.id;
-    this.messagesServ.markMessageAsArchived(messageId).subscribe(
+    this.messagesServ.markMessageAsArchived([messageId]).subscribe(
       resp => {
         this.itemsList = this.itemsList.filter(function(elm, ind) {
           return elm.id != event.id;
@@ -121,5 +147,14 @@ export class MessagingListComponent implements OnInit {
       }
     );
   }
-
+  selectItem(event) {
+    this.selectedObjects = event;
+    this.itemsList.forEach(a => {
+      if (event.filter(b => b.id == a.id).length >= 1) {
+        a.isChecked=true;
+      } else {
+        a.isChecked=false;
+      }
+    })
+  }
 }
