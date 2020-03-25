@@ -15,7 +15,7 @@ export class FeaturesComponent implements OnInit {
               private localSt: LocalStorageService,
               public featuresService: FeaturesService,
               private searchService: PracticianSearchService) {}
-  user = this.localSt.retrieve("practician") !== null ? this.localSt.retrieve("practician") : this.localSt.retrieve("secretary");
+  user = this.localSt.retrieve("user") ;
   fullName = this.user.firstName + " " + this.user.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
   role: string = "medical";
