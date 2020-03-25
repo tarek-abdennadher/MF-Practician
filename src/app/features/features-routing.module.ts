@@ -49,7 +49,7 @@ const routes: Routes = [
         component: PracticianDetailComponent
       },
       {
-        path: 'account',
+        path: 'compte',
         loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
       },
     ]

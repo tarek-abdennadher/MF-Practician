@@ -7,7 +7,6 @@ import { TeleSecretariesComponent } from './tele-secretaries/tele-secretaries.co
 import { FacturesComponent } from './factures/factures.component';
 import { StatsComponent } from './stats/stats.component';
 
-
 const routes: Routes = [
   {
     path: "",
@@ -15,23 +14,23 @@ const routes: Routes = [
     children: [
       { path: "", redirectTo: "", pathMatch: "full" },
       {
-        path: "personal-info",
+        path: "mes-informations",
         component: PersonalInformationsComponent
       },
       {
-        path: "secretaries",
+        path: "mes-secretaires",
         component: MySecretariesComponent
       },
       {
-        path: "tele-secretaries",
+        path: "mon-telesecretariat",
         component: TeleSecretariesComponent
       },
       {
-        path: "factures",
+        path: "mes-factures",
         component: FacturesComponent
       },
       {
-        path: "stats",
+        path: "mes-stats",
         component: StatsComponent
       }
     ]

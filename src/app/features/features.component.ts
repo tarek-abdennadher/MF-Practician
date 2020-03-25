@@ -26,7 +26,7 @@ export class FeaturesComponent implements OnInit {
   ngOnInit(): void {}
 
   openAccountInterface() {
-    this.router.navigate(["/features/account"]);
+    this.router.navigate(["/features/compte"]);
   }
   signOutAction() {
     this.router.navigate(["/login"]);
