@@ -46,7 +46,7 @@ export class GlobalService {
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
-    send_message_error: "votre message n'a pas pu être envoyé"
+    send_message_error: "Votre message n'a pas pu être envoyé"
   };
 
   public messagesDisplayScreen = {
