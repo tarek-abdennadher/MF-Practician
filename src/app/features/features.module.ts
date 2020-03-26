@@ -21,6 +21,7 @@ import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail
 import { PracticianSearchComponent } from './practician-search/practician-search.component';
 import { PracticianDetailComponent } from './practician-detail/practician-detail.component';
 import { HlsPracticianDetailModule } from 'hls-practician-detail';
+import { ArchieveMessagesComponent } from './archieve-messages/archieve-messages.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -69,7 +70,8 @@ const notifierOptions: NotifierOptions = {
     ContactsComponent,
     ContactDetailComponent,
     PracticianSearchComponent,
-    PracticianDetailComponent
+    PracticianDetailComponent,
+    ArchieveMessagesComponent
   ],
   imports: [
     FormsModule,
