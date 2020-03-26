@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HlsConnexionModule } from 'hls-connexion';
 import { HlsInscriptionModule } from 'hls-inscription';
 import { LoginComponent } from './components/login/login.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 
 /*** The CoreModule takes on the role of the root AppModule ,
@@ -10,7 +12,7 @@ import { LoginComponent } from './components/login/login.component';
  * The CoreModule should contain singleton services,
  * universal components and other features where there’s only once instance per application. */
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, ResetPasswordComponent, ChangePasswordComponent],
   imports: [
     CommonModule,
     HlsConnexionModule,
