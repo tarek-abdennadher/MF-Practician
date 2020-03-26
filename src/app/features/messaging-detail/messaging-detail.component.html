@@ -1,8 +1,17 @@
-<lib-hlsLinks [links]="links"></lib-hlsLinks>
+<lib-hlsLinks
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="goToBack()"
+></lib-hlsLinks>
 <lib-hlsMessagingDetail
   [imageSource]="imageSource"
   [messagingDetail]="messagingDetail"
   [isFromInbox]="isFromInbox"
   [role]="role"
   [senderRolePatient]="senderRolePatient"
+  (replyAction)="replyAction()"
 ></lib-hlsMessagingDetail>

@@ -29,7 +29,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   displayInboxAction() {
-    this.router.navigate(["/features/list"]);
+    this.router.navigate(["/features/messageries"]);
   }
   displaySendAction() {
     this.router.navigate(["/features/send"]);

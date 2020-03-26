@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { MessagingListService } from '../services/messaging-list.service';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { MessagingListService } from "../services/messaging-list.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { NotifierService } from "angular-notifier";
+import { GlobalService } from "@app/core/services/global.service";
 
 @Component({
-  selector: 'app-messaging-list',
-  templateUrl: './messaging-list.component.html',
-  styleUrls: ['./messaging-list.component.scss']
+  selector: "app-messaging-list",
+  templateUrl: "./messaging-list.component.html",
+  styleUrls: ["./messaging-list.component.scss"]
 })
 export class MessagingListComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -18,11 +20,31 @@ export class MessagingListComponent implements OnInit {
     isImportant: true
     // isFilter: true
   };
-  constructor(private messagesServ: MessagingListService, public router: Router) { }
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private readonly notifier: NotifierService;
+  constructor(
+    private messagesServ: MessagingListService,
+    public router: Router,
+    private route: ActivatedRoute,
+    notifierService: NotifierService,
+
+    private globalService: GlobalService
+  ) {
+    this.notifier = notifierService;
+  }
 
   ngOnInit(): void {
     this.itemsList = new Array();
     this.getMyInbox();
+    this.route.params.subscribe(params => {
+      if (params["id"]) {
+        this.notifier.show({
+          message: this.globalService.toastrMessages.send_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+      }
+    });
   }
 
   cardClicked(item) {
@@ -56,13 +78,15 @@ export class MessagingListComponent implements OnInit {
   }
 
   getMyInbox() {
-      this.messagesServ.getMyInbox().subscribe(retrievedMess => {
-        this.messages = retrievedMess;
-        this.messages.sort(function(m1, m2) {
-          return new Date(m2.updatedAt).getTime()- new Date(m1.updatedAt).getTime()
-        })
-        this.itemsList = this.messages.map(item => this.parseMessage(item));
-      })
+    this.messagesServ.getMyInbox().subscribe(retrievedMess => {
+      this.messages = retrievedMess;
+      this.messages.sort(function(m1, m2) {
+        return (
+          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+      });
+      this.itemsList = this.messages.map(item => this.parseMessage(item));
+    });
   }
 
   parseMessage(message): any {
@@ -121,5 +145,4 @@ export class MessagingListComponent implements OnInit {
       }
     );
   }
-
 }

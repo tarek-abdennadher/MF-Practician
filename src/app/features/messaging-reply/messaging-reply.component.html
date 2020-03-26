@@ -1,1 +1,23 @@
-<p>messaging-reply works!</p>
+<lib-hlsLinks
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="goToBack()"
+></lib-hlsLinks>
+<lib-hlsMessagingDetail
+  [imageSource]="imageSource"
+  [messagingDetail]="messagingDetail"
+  [role]="role"
+  [isReply]="true"
+  (sendAction)="replyMessage($event)"
+></lib-hlsMessagingDetail>
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
+</ng-template>

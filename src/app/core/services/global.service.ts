@@ -20,7 +20,8 @@ export class GlobalService {
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",
-    message: this.BASE_URL_MA + "/messages/produce",
+    message: this.BASE_URL_MA + "/messages",
+    replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",
     sentMessage: this.BASE_URL_MA + "/messages/sender",
     node: this.BASE_URL_FL + "/node",
     account_create_patient: this.BASE_URL_CA + "/account/patient/",
@@ -44,8 +45,14 @@ export class GlobalService {
     contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple"
   };
   public toastrMessages = {
-    send_message_success: "Message envoyé. ",
-    send_message_error: "Votre message n'a pas pu été envoyé"
+    send_message_success: "Message envoyé.",
+    send_message_error: "votre message n'a pas pu être envoyé"
+  };
+
+  public messagesDisplayScreen = {
+    inbox: "INBOX",
+    Mailbox: "Boite de réception",
+    newMessage: "nouveaux messages"
   };
   public call(
     method: RequestType,
