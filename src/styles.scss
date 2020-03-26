@@ -3,8 +3,12 @@
 @import "~@angular/material/theming";
 // Plus imports for other components in your app.
 @font-face {
-  font-family: "coupe-mediumm";
-  src: url("./assets/fonts/coupe-medium.otf");
+  font-family: "Gotham-Medium";
+  src: url("./assets/fonts/GOTHAM-MEDIUM.TTF");
+}
+@font-face {
+  font-family: "Gotham-book";
+  src: url("./assets/fonts/GothamBook.ttf");
 }
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
@@ -13,7 +17,7 @@
 // Be sure that you only ever include this mixin once!
 
 $custom-typography: mat-typography-config(
-  $font-family: "coupe-mediumm",
+  $font-family: "Gotham-book",
   $headline: mat-typography-level(32px, 48px, 700),
   $body-1: mat-typography-level(16px, 24px, 500)
 );

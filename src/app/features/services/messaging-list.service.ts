@@ -19,8 +19,18 @@ export class MessagingListService {
                                    this.globalService.url.receiver + "markMessageSeen/" + id);
   }
 
-  public markMessageAsArchived(id: number): Observable<boolean> {
+  public markMessageListAsSeen(ids: number[]): Observable<boolean> {
     return this.globalService.call(RequestType.POST,
-                                   this.globalService.url.messages + "archive/" + id);
+                                   this.globalService.url.receiver + "markMessageSeen/all", ids);
+  }
+
+  public markMessageAsArchived(ids: number[]): Observable<boolean> {
+    return this.globalService.call(RequestType.POST,
+                                   this.globalService.url.messages + "archive/all", ids);
+  }
+
+  public markMessageListAsImportant(ids: number[]): Observable<boolean> {
+    return this.globalService.call(RequestType.POST,
+                                   this.globalService.url.messages + "important/all", ids);
   }
 }

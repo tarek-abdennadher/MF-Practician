@@ -1,19 +1,17 @@
 <lib-hlsLinks
   [links]="links"
   (selectAllAction)="selectAllActionClicked()"
-  (seenAction)="seenActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
-  (importantAction)="importantActionClicked()"
-  (deleteAction)="deleteActionClicked()"
   (archieveAction)="archieveActionClicked()"
-  (addNoteAction)="addNoteActionClicked()"
   (filterAction)="filterActionClicked($event)"
 ></lib-hlsLinks>
 <lib-hlsMessagingList
-  [list]="itemsList"
+  [list]="filtredItemList"
   (cardAction)="cardClicked($event)"
   (markAsSeenAction)="markMessageAsSeen($event)"
   (archieveAction)="archieveMessage($event)"
+  (selectItemAction)="selectItem($event)"
   [imageSource]="imageSource"
 ></lib-hlsMessagingList>
 <notifier-container></notifier-container>

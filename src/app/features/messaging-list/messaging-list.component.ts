@@ -13,12 +13,15 @@ export class MessagingListComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
   messages: Array<any>;
   itemsList: Array<any>;
+  filtredItemList: Array<any> = new Array();
+  selectedObjects: Array<any>;
   links = {
+    isAllSelect: true,
     isAllSeen: true,
-    isSeen: true,
+    isSeen: false,
     isArchieve: true,
-    isImportant: true
-    // isFilter: true
+    isImportant: false,
+    isFilter: true
   };
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
@@ -53,28 +56,64 @@ export class MessagingListComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    console.log("selectAllAction");
+    this.filtredItemList.forEach(a => {
+      a.isChecked = true;
+    });
   }
-  seenActionClicked() {
-    console.log("seenAction");
+  deSelectAllActionClicked() {
+    this.filtredItemList.forEach(a => {
+      a.isChecked = false;
+    });
   }
   seenAllActionClicked() {
-    console.log("seenAllAction");
+    const messagesId = this.filtredItemList.map(e => e.id);
+    if (messagesId.length > 0) {
+      this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
+        resp => {
+          if (resp == true) {
+            this.itemsList.forEach(item => (item.isSeen = true));
+            this.filtredItemList.forEach(item => (item.isSeen = true));
+          }
+        },
+        error => {
+          console.log("We have to find a way to notify user by this error");
+        }
+      );
+    }
   }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
+
   archieveActionClicked() {
-    console.log("archieveAction");
-  }
-  addNoteActionClicked() {
-    console.log("addNoteAction");
+    const messagesId = this.filtredItemList
+      .filter(e => e.isChecked == true)
+      .map(e => e.id);
+    if (messagesId.length > 0) {
+      this.messagesServ.markMessageAsArchived(messagesId).subscribe(
+        resp => {
+          this.itemsList = this.itemsList.filter(function(elm, ind) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+          this.filtredItemList = this.filtredItemList.filter(function(
+            elm,
+            ind
+          ) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+        },
+        error => {
+          console.log("We have to find a way to notify user by this error");
+        }
+      );
+    }
   }
   filterActionClicked(event) {
-    console.log(event);
+    this.filtredItemList =
+      event == "all"
+        ? this.itemsList
+        : this.itemsList.filter(
+            item =>
+              item.users[0].type.toLowerCase() ==
+              (event == "doctor" ? "medical" : event)
+          );
   }
 
   getMyInbox() {
@@ -86,6 +125,7 @@ export class MessagingListComponent implements OnInit {
         );
       });
       this.itemsList = this.messages.map(item => this.parseMessage(item));
+      this.filtredItemList = this.itemsList;
     });
   }
 
@@ -99,7 +139,10 @@ export class MessagingListComponent implements OnInit {
           fullName: message.sender.fullName,
           img: "assets/imgs/IMG_3944.jpg",
           title: message.sender.jobTitle,
-          type: message.sender.title != "" ? "MEDICAL" : "PATIENT"
+          type:
+            message.sender.role == "PRACTICIAN"
+              ? "MEDICAL"
+              : message.sender.role
         }
       ],
       object: {
@@ -124,6 +167,12 @@ export class MessagingListComponent implements OnInit {
           if (index != -1) {
             this.itemsList[index].isSeen = true;
           }
+          let filtredIndex = this.filtredItemList.findIndex(
+            item => item.id == messageId
+          );
+          if (index != -1) {
+            this.filtredItemList[filtredIndex].isSeen = true;
+          }
         }
       },
       error => {
@@ -134,9 +183,12 @@ export class MessagingListComponent implements OnInit {
 
   archieveMessage(event) {
     let messageId = event.id;
-    this.messagesServ.markMessageAsArchived(messageId).subscribe(
+    this.messagesServ.markMessageAsArchived([messageId]).subscribe(
       resp => {
         this.itemsList = this.itemsList.filter(function(elm, ind) {
+          return elm.id != event.id;
+        });
+        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
           return elm.id != event.id;
         });
       },
@@ -144,5 +196,15 @@ export class MessagingListComponent implements OnInit {
         console.log("We have to find a way to notify user by this error");
       }
     );
+  }
+  selectItem(event) {
+    this.selectedObjects = event;
+    this.filtredItemList.forEach(a => {
+      if (event.filter(b => b.id == a.id).length >= 1) {
+        a.isChecked = true;
+      } else {
+        a.isChecked = false;
+      }
+    });
   }
 }

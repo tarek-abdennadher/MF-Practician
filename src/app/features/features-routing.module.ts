@@ -8,6 +8,8 @@ import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
+import { PracticianSearchComponent } from "./practician-search/practician-search.component";
+import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 
 const routes: Routes = [
   {
@@ -46,6 +48,19 @@ const routes: Routes = [
       {
         path: "messagerie-repondre/:id",
         component: MessagingReplyComponent
+      },
+      {
+        path: "search",
+        component: PracticianSearchComponent
+      },
+      {
+        path: "practician-detail/:id",
+        component: PracticianDetailComponent
+      },
+      {
+        path: "compte",
+        loadChildren: () =>
+          import("./account/account.module").then(m => m.AccountModule)
       }
     ]
   }

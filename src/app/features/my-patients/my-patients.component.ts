@@ -5,7 +5,7 @@ import { MyPatients } from "./my-patients";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
-  styleUrls: ["./my-patients.component.css"]
+  styleUrls: ["./my-patients.component.scss"]
 })
 export class MyPatientsComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";

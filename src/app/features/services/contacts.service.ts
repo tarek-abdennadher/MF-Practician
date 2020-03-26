@@ -53,5 +53,13 @@ export class ContactsService {
                                    this.globalService.url.contact_pro + "/" + id);
   }
 
+  addContact(contact) {
+    return this.globalService.call(RequestType.POST,
+      this.globalService.url.contact_pro , contact);
+  }
 
+  updateContact(contact) {
+    return this.globalService.call(RequestType.PUT,
+      this.globalService.url.contact_pro , contact);
+  }
 }

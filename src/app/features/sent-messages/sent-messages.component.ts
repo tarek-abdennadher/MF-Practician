@@ -17,9 +17,13 @@ export class SentMessagesComponent implements OnInit {
   links = {
     isFilter: true
   };
-
+  page = "INBOX";
+  number = 0;
+  topText = "Messages envoyés";
+  bottomText = "";
+  backButton = false;
   itemsList = [];
-
+  selectedObjects: Array<any>;
   constructor(public router: Router, private messageService: MessageService) {}
 
   ngOnInit(): void {
@@ -68,7 +72,14 @@ export class SentMessagesComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    console.log("selectAllAction");
+    this.itemsList.forEach(a=> {
+      a.isChecked = true;
+    });
+  }
+  deSelectAllActionClicked() {
+    this.itemsList.forEach(a=> {
+      a.isChecked = false;
+    });
   }
   seenActionClicked() {
     console.log("seenAction");
@@ -91,7 +102,9 @@ export class SentMessagesComponent implements OnInit {
   filterActionClicked(event) {
     console.log(event);
   }
-
+  selectItem(event) {
+    this.selectedObjects = event.filter(a => a.isChecked == true);
+  }
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();
