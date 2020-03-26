@@ -46,7 +46,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["features/messagerie-envoyes"]);
   }
   displayArchieveAction() {
-    this.router.navigate(["/features/archieve"]);
+    this.router.navigate(["/features/archive"]);
   }
   displayMyPatientsAction() {
     this.router.navigate(["/features/mes-patients"]);
