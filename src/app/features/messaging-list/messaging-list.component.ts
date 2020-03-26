@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { MessagingListService } from '../services/messaging-list.service';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { MessagingListService } from "../services/messaging-list.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { NotifierService } from "angular-notifier";
+import { GlobalService } from "@app/core/services/global.service";
 
 @Component({
-  selector: 'app-messaging-list',
-  templateUrl: './messaging-list.component.html',
-  styleUrls: ['./messaging-list.component.scss']
+  selector: "app-messaging-list",
+  templateUrl: "./messaging-list.component.html",
+  styleUrls: ["./messaging-list.component.scss"]
 })
 export class MessagingListComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -21,11 +23,31 @@ export class MessagingListComponent implements OnInit {
     isImportant: false,
     isFilter: true
   };
-  constructor(private messagesServ: MessagingListService, public router: Router) { }
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private readonly notifier: NotifierService;
+  constructor(
+    private messagesServ: MessagingListService,
+    public router: Router,
+    private route: ActivatedRoute,
+    notifierService: NotifierService,
+
+    private globalService: GlobalService
+  ) {
+    this.notifier = notifierService;
+  }
 
   ngOnInit(): void {
     this.itemsList = new Array();
     this.getMyInbox();
+    this.route.params.subscribe(params => {
+      if (params["id"]) {
+        this.notifier.show({
+          message: this.globalService.toastrMessages.send_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+      }
+    });
   }
 
   cardClicked(item) {
@@ -34,12 +56,12 @@ export class MessagingListComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    this.filtredItemList.forEach(a=> {
+    this.filtredItemList.forEach(a => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.filtredItemList.forEach(a=> {
+    this.filtredItemList.forEach(a => {
       a.isChecked = false;
     });
   }
@@ -49,8 +71,8 @@ export class MessagingListComponent implements OnInit {
       this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
         resp => {
           if (resp == true) {
-            this.itemsList.forEach(item => item.isSeen = true);
-            this.filtredItemList.forEach(item => item.isSeen = true);
+            this.itemsList.forEach(item => (item.isSeen = true));
+            this.filtredItemList.forEach(item => (item.isSeen = true));
           }
         },
         error => {
@@ -61,14 +83,19 @@ export class MessagingListComponent implements OnInit {
   }
 
   archieveActionClicked() {
-    const messagesId = this.filtredItemList.filter(e => e.isChecked == true).map(e => e.id);
+    const messagesId = this.filtredItemList
+      .filter(e => e.isChecked == true)
+      .map(e => e.id);
     if (messagesId.length > 0) {
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         resp => {
           this.itemsList = this.itemsList.filter(function(elm, ind) {
             return messagesId.indexOf(elm.id) == -1;
           });
-          this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+          this.filtredItemList = this.filtredItemList.filter(function(
+            elm,
+            ind
+          ) {
             return messagesId.indexOf(elm.id) == -1;
           });
         },
@@ -79,18 +106,27 @@ export class MessagingListComponent implements OnInit {
     }
   }
   filterActionClicked(event) {
-    this.filtredItemList = (event=="all") ? this.itemsList : (this.itemsList.filter(item => item.users[0].type.toLowerCase()  == ((event == "doctor") ? "medical" : event)));
+    this.filtredItemList =
+      event == "all"
+        ? this.itemsList
+        : this.itemsList.filter(
+            item =>
+              item.users[0].type.toLowerCase() ==
+              (event == "doctor" ? "medical" : event)
+          );
   }
 
   getMyInbox() {
-      this.messagesServ.getMyInbox().subscribe(retrievedMess => {
-        this.messages = retrievedMess;
-        this.messages.sort(function(m1, m2) {
-          return new Date(m2.updatedAt).getTime()- new Date(m1.updatedAt).getTime()
-        })
-        this.itemsList = this.messages.map(item => this.parseMessage(item));
-        this.filtredItemList = this.itemsList;
-      })
+    this.messagesServ.getMyInbox().subscribe(retrievedMess => {
+      this.messages = retrievedMess;
+      this.messages.sort(function(m1, m2) {
+        return (
+          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+      });
+      this.itemsList = this.messages.map(item => this.parseMessage(item));
+      this.filtredItemList = this.itemsList;
+    });
   }
 
   parseMessage(message): any {
@@ -103,7 +139,10 @@ export class MessagingListComponent implements OnInit {
           fullName: message.sender.fullName,
           img: "assets/imgs/IMG_3944.jpg",
           title: message.sender.jobTitle,
-          type: message.sender.role == "PRACTICIAN" ? "MEDICAL" : message.sender.role
+          type:
+            message.sender.role == "PRACTICIAN"
+              ? "MEDICAL"
+              : message.sender.role
         }
       ],
       object: {
@@ -128,7 +167,9 @@ export class MessagingListComponent implements OnInit {
           if (index != -1) {
             this.itemsList[index].isSeen = true;
           }
-          let filtredIndex = this.filtredItemList.findIndex(item => item.id == messageId);
+          let filtredIndex = this.filtredItemList.findIndex(
+            item => item.id == messageId
+          );
           if (index != -1) {
             this.filtredItemList[filtredIndex].isSeen = true;
           }
@@ -160,10 +201,10 @@ export class MessagingListComponent implements OnInit {
     this.selectedObjects = event;
     this.filtredItemList.forEach(a => {
       if (event.filter(b => b.id == a.id).length >= 1) {
-        a.isChecked=true;
+        a.isChecked = true;
       } else {
-        a.isChecked=false;
+        a.isChecked = false;
       }
-    })
+    });
   }
 }

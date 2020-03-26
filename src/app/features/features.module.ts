@@ -10,6 +10,7 @@ import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
+import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { HlsSearchModule } from "hls-search";
 import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
@@ -65,6 +66,7 @@ const notifierOptions: NotifierOptions = {
     MessagingListComponent,
     MessagingDetailComponent,
     SentMessagesComponent,
+    MessagingReplyComponent,
     MyPatientsComponent,
     ContactsComponent,
     ContactDetailComponent,

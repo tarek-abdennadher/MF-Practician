@@ -7,17 +7,22 @@ import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
-import { PracticianSearchComponent } from './practician-search/practician-search.component';
-import { PracticianDetailComponent } from './practician-detail/practician-detail.component';
+import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
+import { PracticianSearchComponent } from "./practician-search/practician-search.component";
+import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 
 const routes: Routes = [
   {
     path: "",
     component: FeaturesComponent,
     children: [
-      { path: "", redirectTo: "list", pathMatch: "full" },
+      { path: "", redirectTo: "messageries", pathMatch: "full" },
       {
-        path: "list",
+        path: "messageries",
+        component: MessagingListComponent
+      },
+      {
+        path: "messageries/:id",
         component: MessagingListComponent
       },
       {
@@ -41,6 +46,10 @@ const routes: Routes = [
         component: ContactDetailComponent
       },
       {
+        path: "messagerie-repondre/:id",
+        component: MessagingReplyComponent
+      },
+      {
         path: "search",
         component: PracticianSearchComponent
       },
@@ -49,9 +58,10 @@ const routes: Routes = [
         component: PracticianDetailComponent
       },
       {
-        path: 'compte',
-        loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
-      },
+        path: "compte",
+        loadChildren: () =>
+          import("./account/account.module").then(m => m.AccountModule)
+      }
     ]
   }
 ];
