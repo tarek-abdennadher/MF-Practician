@@ -3,7 +3,12 @@ $color-helssy-blue-hover: rgb(17, 66, 131);
 $color-helssy-grey: #6E819B;
 $color-white: #FFFFFF;
 
+.title{
+  color: $color-helssy-blue;
+     i,hr{margin-left: 10px;}
+     span{ font-weight: bold;}
 
+}
 /* Button Css */
   .btn-icon {
     max-width: 50px;

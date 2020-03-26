@@ -6,6 +6,13 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
+  <br />
+  <div class="col-md-12">
+    <div class="form-group title">
+      <i class="far fa-user-cog"><span>&nbsp;&nbsp;{{messages.my_info}}</span></i>
+    </div>
+  </div>
+  <br />
   <div class="card-body">
     <form [formGroup]="infoForm" (ngSubmit)="submitted" #f="ngForm">
         <div class="container">
@@ -173,6 +180,13 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </a>
+    <br />
+    <div class="col-md-12">
+      <div class="form-group title">
+        <i class="far fa-lock-open"><span>&nbsp;&nbsp;{{messages.reset_pwd}}</span></i>
+      </div>
+    </div>
+    <br />
         <div class="card-body">
          <div class="col-md-12">
       <div class="container">
