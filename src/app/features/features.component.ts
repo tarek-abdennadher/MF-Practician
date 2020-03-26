@@ -30,7 +30,7 @@ export class FeaturesComponent implements OnInit {
   ngOnInit(): void {}
 
   openAccountInterface() {
-    this.router.navigate(["/features/compte"]);
+    this.router.navigate(["/features/compte/mes-informations"]);
   }
   signOutAction() {
     this.router.navigate(["/login"]);
