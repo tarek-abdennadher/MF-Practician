@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
-import { PracticianSearchService } from './practician-search/practician-search.service';
-import { search } from './practician-search/search.model';
-import { LocalStorageService } from 'ngx-webstorage';
+import { PracticianSearchService } from "./practician-search/practician-search.service";
+import { search } from "./practician-search/search.model";
+import { LocalStorageService } from "ngx-webstorage";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -11,12 +11,14 @@ import { LocalStorageService } from 'ngx-webstorage';
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
-  constructor(public router: Router,
-              private localSt: LocalStorageService,
-              public featuresService: FeaturesService,
-              private searchService: PracticianSearchService) {}
-  user = this.localSt.retrieve("user") ;
-  fullName = this.user.firstName + " " + this.user.lastName;
+  constructor(
+    public router: Router,
+    private localSt: LocalStorageService,
+    public featuresService: FeaturesService,
+    private searchService: PracticianSearchService
+  ) {}
+  user = this.localSt.retrieve("user");
+  fullName = this.user?.firstName + " " + this.user?.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
   role: string = "medical";
   links = {
@@ -28,14 +30,14 @@ export class FeaturesComponent implements OnInit {
   ngOnInit(): void {}
 
   openAccountInterface() {
-    this.router.navigate(["/features/compte"]);
+    this.router.navigate(["/features/compte/mes-informations"]);
   }
   signOutAction() {
     this.router.navigate(["/login"]);
   }
 
   displayInboxAction() {
-    this.router.navigate(["/features/list"]);
+    this.router.navigate(["/features/messageries"]);
   }
   displaySendAction() {
     this.router.navigate(["/features/send"]);
@@ -94,10 +96,12 @@ export class FeaturesComponent implements OnInit {
   }
 
   searchActionClicked(event) {
-     this.searchService.changeSearch(new search(event.search, event.city));
-     this.router.navigate(["/features/search"]);
-     jQuery(document).ready(function (e) {
-      jQuery(this).find('#dropdownMenuLinkSearch').trigger("click");
+    this.searchService.changeSearch(new search(event.search, event.city));
+    this.router.navigate(["/features/search"]);
+    jQuery(document).ready(function(e) {
+      jQuery(this)
+        .find("#dropdownMenuLinkSearch")
+        .trigger("click");
     });
   }
 

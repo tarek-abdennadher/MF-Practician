@@ -48,7 +48,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.getAllSpeciality();
     this.initInfoForm();
     this.initPasswordForm();
-    //this.getPersonalInfo();
+    this.getPersonalInfo();
   }
   initInfoForm() {
     this.infoForm = new FormGroup({
@@ -56,11 +56,11 @@ export class PersonalInformationsComponent implements OnInit {
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {validators: [Validators.required, Validators.email]}),
-      title: new FormControl(null),
-      speciality: new FormControl(null),
-      address: new FormControl(null),
+      title: new FormControl(null, Validators.required),
+      speciality: new FormControl(null, Validators.required),
+      address: new FormControl(null, Validators.required),
       additional_address: new FormControl(null),
-      phone: new FormControl(null, Validators.pattern("[0-9]*")),
+      phone: new FormControl(null,{validators: [Validators.required, Validators.pattern("[0-9]*")]}),
       other_phone: new FormControl(null, Validators.pattern("[0-9]*")),
       other_phone_note: new FormControl(null),
       picture: new FormControl(null)
@@ -99,12 +99,53 @@ export class PersonalInformationsComponent implements OnInit {
     this.showAlert = false;
     this.showPasswordSuccess = false;
   }
+  getPersonalInfo() {
+    this.accountService.getCurrentAccount().subscribe(account => {
+      if (account && account.practician) {
+        this.account = account.practician;
+        this.infoForm.patchValue({
+          id: account.practician.id ? account.practician.id : null,
+          email: account.email ? account.email : '',
+          phone: account.phoneNumber ? account.phoneNumber : '',
+          last_name:  account.practician.lastName ? account.practician.lastName : '',
+          first_name: account.practician.firstName ? account.practician.firstName : '',
+          title: account.practician.jobTitle ? account.practician.jobTitle : null,
+          speciality: account.practician.speciality ? account.practician.speciality.id : null,
+          address: account.practician.address ? account.practician.address : '',
+          additional_address: account.practician.additionalAddress ? account.practician.additionalAddress : '',
+          other_phone: account.practician.otherPhoneNumber ? account.practician.otherPhoneNumber : '',
+          other_phone_note: account.practician.note ? account.practician.note : '',
+          picture: account.practician.photoId ? account.practician.photoId : null,
+        });
+      }
+    });
+  }
   submit() {
     this.submitted = true;
     if (this.infoForm.invalid) {
       return;
     }
-    console.log(this.infoForm)
+    const model = {
+      email: this.infoForm.value.email,
+      phoneNumber: this.infoForm.value.phone,
+      practician: {
+        id: this.infoForm.value.id,
+        firstName: this.infoForm.value.first_name,
+        lastName: this.infoForm.value.last_name,
+        jobTitle: this.infoForm.value.title,
+        speciality: this.infoForm.value.speciality != null ? this.specialities.find(s => s.id == this.infoForm.value.speciality) : null,
+        address: this.infoForm.value.address,
+        photoId: this.infoForm.value.picture,
+        additionalAddress: this.infoForm.value.additional_address,
+        otherPhoneNumber: this.infoForm.value.other_phone,
+        note: this.infoForm.value.other_phone_note
+      }
+    };
+    this.accountService.updateAccount(model).subscribe(res => {
+      this.showAlert = true;
+      $('.alert').alert();
+      this.submitted = false;
+    });
   }
   resetPasswordSubmit() {
     this.passwordSubmitted = true;
@@ -115,6 +156,11 @@ export class PersonalInformationsComponent implements OnInit {
       if (res) {
         this.showPasswordSuccess = true;
         $('#alertPasswordSuccess').alert();
+        this.passwordForm.patchValue({
+          new_password: '',
+          confirm_password: ''
+        });
+        this.isPasswordValid = false;
         this.initPasswordForm();
         this.passwordForm.setErrors(null);
         this.passwordSubmitted = false;
