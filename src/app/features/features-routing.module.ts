@@ -10,6 +10,7 @@ import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail
 import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
 import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
+import { SendMessageComponent } from "./send-message/send-message.component";
 
 const routes: Routes = [
   {
@@ -61,6 +62,10 @@ const routes: Routes = [
         path: "compte",
         loadChildren: () =>
           import("./account/account.module").then(m => m.AccountModule)
+      },
+      {
+        path: "messagerie-ecrire",
+        component: SendMessageComponent
       }
     ]
   }

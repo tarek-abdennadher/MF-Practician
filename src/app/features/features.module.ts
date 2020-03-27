@@ -19,9 +19,11 @@ import { HlsMessagingListModule } from "hls-messaging-list";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactsService } from "./services/contacts.service";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
-import { PracticianSearchComponent } from './practician-search/practician-search.component';
-import { PracticianDetailComponent } from './practician-detail/practician-detail.component';
-import { HlsPracticianDetailModule } from 'hls-practician-detail';
+import { PracticianSearchComponent } from "./practician-search/practician-search.component";
+import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
+import { HlsPracticianDetailModule } from "hls-practician-detail";
+import { HlsSendMessageModule } from "hls-send-message";
+import { SendMessageComponent } from "./send-message/send-message.component";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -71,7 +73,8 @@ const notifierOptions: NotifierOptions = {
     ContactsComponent,
     ContactDetailComponent,
     PracticianSearchComponent,
-    PracticianDetailComponent
+    PracticianDetailComponent,
+    SendMessageComponent
   ],
   imports: [
     FormsModule,
@@ -85,7 +88,8 @@ const notifierOptions: NotifierOptions = {
     HlsLinksModule,
     HlsMessagingListModule,
     HlsSearchModule,
-    HlsPracticianDetailModule
+    HlsPracticianDetailModule,
+    HlsSendMessageModule
   ],
 
   providers: [MessageService, ContactsService]
