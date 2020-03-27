@@ -27,7 +27,7 @@ export class LoginService {
   authenticate(body) {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.authenticate,
+      this.globalService.url.authenticatePractician,
       body
     );
   }
