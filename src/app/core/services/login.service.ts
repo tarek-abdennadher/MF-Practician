@@ -16,32 +16,36 @@ export class LoginService {
     public globalService: GlobalService
   ) { }
   public messages = {
-    bad_credentials : "Email et mot de passe non valides",
+    bad_credentials: "Email et mot de passe non valides",
     reset_password_failure: "L'email choisi ne figure pas dans notre application",
     reset_password_success: `Un mail vient de vous être envoyé
     Cliquez sur le lien contenu dans cet email afin de réinitialiser votre mot de passe`,
     change_password_success: "Mot de passe modifié avec succès",
     change_password_failure: "Erreur lors de la modification du mot de passe",
-    card_title: "Connexion Praticien"
+    card_title: "Accès praticien",
+    connexion: " Se connecter",
+    new_account: "Vous n'avez pas de compte Helssy ?",
+    register: "S'inscrire",
+    new_patient_registration: "Vous êtes un patient ?"
   };
   authenticate(body) {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.authenticate,
+      this.globalService.url.authenticatePractician,
       body
     );
   }
   getAccountInfo(email: string) {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.accountlogin  + email
+      this.globalService.url.accountlogin + email
     );
   }
 
   resetPassword(email: string) {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.password_reset  + email
+      this.globalService.url.password_reset + email
     );
   }
   validateToken(token) {
