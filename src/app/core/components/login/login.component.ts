@@ -70,11 +70,6 @@ export class LoginComponent implements OnInit {
       throw err;
     }
   }
-
-  signUp() {
-    this.successMessage = '';
-    this.errorMessage = '';
-  }
   forgotPassword() {
     this.errorMessage = '';
     this.successMessage = '';
