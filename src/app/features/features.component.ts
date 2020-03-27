@@ -18,7 +18,7 @@ export class FeaturesComponent implements OnInit {
     private searchService: PracticianSearchService
   ) {}
   user = this.localSt.retrieve("user");
-  fullName = this.user.firstName + " " + this.user.lastName;
+  fullName = this.user?.firstName + " " + this.user?.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
   role: string = "medical";
   links = {
@@ -30,7 +30,7 @@ export class FeaturesComponent implements OnInit {
   ngOnInit(): void {}
 
   openAccountInterface() {
-    this.router.navigate(["/features/compte"]);
+    this.router.navigate(["/features/compte/mes-informations"]);
   }
   signOutAction() {
     this.router.navigate(["/login"]);
@@ -46,7 +46,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["features/messagerie-envoyes"]);
   }
   displayArchieveAction() {
-    this.router.navigate(["/features/archieve"]);
+    this.router.navigate(["/features/archive"]);
   }
   displayMyPatientsAction() {
     this.router.navigate(["/features/mes-patients"]);

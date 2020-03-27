@@ -16,7 +16,7 @@ export class GlobalService {
     environment.BASE_END_POINT + "/ms-smsapplication";
   public url = {
     base: this.BASE_URL,
-    authenticate: this.BASE_URL + "/api/authenticate",
+    authenticatePractician: this.BASE_URL + "/api/authPractician",
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",

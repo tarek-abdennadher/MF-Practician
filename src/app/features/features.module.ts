@@ -22,6 +22,7 @@ import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
 import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 import { HlsPracticianDetailModule } from "hls-practician-detail";
+import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { SendMessageComponent } from "./send-message/send-message.component";
 const notifierOptions: NotifierOptions = {
@@ -74,7 +75,8 @@ const notifierOptions: NotifierOptions = {
     ContactDetailComponent,
     PracticianSearchComponent,
     PracticianDetailComponent,
-    SendMessageComponent
+    SendMessageComponent,
+    ArchieveMessagesComponent
   ],
   imports: [
     FormsModule,

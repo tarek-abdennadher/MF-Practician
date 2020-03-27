@@ -1,5 +1,18 @@
 <br>
 <div class="card">
+  <a *ngIf="showAlert" id="alert"  (click)="close()" class="alert alert-success alert-dismissible fade show pointer" role="alert">
+    {{messages.edit_info_success}}
+    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </a>
+  <br />
+  <div class="col-md-12">
+    <div class="form-group title">
+      <i class="far fa-user-cog"><span>&nbsp;&nbsp;{{messages.my_info}}</span></i>
+    </div>
+  </div>
+  <br />
   <div class="card-body">
     <form [formGroup]="infoForm" (ngSubmit)="submitted" #f="ngForm">
         <div class="container">
@@ -60,9 +73,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                      <label for="address" class="col-sm-3 col-form-label">{{labels.address}}</label>
+                      <label for="address" class="col-sm-3 col-form-label">{{labels.address}} (*)</label>
                       <div class="col-sm-9">
-                          <input type="text" formControlName="address" class="form-control" id="address" />
+                          <input type="text" formControlName="address" class="form-control" id="address" [ngClass]="{ 'is-invalid': submitted && ctr.address.errors }" />
+                          <div *ngIf="submitted && ctr.address.errors" class="invalid-feedback">
+                            <div *ngIf="ctr.address.errors.required">{{labels.required}}</div>
+                        </div>
                       </div>
                   </div>
                 </div>
@@ -158,15 +174,21 @@
 
 
   <div class="card">
+    <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess"  (click)="close()" class="alert alert-success alert-dismissible fade show pointer" role="alert">
+      {{messages.edit_password_success}}
+      <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </a>
+    <br />
+    <div class="col-md-12">
+      <div class="form-group title">
+        <i class="far fa-lock-open"><span>&nbsp;&nbsp;{{messages.reset_pwd}}</span></i>
+      </div>
+    </div>
+    <br />
         <div class="card-body">
          <div class="col-md-12">
-
-      <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess"  (click)="close()" class="alert alert-success alert-dismissible fade show pointer" role="alert">
-        {{messages.edit_password_success}}
-        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </a>
       <div class="container">
 
         <a *ngIf="showPasswordFailure" id="alertPasswordFailure"  (click)="close()" class="alert alert-danger alert-dismissible fade show pointer" role="alert">
