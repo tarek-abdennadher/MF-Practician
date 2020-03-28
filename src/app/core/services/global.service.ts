@@ -6,8 +6,9 @@ import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable()
 export class GlobalService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
   public BASE_URL: string = environment.BASE_END_POINT;
+  public PATIENT_SITE: string = environment.PATIENT_SITE;
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
   public BASE_URL_MA: string = this.BASE_URL + "/ms-messagingapplication";
@@ -16,6 +17,7 @@ export class GlobalService {
     environment.BASE_END_POINT + "/ms-smsapplication";
   public url = {
     base: this.BASE_URL,
+    patient_connexion: this.PATIENT_SITE + '/connexion',
     authenticatePractician: this.BASE_URL + "/api/authPractician",
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",

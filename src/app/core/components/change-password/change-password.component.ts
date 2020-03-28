@@ -48,7 +48,7 @@ export class ChangePasswordComponent implements OnInit {
 
   handleChangePassword = result => {
     if (result) {
-      this.router.navigate(['/login'], {
+      this.router.navigate(['/connexion'], {
         queryParams: {
           success: this.loginService.messages.change_password_success
         }
