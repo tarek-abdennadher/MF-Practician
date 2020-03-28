@@ -58,7 +58,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["features/contacts"]);
   }
   displayMyDocumentsAction() {
-    console.log("displayMyDocumentsAction");
+    this.router.navigate(["features/documents"]);
   }
   displayHelpAction() {
     console.log("displayHelpAction");
