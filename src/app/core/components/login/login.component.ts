@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';;
 import { LoginService } from '@app/core/services/login.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
+import { GlobalService } from '@app/core/services/global.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -18,7 +18,8 @@ export class LoginComponent implements OnInit {
     public loginService: LoginService,
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
-    public router: Router
+    public router: Router,
+    public globalService: GlobalService
   ) {
     this.messages = loginService.messages;
   }
@@ -73,6 +74,11 @@ export class LoginComponent implements OnInit {
   forgotPassword() {
     this.errorMessage = '';
     this.successMessage = '';
-    this.router.navigate(['/reset-password']);
+    this.router.navigate(['/mot-de-passe-oublie']);
+  }
+  practicianConnexion() {
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.router.navigate(['/demonstration']);
   }
 }

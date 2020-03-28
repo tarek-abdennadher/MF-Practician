@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivateChild {
   constructor(
     private router: Router,
     private localSt: LocalStorageService
-  ) {}
+  ) { }
 
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
@@ -22,12 +22,12 @@ export class AuthGuard implements CanActivateChild {
     const token = this.localSt.retrieve("token");
     if (token && token !== null) {
       return true;
-  }
-    this.router.navigate(['/login'], {
-    queryParams: {
-      return: state.url
     }
-  });
+    this.router.navigate(['/connexion'], {
+      queryParams: {
+        return: state.url
+      }
+    });
     return false;
-}
+  }
 }
