@@ -3,7 +3,7 @@
     <div class="card-body">
       <img id="helssy-logo" class="logo" src="assets/imgs/helssy_bleu_long.png" alt="Helssy" />
       <div class="hls-connexion">
-        <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage"
+        <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage" [title]="messages.card_title"
           (submitAction)="submit($event)" (forgotPasswordAction)="forgotPassword()"></lib-hls-connexion>
       </div>
       <div class="links row">
