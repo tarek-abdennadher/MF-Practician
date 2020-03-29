@@ -93,7 +93,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.isPasswordValid = event;
   }
   return() {
-    this.router.navigate(['/features/list']);
+    this.router.navigate(['/features/messageries']);
   }
   close() {
     this.showAlert = false;
