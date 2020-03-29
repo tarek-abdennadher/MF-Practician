@@ -13,11 +13,14 @@ export class ChangePasswordComponent implements OnInit {
   public errorMessage = '';
   newPassword = '';
   token: string;
+  messages: any;
   constructor(public loginService: LoginService,
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
     public router: Router,
-    public globalService: GlobalService) { }
+    public globalService: GlobalService) {
+    this.messages = loginService.messages;
+  }
 
   ngOnInit(): void {
     this.errorMessage = '';
@@ -64,5 +67,9 @@ export class ChangePasswordComponent implements OnInit {
     } else {
       throw err;
     }
+  }
+  signupAction() {
+    this.errorMessage = '';
+    this.router.navigate(['/demonstration']);
   }
 }
