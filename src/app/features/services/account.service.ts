@@ -47,7 +47,10 @@ export class AccountService {
     my_secretaries_tab: 'Mes secrétaires',
     tele_secretariat_tab: 'Mon télésecrétariat',
     factures_tab: 'Mes factures',
-    stats_tab: 'Mes stats'
+    stats_tab: 'Mes stats',
+    add_secretary: 'Ajouter secrétaire',
+    add_secretary_success: 'Secrétaire ajoutée avec succès',
+    my_secretaries: 'Mes Secrétaires'
   };
   public errors = {
     required: 'Champs obligatoire',
@@ -72,6 +75,20 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update + "/" + encodeURIComponent(pass)
+    );
+  }
+
+  addSecretary(body) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.secretary,
+      body
+    );
+  }
+  getMySecretaries() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.secretaries_practicien
     );
   }
 }

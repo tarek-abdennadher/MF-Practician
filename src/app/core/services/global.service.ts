@@ -45,7 +45,9 @@ export class GlobalService {
     receiver: this.BASE_URL_MA + "/receivers/",
     contact_pro: this.BASE_URL_CA + "/contact",
     contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
-    contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple"
+    contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple",
+    secretary: this.BASE_URL_CA + "/secretary",
+    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",

@@ -12,6 +12,7 @@ import { SharedMaterialModule } from '@app/shared-material/shared-material.modul
 import { AccountService } from '../services/account.service';
 import { HlsLinksModule } from 'hls-links';
 import { HlsPasswordStrengthModule } from 'hls-password-strength';
+import { HlsMessagingListModule } from 'hls-messaging-list';
 @NgModule({
   declarations: [
     MyAccountComponent,
@@ -27,6 +28,7 @@ import { HlsPasswordStrengthModule } from 'hls-password-strength';
     AccountRoutingModule,
     SharedMaterialModule,
     HlsLinksModule,
+    HlsMessagingListModule,
     HlsPasswordStrengthModule
   ],
   providers: [
