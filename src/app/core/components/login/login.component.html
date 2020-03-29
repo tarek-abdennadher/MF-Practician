@@ -3,15 +3,15 @@
     <div class="card-body">
       <img id="helssy-logo" class="logo" src="assets/imgs/helssy_bleu_long.png" alt="Helssy" />
       <div class="hls-connexion">
-        <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage" [title]="messages.card_title"
+        <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage"
           (submitAction)="submit($event)" (forgotPasswordAction)="forgotPassword()"></lib-hls-connexion>
       </div>
       <div class="links row">
         <p class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">{{messages.new_account}}
-          <a (click)=practicianConnexion()>{{messages.register}}</a>
+          <a class="pink" (click)=practicianConnexion()>{{messages.register}}</a>
         </p>
         <p class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">{{messages.new_patient_registration}}
-          <a [href]="globalService.url.patient_connexion">{{messages.connexion}}</a>
+          <a class="blue" [href]="globalService.url.patient_connexion">{{messages.connexion}}</a>
         </p>
       </div>
     </div>

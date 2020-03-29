@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginService } from '@app/core/services/login.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
+import { GlobalService } from '@app/core/services/global.service';
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -11,10 +12,14 @@ export class ResetPasswordComponent implements OnInit {
   public errorMessage = '';
   email = '';
   public successMessage = '';
+  messages: any;
   constructor(public loginService: LoginService,
-              public route: ActivatedRoute,
-              public localStorage: LocalStorageService,
-              public router: Router) { }
+    public route: ActivatedRoute,
+    public localStorage: LocalStorageService,
+    public router: Router,
+    public globalService: GlobalService) {
+    this.messages = loginService.messages;
+  }
 
   ngOnInit(): void {
     this.errorMessage = '';
@@ -30,5 +35,10 @@ export class ResetPasswordComponent implements OnInit {
         this.errorMessage = this.loginService.messages.reset_password_failure;
       }
     });
-}
+  }
+  signupAction() {
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.router.navigate(['/demonstration']);
+  }
 }
