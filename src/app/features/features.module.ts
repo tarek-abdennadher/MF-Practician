@@ -19,10 +19,12 @@ import { HlsMessagingListModule } from "hls-messaging-list";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactsService } from "./services/contacts.service";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
-import { PracticianSearchComponent } from './practician-search/practician-search.component';
-import { PracticianDetailComponent } from './practician-detail/practician-detail.component';
-import { HlsPracticianDetailModule } from 'hls-practician-detail';
-import { ArchieveMessagesComponent } from './archieve-messages/archieve-messages.component';
+import { PracticianSearchComponent } from "./practician-search/practician-search.component";
+import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
+import { HlsPracticianDetailModule } from "hls-practician-detail";
+import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
+import { HlsSendMessageModule } from "hls-send-message";
+import { SendMessageComponent } from "./send-message/send-message.component";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -73,6 +75,7 @@ const notifierOptions: NotifierOptions = {
     ContactDetailComponent,
     PracticianSearchComponent,
     PracticianDetailComponent,
+    SendMessageComponent,
     ArchieveMessagesComponent
   ],
   imports: [
@@ -87,7 +90,8 @@ const notifierOptions: NotifierOptions = {
     HlsLinksModule,
     HlsMessagingListModule,
     HlsSearchModule,
-    HlsPracticianDetailModule
+    HlsPracticianDetailModule,
+    HlsSendMessageModule
   ],
 
   providers: [MessageService, ContactsService]

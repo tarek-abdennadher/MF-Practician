@@ -10,7 +10,6 @@ export class Message {
   public address?: string;
   public freeObject?: string;
   public uuid?: string;
-  public parent?: any;
 
   constructor();
   constructor(message?: any) {
@@ -24,6 +23,5 @@ export class Message {
     this.address = (message && message.address) || "";
     this.freeObject = (message && message.freeObject) || "";
     this.uuid = (message && message.uuid) || "";
-    this.parent = (message && message.parent) || "";
   }
 }

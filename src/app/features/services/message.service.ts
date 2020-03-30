@@ -37,4 +37,12 @@ export class MessageService {
       formData
     );
   }
+
+  sendMessage(message: Message): Observable<Message> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.message,
+      message
+    );
+  }
 }

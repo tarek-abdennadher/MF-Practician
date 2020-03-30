@@ -30,7 +30,7 @@ export class MyPatientsComponent implements OnInit {
     const myPatients = new MyPatients();
     myPatients.users = [];
     myPatients.users.push({
-      fullName: patient.lastName + " " + patient.lastName,
+      fullName: patient.fullName,
       img: "assets/imgs/user.png",
       type: "PATIENT"
     });
