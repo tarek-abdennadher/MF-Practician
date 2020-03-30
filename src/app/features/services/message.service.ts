@@ -41,7 +41,7 @@ export class MessageService {
   sendMessage(message: Message): Observable<Message> {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.produce,
+      this.globalService.url.message,
       message
     );
   }
