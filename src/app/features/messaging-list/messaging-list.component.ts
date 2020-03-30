@@ -123,6 +123,7 @@ export class MessagingListComponent implements OnInit {
   getMyInbox() {
     this.messagesServ.getMyInbox().subscribe(retrievedMess => {
       this.messages = retrievedMess;
+      this.number = retrievedMess.filter(a => a.seenAsReceiver == false).length;
       this.messages.sort(function(m1, m2) {
         return (
           new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
