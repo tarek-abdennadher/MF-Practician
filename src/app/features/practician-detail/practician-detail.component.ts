@@ -18,6 +18,7 @@ export class PracticianDetailComponent implements OnInit {
   topText = "Détails du praticien";
   bottomText = "";
   backButton = true;
+  isPractician = true;
   links = {
 
   };
@@ -34,7 +35,22 @@ export class PracticianDetailComponent implements OnInit {
     this.practicianDetailService.getPracticiansById(id).subscribe(response => {
       this.bottomText = response.fullName;
       this.practician = response;
+      this.getFavorite();
     });
+  }
+  getFavorite() {
+    this.practicianDetailService.getFavoritePracticians().subscribe(resp => {
+      if (resp.filter(a => a.id == this.practician.id).length >= 1) {
+        this.isFavorite = true;
+      }
+    })
+  }
+  addToFavoriteClicked() {
+    this.practicianDetailService.addPracticianToFavorite(this.practician.id).subscribe(resp => {
+      if (resp == true) {
+        this.isFavorite = true;
+      }
+    })
   }
   BackButton() {
     this._location.back();

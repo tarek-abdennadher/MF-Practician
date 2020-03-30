@@ -17,14 +17,14 @@ export class PracticianDetailService {
   }
   addPracticianToFavorite(practicianId) {
     return this.globalService.call(
-      RequestType.POST,
-      this.globalService.url.patient + 'addFavorite/' + practicianId
+      RequestType.GET,
+      this.globalService.url.practician + 'proContact/' + practicianId
     )
   }
-  getFavoritePracticians(patientId) {
+  getFavoritePracticians() {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patient + patientId + "/favoritesPractician"
+      this.globalService.url.practician  + "contacts-pro-practicians"
     )
   }
 }
