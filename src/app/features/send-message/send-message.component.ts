@@ -1,4 +1,4 @@
-import { Component, OnInit, ɵConsole } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { takeUntil, tap } from "rxjs/operators";
 import { Subject, forkJoin } from "rxjs";
 import { RequestTypeService } from "../services/request-type.service";
@@ -52,7 +52,6 @@ export class SendMessageComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((contactsPractician: any) => {
-          console.log(contactsPractician);
           this.parseContactsPractician(contactsPractician);
         })
       );
@@ -66,7 +65,6 @@ export class SendMessageComponent implements OnInit {
         type: contactPractician.contactType
       });
     });
-    console.log(this.toList);
   }
 
   getAllRequestTypes() {
@@ -109,18 +107,15 @@ export class SendMessageComponent implements OnInit {
           .saveFileInMemory(this.uuid, formData)
           .pipe(takeUntil(this._destroyed$))
           .subscribe(mess => {
-            this.router.navigate(["/features/list", "success"]);
+            this.router.navigate(["/features/messageries", "success"]);
           });
       } else {
         this.messageService
           .sendMessage(newMessage)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(
-            mess => {},
-            error => {
-              this.router.navigate(["/features/list", "success"]);
-            }
-          );
+          .subscribe(error => {
+            this.router.navigate(["/features/messageries", "success"]);
+          });
       }
     }
   }

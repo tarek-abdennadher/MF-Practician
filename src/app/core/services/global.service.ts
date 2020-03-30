@@ -11,7 +11,7 @@ export class GlobalService {
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
   public BASE_URL_MA: string = this.BASE_URL + "/ms-messagingapplication";
-  private BASE_URL_FL: string = this.BASE_URL + "/filer";
+  private BASE_URL_FL: string = this.BASE_URL + "/ms-filer";
   public BASE_URL_SMS: string =
     environment.BASE_END_POINT + "/ms-smsapplication";
   public url = {
@@ -20,6 +20,7 @@ export class GlobalService {
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",
+    produce: this.BASE_URL_MA + "/messages/produce",
     message: this.BASE_URL_MA + "/messages",
     replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",
     sentMessage: this.BASE_URL_MA + "/messages/sender",
