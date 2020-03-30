@@ -23,6 +23,11 @@ export class MessagingListComponent implements OnInit {
     isImportant: false,
     isFilter: true
   };
+  page = "INBOX";
+  number = 0;
+  topText = "Boite de réception";
+  bottomText = "nouveaux messages";
+  backButton = false;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
   constructor(
