@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   public errorMessage = '';
   public successMessage = '';
   messages: any;
+  url: any;
   constructor(
     public loginService: LoginService,
     public route: ActivatedRoute,
@@ -22,6 +23,7 @@ export class LoginComponent implements OnInit {
     public globalService: GlobalService
   ) {
     this.messages = loginService.messages;
+    this.url = globalService.url;
   }
 
   ngOnInit(): void {
