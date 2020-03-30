@@ -71,6 +71,13 @@ const routes: Routes = [
       {
         path: "messagerie-ecrire",
         component: SendMessageComponent
+      },
+      {
+        path: "documents",
+        loadChildren: () =>
+          import("./my-documents/my-documents.module").then(
+            m => m.MyDocumentsModule
+          )
       }
     ]
   }

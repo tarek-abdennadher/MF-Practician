@@ -6,8 +6,9 @@ import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable()
 export class GlobalService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
   public BASE_URL: string = environment.BASE_END_POINT;
+  public PATIENT_SITE: string = environment.PATIENT_SITE;
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
   public BASE_URL_MA: string = this.BASE_URL + "/ms-messagingapplication";
@@ -16,6 +17,7 @@ export class GlobalService {
     environment.BASE_END_POINT + "/ms-smsapplication";
   public url = {
     base: this.BASE_URL,
+    patient_connexion: this.PATIENT_SITE + '/connexion',
     authenticatePractician: this.BASE_URL + "/api/authPractician",
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",
@@ -25,6 +27,7 @@ export class GlobalService {
     replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",
     sentMessage: this.BASE_URL_MA + "/messages/sender",
     node: this.BASE_URL_FL + "/node",
+    attachements: this.BASE_URL_FL + "/attachement",
     account_create_patient: this.BASE_URL_CA + "/account/patient/",
     account_validation_sms: this.BASE_URL_SMS + "/validation/sendCode/",
     account_validation_code: this.BASE_URL_CA + "/validation/byEmail/",
@@ -43,7 +46,9 @@ export class GlobalService {
     receiver: this.BASE_URL_MA + "/receivers/",
     contact_pro: this.BASE_URL_CA + "/contact",
     contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
-    contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple"
+    contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple",
+    secretary: this.BASE_URL_CA + "/secretary",
+    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",

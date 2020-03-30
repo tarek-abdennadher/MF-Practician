@@ -23,6 +23,11 @@ export class MessagingListComponent implements OnInit {
     isImportant: false,
     isFilter: true
   };
+  page = "INBOX";
+  number = 0;
+  topText = "Boite de réception";
+  bottomText = "nouveaux messages";
+  backButton = false;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
   constructor(
@@ -89,15 +94,14 @@ export class MessagingListComponent implements OnInit {
     if (messagesId.length > 0) {
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         resp => {
-          this.itemsList = this.itemsList.filter(function(elm, ind) {
-            return messagesId.indexOf(elm.id) == -1;
-          });
-          this.filtredItemList = this.filtredItemList.filter(function(
-            elm,
-            ind
-          ) {
-            return messagesId.indexOf(elm.id) == -1;
-          });
+          if (resp > 0) {
+            this.itemsList = this.itemsList.filter(function(elm, ind) {
+              return messagesId.indexOf(elm.id) == -1;
+            });
+            this.filtredItemList = this.filtredItemList.filter(function(elm,ind) {
+              return messagesId.indexOf(elm.id) == -1;
+            });
+          }
         },
         error => {
           console.log("We have to find a way to notify user by this error");
@@ -185,12 +189,14 @@ export class MessagingListComponent implements OnInit {
     let messageId = event.id;
     this.messagesServ.markMessageAsArchived([messageId]).subscribe(
       resp => {
-        this.itemsList = this.itemsList.filter(function(elm, ind) {
-          return elm.id != event.id;
-        });
-        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
-          return elm.id != event.id;
-        });
+        if (resp > 0) {
+          this.itemsList = this.itemsList.filter(function(elm, ind) {
+            return elm.id != event.id;
+          });
+          this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+            return elm.id != event.id;
+          });
+        }
       },
       error => {
         console.log("We have to find a way to notify user by this error");

@@ -20,6 +20,9 @@ export class MyAccountComponent implements OnInit {
   ngOnInit(): void {
   }
   BackButton() {
-    this.router.navigate(['/features/list']);
+    this.router.navigate(['/features/messageries']);
+  }
+  return() {
+    this.router.navigate(['/features/messageries']);
   }
 }

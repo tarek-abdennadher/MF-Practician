@@ -13,11 +13,16 @@ export class ChangePasswordComponent implements OnInit {
   public errorMessage = '';
   newPassword = '';
   token: string;
+  messages: any;
+  url: any;
   constructor(public loginService: LoginService,
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
     public router: Router,
-    public globalService: GlobalService) { }
+    public globalService: GlobalService) {
+    this.messages = loginService.messages;
+    this.url = globalService.url;
+  }
 
   ngOnInit(): void {
     this.errorMessage = '';
@@ -48,7 +53,7 @@ export class ChangePasswordComponent implements OnInit {
 
   handleChangePassword = result => {
     if (result) {
-      this.router.navigate(['/login'], {
+      this.router.navigate(['/connexion'], {
         queryParams: {
           success: this.loginService.messages.change_password_success
         }
@@ -64,5 +69,9 @@ export class ChangePasswordComponent implements OnInit {
     } else {
       throw err;
     }
+  }
+  signupAction() {
+    this.errorMessage = '';
+    this.router.navigate(['/demonstration']);
   }
 }

@@ -16,7 +16,7 @@ export class FeaturesComponent implements OnInit {
     private localSt: LocalStorageService,
     public featuresService: FeaturesService,
     private searchService: PracticianSearchService
-  ) {}
+  ) { }
   user = this.localSt.retrieve("user");
   fullName = this.user?.firstName + " " + this.user?.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -27,13 +27,13 @@ export class FeaturesComponent implements OnInit {
     isFilter: true
   };
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   openAccountInterface() {
     this.router.navigate(["/features/compte/mes-informations"]);
   }
   signOutAction() {
-    this.router.navigate(["/login"]);
+    this.router.navigate(["/connexion"]);
   }
 
   displayInboxAction() {
@@ -58,7 +58,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["features/contacts"]);
   }
   displayMyDocumentsAction() {
-    console.log("displayMyDocumentsAction");
+    this.router.navigate(["features/documents"]);
   }
   displayHelpAction() {
     console.log("displayHelpAction");
@@ -98,7 +98,7 @@ export class FeaturesComponent implements OnInit {
   searchActionClicked(event) {
     this.searchService.changeSearch(new search(event.search, event.city));
     this.router.navigate(["/features/search"]);
-    jQuery(document).ready(function(e) {
+    jQuery(document).ready(function (e) {
       jQuery(this)
         .find("#dropdownMenuLinkSearch")
         .trigger("click");

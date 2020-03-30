@@ -9,17 +9,21 @@ import { ChangePasswordComponent } from './core/components/change-password/chang
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'connexion', pathMatch: 'full' },
   {
-    path: 'login',
+    path: 'connexion',
     component: LoginComponent,
   },
   {
-    path: 'reset-password',
+    path: 'inscription',
+    loadChildren: './core/components/register/register.module#RegisterModule',
+  },
+  {
+    path: 'mot-de-passe-oublie',
     component: ResetPasswordComponent,
   },
   {
-    path: 'change-password',
+    path: 'mot-de-passe-reinitialisation',
     component: ChangePasswordComponent,
   },
   {
