@@ -7,10 +7,11 @@ import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
-import { PracticianDetailComponent } from './practician-detail/practician-detail.component';
-import { ArchieveMessagesComponent } from './archieve-messages/archieve-messages.component';
+import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
+import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
+import { SendMessageComponent } from "./send-message/send-message.component";
 
 const routes: Routes = [
   {
@@ -62,14 +63,21 @@ const routes: Routes = [
         path: "archive",
         component: ArchieveMessagesComponent
       },
-     {
+      {
         path: "compte",
         loadChildren: () =>
           import("./account/account.module").then(m => m.AccountModule)
       },
       {
+        path: "messagerie-ecrire",
+        component: SendMessageComponent
+      },
+      {
         path: "documents",
-        loadChildren: () => import('./my-documents/my-documents.module').then(m => m.MyDocumentsModule)
+        loadChildren: () =>
+          import("./my-documents/my-documents.module").then(
+            m => m.MyDocumentsModule
+          )
       }
     ]
   }

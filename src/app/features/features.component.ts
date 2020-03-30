@@ -40,7 +40,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/messageries"]);
   }
   displaySendAction() {
-    this.router.navigate(["/features/send"]);
+    this.router.navigate(["/features/messagerie-ecrire"]);
   }
   displaySentAction() {
     this.router.navigate(["features/messagerie-envoyes"]);

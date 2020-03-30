@@ -73,7 +73,9 @@ export class MessagingReplyComponent implements OnInit {
     replyMessage.sender = {
       senderId: this.featureService.getUserId()
     };
-    replyMessage.toReceivers = [{ receiverId: message.sender.id, seen: 0 }];
+    replyMessage.toReceivers = [
+      { receiverId: message.sender.senderId, seen: 0 }
+    ];
 
     if (message.file !== undefined) {
       this.selectedFiles = message.file;
