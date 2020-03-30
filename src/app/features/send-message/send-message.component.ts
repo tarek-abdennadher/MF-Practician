@@ -22,7 +22,7 @@ export class SendMessageComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/IMG_3944.jpg";
   connectedUserType = "MEDICAL";
-  connectedUser = "Mehdi";
+  connectedUser = "";
   toList = [];
   objectsList = [];
   practician = [];
