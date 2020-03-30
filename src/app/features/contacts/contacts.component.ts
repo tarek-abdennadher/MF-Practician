@@ -3,6 +3,7 @@ import { ContactsService } from '../services/contacts.service';
 import { Router } from '@angular/router';
 import { Speciality } from '@app/shared/models/speciality';
 import { Location } from '@angular/common';
+import { AccountService } from '../services/account.service';
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.component.html',
@@ -10,9 +11,9 @@ import { Location } from '@angular/common';
 })
 export class ContactsComponent implements OnInit {
   specialities: Array<Speciality>;
-  users: Array<any>;
-  itemsList: Array<any> = [];
-  filtredItemsList: Array<any> = [];
+  users: Array<any> =new Array<any>()
+  itemsList: Array<any> = new Array<any>();
+  filtredItemsList: Array<any> = new Array<any>();
   types : Array<string> = [];
   imageSource = "assets/imgs/IMG_3944.jpg";
   links = { isAllSelect: true, isDelete: true, isTypeFilter: true, isAdd: true };
@@ -20,7 +21,10 @@ export class ContactsComponent implements OnInit {
   topText = "Mes contacts PRO";
   page = "MY_PRO_CONTACTS";
   backButton = true;
-  constructor(private _location: Location, private router: Router, private contactsService: ContactsService) {
+  constructor( public accountService: AccountService,
+               private _location: Location,
+               private router: Router,
+               private contactsService: ContactsService) {
    }
 
   ngOnInit(): void {
@@ -29,6 +33,40 @@ export class ContactsComponent implements OnInit {
     this.types = new Array();
     this.getAllSpeciality();
     this.getAllContacts();
+    this.getMyPracticianContactPro();
+  }
+  getMyPracticianContactPro(){
+    this.accountService.getMyPracticianProContact().subscribe(contacts => {
+      if (contacts) {
+        contacts.forEach(c => this.users.push(c));
+      }
+      let items = contacts.map(elm => {
+        return {
+          id: elm.id,
+          isSeen: true,
+          users: [{
+            id: elm.id,
+            fullName: elm.fullName,
+            img: "assets/imgs/IMG_3944.jpg",
+            title: "Dr",
+            type: "MEDICAL",
+            canEdit: false
+          }],
+          isImportant: false,
+          hasFiles: false,
+          isViewDetail: false,
+          isMarkAsSeen: true,
+          isChecked: false
+        };
+      });
+      if(items) {
+        items.forEach(i => this.itemsList.push(i));
+      }
+  },
+  error => {
+    console.log("error");
+  }
+  );
   }
   getAllContacts(){
     this.contactsService.getContactsPro().subscribe(contacts => {
@@ -43,7 +81,8 @@ export class ContactsComponent implements OnInit {
             img: "assets/imgs/IMG_3944.jpg",
             title: elm.title,
             type: "MEDICAL",
-            speciality: elm.speciality ? elm.speciality.name : "Tout"
+            speciality: elm.speciality ? elm.speciality.name : "Tout",
+            canEdit: true
           }],
           object: {
             name: elm.facilityName,
@@ -84,27 +123,47 @@ export class ContactsComponent implements OnInit {
   }
   deleteActionClicked() {
     const ids = [];
+    const practicianIds = [];
     this.itemsList.forEach(a => {
-        if (a.isChecked) {
+        if (a.isChecked && a.users[0].canEdit) {
           ids.push(a.id);
+        }
+        if (a.isChecked && !a.users[0].canEdit) {
+          practicianIds.push(a.id);
         }
     });
     if (ids.length > 0) {
-      this.contactsService.deleteMultiple(ids).subscribe(res => {
-        this.getAllContacts();
-      });
-
+      this.contactsService.deleteMultiple(ids).subscribe(
+        res =>{
+          if (practicianIds.length > 0) {
+            this.contactsService.deleteMultiplePracticianContactPro(practicianIds).subscribe();
+          }
+          this.getAllContacts();
+          this.getMyPracticianContactPro();
+        }
+      );
+    } else {
+      if (practicianIds.length > 0) {
+        this.contactsService.deleteMultiplePracticianContactPro(practicianIds).subscribe(res => {
+          this.getAllContacts();
+          this.getMyPracticianContactPro();
+        });
+      }
     }
+
+
   }
 
   cardClicked(item) {
-    this.router.navigate(["/features/contact-detail/" + item.id]);
+    if (item.users[0].canEdit){
+      this.router.navigate(["/features/contact-detail/" + item.id]);
+    }
   }
   markAsSeenClicked(item) {
-    console.log("ko")
+    this.router.navigate(["/features/messagerie-ecrire"]);
   }
   archieveClicked(event) {
-    console.log("hello " + event.users[0].id)
+    console.log("hello " + event.users[0].id);
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe(specialitiesList =>{
