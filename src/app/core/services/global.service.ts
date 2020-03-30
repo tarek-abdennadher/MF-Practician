@@ -22,6 +22,7 @@ export class GlobalService {
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",
+    produce: this.BASE_URL_MA + "/messages/produce",
     message: this.BASE_URL_MA + "/messages",
     replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",
     sentMessage: this.BASE_URL_MA + "/messages/sender",
@@ -47,7 +48,8 @@ export class GlobalService {
     contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
     contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple",
     secretary: this.BASE_URL_CA + "/secretary",
-    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians"
+    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians",
+    contact_pro_practicien: this.BASE_URL_CA + "/practician/contacts-pro-practicians"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
