@@ -55,7 +55,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/favorites"]);
   }
   displayMyProContactsAction() {
-    this.router.navigate(["features/contacts"]);
+    this.router.navigate(["features/contacts"]).then(() => window.location.reload());
   }
   displayMyDocumentsAction() {
     this.router.navigate(["features/documents"]);

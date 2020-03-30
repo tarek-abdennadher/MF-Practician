@@ -40,7 +40,7 @@ export class ContactsComponent implements OnInit {
       if (contacts) {
         contacts.forEach(c => this.users.push(c));
       }
-      const items = contacts.map(elm => {
+      let items = contacts.map(elm => {
         return {
           id: elm.id,
           isSeen: true,
@@ -123,17 +123,35 @@ export class ContactsComponent implements OnInit {
   }
   deleteActionClicked() {
     const ids = [];
+    const practicianIds = [];
     this.itemsList.forEach(a => {
-        if (a.isChecked) {
+        if (a.isChecked && a.users[0].canEdit) {
           ids.push(a.id);
+        }
+        if (a.isChecked && !a.users[0].canEdit) {
+          practicianIds.push(a.id);
         }
     });
     if (ids.length > 0) {
-      this.contactsService.deleteMultiple(ids).subscribe(res => {
-        this.getAllContacts();
-      });
-
+      this.contactsService.deleteMultiple(ids).subscribe(
+        res =>{
+          if (practicianIds.length > 0) {
+            this.contactsService.deleteMultiplePracticianContactPro(practicianIds).subscribe();
+          }
+          this.getAllContacts();
+          this.getMyPracticianContactPro();
+        }
+      );
+    } else {
+      if (practicianIds.length > 0) {
+        this.contactsService.deleteMultiplePracticianContactPro(practicianIds).subscribe(res => {
+          this.getAllContacts();
+          this.getMyPracticianContactPro();
+        });
+      }
     }
+
+
   }
 
   cardClicked(item) {
