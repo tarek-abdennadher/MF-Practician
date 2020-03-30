@@ -14,12 +14,14 @@ export class ChangePasswordComponent implements OnInit {
   newPassword = '';
   token: string;
   messages: any;
+  url: any;
   constructor(public loginService: LoginService,
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
     public router: Router,
     public globalService: GlobalService) {
     this.messages = loginService.messages;
+    this.url = globalService.url;
   }
 
   ngOnInit(): void {
