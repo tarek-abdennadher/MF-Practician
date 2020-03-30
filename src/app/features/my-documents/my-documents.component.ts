@@ -61,8 +61,8 @@ export class MyDocumentsComponent implements OnInit {
         FileSaver.saveAs(blob, resultname);
       });
   }
-  getType(extention){
-   switch (extention) {
+  getType(extention:string){
+   switch (extention.toLowerCase()) {
      case "pdf":
        return 'application/pdf';
        case "png":
