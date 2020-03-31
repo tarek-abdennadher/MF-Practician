@@ -91,4 +91,10 @@ export class AccountService {
       this.globalService.url.secretaries_practicien
     );
   }
+  getMyPracticianProContact() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro_practicien
+    );
+  }
 }

@@ -48,7 +48,9 @@ export class GlobalService {
     contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
     contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple",
     secretary: this.BASE_URL_CA + "/secretary",
-    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians"
+    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians",
+    contact_pro_practicien: this.BASE_URL_CA + "/practician/contacts-pro-practicians",
+    practicien_contact_pro_detach: this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
