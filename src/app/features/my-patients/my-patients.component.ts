@@ -10,6 +10,7 @@ import { MyPatients } from "./my-patients";
 export class MyPatientsComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
   myPatients = [];
+  myPatientsSearch = [];
   isMyPatients = true;
   constructor(private myPatientsService: MyPatientsService) {}
 
@@ -22,6 +23,9 @@ export class MyPatientsComponent implements OnInit {
       .subscribe(myPatients => {
         myPatients.forEach(patient => {
           this.myPatients.push(this.mappingMyPatients(patient));
+        });
+        myPatients.forEach(patient => {
+          this.myPatientsSearch.push(this.mappingMyPatients(patient));
         });
       });
   }
@@ -37,5 +41,27 @@ export class MyPatientsComponent implements OnInit {
     myPatients.isMarkAsSeen = true;
     myPatients.isSeen = true;
     return myPatients;
+  }
+
+  searchAction(event) {
+    this.myPatientsSearch.forEach(data => {
+      this.myPatients = [];
+      data.users
+        .filter(user =>
+          user.fullName.toLowerCase().includes(event.search.toLowerCase())
+        )
+        .forEach(patient => {
+          const myPatients = new MyPatients();
+          myPatients.users = [];
+          myPatients.users.push({
+            fullName: patient.fullName,
+            img: "assets/imgs/user.png",
+            type: "PATIENT"
+          });
+          myPatients.isMarkAsSeen = true;
+          myPatients.isSeen = true;
+          this.myPatients.push(myPatients);
+        });
+    });
   }
 }
