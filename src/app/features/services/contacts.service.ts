@@ -53,6 +53,13 @@ export class ContactsService {
       ids
     );
   }
+  deleteMultiplePracticianContactPro(ids) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.practicien_contact_pro_detach,
+      ids
+    );
+  }
   public getContactById(id: number) {
     return this.globalService.call(
       RequestType.GET,

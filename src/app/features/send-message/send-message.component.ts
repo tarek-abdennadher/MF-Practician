@@ -113,9 +113,14 @@ export class SendMessageComponent implements OnInit {
         this.messageService
           .sendMessage(newMessage)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(mess => {
-            this.router.navigate(["/features/messageries", "success"]);
-          });
+          .subscribe(
+            mess => {
+              this.router.navigate(["/features/messageries", "success"]);
+            },
+            error => {
+              this.router.navigate(["/features/messageries", "success"]);
+            }
+          );
       }
     }
   }
