@@ -27,8 +27,14 @@ export class FeaturesComponent implements OnInit {
     isFilter: true
   };
 
-  ngOnInit(): void { }
-
+  ngOnInit(): void { 
+    this.countMyArchive();
+  }
+  countMyArchive() {
+    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
+      this.featuresService.numberOfArchieve = resp;
+    })
+  }
   openAccountInterface() {
     this.router.navigate(["/features/compte/mes-informations"]);
   }

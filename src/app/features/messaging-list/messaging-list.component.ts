@@ -3,6 +3,7 @@ import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
+import { FeaturesService } from '../features.service';
 
 @Component({
   selector: "app-messaging-list",
@@ -35,7 +36,7 @@ export class MessagingListComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute,
     notifierService: NotifierService,
-
+    private featureService: FeaturesService,
     private globalService: GlobalService
   ) {
     this.notifier = notifierService;
@@ -124,6 +125,7 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ.getMyInbox().subscribe(retrievedMess => {
       this.messages = retrievedMess;
       this.number = retrievedMess.filter(a => a.seenAsReceiver == false).length;
+      this.featureService.numberOfInbox = this.number;
       this.messages.sort(function(m1, m2) {
         return (
           new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
