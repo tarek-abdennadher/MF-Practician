@@ -13,7 +13,7 @@ import { GlobalService } from "./core/services/global.service";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthGuard } from "./app.guard";
 import { TokenInterceptor } from "./core/interceptors/token.interceptor";
-import { AccountModule } from './features/account/account.module';
+import { AccountModule } from "./features/account/account.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 registerLocaleData(localeFr, "fr");

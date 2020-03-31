@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PracticianDetailService } from './practician-detail.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as jwt_decode from 'jwt-decode';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Location } from '@angular/common';
@@ -18,10 +18,11 @@ export class PracticianDetailComponent implements OnInit {
   topText = "Détails du praticien";
   bottomText = "";
   backButton = true;
+  isPractician = true;
   links = {
 
   };
-  constructor(private route: ActivatedRoute, private practicianDetailService: PracticianDetailService,
+  constructor(private route: ActivatedRoute, private router: Router, private practicianDetailService: PracticianDetailService,
     private localSt: LocalStorageService,
     private _location: Location) { }
 
@@ -34,7 +35,25 @@ export class PracticianDetailComponent implements OnInit {
     this.practicianDetailService.getPracticiansById(id).subscribe(response => {
       this.bottomText = response.fullName;
       this.practician = response;
+      this.getFavorite();
     });
+  }
+  getFavorite() {
+    this.practicianDetailService.getFavoritePracticians().subscribe(resp => {
+      if (resp.filter(a => a.id == this.practician.id).length >= 1) {
+        this.isFavorite = true;
+      }
+    })
+  }
+  addToFavoriteClicked() {
+    this.practicianDetailService.addPracticianToFavorite(this.practician.id).subscribe(resp => {
+      if (resp == true) {
+        this.isFavorite = true;
+      }
+    })
+  }
+  sendMessageClicked(item) {
+    this.router.navigate(["/features/messagerie-ecrire/"]);
   }
   BackButton() {
     this._location.back();
