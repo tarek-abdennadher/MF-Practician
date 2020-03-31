@@ -94,14 +94,12 @@ export class MessagingListComponent implements OnInit {
     if (messagesId.length > 0) {
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         resp => {
-          if (resp > 0) {
             this.itemsList = this.itemsList.filter(function(elm, ind) {
               return messagesId.indexOf(elm.id) == -1;
             });
             this.filtredItemList = this.filtredItemList.filter(function(elm,ind) {
               return messagesId.indexOf(elm.id) == -1;
             });
-          }
         },
         error => {
           console.log("We have to find a way to notify user by this error");
@@ -190,14 +188,12 @@ export class MessagingListComponent implements OnInit {
     let messageId = event.id;
     this.messagesServ.markMessageAsArchived([messageId]).subscribe(
       resp => {
-        if (resp > 0) {
           this.itemsList = this.itemsList.filter(function(elm, ind) {
             return elm.id != event.id;
           });
           this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
             return elm.id != event.id;
           });
-        }
       },
       error => {
         console.log("We have to find a way to notify user by this error");
