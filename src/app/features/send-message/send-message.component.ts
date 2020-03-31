@@ -82,8 +82,12 @@ export class SendMessageComponent implements OnInit {
     if (message.to !== "" && message.object != "" && message.body != "") {
       this.uuid = uuid();
       const newMessage = new Message();
-      newMessage.toReceivers = [{ receiverId: message.to.id }];
-      newMessage.ccReceivers = [{ receiverId: message.cc.id }];
+      message.to.forEach(to => {
+        newMessage.toReceivers.push({ receiverId: to.id });
+      });
+      message.cc.forEach(cc => {
+        newMessage.ccReceivers.push({ receiverId: cc.id });
+      });
       newMessage.sender = {
         senderId: this.featureService.getUserId()
       };
