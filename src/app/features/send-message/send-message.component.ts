@@ -79,7 +79,7 @@ export class SendMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
-    if (message.to !== "" && message.object != "" && message.body != "") {
+    if (message.to !== "" && message.body != "") {
       this.uuid = uuid();
       const newMessage = new Message();
       message.to.forEach(to => {
