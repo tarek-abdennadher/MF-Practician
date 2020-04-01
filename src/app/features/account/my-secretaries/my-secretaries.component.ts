@@ -64,6 +64,7 @@ export class MySecretariesComponent implements OnInit {
   }
   addSecretaryButton() {
     this.infoForm.reset();
+    this.initInfoForm();
     this.isEdit = false;
     this.isList = !this.isList;
   }
@@ -86,6 +87,7 @@ export class MySecretariesComponent implements OnInit {
         this.initInfoForm();
         $(".alert").alert();
         this.submitted = false;
+        this.isList = true;
         this.getMySecretaries();
       });
     } else {
