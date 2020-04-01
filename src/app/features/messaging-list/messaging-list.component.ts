@@ -222,7 +222,6 @@ export class MessagingListComponent implements OnInit {
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe(notif => {
       this.itemsList.unshift(this.parseMessage(notif.message));
-     //this.filtredItemList.unshift(this.parseMessage(notif.message));
     })
   }
 }
