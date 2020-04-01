@@ -46,7 +46,8 @@ export class AccountService {
     stats_tab: "Mes stats",
     add_secretary: "Ajouter secrétaire",
     add_secretary_success: "Secrétaire ajoutée avec succès",
-    my_secretaries: "Mes Secrétaires"
+    my_secretaries: "Mes Secrétaires",
+    edit_secretary_success: "Secrétaire modifiée avec succès"
   };
   public errors = {
     required: "Champs obligatoire",
@@ -61,10 +62,23 @@ export class AccountService {
       account
     );
   }
+  updateSecretaryAccount(account) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.account_update_secretary,
+      account
+    );
+  }
   getCurrentAccount() {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.account_authenticated
+    );
+  }
+  getAccountById(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.account + "/min/" + id
     );
   }
   updatePassword(pass) {
