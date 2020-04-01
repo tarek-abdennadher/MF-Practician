@@ -3,6 +3,7 @@ import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
+import { FeaturesService } from '../features.service';
 
 @Component({
   selector: "app-messaging-list",
@@ -35,8 +36,8 @@ export class MessagingListComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute,
     notifierService: NotifierService,
-
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private featuresService:FeaturesService
   ) {
     this.notifier = notifierService;
   }
@@ -44,6 +45,7 @@ export class MessagingListComponent implements OnInit {
   ngOnInit(): void {
     this.itemsList = new Array();
     this.getMyInbox();
+    this.getRealTimeMessage();
     this.route.params.subscribe(params => {
       if (params["id"]) {
         this.notifier.show({
@@ -58,6 +60,9 @@ export class MessagingListComponent implements OnInit {
   cardClicked(item) {
     this.markMessageAsSeen(item);
     this.router.navigate(["/features/detail/" + item.id]);
+    this.featuresService.listNotifications = this.featuresService.listNotifications.filter(
+      notif => notif.messageId != item.id
+    );
   }
 
   selectAllActionClicked() {
@@ -209,5 +214,12 @@ export class MessagingListComponent implements OnInit {
         a.isChecked = false;
       }
     });
+  }
+
+  getRealTimeMessage() {
+    this.messagesServ.getNotificationObs().subscribe(notif => {
+      this.itemsList.unshift(this.parseMessage(notif.message));
+     //this.filtredItemList.unshift(this.parseMessage(notif.message));
+    })
   }
 }
