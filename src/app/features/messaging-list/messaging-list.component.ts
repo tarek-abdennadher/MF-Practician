@@ -45,6 +45,7 @@ export class MessagingListComponent implements OnInit {
   ngOnInit(): void {
     this.itemsList = new Array();
     this.getMyInbox();
+    this.getRealTimeMessage();
     this.route.params.subscribe(params => {
       if (params["id"]) {
         this.notifier.show({
@@ -59,6 +60,9 @@ export class MessagingListComponent implements OnInit {
   cardClicked(item) {
     this.markMessageAsSeen(item);
     this.router.navigate(["/features/detail/" + item.id]);
+    this.featureService.listNotifications = this.featureService.listNotifications.filter(
+      notif => notif.messageId != item.id
+    );
   }
 
   selectAllActionClicked() {
@@ -213,5 +217,11 @@ export class MessagingListComponent implements OnInit {
         a.isChecked = false;
       }
     });
+  }
+
+  getRealTimeMessage() {
+    this.messagesServ.getNotificationObs().subscribe(notif => {
+      this.itemsList.unshift(this.parseMessage(notif.message));
+    })
   }
 }
