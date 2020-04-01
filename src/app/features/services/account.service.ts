@@ -116,4 +116,11 @@ export class AccountService {
       this.globalService.url.account + "/desactivate"
     );
   }
+  desactivateMultipleAccount(ids) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.account + "/desactivate-multiple",
+      ids
+    );
+  }
 }

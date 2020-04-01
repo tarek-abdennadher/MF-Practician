@@ -140,6 +140,7 @@ export class MySecretariesComponent implements OnInit {
                 type: "MEDICAL"
               }
             ],
+            isArchieve: true,
             isImportant: false,
             hasFiles: false,
             isViewDetail: true,
@@ -172,4 +173,11 @@ export class MySecretariesComponent implements OnInit {
   }
   selectItem(event) {}
   deleteActionClicked() {}
+  archieveClicked(item) {
+    this.accountService
+      .desactivateMultipleAccount([item.id])
+      .subscribe(resp => {
+        this.getMySecretaries();
+      });
+  }
 }
