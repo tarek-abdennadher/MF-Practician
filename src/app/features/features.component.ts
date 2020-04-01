@@ -38,7 +38,7 @@ export class FeaturesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyNotificationsNotSeen();
-
+    this.countMyArchive();
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
@@ -77,6 +77,11 @@ export class FeaturesComponent implements OnInit {
         });
         this.featuresService.listNotifications = notificationsFormated;
       });
+    }
+  countMyArchive() {
+    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
+      this.featuresService.numberOfArchieve = resp;
+    })
   }
   openAccountInterface() {
     this.router.navigate(["/features/compte/mes-informations"]);

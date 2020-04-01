@@ -1,4 +1,7 @@
-<lib-hlsSearch></lib-hlsSearch>
+<lib-hlsSearch
+  [isMyPatients]="isMyPatients"
+  (searchAction)="searchAction($event)"
+></lib-hlsSearch>
 <br />
 <lib-hlsMessagingList
   [list]="myPatients"

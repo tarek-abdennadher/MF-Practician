@@ -36,8 +36,8 @@ export class MessagingListComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute,
     notifierService: NotifierService,
-    private globalService: GlobalService,
-    private featuresService:FeaturesService
+    private featureService: FeaturesService,
+    private globalService: GlobalService
   ) {
     this.notifier = notifierService;
   }
@@ -60,7 +60,7 @@ export class MessagingListComponent implements OnInit {
   cardClicked(item) {
     this.markMessageAsSeen(item);
     this.router.navigate(["/features/detail/" + item.id]);
-    this.featuresService.listNotifications = this.featuresService.listNotifications.filter(
+    this.featureService.listNotifications = this.featureService.listNotifications.filter(
       notif => notif.messageId != item.id
     );
   }
@@ -97,6 +97,7 @@ export class MessagingListComponent implements OnInit {
       .filter(e => e.isChecked == true)
       .map(e => e.id);
     if (messagesId.length > 0) {
+      this.featureService.numberOfArchieve = this.featureService.numberOfArchieve + messagesId.length;
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         resp => {
             this.itemsList = this.itemsList.filter(function(elm, ind) {
@@ -127,6 +128,7 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ.getMyInbox().subscribe(retrievedMess => {
       this.messages = retrievedMess;
       this.number = retrievedMess.filter(a => a.seenAsReceiver == false).length;
+      this.featureService.numberOfInbox = this.number;
       this.messages.sort(function(m1, m2) {
         return (
           new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
@@ -199,6 +201,7 @@ export class MessagingListComponent implements OnInit {
           this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
             return elm.id != event.id;
           });
+          this.featureService.numberOfArchieve++;
       },
       error => {
         console.log("We have to find a way to notify user by this error");
