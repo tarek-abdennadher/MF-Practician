@@ -55,4 +55,10 @@ body {
 body {
   margin: 0;
   background-color: #f7f7f7 !important;
+  @media (min-width: 400px) {
+    zoom: 75%;
+  }
+  @media (min-width: 1920px) {
+    zoom: 100%;
+  }
 }
