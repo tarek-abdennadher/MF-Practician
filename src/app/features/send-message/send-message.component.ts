@@ -11,6 +11,7 @@ import { Message } from "@app/shared/models/message";
 import { ContactsService } from "../services/contacts.service";
 import { FeaturesService } from "../features.service";
 import { Location } from "@angular/common";
+import { LocalStorageService } from "ngx-webstorage";
 
 @Component({
   selector: "app-send-message",
@@ -22,14 +23,23 @@ export class SendMessageComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/IMG_3944.jpg";
   connectedUserType = "MEDICAL";
-  connectedUser = "";
+  user = this.localSt.retrieve("user");
+  connectedUser = "PR " + this.user?.firstName + " " + this.user?.lastName;
+
   toList = [];
   objectsList = [];
-  practician = [];
-  children = [];
   selectedFiles: any;
-  angular: any;
+  links = {
+    isSeen: true,
+    isArchieve: true,
+    isImportant: true
+  };
+  page = this.globalService.messagesDisplayScreen.inbox;
+  topText = this.globalService.messagesDisplayScreen.writeMessage;
+  backButton = true;
+
   constructor(
+    private localSt: LocalStorageService,
     private featureService: FeaturesService,
     private _location: Location,
     private contactsService: ContactsService,
@@ -79,15 +89,18 @@ export class SendMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
-    if (message.to !== "" && message.body != "") {
+    if (message.to !== "" && message.body !== "") {
       this.uuid = uuid();
       const newMessage = new Message();
       message.to.forEach(to => {
         newMessage.toReceivers.push({ receiverId: to.id });
       });
-      message.cc.forEach(cc => {
-        newMessage.ccReceivers.push({ receiverId: cc.id });
-      });
+      message.cc
+        ? message.cc.forEach(cc => {
+            newMessage.ccReceivers.push({ receiverId: cc.id });
+          })
+        : null;
+
       newMessage.sender = {
         senderId: this.featureService.getUserId()
       };
@@ -128,7 +141,9 @@ export class SendMessageComponent implements OnInit {
       }
     }
   }
-
+  goToBack() {
+    this._location.back();
+  }
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();

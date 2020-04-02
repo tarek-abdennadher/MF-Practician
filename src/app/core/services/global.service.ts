@@ -6,7 +6,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable()
 export class GlobalService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
   public BASE_URL: string = environment.BASE_END_POINT;
   public PATIENT_SITE: string = environment.PATIENT_SITE;
   public BASE_URL_CA: string =
@@ -17,7 +17,7 @@ export class GlobalService {
     environment.BASE_END_POINT + "/ms-smsapplication";
   public url = {
     base: this.BASE_URL,
-    patient_connexion: this.PATIENT_SITE + '/connexion',
+    patient_connexion: this.PATIENT_SITE + "/connexion",
     authenticatePractician: this.BASE_URL + "/api/authPractician",
     accountlogin: this.BASE_URL_CA + "/account/light/",
     practiciens: this.BASE_URL_CA + "/practician",
@@ -48,9 +48,12 @@ export class GlobalService {
     contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
     contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple",
     secretary: this.BASE_URL_CA + "/secretary",
-    secretaries_practicien: this.BASE_URL_CA + "/secretary/contacts-pro-practicians",
-    contact_pro_practicien: this.BASE_URL_CA + "/practician/contacts-pro-practicians",
-    practicien_contact_pro_detach: this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach"
+    secretaries_practicien:
+      this.BASE_URL_CA + "/secretary/contacts-pro-practicians",
+    contact_pro_practicien:
+      this.BASE_URL_CA + "/practician/contacts-pro-practicians",
+    practicien_contact_pro_detach:
+      this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
@@ -60,7 +63,8 @@ export class GlobalService {
   public messagesDisplayScreen = {
     inbox: "INBOX",
     Mailbox: "Boite de réception",
-    newMessage: "nouveaux messages"
+    newMessage: "nouveaux messages",
+    writeMessage: "Ecrire un nouveau message"
   };
   public call(
     method: RequestType,
