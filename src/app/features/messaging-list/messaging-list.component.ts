@@ -63,6 +63,7 @@ export class MessagingListComponent implements OnInit {
     this.featureService.listNotifications = this.featureService.listNotifications.filter(
       notif => notif.messageId != item.id
     );
+    this.featureService.numberOfInbox--;
   }
 
   selectAllActionClicked() {
