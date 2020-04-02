@@ -72,15 +72,15 @@ export class ArchieveMessagesComponent implements OnInit {
     return messageArchived;
   }
   cardClicked(item) {
-    this.router.navigate(["/features/detail/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id]);
   }
   selectAllActionClicked() {
-    this.itemsList.forEach(a=> {
+    this.itemsList.forEach(a => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach(a=> {
+    this.itemsList.forEach(a => {
       a.isChecked = false;
     });
   }

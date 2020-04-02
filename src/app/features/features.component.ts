@@ -6,8 +6,8 @@ import { search } from "./practician-search/search.model";
 import { LocalStorageService } from "ngx-webstorage";
 import * as Stomp from "stompjs";
 import * as SockJS from "sockjs-client";
-import { GlobalService } from '@app/core/services/global.service';
-import { MessagingListService } from './services/messaging-list.service';
+import { GlobalService } from "@app/core/services/global.service";
+import { MessagingListService } from "./services/messaging-list.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -43,22 +43,25 @@ export class FeaturesComponent implements OnInit {
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => { };
+    this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function (frame) {
-      that.stompClient.subscribe("/topic/notification/" + that.featuresService.getUserId(), message => {
-        if (message.body) {
-          let notification = JSON.parse(message.body);
-          that.messageListService.setNotificationObs(notification);
-          that.featuresService.numberOfInbox++;
+    this.stompClient.connect({}, function(frame) {
+      that.stompClient.subscribe(
+        "/topic/notification/" + that.featuresService.getUserId(),
+        message => {
+          if (message.body) {
+            let notification = JSON.parse(message.body);
+            that.messageListService.setNotificationObs(notification);
+            that.featuresService.numberOfInbox++;
             that.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.senderFullName,
-            picture: "assets/imgs/user.png",
-            messageId: notification.messageId
-          });
+              id: notification.id,
+              sender: notification.senderFullName,
+              picture: "assets/imgs/user.png",
+              messageId: notification.messageId
+            });
+          }
         }
-      });
+      );
     });
   }
 
@@ -77,11 +80,11 @@ export class FeaturesComponent implements OnInit {
         });
         this.featuresService.listNotifications = notificationsFormated;
       });
-    }
+  }
   countMyArchive() {
     this.featuresService.getCountOfMyArchieve().subscribe(resp => {
       this.featuresService.numberOfArchieve = resp;
-    })
+    });
   }
   openAccountInterface() {
     this.router.navigate(["/features/compte/mes-informations"]);
@@ -109,7 +112,9 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/favorites"]);
   }
   displayMyProContactsAction() {
-    this.router.navigate(["features/contacts"]).then(() => window.location.reload());
+    this.router
+      .navigate(["features/contacts"])
+      .then(() => window.location.reload());
   }
   displayMyDocumentsAction() {
     this.router.navigate(["features/documents"]);
@@ -152,7 +157,7 @@ export class FeaturesComponent implements OnInit {
   searchActionClicked(event) {
     this.searchService.changeSearch(new search(event.search, event.city));
     this.router.navigate(["/features/search"]);
-    jQuery(document).ready(function (e) {
+    jQuery(document).ready(function(e) {
       jQuery(this)
         .find("#dropdownMenuLinkSearch")
         .trigger("click");
@@ -164,9 +169,10 @@ export class FeaturesComponent implements OnInit {
       .markMessageAsSeenByNotification(notification.messageId)
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
-        this.router.navigate(["features/detail/"+notification.messageId]);
+        this.router.navigate([
+          "features/messagerie-lire/" + notification.messageId
+        ]);
         this.featuresService.numberOfInbox--;
       });
   }
-
 }

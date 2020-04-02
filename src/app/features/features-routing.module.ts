@@ -28,7 +28,7 @@ const routes: Routes = [
         component: MessagingListComponent
       },
       {
-        path: "detail/:id",
+        path: "messagerie-lire/:id",
         component: MessagingDetailComponent
       },
       {
@@ -49,6 +49,10 @@ const routes: Routes = [
       },
       {
         path: "messagerie-repondre/:id",
+        component: MessagingReplyComponent
+      },
+      {
+        path: "messagerie-repondre/:id/:status",
         component: MessagingReplyComponent
       },
       {
