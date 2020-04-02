@@ -49,9 +49,9 @@ export class FeaturesComponent implements OnInit {
       that.stompClient.subscribe("/topic/notification/" + that.featuresService.getUserId(), message => {
         if (message.body) {
           let notification = JSON.parse(message.body);
-          console.log("subscribe")
           that.messageListService.setNotificationObs(notification);
-          that.featuresService.listNotifications.unshift({
+          that.featuresService.numberOfInbox++;
+            that.featuresService.listNotifications.unshift({
             id: notification.id,
             sender: notification.senderFullName,
             picture: "assets/imgs/user.png",
@@ -165,6 +165,7 @@ export class FeaturesComponent implements OnInit {
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
         this.router.navigate(["features/detail/"+notification.messageId]);
+        this.featuresService.numberOfInbox--;
       });
   }
 
