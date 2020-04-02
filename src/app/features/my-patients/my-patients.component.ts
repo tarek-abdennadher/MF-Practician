@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MyPatientsService } from "../services/my-patients.service";
 import { MyPatients } from "./my-patients";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-my-patients",
@@ -12,7 +13,7 @@ export class MyPatientsComponent implements OnInit {
   myPatients = [];
   myPatientsSearch = [];
   isMyPatients = true;
-  constructor(private myPatientsService: MyPatientsService) {}
+  constructor(private myPatientsService: MyPatientsService, private router: Router) {}
 
   ngOnInit(): void {
     this.getPatientsOfCurrentParactician();
@@ -34,6 +35,7 @@ export class MyPatientsComponent implements OnInit {
     const myPatients = new MyPatients();
     myPatients.users = [];
     myPatients.users.push({
+      id: patient.id,
       fullName: patient.fullName,
       img: "assets/imgs/user.png",
       type: "PATIENT"
@@ -54,6 +56,7 @@ export class MyPatientsComponent implements OnInit {
           const myPatients = new MyPatients();
           myPatients.users = [];
           myPatients.users.push({
+            id: patient.id,
             fullName: patient.fullName,
             img: "assets/imgs/user.png",
             type: "PATIENT"
@@ -63,5 +66,21 @@ export class MyPatientsComponent implements OnInit {
           this.myPatients.push(myPatients);
         });
     });
+  }
+  writeAction(item) {
+    this.router.navigate(["/features/messagerie-ecrire/"], {
+      queryParams: {
+        id: item.users[0].id
+      }
+    });
+  }
+  prohibitAction(item) {
+    console.log("prohibite");
+  }
+  editAction(item) {
+    console.log("edit");
+  }
+  deleteAction(item) {
+    console.log("delete");
   }
 }
