@@ -7,4 +7,8 @@
   [list]="myPatients"
   [imageSource]="imageSource"
   [isMyPatients]="isMyPatients"
+  (writeAction)= "writeAction($event)"
+  (prohibitAction)= "prohibitAction($event)"
+  (editAction)= "editAction($event)"
+  (deleteAction)= "deleteAction($event)"
 ></lib-hlsMessagingList>
