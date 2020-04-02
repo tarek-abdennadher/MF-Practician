@@ -146,7 +146,9 @@ export class FeaturesComponent implements OnInit {
   filterActionClicked(event) {
     console.log(event);
   }
-
+  logoClicked() {
+    this.router.navigate(["/features/messageries"]);
+  }
   receiveCollapsed($event) {
     this.collapedSideBar = $event;
   }

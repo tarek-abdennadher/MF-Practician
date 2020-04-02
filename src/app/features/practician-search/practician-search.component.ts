@@ -25,7 +25,10 @@ export class PracticianSearchComponent implements OnInit {
 
   };
   texts: any;
-  constructor(public router: Router, private route: ActivatedRoute, private practicianSearchService: PracticianSearchService) {
+  constructor(public router: Router, 
+    private route: ActivatedRoute, 
+    private practicianSearchService: PracticianSearchService,
+    private featureService: FeaturesService) {
     this.texts = practicianSearchService.texts;
   }
 
@@ -40,6 +43,7 @@ export class PracticianSearchComponent implements OnInit {
 
     if (!text && !city) {
       this.practicianSearchService.getAllPracticians().subscribe(list => {
+        list = list.filter(a => a.id != this.featureService.getUserId());
         this.itemsList = [];
         this.number = list.length;
         list.forEach(message => {
@@ -49,6 +53,7 @@ export class PracticianSearchComponent implements OnInit {
       });
     } else if (!text && city) {
       this.practicianSearchService.getPracticiansByCity(city).subscribe(list => {
+        list = list.filter(a => a.id != this.featureService.getUserId());
         this.itemsList = [];
         this.number = list.length;
         list.forEach(message => {
@@ -58,6 +63,7 @@ export class PracticianSearchComponent implements OnInit {
       })
     } else {
       this.practicianSearchService.getPracticiansBytextAndCity(text, city).subscribe(list => {
+        list = list.filter(a => a.id != this.featureService.getUserId());
         this.itemsList = [];
         this.number = list.length;
         list.forEach(message => {
