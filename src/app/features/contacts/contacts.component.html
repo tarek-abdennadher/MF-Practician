@@ -1,24 +1,27 @@
 <lib-hlsLinks
-    [links]="links"
-    [types]="types"
-    [topText]="topText"
-    [page]="page"
-    (addAction)="addContact()"
-    (deleteAction)="deleteActionClicked()"
-    (selectAllAction)="selectAllActionClicked()"
-    (deSelectAllAction)="deselectAllActionClicked()"
-    (typeAction)="listFilter($event)"
-    [isDeleteMessage]="true"
-    [backButton]="backButton"
-    (backButtonAction)="BackButton()">
+  [links]="links"
+  [types]="types"
+  [topText]="topText"
+  [page]="page"
+  (addAction)="addContact()"
+  (deleteAction)="deleteActionClicked()"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deselectAllActionClicked()"
+  (typeAction)="listFilter($event)"
+  [isDeleteMessage]="true"
+  [backButton]="backButton"
+  (backButtonAction)="BackButton()"
+>
 </lib-hlsLinks>
 
 <lib-hlsMessagingList
-    [list]="filtredItemsList"
-    [isMyPatients]="false"
-    (cardAction)="cardClicked($event)"
-    (markAsSeenAction)="markAsSeenClicked($event)"
-    (archieveAction)="archieveClicked($event)"
-    (selectItemAction)="selectItem($event)"
-    [imageSource]="imageSource">
+  [list]="filtredItemsList"
+  [isMyPatients]="false"
+  (cardAction)="cardClicked($event)"
+  (detailAction)="cardClicked($event)"
+  (markAsSeenAction)="markAsSeenClicked($event)"
+  (archieveAction)="archieveClicked($event)"
+  (selectItemAction)="selectItem($event)"
+  [imageSource]="imageSource"
+>
 </lib-hlsMessagingList>
