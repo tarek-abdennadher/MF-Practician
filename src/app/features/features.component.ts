@@ -4,6 +4,10 @@ import { FeaturesService } from "./features.service";
 import { PracticianSearchService } from "./practician-search/practician-search.service";
 import { search } from "./practician-search/search.model";
 import { LocalStorageService } from "ngx-webstorage";
+import * as Stomp from "stompjs";
+import * as SockJS from "sockjs-client";
+import { GlobalService } from '@app/core/services/global.service';
+import { MessagingListService } from './services/messaging-list.service';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -15,8 +19,12 @@ export class FeaturesComponent implements OnInit {
     public router: Router,
     private localSt: LocalStorageService,
     public featuresService: FeaturesService,
-    private searchService: PracticianSearchService
-  ) { }
+    private searchService: PracticianSearchService,
+    private globalService: GlobalService,
+    private messageListService: MessagingListService
+  ) {
+    this.initializeWebSocketConnection();
+  }
   user = this.localSt.retrieve("user");
   fullName = this.user?.firstName + " " + this.user?.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -26,10 +34,50 @@ export class FeaturesComponent implements OnInit {
     isImportant: true,
     isFilter: true
   };
+  private stompClient;
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
+    this.getMyNotificationsNotSeen();
     this.countMyArchive();
   }
+  initializeWebSocketConnection() {
+    const ws = new SockJS(this.globalService.BASE_URL + "/socket");
+    this.stompClient = Stomp.over(ws);
+    this.stompClient.debug = () => { };
+    const that = this;
+    this.stompClient.connect({}, function (frame) {
+      that.stompClient.subscribe("/topic/notification/" + that.featuresService.getUserId(), message => {
+        if (message.body) {
+          let notification = JSON.parse(message.body);
+          console.log("subscribe")
+          that.messageListService.setNotificationObs(notification);
+          that.featuresService.listNotifications.unshift({
+            id: notification.id,
+            sender: notification.senderFullName,
+            picture: "assets/imgs/user.png",
+            messageId: notification.messageId
+          });
+        }
+      });
+    });
+  }
+
+  getMyNotificationsNotSeen() {
+    let notificationsFormated = [];
+    this.featuresService
+      .getMyNotificationsByMessagesNotSeen(false)
+      .subscribe(notifications => {
+        notifications.forEach(notif => {
+          notificationsFormated.push({
+            id: notif.id,
+            sender: notif.senderFullName,
+            picture: "assets/imgs/user.png",
+            messageId: notif.messageId
+          });
+        });
+        this.featuresService.listNotifications = notificationsFormated;
+      });
+    }
   countMyArchive() {
     this.featuresService.getCountOfMyArchieve().subscribe(resp => {
       this.featuresService.numberOfArchieve = resp;
@@ -112,12 +160,12 @@ export class FeaturesComponent implements OnInit {
   }
 
   selectNotification(notification) {
-    // console.log(notification);
-    // this.featuresService
-    //   .markMessageAsSeenByNotification(notification.messageId)
-    //   .subscribe(() => {
-    //     this.getMyNotificationsNotSeen();
-    //     this.router.navigate(["features/detail/" + notification.messageId]);
-    //   });
+    this.featuresService
+      .markMessageAsSeenByNotification(notification.messageId)
+      .subscribe(() => {
+        this.getMyNotificationsNotSeen();
+        this.router.navigate(["features/detail/"+notification.messageId]);
+      });
   }
+
 }

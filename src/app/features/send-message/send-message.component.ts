@@ -6,7 +6,7 @@ import { MessageService } from "../services/message.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { v4 as uuid } from "uuid";
 import { NodeeService } from "../services/node.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Message } from "@app/shared/models/message";
 import { ContactsService } from "../services/contacts.service";
 import { FeaturesService } from "../features.service";
@@ -25,8 +25,7 @@ export class SendMessageComponent implements OnInit {
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   connectedUser = "PR " + this.user?.firstName + " " + this.user?.lastName;
-
-  toList = [];
+  toList: Subject<any[]> = new Subject<any[]>();
   objectsList = [];
   selectedFiles: any;
   links = {
@@ -37,18 +36,23 @@ export class SendMessageComponent implements OnInit {
   page = this.globalService.messagesDisplayScreen.inbox;
   topText = this.globalService.messagesDisplayScreen.writeMessage;
   backButton = true;
-
+  selectedPracticianId: number;
   constructor(
+    private globalService: GlobalService,
     private localSt: LocalStorageService,
     private featureService: FeaturesService,
     private _location: Location,
     private contactsService: ContactsService,
     private requestTypeService: RequestTypeService,
     private messageService: MessageService,
-    private globalService: GlobalService,
     private nodeService: NodeeService,
-    private router: Router
-  ) {}
+    private router: Router,
+    public route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe(params => {
+      this.selectedPracticianId = params["id"] || null;
+    });
+  }
 
   ngOnInit(): void {
     forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
@@ -68,13 +72,17 @@ export class SendMessageComponent implements OnInit {
   }
 
   parseContactsPractician(contactsPractician) {
+    let myList = [];
     contactsPractician.forEach(contactPractician => {
-      this.toList.push({
+      myList.push({
         id: contactPractician.id,
         fullName: contactPractician.fullName,
-        type: contactPractician.contactType
+        type: contactPractician.contactType,
+        isSelected:
+          this.selectedPracticianId == contactPractician.id ? true : false
       });
     });
+    this.toList.next(myList);
   }
 
   getAllRequestTypes() {

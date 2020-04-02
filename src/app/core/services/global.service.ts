@@ -53,7 +53,9 @@ export class GlobalService {
     contact_pro_practicien:
       this.BASE_URL_CA + "/practician/contacts-pro-practicians",
     practicien_contact_pro_detach:
-      this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach"
+      this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach",
+    account: this.BASE_URL_CA + "/account",
+    account_update_secretary: this.BASE_URL_CA + "/account/update-secretary"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",

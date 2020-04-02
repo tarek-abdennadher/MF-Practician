@@ -160,7 +160,11 @@ export class ContactsComponent implements OnInit {
     }
   }
   markAsSeenClicked(item) {
-    this.router.navigate(["/features/messagerie-ecrire"]);
+    this.router.navigate(["/features/messagerie-ecrire"], {
+      queryParams: {
+        id: item.id
+      }
+    });
   }
   archieveClicked(event) {
     console.log("hello " + event.users[0].id);

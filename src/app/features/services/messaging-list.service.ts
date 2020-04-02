@@ -1,15 +1,24 @@
 import { Injectable } from '@angular/core';
 import { GlobalService } from '@app/core/services/global.service';
 import { RequestType } from '@app/shared/enmus/requestType';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagingListService {
 
+  private notificationObs: Subject<any> = new Subject();
+
   constructor(private globalService: GlobalService) { }
 
+  getNotificationObs(): Observable<any> {
+    return this.notificationObs.asObservable();
+  }
+
+  setNotificationObs(notif) {
+    this.notificationObs.next(notif);
+  }
   public getMyInbox(): Observable<any> {
     return this.globalService.call(RequestType.GET, this.globalService.url.messages + "myInbox");
   }

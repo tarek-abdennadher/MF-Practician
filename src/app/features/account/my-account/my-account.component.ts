@@ -1,28 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { AccountService } from '@app/features/services/account.service';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { AccountService } from "@app/features/services/account.service";
+import { Location } from "@angular/common";
+import { Router } from "@angular/router";
 @Component({
-  selector: 'app-my-account',
-  templateUrl: './my-account.component.html',
-  styleUrls: ['./my-account.component.scss']
+  selector: "app-my-account",
+  templateUrl: "./my-account.component.html",
+  styleUrls: ["./my-account.component.scss"]
 })
 export class MyAccountComponent implements OnInit {
   labels;
-  topText = 'Mon compte';
-  page = 'MY_ACCOUNT';
+  topText = "Mon compte";
+  page = "MY_ACCOUNT";
   backButton = true;
-  constructor(private accountService: AccountService,
-              private router: Router) {
+  constructor(private accountService: AccountService, private router: Router) {
     this.labels = this.accountService.messages;
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+  desactivateAccount() {
+    this.accountService.desactivateAccount().subscribe(resp => {
+      if (resp) {
+        this.router.navigate(["/connexion"]);
+      }
+    });
   }
   BackButton() {
-    this.router.navigate(['/features/messageries']);
+    this.router.navigate(["/features/messageries"]);
   }
   return() {
-    this.router.navigate(['/features/messageries']);
+    this.router.navigate(["/features/messageries"]);
   }
 }
