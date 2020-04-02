@@ -29,9 +29,6 @@ export class SendMessageComponent implements OnInit {
   objectsList = [];
   selectedFiles: any;
   links = {
-    isSeen: true,
-    isArchieve: true,
-    isImportant: true
   };
   page = this.globalService.messagesDisplayScreen.inbox;
   topText = this.globalService.messagesDisplayScreen.writeMessage;

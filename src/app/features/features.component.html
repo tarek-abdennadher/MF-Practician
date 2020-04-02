@@ -1,6 +1,7 @@
 <lib-hlsNavBar [fullName]="fullName" [imageSource]="imageSource" (accountButton)="openAccountInterface()"
   (signOut)="signOutAction()" (searchAction)="searchActionClicked($event)" [listNotifications]="featuresService.listNotifications"
-  (notificationsOpened)="openNotifications()" (notificationSelected)="selectNotification($event)"></lib-hlsNavBar>
+  (notificationsOpened)="openNotifications()" (notificationSelected)="selectNotification($event)"
+  (logoAction)="logoClicked()"></lib-hlsNavBar>
 <lib-hlsSideBar [inboxNumber]="featuresService.numberOfInbox" [archieveNumber]="featuresService.numberOfArchieve" [role]="role" (collapsedEvent)="receiveCollapsed($event)" (inboxEvent)="displayInboxAction()"
   (sendEvent)="displaySendAction()" (sentEvent)="displaySentAction()" (archieveEvent)="displayArchieveAction()"
   (myPatientsEvent)="displayMyPatientsAction()" (myProContactsEvent)="displayMyMedicalsAction()"
