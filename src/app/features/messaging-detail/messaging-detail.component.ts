@@ -58,14 +58,11 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   refuseAction() {
-    this.router.navigate(
-      ["/features/messagerie-repondre/", this.idMessage, "refus"],
-      {
-        queryParams: {
-          status: "refus"
-        }
+    this.router.navigate(["/features/messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        status: "refus"
       }
-    );
+    });
   }
 
   goToBack() {
