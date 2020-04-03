@@ -133,7 +133,11 @@ export class SendMessageComponent implements OnInit {
           .saveFileInMemory(this.uuid, formData)
           .pipe(takeUntil(this._destroyed$))
           .subscribe(mess => {
-            this.router.navigate(["/features/messageries", "success"]);
+            this.router.navigate(["/features/messageries"], {
+              queryParams: {
+                status: "sentSuccess"
+              }
+            });
           });
       } else {
         this.messageService
@@ -141,10 +145,18 @@ export class SendMessageComponent implements OnInit {
           .pipe(takeUntil(this._destroyed$))
           .subscribe(
             mess => {
-              this.router.navigate(["/features/messageries", "success"]);
+              this.router.navigate(["/features/messageries"], {
+                queryParams: {
+                  status: "sentSuccess"
+                }
+              });
             },
             error => {
-              this.router.navigate(["/features/messageries", "success"]);
+              this.router.navigate(["/features/messageries"], {
+                queryParams: {
+                  status: "sentSuccess"
+                }
+              });
             }
           );
       }

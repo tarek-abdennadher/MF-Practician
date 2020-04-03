@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, Params } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { MessageService } from "../services/message.service";
 import { FeaturesService } from "../features.service";
@@ -8,12 +8,16 @@ import { MessageParent } from "@app/shared/models/message-parent";
 import { GlobalService } from "@app/core/services/global.service";
 import { Location } from "@angular/common";
 import { NotifierService } from "angular-notifier";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { RefuseTypeService } from "../services/refuse-type.service";
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
   styleUrls: ["./messaging-reply.component.scss"]
 })
 export class MessagingReplyComponent implements OnInit {
+  private _destroyed$ = new Subject();
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox = true;
@@ -33,6 +37,8 @@ export class MessagingReplyComponent implements OnInit {
   selectedFiles: any;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
+  refuseResponse = false;
+  objectsList = [];
   constructor(
     private _location: Location,
     private featureService: FeaturesService,
@@ -41,12 +47,18 @@ export class MessagingReplyComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     private globalService: GlobalService,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    private refuseTypeService: RefuseTypeService
   ) {
     this.notifier = notifierService;
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params["status"] && params["status"] == "refus") {
+        this.refuseResponse = true;
+      }
+    });
     this.route.params.subscribe(params => {
       this.idMessage = params["id"];
       this.getMessageDetailById(this.idMessage);
@@ -55,10 +67,24 @@ export class MessagingReplyComponent implements OnInit {
   getMessageDetailById(id) {
     this.messagingDetailService
       .getMessagingDetailById(id)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(message => {
         message.hasFiles = false;
+        if (this.refuseResponse) {
+          message.object = [];
+          this.getAllRefuseTypes();
+        }
         message.body = "";
         this.messagingDetail = message;
+      });
+  }
+
+  getAllRefuseTypes() {
+    return this.refuseTypeService
+      .getAllRefuseTypes()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(refuseTypes => {
+        this.objectsList = refuseTypes;
       });
   }
 
@@ -69,7 +95,9 @@ export class MessagingReplyComponent implements OnInit {
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
-    replyMessage.object = message.object;
+    replyMessage.object = !this.refuseResponse
+      ? message.object
+      : message.object.name;
     replyMessage.sender = {
       senderId: this.featureService.getUserId()
     };
@@ -90,34 +118,54 @@ export class MessagingReplyComponent implements OnInit {
           this.selectedFiles.item(0).name
         );
       }
-      this.messageService.replyMessageWithFile(formData).subscribe(
-        message => {
-          this.router.navigate(["/features/messageries", "success"]);
-        },
-        error => {
-          this.notifier.show({
-            message: this.globalService.toastrMessages.send_message_error,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
-        }
-      );
+      this.messageService
+        .replyMessageWithFile(formData)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          message => {
+            this.router.navigate(["/features/messageries"], {
+              queryParams: {
+                status: "sentSuccess"
+              }
+            });
+          },
+          error => {
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl
+            });
+          }
+        );
     } else {
-      this.messageService.replyMessage(replyMessage).subscribe(
-        message => {
-          this.router.navigate(["/features/messageries", "success"]);
-        },
-        error => {
-          this.notifier.show({
-            message: this.globalService.toastrMessages.send_message_error,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
-        }
-      );
+      this.messageService
+        .replyMessage(replyMessage)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          message => {
+            this.router.navigate(["/features/messageries"], {
+              queryParams: {
+                status: "sentSuccess"
+              }
+            });
+          },
+          error => {
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl
+            });
+          }
+        );
     }
   }
   goToBack() {
     this._location.back();
+  }
+
+  // destory any subscribe to avoid memory leak
+  ngOnDestroy(): void {
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 }
