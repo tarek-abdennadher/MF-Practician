@@ -14,6 +14,9 @@ export class SentMessagesComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/user.png";
   links = {
+    isAllSelect: true,
+    isAllSeen: true,
+    isDelete: true,
     isFilter: true
   };
   page = "INBOX";
