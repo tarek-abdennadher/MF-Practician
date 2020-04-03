@@ -57,6 +57,7 @@ export class GlobalService {
       this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach",
     account: this.BASE_URL_CA + "/account",
     account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
+    favorite: this.BASE_URL_CA + "/favorite/",
     RefuseTypes: this.BASE_URL_MA + "/refuseType"
   };
   public toastrMessages = {
