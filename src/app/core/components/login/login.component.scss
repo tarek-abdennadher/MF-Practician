@@ -205,6 +205,7 @@ $color-hlessy-grey: #707070;
 
 // Responsive CSS End
 /* Begin Screen landscape CSS */
+
 //IPAD screen
 @media (width: 1024px) and (orientation: landscape) {
   .responsive-register {
@@ -223,7 +224,7 @@ $color-hlessy-grey: #707070;
     opacity: 1;
     padding: 0px;
     width: 45vw;
-    min-height: 133.4vh;
+    min-height: 125vh;
   }
 }
 @media (orientation: portrait) {
@@ -231,6 +232,7 @@ $color-hlessy-grey: #707070;
     min-height: 100vh;
   }
 }
+
 // large screens
 @media (min-width: 1800px) and (orientation: landscape) {
   .responsive-register {
@@ -239,10 +241,16 @@ $color-hlessy-grey: #707070;
     opacity: 1;
     padding: 0px;
     width: 40vw;
-    min-height: 100vh;
+    min-height: 125vh;
   }
 }
 /* End Screen landscape CSS */
+
+@media (min-width: 300px) {
+  .responsive-register {
+    min-height: 125vh;
+  }
+}
 
 p {
   text-align: center;
