@@ -222,14 +222,7 @@ export class MessagingListComponent implements OnInit {
     );
   }
   selectItem(event) {
-    this.selectedObjects = event;
-    this.filtredItemList.forEach(a => {
-      if (event.filter(b => b.id == a.id).length >= 1) {
-        a.isChecked = true;
-      } else {
-        a.isChecked = false;
-      }
-    });
+    this.selectedObjects = event.filter(a => a.isChecked == true);
   }
 
   getRealTimeMessage() {
