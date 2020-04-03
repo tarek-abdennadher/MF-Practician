@@ -1,9 +1,5 @@
 <lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
-    [backButton]="backButton" (selectAllAction)="selectAllActionClicked()"
-    (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
-    (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
-    (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
-    (addNoteAction)="addNoteActionClicked()" (selectItemAction)="selectItem($event)"
-    (filterAction)="filterActionClicked($event)"></lib-hlsLinks>
+    [backButton]="backButton" (selectItemAction)="selectItem($event)"
+     (backButtonAction)="BackButton()"></lib-hlsLinks>
 <lib-hlsMessagingList [list]="itemsList" (cardAction)="cardClicked($event)" (selectItemAction)="selectItem($event)"
     [imageSource]="imageSource"></lib-hlsMessagingList>

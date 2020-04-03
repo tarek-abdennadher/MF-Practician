@@ -2,6 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ArchieveMessagesService } from "./archieve-messages.service";
 import { MessageArchived } from "./message-archived";
+import { Location } from '@angular/common';
+import { FeaturesService } from '../features.service';
 
 @Component({
   selector: "app-archieve-messages",
@@ -11,21 +13,21 @@ import { MessageArchived } from "./message-archived";
 export class ArchieveMessagesComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
   links = {
-    isAllSelect: true,
-    isAllSeen: true,
-    isDelete: true,
-    isFilter: true
+    isAllSelect: true
   };
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
   bottomText = "messages";
-  backButton = false;
+  backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
   constructor(
     public router: Router,
-    private archivedService: ArchieveMessagesService
+    private archivedService: ArchieveMessagesService,
+    private _location: Location,
+    private featureService:FeaturesService
+
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class ArchieveMessagesComponent implements OnInit {
         let archivedMessage = this.mappingMessageArchived(message);
         this.itemsList.push(archivedMessage);
       });
+      this.bottomText= this.featureService.numberOfArchieve+" "+this.bottomText;
     });
   }
   mappingMessageArchived(message) {
@@ -72,7 +75,9 @@ export class ArchieveMessagesComponent implements OnInit {
     return messageArchived;
   }
   cardClicked(item) {
+    this.markMessageAsSeen(item.id)
     this.router.navigate(["/features/detail/" + item.id]);
+
   }
   selectAllActionClicked() {
     this.itemsList.forEach(a=> {
@@ -107,5 +112,12 @@ export class ArchieveMessagesComponent implements OnInit {
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
+  }
+  BackButton() {
+    this._location.back();
+  }
+
+  markMessageAsSeen(messageId){
+    this.archivedService.markMessageAsSeen(messageId).subscribe();
   }
 }
