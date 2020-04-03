@@ -1,22 +1,9 @@
-<lib-hlsLinks
-  [links]="links"
-  [page]="page"
-  [topText]="topText"
-  [bottomText]="bottomText"
-  [number]="number"
-  [backButton]="backButton"
-  (selectAllAction)="selectAllActionClicked()"
-  (deSelectAllAction)="deSelectAllActionClicked()"
-  (seenAction)="seenActionClicked()"
-  (seenAllAction)="seenAllActionClicked()"
-  (importantAction)="importantActionClicked()"
-  (deleteAction)="deleteActionClicked()"
-  (archieveAction)="archieveActionClicked()"
-  (addNoteAction)="addNoteActionClicked()"
-  (filterAction)="filterActionClicked($event)"
-></lib-hlsLinks>
-<lib-hlsMessagingList
-  [list]="itemsList"
-  (cardAction)="cardClicked($event)"
-  [imageSource]="imageSource"
-></lib-hlsMessagingList>
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+  [backButton]="backButton" (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
+  (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
+  (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
+  (addNoteAction)="addNoteActionClicked()" (filterAction)="filterActionClicked($event)"></lib-hlsLinks>
+<lib-hlsMessagingList [list]="itemsList" (selectItemAction)="selectItem($event)" (cardAction)="cardClicked($event)"
+  [imageSource]="imageSource">
+</lib-hlsMessagingList>
