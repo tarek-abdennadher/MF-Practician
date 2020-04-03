@@ -56,7 +56,8 @@ export class GlobalService {
     practicien_contact_pro_detach:
       this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach",
     account: this.BASE_URL_CA + "/account",
-    account_update_secretary: this.BASE_URL_CA + "/account/update-secretary"
+    account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
+    RefuseTypes: this.BASE_URL_MA + "/refuseType"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
@@ -66,7 +67,8 @@ export class GlobalService {
   public messagesDisplayScreen = {
     inbox: "INBOX",
     Mailbox: "Boite de réception",
-    newMessage: "nouveaux messages"
+    newMessage: "nouveaux messages",
+    writeMessage: "Ecrire un nouveau message"
   };
   public call(
     method: RequestType,

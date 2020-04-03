@@ -12,9 +12,7 @@ import { FeaturesService } from '../features.service';
 })
 export class ArchieveMessagesComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
-  links = {
-    isAllSelect: true
-  };
+
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
@@ -76,43 +74,9 @@ export class ArchieveMessagesComponent implements OnInit {
   }
   cardClicked(item) {
     this.markMessageAsSeen(item.id)
-    this.router.navigate(["/features/detail/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id]);
+  }
 
-  }
-  selectAllActionClicked() {
-    this.itemsList.forEach(a=> {
-      a.isChecked = true;
-    });
-  }
-  deSelectAllActionClicked() {
-    this.itemsList.forEach(a=> {
-      a.isChecked = false;
-    });
-  }
-  seenActionClicked() {
-    console.log("seenAction");
-  }
-  seenAllActionClicked() {
-    console.log("seenAllAction");
-  }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
-  archieveActionClicked() {
-    console.log("archieveAction");
-  }
-  addNoteActionClicked() {
-    console.log("addNoteAction");
-  }
-  filterActionClicked(event) {
-    console.log(event);
-  }
-  selectItem(event) {
-    this.selectedObjects = event.filter(a => a.isChecked == true);
-  }
   BackButton() {
     this._location.back();
   }

@@ -3,8 +3,7 @@ import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { MessageService } from "../services/message.service";
 import { takeUntil } from "rxjs/operators";
-import { MessageSent } from '@app/shared/models/message-sent';
-
+import { MessageSent } from "@app/shared/models/message-sent";
 
 @Component({
   selector: "app-sent-messages",
@@ -15,6 +14,9 @@ export class SentMessagesComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/user.png";
   links = {
+    isAllSelect: true,
+    isAllSeen: true,
+    isDelete: true,
     isFilter: true
   };
   page = "INBOX";
@@ -68,16 +70,16 @@ export class SentMessagesComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/features/detail/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id]);
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach(a=> {
+    this.itemsList.forEach(a => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach(a=> {
+    this.itemsList.forEach(a => {
       a.isChecked = false;
     });
   }
