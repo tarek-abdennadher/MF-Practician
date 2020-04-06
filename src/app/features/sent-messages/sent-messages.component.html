@@ -16,7 +16,8 @@
   (filterAction)="filterActionClicked($event)"
 ></lib-hlsLinks>
 <lib-hlsMessagingList
-  [list]="itemsList"
+  [list]="filtredItemList"
+  (archieveAction)="archieveMessage($event)"
   (cardAction)="cardClicked($event)"
   [imageSource]="imageSource"
 ></lib-hlsMessagingList>
