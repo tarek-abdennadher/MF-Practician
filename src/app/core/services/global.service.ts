@@ -44,6 +44,7 @@ export class GlobalService {
     archived_messages: this.BASE_URL_MA + "/messagesArchived/",
     messages: this.BASE_URL_MA + "/messages/",
     receiver: this.BASE_URL_MA + "/receivers/",
+    receiverArchived: this.BASE_URL_MA + "/receiversArchived/",
     contact_pro: this.BASE_URL_CA + "/contact",
     contact_pro_by_session: this.BASE_URL_CA + "/contact/pro/bysession",
     contact_pro_delete: this.BASE_URL_CA + "/contact/deleteMultiple",
@@ -55,7 +56,9 @@ export class GlobalService {
     practicien_contact_pro_detach:
       this.BASE_URL_CA + "/practician/contacts-pro-practicians-detach",
     account: this.BASE_URL_CA + "/account",
-    account_update_secretary: this.BASE_URL_CA + "/account/update-secretary"
+    account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
+    favorite: this.BASE_URL_CA + "/favorite/",
+    RefuseTypes: this.BASE_URL_MA + "/refuseType"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",

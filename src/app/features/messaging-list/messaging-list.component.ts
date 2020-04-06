@@ -3,7 +3,7 @@ import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
-import { FeaturesService } from '../features.service';
+import { FeaturesService } from "../features.service";
 
 @Component({
   selector: "app-messaging-list",
@@ -46,10 +46,18 @@ export class MessagingListComponent implements OnInit {
     this.itemsList = new Array();
     this.getMyInbox();
     this.getRealTimeMessage();
-    this.route.params.subscribe(params => {
-      if (params["id"]) {
+    this.route.queryParams.subscribe(params => {
+      if (params["status"]) {
+        let notifMessage = "";
+        switch (params["status"]) {
+          case "sentSuccess": {
+            notifMessage = this.globalService.toastrMessages
+              .send_message_success;
+            break;
+          }
+        }
         this.notifier.show({
-          message: this.globalService.toastrMessages.send_message_success,
+          message: notifMessage,
           type: "info",
           template: this.customNotificationTmpl
         });
@@ -59,7 +67,7 @@ export class MessagingListComponent implements OnInit {
 
   cardClicked(item) {
     this.markMessageAsSeen(item);
-    this.router.navigate(["/features/detail/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id]);
     this.featureService.listNotifications = this.featureService.listNotifications.filter(
       notif => notif.messageId != item.id
     );
@@ -98,15 +106,19 @@ export class MessagingListComponent implements OnInit {
       .filter(e => e.isChecked == true)
       .map(e => e.id);
     if (messagesId.length > 0) {
-      this.featureService.numberOfArchieve = this.featureService.numberOfArchieve + messagesId.length;
+      this.featureService.numberOfArchieve =
+        this.featureService.numberOfArchieve + messagesId.length;
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         resp => {
-            this.itemsList = this.itemsList.filter(function(elm, ind) {
-              return messagesId.indexOf(elm.id) == -1;
-            });
-            this.filtredItemList = this.filtredItemList.filter(function(elm,ind) {
-              return messagesId.indexOf(elm.id) == -1;
-            });
+          this.itemsList = this.itemsList.filter(function(elm, ind) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+          this.filtredItemList = this.filtredItemList.filter(function(
+            elm,
+            ind
+          ) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
         },
         error => {
           console.log("We have to find a way to notify user by this error");
@@ -196,13 +208,13 @@ export class MessagingListComponent implements OnInit {
     let messageId = event.id;
     this.messagesServ.markMessageAsArchived([messageId]).subscribe(
       resp => {
-          this.itemsList = this.itemsList.filter(function(elm, ind) {
-            return elm.id != event.id;
-          });
-          this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
-            return elm.id != event.id;
-          });
-          this.featureService.numberOfArchieve++;
+        this.itemsList = this.itemsList.filter(function(elm, ind) {
+          return elm.id != event.id;
+        });
+        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+          return elm.id != event.id;
+        });
+        this.featureService.numberOfArchieve++;
       },
       error => {
         console.log("We have to find a way to notify user by this error");
@@ -210,19 +222,12 @@ export class MessagingListComponent implements OnInit {
     );
   }
   selectItem(event) {
-    this.selectedObjects = event;
-    this.filtredItemList.forEach(a => {
-      if (event.filter(b => b.id == a.id).length >= 1) {
-        a.isChecked = true;
-      } else {
-        a.isChecked = false;
-      }
-    });
+    this.selectedObjects = event.filter(a => a.isChecked == true);
   }
 
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe(notif => {
       this.itemsList.unshift(this.parseMessage(notif.message));
-    })
+    });
   }
 }

@@ -76,7 +76,7 @@ export class SentMessagesComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/features/detail/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id]);
   }
 
   selectAllActionClicked() {

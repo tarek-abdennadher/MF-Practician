@@ -93,7 +93,11 @@ export class SendMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
-    if (message.to !== "" && message.body !== "") {
+    if (
+      message.to.length != 0 &&
+      (message.freeObject != "" || message.object != "") &&
+      message.body != undefined
+    ) {
       this.uuid = uuid();
       const newMessage = new Message();
       message.to.forEach(to => {
@@ -116,6 +120,7 @@ export class SendMessageComponent implements OnInit {
 
         const formData = new FormData();
         if (this.selectedFiles) {
+          newMessage.hasFiles;
           formData.append("model", JSON.stringify(newMessage));
           formData.append(
             "file",
@@ -128,7 +133,11 @@ export class SendMessageComponent implements OnInit {
           .saveFileInMemory(this.uuid, formData)
           .pipe(takeUntil(this._destroyed$))
           .subscribe(mess => {
-            this.router.navigate(["/features/messageries", "success"]);
+            this.router.navigate(["/features/messageries"], {
+              queryParams: {
+                status: "sentSuccess"
+              }
+            });
           });
       } else {
         this.messageService
@@ -136,10 +145,18 @@ export class SendMessageComponent implements OnInit {
           .pipe(takeUntil(this._destroyed$))
           .subscribe(
             mess => {
-              this.router.navigate(["/features/messageries", "success"]);
+              this.router.navigate(["/features/messageries"], {
+                queryParams: {
+                  status: "sentSuccess"
+                }
+              });
             },
             error => {
-              this.router.navigate(["/features/messageries", "success"]);
+              this.router.navigate(["/features/messageries"], {
+                queryParams: {
+                  status: "sentSuccess"
+                }
+              });
             }
           );
       }

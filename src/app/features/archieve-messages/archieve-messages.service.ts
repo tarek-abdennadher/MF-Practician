@@ -15,4 +15,9 @@ export class ArchieveMessagesService {
       this.globalService.url.archived_messages + "my"
     );
   }
+
+  public markMessageAsSeen(id: number): Observable<boolean> {
+    return this.globalService.call(RequestType.POST,
+                                   this.globalService.url.receiverArchived + "markMessageSeen/" + id);
+  }
 }

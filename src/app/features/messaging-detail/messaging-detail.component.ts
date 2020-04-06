@@ -40,6 +40,7 @@ export class MessagingDetailComponent implements OnInit {
       this.getMessageDetailById(this.idMessage);
     });
   }
+
   getMessageDetailById(id) {
     this.messagingDetailService
       .getMessagingDetailById(id)
@@ -47,9 +48,23 @@ export class MessagingDetailComponent implements OnInit {
         this.messagingDetail = message;
       });
   }
+
   replyAction() {
     this.router.navigate(["/features/messagerie-repondre/", this.idMessage]);
   }
+
+  acceptAction() {
+    this.router.navigate(["/features/messagerie-repondre/", this.idMessage]);
+  }
+
+  refuseAction() {
+    this.router.navigate(["/features/messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        status: "refus"
+      }
+    });
+  }
+
   goToBack() {
     this._location.back();
   }
