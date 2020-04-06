@@ -105,7 +105,6 @@ export class SentMessagesComponent implements OnInit {
     const messagesId = this.filtredItemList
       .filter(e => e.isChecked == true)
       .map(e => e.id);
-    console.log(messagesId);
     if (messagesId.length > 0) {
       this.featureService.numberOfArchieve =
         this.featureService.numberOfArchieve + messagesId.length;
