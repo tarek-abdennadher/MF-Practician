@@ -57,7 +57,9 @@ export class ArchieveMessagesComponent implements OnInit {
         title: message.senderDetail.patient
           ? ""
           : message.senderDetail.practician.title,
-        type: message.senderDetail.role
+        type: message.senderDetail.role == "PRACTICIAN"
+        ? "MEDICAL"
+        : message.senderDetail.role
       }
     ];
     messageArchived.object = {
