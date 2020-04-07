@@ -103,7 +103,7 @@ export class ContactsComponent implements OnInit {
       if (a.isChecked && a.users[0].canEdit) {
         ids.push(a.id);
       }
-      if (a.isChecked && !a.users[0].canEdit && a.users[0].practicianId) {
+      if (a.isChecked && !a.users[0].canEdit && a.practicianId) {
         practicianIds.push(a.id);
       }
     });
@@ -115,12 +115,11 @@ export class ContactsComponent implements OnInit {
             .subscribe();
         }
       });
-    } else {
-      if (practicianIds.length > 0) {
-        this.contactsService
-          .deleteMultiplePracticianContactPro(practicianIds)
-          .subscribe((res) => {});
-      }
+    }
+    if (practicianIds.length > 0) {
+      this.contactsService
+        .deleteMultiplePracticianContactPro(practicianIds)
+        .subscribe((res) => {});
     }
     this.getAllContacts();
   }
@@ -157,12 +156,11 @@ export class ContactsComponent implements OnInit {
             .subscribe();
         }
       });
-    } else {
-      if (practicianIds.length > 0) {
-        this.contactsService
-          .deleteMultiplePracticianContactPro(practicianIds)
-          .subscribe((res) => {});
-      }
+    }
+    if (practicianIds.length > 0) {
+      this.contactsService
+        .deleteMultiplePracticianContactPro(practicianIds)
+        .subscribe((res) => {});
     }
     this.getAllContacts();
   }
