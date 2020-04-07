@@ -3,7 +3,7 @@ import {
   FormGroup,
   FormBuilder,
   FormControl,
-  Validators
+  Validators,
 } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
@@ -12,7 +12,7 @@ declare var $: any;
 @Component({
   selector: "app-my-secretaries",
   templateUrl: "./my-secretaries.component.html",
-  styleUrls: ["./my-secretaries.component.scss"]
+  styleUrls: ["./my-secretaries.component.scss"],
 })
 export class MySecretariesComponent implements OnInit {
   selectedSecretary: any;
@@ -50,13 +50,13 @@ export class MySecretariesComponent implements OnInit {
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, Validators.email]
+        validators: [Validators.required, Validators.email],
       }),
       civility: new FormControl(null, Validators.required),
       phone: new FormControl(null, {
-        validators: [Validators.required, Validators.pattern("[0-9]*")]
+        validators: [Validators.required, Validators.pattern("[0-9]*")],
       }),
-      picture: new FormControl(null)
+      picture: new FormControl(null),
     });
   }
   get ctr() {
@@ -87,9 +87,9 @@ export class MySecretariesComponent implements OnInit {
         firstName: this.infoForm.value.first_name,
         lastName: this.infoForm.value.last_name,
         photoId: this.infoForm.value.picture,
-        civility: this.infoForm.value.civility
+        civility: this.infoForm.value.civility,
       };
-      this.accountService.addSecretary(model).subscribe(res => {
+      this.accountService.addSecretary(model).subscribe((res) => {
         this.showAlert = true;
         this.initInfoForm();
         $(".alert").alert();
@@ -107,10 +107,10 @@ export class MySecretariesComponent implements OnInit {
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           photoId: this.infoForm.value.picture,
-          civility: this.infoForm.value.civility
-        }
+          civility: this.infoForm.value.civility,
+        },
       };
-      this.accountService.updateSecretaryAccount(model).subscribe(res => {
+      this.accountService.updateSecretaryAccount(model).subscribe((res) => {
         this.showAlert = true;
         this.initInfoForm();
         $(".alert").alert();
@@ -125,9 +125,9 @@ export class MySecretariesComponent implements OnInit {
   }
   getMySecretaries() {
     this.accountService.getMySecretaries().subscribe(
-      contacts => {
+      (contacts) => {
         this.users = contacts;
-        this.itemsList = this.users.map(elm => {
+        this.itemsList = this.users.map((elm) => {
           return {
             id: elm.id,
             isSeen: true,
@@ -136,26 +136,25 @@ export class MySecretariesComponent implements OnInit {
                 id: elm.id,
                 fullName: elm.fullName,
                 img: "assets/imgs/IMG_3944.jpg",
-                title: "Sc",
-                type: "MEDICAL"
-              }
+                type: "MEDICAL",
+              },
             ],
             isArchieve: true,
             isImportant: false,
             hasFiles: false,
             isViewDetail: true,
             isMarkAsSeen: false,
-            isChecked: false
+            isChecked: false,
           };
         });
       },
-      error => {
+      (error) => {
         console.log("error");
       }
     );
   }
   cardClicked(item) {
-    this.accountService.getAccountById(item.id).subscribe(value => {
+    this.accountService.getAccountById(item.id).subscribe((value) => {
       this.selectedSecretary = value;
       this.infoForm.patchValue({
         id: value.id,
@@ -165,7 +164,7 @@ export class MySecretariesComponent implements OnInit {
         email: value.email,
         civility: value.secretary ? value.secretary.civility : null,
         phone: value.phoneNumber,
-        picture: value.secretary ? value.secretary.photoId : null
+        picture: value.secretary ? value.secretary.photoId : null,
       });
       this.isEdit = true;
       this.isList = false;
@@ -174,9 +173,14 @@ export class MySecretariesComponent implements OnInit {
   selectItem(event) {}
   deleteActionClicked() {}
   archieveClicked(item) {
+    this.selectedSecretary = item;
+    $("#exampleModal").appendTo("body").modal("toggle");
+  }
+  deleteSecretary() {
     this.accountService
-      .desactivateMultipleAccount([item.id])
-      .subscribe(resp => {
+      .desactivateMultipleAccount([this.selectedSecretary.id])
+      .subscribe((resp) => {
+        $("#exampleModal").modal("toggle");
         this.getMySecretaries();
       });
   }
