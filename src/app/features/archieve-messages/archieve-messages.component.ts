@@ -35,6 +35,7 @@ export class ArchieveMessagesComponent implements OnInit {
     this.archivedService.getMyArchivedMessages().subscribe((messages) => {
       messages.forEach((message) => {
         this.number = message.length;
+        this.bottomText = this.number != 1 ? "messages" : "message";
         let archivedMessage = this.mappingMessageArchived(message);
         this.itemsList.push(archivedMessage);
       });
