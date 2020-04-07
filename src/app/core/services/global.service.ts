@@ -59,6 +59,7 @@ export class GlobalService {
     account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
     favorite: this.BASE_URL_CA + "/favorite/",
     RefuseTypes: this.BASE_URL_MA + "/refuseType",
+    contact_pro_all: this.BASE_URL_CA + "/contact/contacts-practician-all",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",

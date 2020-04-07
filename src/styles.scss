@@ -19,7 +19,7 @@
 $custom-typography: mat-typography-config(
   $font-family: "Gotham-book",
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500)
+  $body-1: mat-typography-level(16px, 24px, 500),
 );
 @include mat-base-typography($custom-typography);
 @include mat-checkbox-typography($custom-typography);
@@ -54,11 +54,15 @@ body {
 }
 body {
   margin: 0;
-  background-color: #f7f7f7 !important;
+  background-color: #FFFFFF !important;
   @media (min-width: 400px) {
     zoom: 80%;
   }
   @media (min-width: 1920px) {
     zoom: 100%;
   }
+}
+.modal-backdrop {
+  width: 100% !important;
+  height: 100% !important;
 }
