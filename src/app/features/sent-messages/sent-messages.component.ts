@@ -16,13 +16,12 @@ export class SentMessagesComponent implements OnInit {
   imageSource = "assets/imgs/user.png";
   links = {
     isAllSelect: true,
-    isAllSeen: false,
-    isFilter: false,
-    isArchieve: true,
+    isFilter: true,
+    isArchieve: true
   };
   page = "INBOX";
   number = 0;
-  topText = "Messages envoy√©s";
+  topText = "Messages envoyés";
   bottomText = "";
   backButton = false;
   itemsList = [];
