@@ -9,15 +9,16 @@ import { FeaturesService } from "../features.service";
 @Component({
   selector: "app-sent-messages",
   templateUrl: "./sent-messages.component.html",
-  styleUrls: ["./sent-messages.component.scss"]
+  styleUrls: ["./sent-messages.component.scss"],
 })
 export class SentMessagesComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/user.png";
   links = {
-    isFilter: true,
     isAllSelect: true,
-    isArchieve: true
+    isAllSeen: false,
+    isFilter: false,
+    isArchieve: true,
   };
   page = "INBOX";
   number = 0;
@@ -42,7 +43,7 @@ export class SentMessagesComponent implements OnInit {
       .sentMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
-        messages.forEach(message => {
+        messages.forEach((message) => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           this.itemsList.push(messageSent);
@@ -55,17 +56,17 @@ export class SentMessagesComponent implements OnInit {
     const messageSent = new MessageSent();
     messageSent.isSeen = true;
     messageSent.users = [];
-    message.toReceivers.forEach(r => {
+    message.toReceivers.forEach((r) => {
       messageSent.users.push({
         fullName: r.fullName,
         img: this.imageSource,
         title: r.jobTitle,
-        type: r.role
+        type: r.role,
       });
     });
     messageSent.object = {
       name: message.object,
-      isImportant: message.importantObject
+      isImportant: message.importantObject,
     };
     messageSent.time = message.createdAt;
     messageSent.isImportant = message.important;
@@ -80,12 +81,12 @@ export class SentMessagesComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       a.isChecked = false;
     });
   }
@@ -103,24 +104,24 @@ export class SentMessagesComponent implements OnInit {
   }
   archieveActionClicked() {
     const messagesId = this.filtredItemList
-      .filter(e => e.isChecked == true)
-      .map(e => e.id);
+      .filter((e) => e.isChecked == true)
+      .map((e) => e.id);
     if (messagesId.length > 0) {
       this.featureService.numberOfArchieve =
         this.featureService.numberOfArchieve + messagesId.length;
       this.messageService.markMessageAsArchived(messagesId).subscribe(
-        resp => {
-          this.itemsList = this.itemsList.filter(function(elm, ind) {
+        (resp) => {
+          this.itemsList = this.itemsList.filter(function (elm, ind) {
             return messagesId.indexOf(elm.id) == -1;
           });
-          this.filtredItemList = this.filtredItemList.filter(function(
+          this.filtredItemList = this.filtredItemList.filter(function (
             elm,
             ind
           ) {
             return messagesId.indexOf(elm.id) == -1;
           });
         },
-        error => {
+        (error) => {
           console.log("We have to find a way to notify user by this error");
         }
       );
@@ -129,16 +130,16 @@ export class SentMessagesComponent implements OnInit {
   archieveMessage(event) {
     let messageId = event.id;
     this.messageService.markMessageAsArchived([messageId]).subscribe(
-      resp => {
-        this.itemsList = this.itemsList.filter(function(elm, ind) {
+      (resp) => {
+        this.itemsList = this.itemsList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
-        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+        this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
         this.featureService.numberOfArchieve++;
       },
-      error => {
+      (error) => {
         console.log("We have to find a way to notify user by this error");
       }
     );
@@ -151,13 +152,13 @@ export class SentMessagesComponent implements OnInit {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(
-            item =>
+            (item) =>
               item.users[0].type.toLowerCase() ==
               (event == "doctor" ? "medical" : event)
           );
   }
   selectItem(event) {
-    this.selectedObjects = event.filter(a => a.isChecked == true);
+    this.selectedObjects = event.filter((a) => a.isChecked == true);
   }
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {

@@ -58,18 +58,19 @@ export class GlobalService {
     account: this.BASE_URL_CA + "/account",
     account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
     favorite: this.BASE_URL_CA + "/favorite/",
-    RefuseTypes: this.BASE_URL_MA + "/refuseType"
+    RefuseTypes: this.BASE_URL_MA + "/refuseType",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
-    send_message_error: "Votre message n'a pas pu être envoyé"
+    send_message_error: "Votre message n'a pas pu être envoyé",
   };
 
   public messagesDisplayScreen = {
     inbox: "INBOX",
     Mailbox: "Boite de réception",
     newMessage: "nouveaux messages",
-    writeMessage: "Ecrire un nouveau message"
+    writeMessage: "Ecrire un nouveau message",
+    other: "autre",
   };
   public call(
     method: RequestType,
@@ -88,7 +89,7 @@ export class GlobalService {
       }
       case RequestType.DELETE: {
         args[0] = {
-          responseType: "text"
+          responseType: "text",
         };
         return this.httpClient.delete<any>(url, args[0]);
       }
