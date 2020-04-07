@@ -4,7 +4,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessagingDetailService {
   constructor(private globalService: GlobalService) {}
@@ -19,5 +19,20 @@ export class MessagingDetailService {
   patientsProhibitedByCurrentPractician(): Observable<number[]> {
     return this.globalService.call(RequestType.GET, this.globalService.url.favorite +
       "currentPractician/prohibitedPatientId");
+  }
+  public markMessageAsImportant(ids: number[]): Observable<boolean> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages + "important/all",
+      ids
+    );
+  }
+
+  public markMessageAsArchived(ids: number[]): Observable<number> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages + "archive/all",
+      ids
+    );
   }
 }

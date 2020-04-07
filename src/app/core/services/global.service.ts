@@ -59,10 +59,16 @@ export class GlobalService {
     account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
     favorite: this.BASE_URL_CA + "/favorite/",
     RefuseTypes: this.BASE_URL_MA + "/refuseType",
+    contact_pro_all: this.BASE_URL_CA + "/contact/contacts-practician-all",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
     send_message_error: "Votre message n'a pas pu être envoyé",
+    archived_message_success: "Message archivé.",
+    archived_message_error: "Votre message n'a pas pu être archivé",
+    mark_important_message_success: "Message marquer comme important.",
+    mark_important_message_error:
+      "Votre message n'a pas pu être marquer comme important",
   };
 
   public messagesDisplayScreen = {

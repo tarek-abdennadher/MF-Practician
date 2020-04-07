@@ -1,8 +1,10 @@
 $color-helssy-pink: #ff0063;
 $color-helssy-blue: #1a56a7;
 $color-hlessy-grey: #707070;
+$color-helssy-white: #FFFFFF;
 
-@media (min-width: 1024px) and(max-width:1124px) {
+@media (min-width: 1024px)
+ {
   .register-container {
     overflow-y: auto;
     background-image: url("assets/imgs/home-page.png");
@@ -11,26 +13,41 @@ $color-hlessy-grey: #707070;
     background-size: 100% 100%;
     position: relative;
     display: flex;
+    background-color: $color-helssy-white;
   }
 }
-@media (min-width: 1125px) and (max-width: 1329px) {
+@media (min-width: 1125px)  {
   .register-container {
     overflow-y: auto;
     background-image: url("assets/imgs/home-page.png");
-    background-position-x: 500px, center;
+    background-position-x: 600px, center;
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 80% 100%;
     position: relative;
     display: flex;
+    background-color: $color-helssy-white;
   }
 }
 @media (min-width: 1330px) {
   .register-container {
     overflow-y: auto;
     background-image: url("assets/imgs/home-page.png");
-    background-position-x: 580px, center;
+    background-color: $color-helssy-white;
+    background-position-x: 705px, center;
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 80% 100%;
+    position: relative;
+    display: flex;
+  }
+}
+@media (min-width: 1490px) {
+  .register-container {
+    overflow-y: auto;
+    background-image: url("assets/imgs/home-page.png");
+    background-color: $color-helssy-white;
+    background-position-x: 908px, center;
+    background-repeat: no-repeat;
+    background-size: 80% 100%;
     position: relative;
     display: flex;
   }
@@ -205,7 +222,6 @@ $color-hlessy-grey: #707070;
 
 // Responsive CSS End
 /* Begin Screen landscape CSS */
-
 //IPAD screen
 @media (width: 1024px) and (orientation: landscape) {
   .responsive-register {
@@ -232,7 +248,6 @@ $color-hlessy-grey: #707070;
     min-height: 100vh;
   }
 }
-
 // large screens
 @media (min-width: 1800px) and (orientation: landscape) {
   .responsive-register {
@@ -241,16 +256,10 @@ $color-hlessy-grey: #707070;
     opacity: 1;
     padding: 0px;
     width: 40vw;
-    min-height: 125vh;
+    min-height: 100vh;
   }
 }
 /* End Screen landscape CSS */
-
-@media (min-width: 300px) {
-  .responsive-register {
-    min-height: 125vh;
-  }
-}
 
 p {
   text-align: center;
@@ -282,4 +291,9 @@ a:hover,
 a:active,
 a:focus {
   text-decoration: underline;
+}
+.card{
+background: $color-helssy-white 0% 0% no-repeat padding-box;
+border: 0px;
+opacity: 1;
 }
