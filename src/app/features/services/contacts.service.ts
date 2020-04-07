@@ -41,7 +41,7 @@ export class ContactsService {
   getContactsPro() {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.contact_pro_by_session
+      this.globalService.url.contact_pro_all
     );
   }
   getAllSpecialities(): Observable<Array<Speciality>> {

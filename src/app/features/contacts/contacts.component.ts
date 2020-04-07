@@ -7,7 +7,7 @@ import { AccountService } from "../services/account.service";
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
-  styleUrls: ["./contacts.component.scss"]
+  styleUrls: ["./contacts.component.scss"],
 })
 export class ContactsComponent implements OnInit {
   specialities: Array<Speciality>;
@@ -20,7 +20,7 @@ export class ContactsComponent implements OnInit {
     isAllSelect: true,
     isDelete: true,
     isTypeFilter: true,
-    isAdd: true
+    isAdd: true,
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts PRO";
@@ -39,80 +39,38 @@ export class ContactsComponent implements OnInit {
     this.types = new Array();
     this.getAllSpeciality();
     this.getAllContacts();
-    this.getMyPracticianContactPro();
   }
-  getMyPracticianContactPro() {
-    this.accountService.getMyPracticianProContact().subscribe(
-      contacts => {
-        if (contacts) {
-          contacts.forEach(c => this.users.push(c));
-        }
-        let items = contacts.map(elm => {
+  getAllContacts() {
+    this.contactsService.getContactsPro().subscribe(
+      (contacts) => {
+        this.users = contacts;
+        this.itemsList = this.users.map((elm) => {
           return {
             id: elm.id,
-            practicianId: elm.practicianId,
+            practicianId: elm.entityId,
             isSeen: true,
             users: [
               {
                 id: elm.id,
                 fullName: elm.fullName,
                 img: "assets/imgs/IMG_3944.jpg",
-                title: "Dr",
-                type: "MEDICAL",
-                canEdit: false
-              }
-            ],
-            isArchieve: true,
-            isImportant: false,
-            hasFiles: false,
-            isViewDetail: true,
-            isMarkAsSeen: true,
-            isChecked: false
-          };
-        });
-        if (items) {
-          items.forEach(i => this.itemsList.push(i));
-        }
-      },
-      error => {
-        console.log("error");
-      }
-    );
-  }
-  getAllContacts() {
-    this.contactsService.getContactsPro().subscribe(
-      contacts => {
-        this.users = contacts;
-        this.itemsList = this.users.map(elm => {
-          return {
-            id: elm.id,
-            isSeen: true,
-            users: [
-              {
-                id: elm.id,
-                fullName: elm.firstName + " " + elm.lastName,
-                img: "assets/imgs/IMG_3944.jpg",
                 title: elm.title,
                 type: "MEDICAL",
-                speciality: elm.speciality ? elm.speciality.name : "Tout",
-                canEdit: true
-              }
+                speciality: elm.speciality ? elm.speciality : "Tout",
+                canEdit: elm.contactType == "CONTACT" ? true : false,
+              },
             ],
-            object: {
-              name: elm.facilityName,
-              isImportant: false
-            },
-            isArchieve: true,
+            isArchieve: elm.contactType == "SECRETARY" ? false : true,
             isImportant: false,
             hasFiles: false,
-            isViewDetail: true,
-            isMarkAsSeen: false,
-            isChecked: false
+            isViewDetail: elm.contactType == "SECRETARY" ? false : true,
+            isMarkAsSeen: elm.contactType == "MEDICAL" ? true : false,
+            isChecked: false,
           };
         });
         this.filtredItemsList = this.itemsList;
       },
-      error => {
+      (error) => {
         console.log("en attendant un model de popup à afficher");
       }
     );
@@ -123,68 +81,64 @@ export class ContactsComponent implements OnInit {
   }
 
   performFilter(filterBy: string) {
-    return this.itemsList.filter(item =>
+    return this.itemsList.filter((item) =>
       item.users[0].speciality.includes(filterBy)
     );
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       a.isChecked = true;
     });
   }
   deselectAllActionClicked() {
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       a.isChecked = false;
     });
   }
   deleteActionClicked() {
     const ids = [];
     const practicianIds = [];
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       if (a.isChecked && a.users[0].canEdit) {
         ids.push(a.id);
       }
-      if (a.isChecked && !a.users[0].canEdit) {
+      if (a.isChecked && !a.users[0].canEdit && a.users[0].practicianId) {
         practicianIds.push(a.id);
       }
     });
     if (ids.length > 0) {
-      this.contactsService.deleteMultiple(ids).subscribe(res => {
+      this.contactsService.deleteMultiple(ids).subscribe((res) => {
         if (practicianIds.length > 0) {
           this.contactsService
             .deleteMultiplePracticianContactPro(practicianIds)
             .subscribe();
         }
-        this.getAllContacts();
-        this.getMyPracticianContactPro();
       });
     } else {
       if (practicianIds.length > 0) {
         this.contactsService
           .deleteMultiplePracticianContactPro(practicianIds)
-          .subscribe(res => {
-            this.getAllContacts();
-            this.getMyPracticianContactPro();
-          });
+          .subscribe((res) => {});
       }
     }
+    this.getAllContacts();
   }
 
   cardClicked(item) {
     if (item.users[0].canEdit) {
       this.router.navigate(["/features/contact-detail/" + item.id]);
-    } else {
+    } else if (item.practicianId) {
       this.router.navigate([
-        "/features/practician-detail/" + item.practicianId
+        "/features/practician-detail/" + item.practicianId,
       ]);
     }
   }
   markAsSeenClicked(item) {
     this.router.navigate(["/features/messagerie-ecrire"], {
       queryParams: {
-        id: item.id
-      }
+        id: item.id,
+      },
     });
   }
   archieveClicked(event) {
@@ -196,34 +150,30 @@ export class ContactsComponent implements OnInit {
       practicianIds.push(event.id);
     }
     if (ids.length > 0) {
-      this.contactsService.deleteMultiple(ids).subscribe(res => {
+      this.contactsService.deleteMultiple(ids).subscribe((res) => {
         if (practicianIds.length > 0) {
           this.contactsService
             .deleteMultiplePracticianContactPro(practicianIds)
             .subscribe();
         }
-        this.getAllContacts();
-        this.getMyPracticianContactPro();
       });
     } else {
       if (practicianIds.length > 0) {
         this.contactsService
           .deleteMultiplePracticianContactPro(practicianIds)
-          .subscribe(res => {
-            this.getAllContacts();
-            this.getMyPracticianContactPro();
-          });
+          .subscribe((res) => {});
       }
     }
+    this.getAllContacts();
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe(
-      specialitiesList => {
+      (specialitiesList) => {
         this.specialities = specialitiesList;
-        this.types = this.specialities.map(s => s.name);
+        this.types = this.specialities.map((s) => s.name);
         this.types.unshift("Tout");
       },
-      error => {
+      (error) => {
         console.log("en attendant un model de popup à afficher");
       }
     );
@@ -232,7 +182,7 @@ export class ContactsComponent implements OnInit {
     this.router.navigate(["/features/contact-detail/add"]);
   }
   selectItem(event) {
-    this.selectedObjects = event.filter(a => a.isChecked == true);
+    this.selectedObjects = event.filter((a) => a.isChecked == true);
   }
   BackButton() {
     this._location.back();

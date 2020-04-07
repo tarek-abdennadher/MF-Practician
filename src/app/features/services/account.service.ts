@@ -49,7 +49,7 @@ export class AccountService {
     my_secretaries: "Mes Secrétaires",
     edit_secretary_success: "Secrétaire modifiée avec succès",
     confirm: "Confirmer",
-    delete_account_confirm: "êtes-vous sûr de vouloir supprimer votre compte ?",
+    delete_account_confirm: "Êtes-vous sûr de vouloir supprimer votre compte ?",
   };
   public errors = {
     required: "Champs obligatoire",
