@@ -28,8 +28,7 @@ export class SendMessageComponent implements OnInit {
   toList: Subject<any[]> = new Subject<any[]>();
   objectsList = [];
   selectedFiles: any;
-  links = {
-  };
+  links = {};
   page = this.globalService.messagesDisplayScreen.inbox;
   topText = this.globalService.messagesDisplayScreen.writeMessage;
   backButton = true;

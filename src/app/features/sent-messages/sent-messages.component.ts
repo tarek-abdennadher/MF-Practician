@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import { MessageService } from "../services/message.service";
 import { takeUntil } from "rxjs/operators";
 import { MessageSent } from "@app/shared/models/message-sent";
+import { FeaturesService } from "../features.service";
 
 @Component({
   selector: "app-sent-messages",
@@ -14,10 +15,9 @@ export class SentMessagesComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/user.png";
   links = {
+    isFilter: true,
     isAllSelect: true,
-    isAllSeen: true,
-    isDelete: true,
-    isFilter: true
+    isArchieve: true
   };
   page = "INBOX";
   number = 0;
@@ -26,7 +26,12 @@ export class SentMessagesComponent implements OnInit {
   backButton = false;
   itemsList = [];
   selectedObjects: Array<any>;
-  constructor(public router: Router, private messageService: MessageService) {}
+  filtredItemList: Array<any> = new Array();
+  constructor(
+    public router: Router,
+    private messageService: MessageService,
+    private featureService: FeaturesService
+  ) {}
 
   ngOnInit(): void {
     this.sentMessage();
@@ -41,6 +46,7 @@ export class SentMessagesComponent implements OnInit {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           this.itemsList.push(messageSent);
+          this.filtredItemList = this.itemsList;
         });
       });
   }
@@ -65,7 +71,7 @@ export class SentMessagesComponent implements OnInit {
     messageSent.isImportant = message.important;
     messageSent.hasFiles = message.hasFiles;
     messageSent.hasViewDetail = message.hasViewDetail;
-
+    messageSent.isArchieve = true;
     return messageSent;
   }
 
@@ -96,13 +102,59 @@ export class SentMessagesComponent implements OnInit {
     console.log("deleteAction");
   }
   archieveActionClicked() {
-    console.log("archieveAction");
+    const messagesId = this.filtredItemList
+      .filter(e => e.isChecked == true)
+      .map(e => e.id);
+    if (messagesId.length > 0) {
+      this.featureService.numberOfArchieve =
+        this.featureService.numberOfArchieve + messagesId.length;
+      this.messageService.markMessageAsArchived(messagesId).subscribe(
+        resp => {
+          this.itemsList = this.itemsList.filter(function(elm, ind) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+          this.filtredItemList = this.filtredItemList.filter(function(
+            elm,
+            ind
+          ) {
+            return messagesId.indexOf(elm.id) == -1;
+          });
+        },
+        error => {
+          console.log("We have to find a way to notify user by this error");
+        }
+      );
+    }
+  }
+  archieveMessage(event) {
+    let messageId = event.id;
+    this.messageService.markMessageAsArchived([messageId]).subscribe(
+      resp => {
+        this.itemsList = this.itemsList.filter(function(elm, ind) {
+          return elm.id != event.id;
+        });
+        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+          return elm.id != event.id;
+        });
+        this.featureService.numberOfArchieve++;
+      },
+      error => {
+        console.log("We have to find a way to notify user by this error");
+      }
+    );
   }
   addNoteActionClicked() {
     console.log("addNoteAction");
   }
   filterActionClicked(event) {
-    console.log(event);
+    this.filtredItemList =
+      event == "all"
+        ? this.itemsList
+        : this.itemsList.filter(
+            item =>
+              item.users[0].type.toLowerCase() ==
+              (event == "doctor" ? "medical" : event)
+          );
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
