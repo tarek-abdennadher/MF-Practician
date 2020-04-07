@@ -29,39 +29,39 @@ const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
       position: "left",
-      distance: 400
+      distance: 400,
     },
     vertical: {
       position: "top",
-      distance: 68
-    }
+      distance: 90,
+    },
   },
   theme: "material",
   behaviour: {
     autoHide: 5000,
     onClick: false,
     onMouseover: "pauseAutoHide",
-    showDismissButton: false
+    showDismissButton: false,
   },
   animations: {
     enabled: true,
     show: {
       preset: "fade",
       speed: 1500,
-      easing: "ease"
+      easing: "ease",
     },
     hide: {
       preset: "fade",
       speed: 300,
       easing: "ease",
-      offset: 50
+      offset: 50,
     },
     shift: {
       speed: 300,
-      easing: "ease"
+      easing: "ease",
     },
-    overlap: 150
-  }
+    overlap: 150,
+  },
 };
 @NgModule({
   declarations: [
@@ -76,7 +76,7 @@ const notifierOptions: NotifierOptions = {
     PracticianSearchComponent,
     PracticianDetailComponent,
     SendMessageComponent,
-    ArchieveMessagesComponent
+    ArchieveMessagesComponent,
   ],
   imports: [
     FormsModule,
@@ -91,9 +91,9 @@ const notifierOptions: NotifierOptions = {
     HlsMessagingListModule,
     HlsSearchModule,
     HlsPracticianDetailModule,
-    HlsSendMessageModule
+    HlsSendMessageModule,
   ],
 
-  providers: [MessageService, ContactsService]
+  providers: [MessageService, ContactsService],
 })
 export class FeaturesModule {}
