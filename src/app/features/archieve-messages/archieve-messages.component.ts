@@ -16,7 +16,7 @@ export class ArchieveMessagesComponent implements OnInit {
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
-  bottomText = this.number > 1 ? "messages" : "message";
+  bottomText = this.number != 1 ? "messages" : "message";
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];

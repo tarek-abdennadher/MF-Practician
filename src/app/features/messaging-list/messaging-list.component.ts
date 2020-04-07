@@ -28,7 +28,7 @@ export class MessagingListComponent implements OnInit {
   number = 0;
   topText = "Boite de réception";
   bottomText =
-    this.number > 1
+    this.number != 1
       ? this.globalService.messagesDisplayScreen.newMessages
       : this.globalService.messagesDisplayScreen.newMessage;
   backButton = false;
@@ -147,7 +147,7 @@ export class MessagingListComponent implements OnInit {
         (a) => a.seenAsReceiver == false
       ).length;
       this.bottomText =
-        this.number > 1
+        this.number != 1
           ? this.globalService.messagesDisplayScreen.newMessages
           : this.globalService.messagesDisplayScreen.newMessage;
       this.featureService.numberOfInbox = this.number;
