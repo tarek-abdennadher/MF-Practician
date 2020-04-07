@@ -146,6 +146,10 @@ export class MessagingListComponent implements OnInit {
       this.number = retrievedMess.filter(
         (a) => a.seenAsReceiver == false
       ).length;
+      this.bottomText =
+        this.number > 1
+          ? this.globalService.messagesDisplayScreen.newMessages
+          : this.globalService.messagesDisplayScreen.newMessage;
       this.featureService.numberOfInbox = this.number;
       this.messages.sort(function (m1, m2) {
         return (
