@@ -10,4 +10,5 @@ export class MessageSent {
   isImportant: boolean;
   hasFiles: boolean;
   hasViewDetail: boolean;
+  isArchieve: boolean;
 }
