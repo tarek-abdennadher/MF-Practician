@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { Location } from "@angular/common";
+import { MyDocumentsService } from '../my-documents/my-documents.service';
+import * as FileSaver from "file-saver";
+
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -31,7 +34,8 @@ export class MessagingDetailComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private messagingDetailService: MessagingDetailService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private documentService:MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -68,4 +72,33 @@ export class MessagingDetailComponent implements OnInit {
   goToBack() {
     this._location.back();
   }
+
+  download(nodesId:Array<string>)
+  {
+    nodesId.forEach(nodeId => {
+      var nodeDetails;
+      this.documentService.getNodeDetailsFromAlfresco(nodeId).subscribe(node => {
+        nodeDetails = node;
+      });
+
+      this.documentService
+      .downloadFile(nodeId)
+      .subscribe(response => {
+        const blob = new Blob([response.body]);
+        const filename = nodeDetails.entry.name;
+        const filenameDisplay = filename;
+        const dotIndex = filename.lastIndexOf(".");
+        const extension = filename.substring(dotIndex + 1, filename.length);
+        let resultname: string;
+        if (filenameDisplay !== "") {
+          resultname = filenameDisplay.includes(extension)
+            ? filenameDisplay
+            : filenameDisplay + "." + extension;
+        } else {
+          resultname = filename;
+        }
+        FileSaver.saveAs(blob, resultname);
+      });
+  });
+}
 }
