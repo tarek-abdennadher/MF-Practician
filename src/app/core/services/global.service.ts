@@ -64,6 +64,11 @@ export class GlobalService {
   public toastrMessages = {
     send_message_success: "Message envoyé.",
     send_message_error: "Votre message n'a pas pu être envoyé",
+    archived_message_success: "Message archivé.",
+    archived_message_error: "Votre message n'a pas pu être archivé",
+    mark_important_message_success: "Message marquer comme important.",
+    mark_important_message_error:
+      "Votre message n'a pas pu être marquer comme important",
   };
 
   public messagesDisplayScreen = {
