@@ -8,16 +8,16 @@ import { MessageSent } from "@app/shared/models/message-sent";
 @Component({
   selector: "app-sent-messages",
   templateUrl: "./sent-messages.component.html",
-  styleUrls: ["./sent-messages.component.scss"]
+  styleUrls: ["./sent-messages.component.scss"],
 })
 export class SentMessagesComponent implements OnInit {
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/user.png";
   links = {
     isAllSelect: true,
-    isAllSeen: true,
+    isAllSeen: false,
     isDelete: true,
-    isFilter: true
+    isFilter: false,
   };
   page = "INBOX";
   number = 0;
@@ -37,7 +37,7 @@ export class SentMessagesComponent implements OnInit {
       .sentMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
-        messages.forEach(message => {
+        messages.forEach((message) => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           this.itemsList.push(messageSent);
@@ -49,17 +49,17 @@ export class SentMessagesComponent implements OnInit {
     const messageSent = new MessageSent();
     messageSent.isSeen = true;
     messageSent.users = [];
-    message.toReceivers.forEach(r => {
+    message.toReceivers.forEach((r) => {
       messageSent.users.push({
         fullName: r.fullName,
         img: this.imageSource,
         title: r.jobTitle,
-        type: r.role
+        type: r.role,
       });
     });
     messageSent.object = {
       name: message.object,
-      isImportant: message.importantObject
+      isImportant: message.importantObject,
     };
     messageSent.time = message.createdAt;
     messageSent.isImportant = message.important;
@@ -74,12 +74,12 @@ export class SentMessagesComponent implements OnInit {
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach(a => {
+    this.itemsList.forEach((a) => {
       a.isChecked = false;
     });
   }
@@ -105,7 +105,7 @@ export class SentMessagesComponent implements OnInit {
     console.log(event);
   }
   selectItem(event) {
-    this.selectedObjects = event.filter(a => a.isChecked == true);
+    this.selectedObjects = event.filter((a) => a.isChecked == true);
   }
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {

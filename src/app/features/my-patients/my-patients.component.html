@@ -4,13 +4,14 @@
 ></lib-hlsSearch>
 <br />
 <lib-hlsMessagingList
+  [isCheckbox]="false"
   [list]="filtredPatients"
   [imageSource]="imageSource"
   [isMyPatients]="isMyPatients"
   (markAsSeenAction)="writeAction($event)"
-  (writeAction)= "writeAction($event)"
-  (prohibitAction)= "prohibitAction($event)"
-  (editAction)= "editAction($event)"
-  (deleteAction)= "deleteAction($event)"
-  (authorizedAction) = "authorizeAction($event)"
+  (writeAction)="writeAction($event)"
+  (prohibitAction)="prohibitAction($event)"
+  (editAction)="editAction($event)"
+  (deleteAction)="deleteAction($event)"
+  (authorizedAction)="authorizeAction($event)"
 ></lib-hlsMessagingList>

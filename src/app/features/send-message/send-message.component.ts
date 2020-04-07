@@ -16,7 +16,7 @@ import { LocalStorageService } from "ngx-webstorage";
 @Component({
   selector: "app-send-message",
   templateUrl: "./send-message.component.html",
-  styleUrls: ["./send-message.component.scss"]
+  styleUrls: ["./send-message.component.scss"],
 })
 export class SendMessageComponent implements OnInit {
   public uuid: string;
@@ -28,8 +28,7 @@ export class SendMessageComponent implements OnInit {
   toList: Subject<any[]> = new Subject<any[]>();
   objectsList = [];
   selectedFiles: any;
-  links = {
-  };
+  links = {};
   page = this.globalService.messagesDisplayScreen.inbox;
   topText = this.globalService.messagesDisplayScreen.writeMessage;
   backButton = true;
@@ -46,7 +45,7 @@ export class SendMessageComponent implements OnInit {
     private router: Router,
     public route: ActivatedRoute
   ) {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
     });
   }
@@ -54,7 +53,7 @@ export class SendMessageComponent implements OnInit {
   ngOnInit(): void {
     forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {});
+      .subscribe((res) => {});
   }
 
   getAllContactsPractician() {
@@ -70,13 +69,13 @@ export class SendMessageComponent implements OnInit {
 
   parseContactsPractician(contactsPractician) {
     let myList = [];
-    contactsPractician.forEach(contactPractician => {
+    contactsPractician.forEach((contactPractician) => {
       myList.push({
         id: contactPractician.id,
         fullName: contactPractician.fullName,
         type: contactPractician.contactType,
         isSelected:
-          this.selectedPracticianId == contactPractician.id ? true : false
+          this.selectedPracticianId == contactPractician.id ? true : false,
       });
     });
     this.toList.next(myList);
@@ -101,19 +100,23 @@ export class SendMessageComponent implements OnInit {
     ) {
       this.uuid = uuid();
       const newMessage = new Message();
-      message.to.forEach(to => {
+      message.to.forEach((to) => {
         newMessage.toReceivers.push({ receiverId: to.id });
       });
       message.cc
-        ? message.cc.forEach(cc => {
+        ? message.cc.forEach((cc) => {
             newMessage.ccReceivers.push({ receiverId: cc.id });
           })
         : null;
 
       newMessage.sender = {
-        senderId: this.featureService.getUserId()
+        senderId: this.featureService.getUserId(),
       };
-      newMessage.object = message.object.name;
+      message.object != "" &&
+      message.object.name.toLowerCase() !=
+        this.globalService.messagesDisplayScreen.other
+        ? (newMessage.object = message.object.name)
+        : (newMessage.object = message.freeObject);
       newMessage.body = message.body;
       if (message.file !== undefined) {
         newMessage.uuid = this.uuid;
@@ -132,11 +135,11 @@ export class SendMessageComponent implements OnInit {
         this.nodeService
           .saveFileInMemory(this.uuid, formData)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(mess => {
+          .subscribe((mess) => {
             this.router.navigate(["/features/messageries"], {
               queryParams: {
-                status: "sentSuccess"
-              }
+                status: "sentSuccess",
+              },
             });
           });
       } else {
@@ -144,18 +147,18 @@ export class SendMessageComponent implements OnInit {
           .sendMessage(newMessage)
           .pipe(takeUntil(this._destroyed$))
           .subscribe(
-            mess => {
+            (mess) => {
               this.router.navigate(["/features/messageries"], {
                 queryParams: {
-                  status: "sentSuccess"
-                }
+                  status: "sentSuccess",
+                },
               });
             },
-            error => {
+            (error) => {
               this.router.navigate(["/features/messageries"], {
                 queryParams: {
-                  status: "sentSuccess"
-                }
+                  status: "sentSuccess",
+                },
               });
             }
           );
