@@ -14,6 +14,9 @@ export class MessagingDetailComponent implements OnInit {
   isFromInbox = true;
   senderRolePatient = true;
   messagingDetail: any;
+  prohibited = false;
+  patientsId: number[];
+  collectedIds: number[];
   idMessage: number;
   links = {
     isSeen: true,
@@ -46,7 +49,22 @@ export class MessagingDetailComponent implements OnInit {
       .getMessagingDetailById(id)
       .subscribe(message => {
         this.messagingDetail = message;
+        this.hideShowReplyBtn(this.messagingDetail);
       });
+  }
+
+  hideShowReplyBtn(message) {
+    this.messagingDetailService.patientsProhibitedByCurrentPractician().subscribe(resp => {
+      this.patientsId = resp;
+      this.collectedIds = message.toReceivers.map(r => r.receiverId);
+      if (message.ccReceivers.length > 0) {
+        this.collectedIds.push(message.ccReceivers.map(r => r.receiverId));
+      }
+      this.collectedIds.push(message.sender.senderId);
+      if (this.patientsId.length > 0) {
+        this.prohibited = typeof this.collectedIds.find(elm => this.patientsId.includes(elm)) != "undefined";
+      }
+    })
   }
 
   replyAction() {
