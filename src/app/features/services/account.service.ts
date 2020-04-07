@@ -47,13 +47,15 @@ export class AccountService {
     add_secretary: "Ajouter secrétaire",
     add_secretary_success: "Secrétaire ajoutée avec succès",
     my_secretaries: "Mes Secrétaires",
-    edit_secretary_success: "Secrétaire modifiée avec succès"
+    edit_secretary_success: "Secrétaire modifiée avec succès",
+    confirm: "Confirmer",
+    delete_account_confirm: "êtes-vous sûr de vouloir supprimer votre compte ?",
   };
   public errors = {
     required: "Champs obligatoire",
     invalid_format: "Format invalide",
     min_length: "Minimun 8 caractères",
-    must_match: "Mot de passe non identique"
+    must_match: "Mot de passe non identique",
   };
   updateAccount(account) {
     return this.globalService.call(
