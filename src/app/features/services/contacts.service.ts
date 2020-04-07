@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import { Speciality } from "@app/shared/models/speciality";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ContactsService {
   public messages = {
@@ -30,14 +30,18 @@ export class ContactsService {
     validate: "Valider",
     title: "Titre",
     speciality: "Spécialité",
-    facility_name: "Nom de l'établissement"
+    facility_name: "Nom de l'établissement",
+    confirm: "Confirmer",
+    cancel: "Annuler",
+    delete_sec_confirm: "êtes-vous sûr de vouloir supprimer cette secrétaire ?",
+    delete_sec_title: "Supprimer",
   };
   constructor(private globalService: GlobalService) {}
 
   getContactsPro() {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.contact_pro_by_session
+      this.globalService.url.contact_pro_all
     );
   }
   getAllSpecialities(): Observable<Array<Speciality>> {

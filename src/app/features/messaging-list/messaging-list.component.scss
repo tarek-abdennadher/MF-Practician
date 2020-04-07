@@ -1,7 +1,14 @@
 @media (min-width: 800px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 52vw;
+      width: 70vw;
+    }
+  }
+}
+@media (min-width: 850px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 72vw;
     }
   }
 }
@@ -9,7 +16,14 @@
 @media (min-width: 900px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 55vw;
+      width: 75vw;
+    }
+  }
+}
+@media (min-width: 950px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 78vw;
     }
   }
 }
@@ -17,23 +31,43 @@
 @media (min-width: 1000px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 57vw;
+      width: 80vw;
     }
   }
 }
-
+@media (min-width: 1050px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 82vw;
+    }
+  }
+}
 @media (min-width: 1100px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 60vw;
+      width: 86vw;
+    }
+  }
+}
+@media (min-width: 1150px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 87vw;
+    }
+  }
+}
+@media (min-width: 1200px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 88vw;
     }
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1250px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 63vw;
+      width: 90vw;
     }
   }
 }
@@ -41,7 +75,7 @@
 @media (min-width: 1300px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 65vw;
+      width: 92vw;
     }
   }
 }
@@ -91,4 +125,8 @@
       width: 78vw;
     }
   }
+}
+::ng-deep #links {
+  margin-top: 10px;
+  margin-bottom: 10px !important;
 }

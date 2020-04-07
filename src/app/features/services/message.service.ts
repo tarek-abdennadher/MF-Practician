@@ -45,4 +45,12 @@ export class MessageService {
       message
     );
   }
+
+  public markMessageAsArchived(ids: number[]): Observable<number> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages + "archive/all",
+      ids
+    );
+  }
 }

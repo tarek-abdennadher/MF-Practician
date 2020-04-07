@@ -6,6 +6,8 @@
   [number]="number"
   [backButton]="backButton"
   (backButtonAction)="goToBack()"
+  (importantAction)="importantAction()"
+  (archieveAction)="archieveActionClicked()"
 ></lib-hlsLinks>
 <lib-hlsMessagingDetail
   [imageSource]="imageSource"
@@ -18,3 +20,10 @@
   (refuseAction)="refuseAction()"
   (downloadAction)="download($event)">
 ></lib-hlsMessagingDetail>
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
+</ng-template>
