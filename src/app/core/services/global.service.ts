@@ -74,7 +74,8 @@ export class GlobalService {
   public messagesDisplayScreen = {
     inbox: "INBOX",
     Mailbox: "Boite de réception",
-    newMessage: "nouveaux messages",
+    newMessage: "nouveau message",
+    newMessages: "nouveaux messages",
     writeMessage: "Ecrire un nouveau message",
     other: "autre",
   };

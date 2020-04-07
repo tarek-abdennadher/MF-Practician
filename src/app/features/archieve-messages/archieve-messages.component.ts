@@ -2,13 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ArchieveMessagesService } from "./archieve-messages.service";
 import { MessageArchived } from "./message-archived";
-import { Location } from '@angular/common';
-import { FeaturesService } from '../features.service';
+import { Location } from "@angular/common";
+import { FeaturesService } from "../features.service";
 
 @Component({
   selector: "app-archieve-messages",
   templateUrl: "./archieve-messages.component.html",
-  styleUrls: ["./archieve-messages.component.scss"]
+  styleUrls: ["./archieve-messages.component.scss"],
 })
 export class ArchieveMessagesComponent implements OnInit {
   imageSource = "assets/imgs/IMG_3944.jpg";
@@ -16,7 +16,7 @@ export class ArchieveMessagesComponent implements OnInit {
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
-  bottomText = "messages";
+  bottomText = this.number > 1 ? "messages" : "message";
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
@@ -24,8 +24,7 @@ export class ArchieveMessagesComponent implements OnInit {
     public router: Router,
     private archivedService: ArchieveMessagesService,
     private _location: Location,
-    private featureService:FeaturesService
-
+    private featureService: FeaturesService
   ) {}
 
   ngOnInit(): void {
@@ -33,13 +32,14 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   getMyMessagesArchived() {
-    this.archivedService.getMyArchivedMessages().subscribe(messages => {
-      messages.forEach(message => {
+    this.archivedService.getMyArchivedMessages().subscribe((messages) => {
+      messages.forEach((message) => {
         this.number = message.length;
         let archivedMessage = this.mappingMessageArchived(message);
         this.itemsList.push(archivedMessage);
       });
-      this.bottomText= this.featureService.numberOfArchieve+" "+this.bottomText;
+      this.bottomText =
+        this.featureService.numberOfArchieve + " " + this.bottomText;
     });
   }
   mappingMessageArchived(message) {
@@ -57,14 +57,15 @@ export class ArchieveMessagesComponent implements OnInit {
         title: message.senderDetail.patient
           ? ""
           : message.senderDetail.practician.title,
-        type: message.senderDetail.role == "PRACTICIAN"
-        ? "MEDICAL"
-        : message.senderDetail.role
-      }
+        type:
+          message.senderDetail.role == "PRACTICIAN"
+            ? "MEDICAL"
+            : message.senderDetail.role,
+      },
     ];
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject
+      isImportant: message.importantObject,
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
@@ -75,7 +76,7 @@ export class ArchieveMessagesComponent implements OnInit {
     return messageArchived;
   }
   cardClicked(item) {
-    this.markMessageAsSeen(item.id)
+    this.markMessageAsSeen(item.id);
     this.router.navigate(["/features/messagerie-lire/" + item.id]);
   }
 
@@ -83,7 +84,7 @@ export class ArchieveMessagesComponent implements OnInit {
     this._location.back();
   }
 
-  markMessageAsSeen(messageId){
+  markMessageAsSeen(messageId) {
     this.archivedService.markMessageAsSeen(messageId).subscribe();
   }
 }

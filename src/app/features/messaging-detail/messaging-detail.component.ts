@@ -25,7 +25,10 @@ export class MessagingDetailComponent implements OnInit {
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.Mailbox;
-  bottomText = this.globalService.messagesDisplayScreen.newMessage;
+  bottomText =
+    this.number > 1
+      ? this.globalService.messagesDisplayScreen.newMessages
+      : this.globalService.messagesDisplayScreen.newMessage;
   backButton = true;
   private readonly notifier: NotifierService;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;

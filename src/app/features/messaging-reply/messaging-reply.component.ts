@@ -14,7 +14,7 @@ import { RefuseTypeService } from "../services/refuse-type.service";
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
-  styleUrls: ["./messaging-reply.component.scss"]
+  styleUrls: ["./messaging-reply.component.scss"],
 })
 export class MessagingReplyComponent implements OnInit {
   private _destroyed$ = new Subject();
@@ -27,12 +27,15 @@ export class MessagingReplyComponent implements OnInit {
   links = {
     isSeen: true,
     isArchieve: true,
-    isImportant: true
+    isImportant: true,
   };
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.Mailbox;
-  bottomText = this.globalService.messagesDisplayScreen.newMessage;
+  bottomText =
+    this.number > 1
+      ? this.globalService.messagesDisplayScreen.newMessages
+      : this.globalService.messagesDisplayScreen.newMessage;
   backButton = true;
   selectedFiles: any;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -54,12 +57,12 @@ export class MessagingReplyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params["status"] && params["status"] == "refus") {
         this.refuseResponse = true;
       }
     });
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.idMessage = params["id"];
       this.getMessageDetailById(this.idMessage);
     });
@@ -68,7 +71,7 @@ export class MessagingReplyComponent implements OnInit {
     this.messagingDetailService
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(message => {
+      .subscribe((message) => {
         message.hasFiles = false;
         if (this.refuseResponse) {
           message.object = [];
@@ -83,7 +86,7 @@ export class MessagingReplyComponent implements OnInit {
     return this.refuseTypeService
       .getAllRefuseTypes()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(refuseTypes => {
+      .subscribe((refuseTypes) => {
         this.objectsList = refuseTypes;
       });
   }
@@ -99,10 +102,10 @@ export class MessagingReplyComponent implements OnInit {
       ? message.object
       : message.object.name;
     replyMessage.sender = {
-      senderId: this.featureService.getUserId()
+      senderId: this.featureService.getUserId(),
     };
     replyMessage.toReceivers = [
-      { receiverId: message.sender.senderId, seen: 0 }
+      { receiverId: message.sender.senderId, seen: 0 },
     ];
 
     if (message.file !== undefined) {
@@ -122,18 +125,18 @@ export class MessagingReplyComponent implements OnInit {
         .replyMessageWithFile(formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          message => {
+          (message) => {
             this.router.navigate(["/features/messageries"], {
               queryParams: {
-                status: "sentSuccess"
-              }
+                status: "sentSuccess",
+              },
             });
           },
-          error => {
+          (error) => {
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
           }
         );
@@ -142,18 +145,18 @@ export class MessagingReplyComponent implements OnInit {
         .replyMessage(replyMessage)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          message => {
+          (message) => {
             this.router.navigate(["/features/messageries"], {
               queryParams: {
-                status: "sentSuccess"
-              }
+                status: "sentSuccess",
+              },
             });
           },
-          error => {
+          (error) => {
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
           }
         );
