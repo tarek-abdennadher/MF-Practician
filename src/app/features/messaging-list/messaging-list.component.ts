@@ -70,7 +70,11 @@ export class MessagingListComponent implements OnInit {
 
   cardClicked(item) {
     this.markMessageAsSeen(item);
-    this.router.navigate(["/features/messagerie-lire/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id], {
+      queryParams: {
+        context: "inbox",
+      },
+    });
     this.featureService.listNotifications = this.featureService.listNotifications.filter(
       (notif) => notif.messageId != item.id
     );

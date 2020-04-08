@@ -17,11 +17,11 @@ export class SentMessagesComponent implements OnInit {
   links = {
     isAllSelect: true,
     isFilter: true,
-    isArchieve: true
+    isArchieve: true,
   };
   page = "INBOX";
   number = 0;
-  topText = "Messages envoyŽs";
+  topText = "Messages envoyï¿½s";
   bottomText = "";
   backButton = false;
   itemsList = [];
@@ -76,7 +76,11 @@ export class SentMessagesComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/features/messagerie-lire/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id], {
+      queryParams: {
+        context: "sent",
+      },
+    });
   }
 
   selectAllActionClicked() {
