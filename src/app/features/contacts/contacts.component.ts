@@ -100,6 +100,7 @@ export class ContactsComponent implements OnInit {
   deleteActionClicked() {
     const ids = [];
     const practicianIds = [];
+    const secretariesIds = [];
     this.itemsList.forEach((a) => {
       if (a.isChecked && a.users[0].contactType == "CONTACT") {
         ids.push(a.id);
@@ -107,22 +108,29 @@ export class ContactsComponent implements OnInit {
       if (a.isChecked && a.users[0].contactType == "MEDICAL") {
         practicianIds.push(a.id);
       }
+      if (a.isChecked && a.users[0].contactType == "SECRETARY") {
+        secretariesIds.push(a.id);
+      }
     });
     if (ids.length > 0) {
       this.contactsService.deleteMultiple(ids).subscribe((res) => {
-        if (practicianIds.length > 0) {
-          this.contactsService
-            .deleteMultiplePracticianContactPro(practicianIds)
-            .subscribe();
-        }
+        this.deleteItemFromList(ids);
       });
     }
     if (practicianIds.length > 0) {
       this.contactsService
         .deleteMultiplePracticianContactPro(practicianIds)
-        .subscribe((res) => {});
+        .subscribe((res) => {
+          this.deleteItemFromList(practicianIds);
+        });
     }
-    this.getAllContacts();
+    if (secretariesIds.length > 0) {
+      this.accountService
+        .detachMultipleSecretaryFromAccount(secretariesIds)
+        .subscribe((res) => {
+          this.deleteItemFromList(secretariesIds);
+        });
+    }
   }
 
   cardClicked(item) {
@@ -146,27 +154,35 @@ export class ContactsComponent implements OnInit {
   archieveClicked(event) {
     const ids = [];
     const practicianIds = [];
+    const secretariesIds = [];
     if (event.users[0].contactType == "CONTACT") {
       ids.push(event.id);
     }
     if (event.users[0].contactType == "MEDICAL") {
       practicianIds.push(event.id);
     }
+    if (event.users[0].contactType == "SECRETARY") {
+      secretariesIds.push(event.id);
+    }
     if (ids.length > 0) {
       this.contactsService.deleteMultiple(ids).subscribe((res) => {
-        if (practicianIds.length > 0) {
-          this.contactsService
-            .deleteMultiplePracticianContactPro(practicianIds)
-            .subscribe();
-        }
+        this.deleteItemFromList(ids);
       });
     }
     if (practicianIds.length > 0) {
       this.contactsService
         .deleteMultiplePracticianContactPro(practicianIds)
-        .subscribe((res) => {});
+        .subscribe((res) => {
+          this.deleteItemFromList(practicianIds);
+        });
     }
-    this.getAllContacts();
+    if (secretariesIds.length > 0) {
+      this.accountService
+        .detachMultipleSecretaryFromAccount(secretariesIds)
+        .subscribe((res) => {
+          this.deleteItemFromList(secretariesIds);
+        });
+    }
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe(
@@ -188,5 +204,13 @@ export class ContactsComponent implements OnInit {
   }
   BackButton() {
     this._location.back();
+  }
+  deleteItemFromList(ids) {
+    if (ids && ids.length > 0) {
+      this.itemsList = this.itemsList.filter((item) => ids.includes(item.id));
+      this.filtredItemsList = this.filtredItemsList.filter(
+        (item) => !ids.includes(item.id)
+      );
+    }
   }
 }

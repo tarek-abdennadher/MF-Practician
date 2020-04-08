@@ -131,4 +131,11 @@ export class AccountService {
       this.globalService.url.secretary + "/detach/" + id
     );
   }
+  detachMultipleSecretaryFromAccount(ids) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.secretary + "/detach-multiple",
+      ids
+    );
+  }
 }
