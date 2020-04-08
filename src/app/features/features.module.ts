@@ -25,6 +25,7 @@ import { HlsPracticianDetailModule } from "hls-practician-detail";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { SendMessageComponent } from "./send-message/send-message.component";
+import { SecretaryDetailComponent } from './secretary-detail/secretary-detail.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -77,6 +78,7 @@ const notifierOptions: NotifierOptions = {
     PracticianDetailComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
+    SecretaryDetailComponent,
   ],
   imports: [
     FormsModule,
