@@ -125,4 +125,10 @@ export class AccountService {
       ids
     );
   }
+  detachSecretaryFronAccount(id) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.secretary + "/detach/" + id
+    );
+  }
 }

@@ -166,6 +166,7 @@ export class MySecretariesComponent implements OnInit {
         phone: value.phoneNumber,
         picture: value.secretary ? value.secretary.photoId : null,
       });
+      this.infoForm.disable();
       this.isEdit = true;
       this.isList = false;
     });
@@ -178,7 +179,7 @@ export class MySecretariesComponent implements OnInit {
   }
   deleteSecretary() {
     this.accountService
-      .desactivateMultipleAccount([this.selectedSecretary.id])
+      .detachSecretaryFronAccount(this.selectedSecretary.id)
       .subscribe((resp) => {
         $("#exampleModal").modal("toggle");
         this.getMySecretaries();
