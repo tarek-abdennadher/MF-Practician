@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { Location } from "@angular/common";
-import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 import * as FileSaver from "file-saver";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
-import { FeaturesService } from '../features.service';
+import { FeaturesService } from "../features.service";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -18,7 +18,7 @@ export class MessagingDetailComponent implements OnInit {
   private _destroyed$ = new Subject();
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
-  isFromInbox = true;
+  isFromInbox: boolean;
   senderRolePatient = true;
   messagingDetail: any;
   prohibited = false;
@@ -43,7 +43,7 @@ export class MessagingDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private messagingDetailService: MessagingDetailService,
     private globalService: GlobalService,
-    private documentService:MyDocumentsService,
+    private documentService: MyDocumentsService,
     private featureService: FeaturesService,
     notifierService: NotifierService
   ) {
@@ -51,6 +51,20 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params["context"]) {
+        switch (params["context"]) {
+          case "sent": {
+            this.isFromInbox = false;
+            break;
+          }
+          case "inbox": {
+            this.isFromInbox = true;
+            break;
+          }
+        }
+      }
+    });
     this.route.params.subscribe((params) => {
       this.idMessage = params["id"];
       this.getMessageDetailById(this.idMessage);
@@ -66,24 +80,29 @@ export class MessagingDetailComponent implements OnInit {
         this.hideShowReplyBtn(this.messagingDetail);
         this.links = {
           isArchieve: true,
-          isImportant: !message.important,
+          isImportant: this.isFromInbox ? !message.important : false,
           isAddNote: true,
         };
       });
   }
 
   hideShowReplyBtn(message) {
-    this.messagingDetailService.patientsProhibitedByCurrentPractician().subscribe(resp => {
-      this.patientsId = resp;
-      this.collectedIds = message.toReceivers.map(r => r.receiverId);
-      if (message.ccReceivers.length > 0) {
-        this.collectedIds.push(message.ccReceivers.map(r => r.receiverId));
-      }
-      this.collectedIds.push(message.sender.senderId);
-      if (this.patientsId.length > 0) {
-        this.prohibited = typeof this.collectedIds.find(elm => this.patientsId.includes(elm)) != "undefined";
-      }
-    })
+    this.messagingDetailService
+      .patientsProhibitedByCurrentPractician()
+      .subscribe((resp) => {
+        this.patientsId = resp;
+        this.collectedIds = message.toReceivers.map((r) => r.receiverId);
+        if (message.ccReceivers.length > 0) {
+          this.collectedIds.push(message.ccReceivers.map((r) => r.receiverId));
+        }
+        this.collectedIds.push(message.sender.senderId);
+        if (this.patientsId.length > 0) {
+          this.prohibited =
+            typeof this.collectedIds.find((elm) =>
+              this.patientsId.includes(elm)
+            ) != "undefined";
+        }
+      });
   }
 
   replyAction() {
@@ -156,17 +175,16 @@ export class MessagingDetailComponent implements OnInit {
     this._location.back();
   }
 
-  download(nodesId:Array<string>)
-  {
-    nodesId.forEach(nodeId => {
+  download(nodesId: Array<string>) {
+    nodesId.forEach((nodeId) => {
       var nodeDetails;
-      this.documentService.getNodeDetailsFromAlfresco(nodeId).subscribe(node => {
-        nodeDetails = node;
-      });
-
       this.documentService
-      .downloadFile(nodeId)
-      .subscribe(response => {
+        .getNodeDetailsFromAlfresco(nodeId)
+        .subscribe((node) => {
+          nodeDetails = node;
+        });
+
+      this.documentService.downloadFile(nodeId).subscribe((response) => {
         const blob = new Blob([response.body]);
         const filename = nodeDetails.entry.name;
         const filenameDisplay = filename;
@@ -182,8 +200,8 @@ export class MessagingDetailComponent implements OnInit {
         }
         FileSaver.saveAs(blob, resultname);
       });
-  });
-}
+    });
+  }
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();

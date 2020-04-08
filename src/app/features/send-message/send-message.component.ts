@@ -166,6 +166,10 @@ export class SendMessageComponent implements OnInit {
       }
     }
   }
+  addProContactAction() {
+    this.router.navigate(["/features/search"]);
+  }
+
   goToBack() {
     this._location.back();
   }
