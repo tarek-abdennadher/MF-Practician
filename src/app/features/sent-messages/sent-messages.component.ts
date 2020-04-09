@@ -21,7 +21,7 @@ export class SentMessagesComponent implements OnInit {
   };
   page = "INBOX";
   number = 0;
-  topText = "Messages envoy�s";
+  topText = "Messages envoyés";
   bottomText = "";
   backButton = false;
   itemsList = [];
