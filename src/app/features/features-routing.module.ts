@@ -25,6 +25,10 @@ const routes: Routes = [
         component: MessagingListComponent,
       },
       {
+        path: "messageries/:id",
+        component: MessagingListComponent,
+      },
+      {
         path: "messagerie-lire/:id",
         component: MessagingDetailComponent,
       },
