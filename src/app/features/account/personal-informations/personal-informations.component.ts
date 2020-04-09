@@ -60,24 +60,40 @@ export class PersonalInformationsComponent implements OnInit {
     this.getPersonalInfo();
   }
   initInfoForm() {
-    this.infoForm = new FormGroup({
-      id: new FormControl(null),
-      last_name: new FormControl(null, Validators.required),
-      first_name: new FormControl(null, Validators.required),
-      email: new FormControl(null, {
-        validators: [Validators.required, Validators.email],
-      }),
-      title: new FormControl(null, Validators.required),
-      speciality: new FormControl(null, Validators.required),
-      address: new FormControl(null, Validators.required),
-      additional_address: new FormControl(null),
-      phone: new FormControl(null, {
-        validators: [Validators.required, Validators.pattern("[0-9]*")],
-      }),
-      other_phone: new FormControl(null, Validators.pattern("[0-9]*")),
-      other_phone_note: new FormControl(null),
-      picture: new FormControl(null),
-    });
+    if (this.isPractician) {
+      this.infoForm = new FormGroup({
+        id: new FormControl(null),
+        last_name: new FormControl(null, Validators.required),
+        first_name: new FormControl(null, Validators.required),
+        email: new FormControl(null, {
+          validators: [Validators.required, Validators.email],
+        }),
+        title: new FormControl(null, Validators.required),
+        speciality: new FormControl(null, Validators.required),
+        address: new FormControl(null, Validators.required),
+        additional_address: new FormControl(null),
+        phone: new FormControl(null, {
+          validators: [Validators.required, Validators.pattern("[0-9]*")],
+        }),
+        other_phone: new FormControl(null, Validators.pattern("[0-9]*")),
+        other_phone_note: new FormControl(null),
+        picture: new FormControl(null),
+      });
+    } else {
+      this.infoForm = new FormGroup({
+        id: new FormControl(null),
+        last_name: new FormControl(null, Validators.required),
+        first_name: new FormControl(null, Validators.required),
+        email: new FormControl(null, {
+          validators: [Validators.required, Validators.email],
+        }),
+        phone: new FormControl(null, {
+          validators: [Validators.required, Validators.pattern("[0-9]*")],
+        }),
+        picture: new FormControl(null),
+        civility: new FormControl(null, Validators.required),
+      });
+    }
   }
   initPasswordForm() {
     this.passwordForm = this.formBuilder.group(
@@ -163,6 +179,9 @@ export class PersonalInformationsComponent implements OnInit {
           first_name: account.secretary.firstName
             ? account.secretary.firstName
             : "",
+          civility: account.secretary.civility
+            ? account.secretary.civility
+            : null,
         });
       }
     });
@@ -172,27 +191,43 @@ export class PersonalInformationsComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
-    const model = {
-      email: this.infoForm.value.email,
-      phoneNumber: this.infoForm.value.phone,
-      practician: {
-        id: this.infoForm.value.id,
-        firstName: this.infoForm.value.first_name,
-        lastName: this.infoForm.value.last_name,
-        jobTitle: this.infoForm.value.title,
-        speciality:
-          this.infoForm.value.speciality != null
-            ? this.specialities.find(
-                (s) => s.id == this.infoForm.value.speciality
-              )
-            : null,
-        address: this.infoForm.value.address,
-        photoId: this.infoForm.value.picture,
-        additionalAddress: this.infoForm.value.additional_address,
-        otherPhoneNumber: this.infoForm.value.other_phone,
-        note: this.infoForm.value.other_phone_note,
-      },
-    };
+    let model;
+    if (this.isPractician) {
+      model = {
+        email: this.infoForm.value.email,
+        phoneNumber: this.infoForm.value.phone,
+        practician: {
+          id: this.infoForm.value.id,
+          firstName: this.infoForm.value.first_name,
+          lastName: this.infoForm.value.last_name,
+          jobTitle: this.infoForm.value.title,
+          speciality:
+            this.infoForm.value.speciality != null
+              ? this.specialities.find(
+                  (s) => s.id == this.infoForm.value.speciality
+                )
+              : null,
+          address: this.infoForm.value.address,
+          photoId: this.infoForm.value.picture,
+          additionalAddress: this.infoForm.value.additional_address,
+          otherPhoneNumber: this.infoForm.value.other_phone,
+          note: this.infoForm.value.other_phone_note,
+        },
+      };
+    } else {
+      model = {
+        email: this.infoForm.value.email,
+        phoneNumber: this.infoForm.value.phone,
+        secretary: {
+          id: this.infoForm.value.id,
+          firstName: this.infoForm.value.first_name,
+          lastName: this.infoForm.value.last_name,
+          civility: this.infoForm.value.civility,
+          photoId: this.infoForm.value.picture,
+        },
+      };
+    }
+
     this.accountService.updateAccount(model).subscribe((res) => {
       this.showAlert = true;
       $(".alert").alert();

@@ -30,6 +30,37 @@
   <div class="card-body">
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
       <div class="container">
+        <div class="row" *ngIf="!isPractician">
+          <div class="col-6">
+            <div class="form-group row">
+              <label for="civility" class="col-sm-3 col-form-label"
+                >{{ labels.civility }} (*)</label
+              >
+              <div class="col-sm-9">
+                <select
+                  formControlName="civility"
+                  class="civility custom-select"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
+                  id="civility"
+                >
+                  <option value="null" disabled="true"
+                    >{{ labels.civility }} (*)</option
+                  >
+                  <option value="M">M</option>
+                  <option value="MME">MME</option>
+                </select>
+                <div
+                  *ngIf="submitted && ctr.civility.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="ctr.civility.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row" *ngIf="isPractician">
           <div class="col">
             <div class="form-group row">
@@ -287,12 +318,7 @@
       </div>
       <br />
       <div class="row justify-content-center">
-        <button
-          (click)="submit()"
-          *ngIf="isPractician"
-          type="submit"
-          class="btn btn-validate"
-        >
+        <button (click)="submit()" type="submit" class="btn btn-validate">
           {{ labels.validate }}
         </button>
       </div>

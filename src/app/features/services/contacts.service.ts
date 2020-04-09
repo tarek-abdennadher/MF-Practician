@@ -29,6 +29,7 @@ export class ContactsService {
     other_phone: "Autre tél",
     validate: "Valider",
     title: "Titre",
+    civility: "Civilité",
     speciality: "Spécialité",
     facility_name: "Nom de l'établissement",
     confirm: "Confirmer",
