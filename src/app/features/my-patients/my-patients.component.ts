@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { MyPatientsService } from "../services/my-patients.service";
 import { MyPatients } from "./my-patients";
 import { Router } from "@angular/router";
+import { GlobalService } from "@app/core/services/global.service";
 
 @Component({
   selector: "app-my-patients",
@@ -13,7 +14,17 @@ export class MyPatientsComponent implements OnInit {
   myPatients = [];
   filtredPatients = [];
   isMyPatients = true;
+
+  page = "PATIENT";
+  topText = this.globalService.messagesDisplayScreen.my_patients;
+  number = 0;
+  bottomText =
+    this.number > 1
+      ? this.globalService.messagesDisplayScreen.patients
+      : this.globalService.messagesDisplayScreen.patient;
+  search: string;
   constructor(
+    private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
     private router: Router
   ) {}
@@ -25,6 +36,11 @@ export class MyPatientsComponent implements OnInit {
     this.myPatientsService
       .getPatientsOfCurrentParactician()
       .subscribe((myPatients) => {
+        this.number = myPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm.patient, elm.prohibited)
@@ -58,8 +74,8 @@ export class MyPatientsComponent implements OnInit {
     );
   }
 
-  searchAction(event) {
-    const filterBy = event.search;
+  searchAction(search) {
+    const filterBy = search;
     this.filtredPatients =
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }

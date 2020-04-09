@@ -129,6 +129,7 @@ export class MessagingDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (message) => {
+          this.links.isImportant = false;
           this.notifier.show({
             message: this.globalService.toastrMessages
               .mark_important_message_success,
