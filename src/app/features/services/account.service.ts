@@ -50,6 +50,7 @@ export class AccountService {
     edit_secretary_success: "Secrétaire modifiée avec succès",
     confirm: "Confirmer",
     delete_account_confirm: "Êtes-vous sûr de vouloir supprimer votre compte ?",
+    delete: "Supprimer",
   };
   public errors = {
     required: "Champs obligatoire",
