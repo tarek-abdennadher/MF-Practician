@@ -4,7 +4,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable, Subject } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessagingListService {
   private notificationObs: Subject<any> = new Subject();
@@ -24,7 +24,12 @@ export class MessagingListService {
       this.globalService.url.messages + "myInbox"
     );
   }
-
+  public getInboxByAccountId(id): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "inbox-by-account/" + id
+    );
+  }
   public markMessageAsSeen(id: number): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,

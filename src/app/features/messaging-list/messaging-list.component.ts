@@ -47,7 +47,14 @@ export class MessagingListComponent implements OnInit {
 
   ngOnInit(): void {
     this.itemsList = new Array();
-    this.getMyInbox();
+    this.route.params.subscribe((params) => {
+      if (params["id"]) {
+        this.getMyInbox(params["id"]);
+      } else {
+        this.getMyInbox(this.featureService.getUserId());
+      }
+    });
+
     this.getRealTimeMessage();
     this.route.queryParams.subscribe((params) => {
       if (params["status"]) {
@@ -147,25 +154,27 @@ export class MessagingListComponent implements OnInit {
           );
   }
 
-  getMyInbox() {
-    this.messagesServ.getMyInbox().subscribe((retrievedMess) => {
-      this.messages = retrievedMess;
-      this.number = retrievedMess.filter(
-        (a) => a.seenAsReceiver == false
-      ).length;
-      this.bottomText =
-        this.number > 1
-          ? this.globalService.messagesDisplayScreen.newMessages
-          : this.globalService.messagesDisplayScreen.newMessage;
-      this.featureService.numberOfInbox = this.number;
-      this.messages.sort(function (m1, m2) {
-        return (
-          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
+  getMyInbox(accountId) {
+    this.messagesServ
+      .getInboxByAccountId(accountId)
+      .subscribe((retrievedMess) => {
+        this.messages = retrievedMess;
+        this.number = retrievedMess.filter(
+          (a) => a.seenAsReceiver == false
+        ).length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newMessages
+            : this.globalService.messagesDisplayScreen.newMessage;
+        this.featureService.numberOfInbox = this.number;
+        this.messages.sort(function (m1, m2) {
+          return (
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+          );
+        });
+        this.itemsList = this.messages.map((item) => this.parseMessage(item));
+        this.filtredItemList = this.itemsList;
       });
-      this.itemsList = this.messages.map((item) => this.parseMessage(item));
-      this.filtredItemList = this.itemsList;
-    });
   }
 
   parseMessage(message): any {

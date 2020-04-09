@@ -11,7 +11,7 @@ import { MessagingListService } from "./services/messaging-list.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
-  styleUrls: ["./features.component.scss"]
+  styleUrls: ["./features.component.scss"],
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
@@ -25,18 +25,25 @@ export class FeaturesComponent implements OnInit {
   ) {
     this.initializeWebSocketConnection();
   }
+  public myPracticians = [];
   user = this.localSt.retrieve("user");
+  userRole = this.localSt.retrieve("role");
   fullName = this.user?.firstName + " " + this.user?.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
   role: string = "medical";
   links = {
     isArchieve: true,
     isImportant: true,
-    isFilter: true
+    isFilter: true,
   };
   private stompClient;
 
   ngOnInit(): void {
+    if (this.userRole && this.userRole == "SECRETARY") {
+      this.featuresService.getSecretaryPracticians().subscribe((value) => {
+        this.myPracticians = value;
+      });
+    }
     this.getMyNotificationsNotSeen();
     this.countMyArchive();
   }
@@ -45,10 +52,10 @@ export class FeaturesComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function(frame) {
+    this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
-        message => {
+        (message) => {
           if (message.body) {
             let notification = JSON.parse(message.body);
             that.messageListService.setNotificationObs(notification);
@@ -69,20 +76,20 @@ export class FeaturesComponent implements OnInit {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .subscribe(notifications => {
-        notifications.forEach(notif => {
+      .subscribe((notifications) => {
+        notifications.forEach((notif) => {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.senderFullName,
             picture: "assets/imgs/user.png",
-            messageId: notif.messageId
+            messageId: notif.messageId,
           });
         });
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
   countMyArchive() {
-    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
+    this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
       this.featuresService.numberOfArchieve = resp;
     });
   }
@@ -158,10 +165,8 @@ export class FeaturesComponent implements OnInit {
   searchActionClicked(event) {
     this.searchService.changeSearch(new search(event.search, event.city));
     this.router.navigate(["/features/search"]);
-    jQuery(document).ready(function(e) {
-      jQuery(this)
-        .find("#dropdownMenuLinkSearch")
-        .trigger("click");
+    jQuery(document).ready(function (e) {
+      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
 
@@ -171,9 +176,12 @@ export class FeaturesComponent implements OnInit {
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
         this.router.navigate([
-          "features/messagerie-lire/" + notification.messageId
+          "features/messagerie-lire/" + notification.messageId,
         ]);
         this.featuresService.numberOfInbox--;
       });
+  }
+  displayInboxOfPracticiansAction(event) {
+    this.router.navigate(["/features/messageries/" + event]);
   }
 }
