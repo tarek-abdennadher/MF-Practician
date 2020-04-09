@@ -49,15 +49,13 @@ export class ArchieveMessagesComponent implements OnInit {
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
-        fullName: message.senderDetail.patient
-          ? message.senderDetail.patient.fullName
-          : message.senderDetail.practician.fullName,
+        fullName: message.senderDetail[message.senderDetail.role.toLowerCase()].fullName,
         img: message.senderDetail.patient
           ? "assets/imgs/IMG_3944.jpg"
           : "assets/imgs/user.png",
-        title: message.senderDetail.patient
-          ? ""
-          : message.senderDetail.practician.title,
+          title: message.senderDetail.practician
+          ? message.senderDetail.practician.title
+          : "",
         type:
           message.senderDetail.role == "PRACTICIAN"
             ? "MEDICAL"
