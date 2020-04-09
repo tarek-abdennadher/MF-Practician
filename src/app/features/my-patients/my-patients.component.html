@@ -1,7 +1,20 @@
-<lib-hlsSearch
-  [isMyPatients]="isMyPatients"
-  (searchAction)="searchAction($event)"
-></lib-hlsSearch>
+<div class="form-inline col-md-12">
+  <lib-hlsLinks
+    class="col-md-6 padd-right"
+    [page]="page"
+    [topText]="topText"
+    [bottomText]="bottomText"
+    [number]="number"
+  ></lib-hlsLinks>
+  <div class="col-md-5">
+    <input
+      [(ngModel)]="search"
+      placeholder="Nom, prénom, ville"
+      type="text"
+      class="form-control"
+    /><i (click)="searchAction(search)" class="fa fa-search"></i>
+  </div>
+</div>
 <br />
 <lib-hlsMessagingList
   [isCheckbox]="false"

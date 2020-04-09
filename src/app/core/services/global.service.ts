@@ -66,9 +66,9 @@ export class GlobalService {
     send_message_error: "Votre message n'a pas pu être envoyé",
     archived_message_success: "Message archivé.",
     archived_message_error: "Votre message n'a pas pu être archivé",
-    mark_important_message_success: "Message marquer comme important.",
+    mark_important_message_success: "Message marqué comme important.",
     mark_important_message_error:
-      "Votre message n'a pas pu être marquer comme important",
+      "Votre message n'a pas pu être marqué comme important",
   };
 
   public messagesDisplayScreen = {
@@ -78,6 +78,9 @@ export class GlobalService {
     newMessages: "nouveaux messages",
     writeMessage: "Ecrire un nouveau message",
     other: "autre",
+    patient: "patient",
+    patients: "patients",
+    my_patients: "Mes patients",
   };
   public call(
     method: RequestType,
