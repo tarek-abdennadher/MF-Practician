@@ -65,7 +65,7 @@ export class FeaturesComponent implements OnInit {
               id: notification.id,
               sender: notification.senderFullName,
               picture: "assets/imgs/user.png",
-              messageId: notification.messageId,
+              messageId: notification.message.id
             });
           }
         }
@@ -121,8 +121,7 @@ export class FeaturesComponent implements OnInit {
   }
   displayMyProContactsAction() {
     this.router
-      .navigate(["features/contacts"])
-      .then(() => window.location.reload());
+      .navigate(["features/contacts"]);
   }
   displayMyDocumentsAction() {
     this.router.navigate(["features/documents"]);
