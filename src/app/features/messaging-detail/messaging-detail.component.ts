@@ -31,7 +31,7 @@ export class MessagingDetailComponent implements OnInit {
   number = 0;
   topText = this.globalService.messagesDisplayScreen.Mailbox;
   bottomText =
-    this.number != 1
+    this.number > 1
       ? this.globalService.messagesDisplayScreen.newMessages
       : this.globalService.messagesDisplayScreen.newMessage;
   backButton = true;
