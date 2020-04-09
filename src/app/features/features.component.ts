@@ -30,7 +30,8 @@ export class FeaturesComponent implements OnInit {
   userRole = this.localSt.retrieve("role");
   fullName = this.user?.firstName + " " + this.user?.lastName;
   imageSource = "assets/imgs/IMG_3944.jpg";
-  role: string = "medical";
+  role: string =
+    this.localSt.retrieve("role") == "SECRETARY" ? "secretary" : "medical";
   links = {
     isArchieve: true,
     isImportant: true,
