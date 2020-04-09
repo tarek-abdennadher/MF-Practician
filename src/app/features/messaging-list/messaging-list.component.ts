@@ -75,10 +75,13 @@ export class MessagingListComponent implements OnInit {
         context: "inbox",
       },
     });
+    let notifLength = this.featureService.listNotifications.length;
     this.featureService.listNotifications = this.featureService.listNotifications.filter(
       (notif) => notif.messageId != item.id
     );
-    this.featureService.numberOfInbox--;
+    if (notifLength > this.featureService.listNotifications.length) {
+      this.featureService.numberOfInbox--;
+    }
   }
 
   selectAllActionClicked() {
