@@ -16,7 +16,7 @@ export class ArchieveMessagesComponent implements OnInit {
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
-  bottomText = this.number != 1 ? "messages" : "message";
+  bottomText = this.number > 1 ? "messages" : "message";
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
@@ -35,7 +35,7 @@ export class ArchieveMessagesComponent implements OnInit {
     this.archivedService.getMyArchivedMessages().subscribe((messages) => {
       messages.forEach((message) => {
         this.number = message.length;
-        this.bottomText = this.number != 1 ? "messages" : "message";
+        this.bottomText = this.number > 1 ? "messages" : "message";
         let archivedMessage = this.mappingMessageArchived(message);
         this.itemsList.push(archivedMessage);
       });
@@ -49,11 +49,13 @@ export class ArchieveMessagesComponent implements OnInit {
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
-        fullName: message.senderDetail[message.senderDetail.role.toLowerCase()].fullName,
+        fullName:
+          message.senderDetail[message.senderDetail.role.toLowerCase()]
+            .fullName,
         img: message.senderDetail.patient
           ? "assets/imgs/IMG_3944.jpg"
           : "assets/imgs/user.png",
-          title: message.senderDetail.practician
+        title: message.senderDetail.practician
           ? message.senderDetail.practician.title
           : "",
         type:
