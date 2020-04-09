@@ -11,6 +11,7 @@ import { FeaturesService } from "../features.service";
   styleUrls: ["./messaging-list.component.scss"],
 })
 export class MessagingListComponent implements OnInit {
+  isMyInbox = true;
   imageSource = "assets/imgs/IMG_3944.jpg";
   messages: Array<any>;
   itemsList: Array<any>;
@@ -49,8 +50,18 @@ export class MessagingListComponent implements OnInit {
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       if (params["id"]) {
+        this.isMyInbox = false;
+        this.links = {
+          isAllSelect: true,
+          isAllSeen: true,
+          isSeen: false,
+          isArchieve: false,
+          isImportant: false,
+          isFilter: true,
+        };
         this.getMyInbox(params["id"]);
       } else {
+        this.isMyInbox = true;
         this.getMyInbox(this.featureService.getUserId());
       }
     });
@@ -202,7 +213,7 @@ export class MessagingListComponent implements OnInit {
       hasFiles: message.hasFiles,
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
-      isArchieve: true,
+      isArchieve: this.isMyInbox,
     };
   }
 
