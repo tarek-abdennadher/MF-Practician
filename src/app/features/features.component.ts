@@ -61,12 +61,6 @@ export class FeaturesComponent implements OnInit {
             let notification = JSON.parse(message.body);
             that.messageListService.setNotificationObs(notification);
             that.featuresService.numberOfInbox++;
-            that.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              picture: "assets/imgs/user.png",
-              messageId: notification.message.id
-            });
           }
         }
       );
