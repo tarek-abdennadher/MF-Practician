@@ -20,6 +20,7 @@ export class MessagingDetailComponent implements OnInit {
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox: boolean;
+  showAcceptRefuse: boolean;
   isMyMessage: boolean;
   senderRolePatient = false;
   messagingDetail: any;
@@ -61,19 +62,19 @@ export class MessagingDetailComponent implements OnInit {
         switch (params["context"]) {
           case "sent": {
             this.isFromInbox = false;
-            this.isMyMessage = true;
+            this.showAcceptRefuse = false;
             this.hidefrom = true;
             break;
           }
           case "inbox": {
             this.isFromInbox = true;
-            this.isMyMessage = true;
+            this.showAcceptRefuse = this.userRole == "PRACTICIAN";
             this.hideTo = true;
             break;
           }
           case "inboxPraticien": {
             this.isFromInbox = true;
-            this.isMyMessage = false;
+            this.showAcceptRefuse = true;
             this.hideTo = false;
             break;
           }
