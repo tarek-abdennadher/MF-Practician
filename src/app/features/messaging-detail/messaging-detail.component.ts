@@ -9,6 +9,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
+import { LocalStorageService } from "ngx-webstorage";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -19,14 +20,16 @@ export class MessagingDetailComponent implements OnInit {
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox: boolean;
-  senderRolePatient = true;
+  isMyMessage: boolean;
+  senderRolePatient = false;
   messagingDetail: any;
   prohibited = false;
   patientsId: number[];
   collectedIds: number[];
   idMessage: number;
   links: any;
-
+  hideTo = false;
+  hidefrom = false;
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.Mailbox;
@@ -36,6 +39,7 @@ export class MessagingDetailComponent implements OnInit {
       : this.globalService.messagesDisplayScreen.newMessage;
   backButton = true;
   private readonly notifier: NotifierService;
+  userRole = this.localSt.retrieve("role");
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   constructor(
     private _location: Location,
@@ -45,7 +49,8 @@ export class MessagingDetailComponent implements OnInit {
     private globalService: GlobalService,
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    private localSt: LocalStorageService
   ) {
     this.notifier = notifierService;
   }
@@ -56,10 +61,20 @@ export class MessagingDetailComponent implements OnInit {
         switch (params["context"]) {
           case "sent": {
             this.isFromInbox = false;
+            this.isMyMessage = true;
+            this.hidefrom = true;
             break;
           }
           case "inbox": {
             this.isFromInbox = true;
+            this.isMyMessage = true;
+            this.hideTo = true;
+            break;
+          }
+          case "inboxPraticien": {
+            this.isFromInbox = true;
+            this.isMyMessage = false;
+            this.hideTo = false;
             break;
           }
         }
@@ -76,6 +91,7 @@ export class MessagingDetailComponent implements OnInit {
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((message) => {
+        this.senderRolePatient = message.sender.role == "PATIENT";
         this.messagingDetail = message;
         this.hideShowReplyBtn(this.messagingDetail);
         this.links = {
