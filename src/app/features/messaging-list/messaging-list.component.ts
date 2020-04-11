@@ -11,6 +11,7 @@ import { FeaturesService } from "../features.service";
   styleUrls: ["./messaging-list.component.scss"],
 })
 export class MessagingListComponent implements OnInit {
+  showAcceptRefuse = true;
   isMyInbox = true;
   inboxName = "";
   imageSource = "assets/imgs/IMG_3944.jpg";
