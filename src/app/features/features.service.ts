@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
-import { Observable } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { LocalStorageService } from "ngx-webstorage";
 import * as jwt_decode from "jwt-decode";
 
@@ -12,11 +12,18 @@ export class FeaturesService {
   public listNotifications = [];
   numberOfInbox: number = 0;
   numberOfArchieve: number = 0;
+  myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService
   ) {}
-
+  updateNumberOfInboxForPractician(accountId, inboxNumber) {
+    let list: any[] = this.myPracticians.getValue();
+    if (list && list.length > 0) {
+      list.find((p) => p.id == accountId).number = inboxNumber;
+    }
+    this.myPracticians.next(list);
+  }
   getMyNotificationsByMessagesNotSeen(seen: boolean): Observable<[any]> {
     return this.globalService.call(
       RequestType.GET,

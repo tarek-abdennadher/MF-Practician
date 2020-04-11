@@ -78,7 +78,11 @@ export class ArchieveMessagesComponent implements OnInit {
   }
   cardClicked(item) {
     this.markMessageAsSeen(item.id);
-    this.router.navigate(["/features/messagerie-lire/" + item.id]);
+    this.router.navigate(["/features/messagerie-lire/" + item.id], {
+      queryParams: {
+        context: "inbox",
+      },
+    });
   }
 
   BackButton() {

@@ -42,7 +42,8 @@ export class FeaturesComponent implements OnInit {
   ngOnInit(): void {
     if (this.userRole && this.userRole == "SECRETARY") {
       this.featuresService.getSecretaryPracticians().subscribe((value) => {
-        this.myPracticians = value;
+        this.featuresService.myPracticians.next(value);
+        this.myPracticians = this.featuresService.myPracticians.getValue();
       });
     }
     this.getMyNotificationsNotSeen();
@@ -114,8 +115,7 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/features/favorites"]);
   }
   displayMyProContactsAction() {
-    this.router
-      .navigate(["features/contacts"]);
+    this.router.navigate(["features/contacts"]);
   }
   displayMyDocumentsAction() {
     this.router.navigate(["features/documents"]);
@@ -170,9 +170,14 @@ export class FeaturesComponent implements OnInit {
       .markMessageAsSeenByNotification(notification.messageId)
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
-        this.router.navigate([
-          "features/messagerie-lire/" + notification.messageId,
-        ]);
+        this.router.navigate(
+          ["features/messagerie-lire/" + notification.messageId],
+          {
+            queryParams: {
+              context: "inbox",
+            },
+          }
+        );
         this.featuresService.numberOfInbox--;
       });
   }

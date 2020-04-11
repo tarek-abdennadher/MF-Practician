@@ -92,6 +92,7 @@ export class MessagingReplyComponent implements OnInit {
   }
 
   replyMessage(message) {
+    console.log(message);
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
@@ -103,6 +104,8 @@ export class MessagingReplyComponent implements OnInit {
       : message.object.name;
     replyMessage.sender = {
       senderId: this.featureService.getUserId(),
+      originalSenderId: this.featureService.getUserId(),
+      sendedForId: message.sendedForId ? message.sendedForId : null,
     };
     replyMessage.toReceivers = [
       { receiverId: message.sender.senderId, seen: 0 },
