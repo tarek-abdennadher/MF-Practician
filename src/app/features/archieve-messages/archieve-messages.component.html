@@ -1,5 +1,14 @@
-<lib-hlsLinks [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
-    [backButton]="backButton"
-     (backButtonAction)="BackButton()"></lib-hlsLinks>
-<lib-hlsMessagingList [list]="itemsList" (cardAction)="cardClicked($event)"
-    [imageSource]="imageSource"></lib-hlsMessagingList>
+<lib-hlsLinks
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="BackButton()"
+></lib-hlsLinks>
+<lib-hlsMessagingList
+  [list]="itemsList"
+  (cardAction)="cardClicked($event)"
+  [isCheckbox]="false"
+  [imageSource]="imageSource"
+></lib-hlsMessagingList>
