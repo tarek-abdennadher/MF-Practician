@@ -96,7 +96,7 @@ export class MessagingDetailComponent implements OnInit {
         this.messagingDetail = message;
         this.hideShowReplyBtn(this.messagingDetail);
         this.links = {
-          isArchieve: true,
+          isArchieve: this.isFromInbox && this.hideTo == true,
           isImportant: this.isFromInbox ? !message.important : false,
           isAddNote: true,
         };
