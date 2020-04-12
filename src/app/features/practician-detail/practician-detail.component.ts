@@ -67,7 +67,11 @@ export class PracticianDetailComponent implements OnInit {
     }
   }
   sendMessageClicked(item) {
-    this.router.navigate(["/features/messagerie-ecrire/"]);
+    this.router.navigate(["/features/messagerie-ecrire"], {
+      queryParams: {
+        id: item.id,
+      },
+    });
   }
   BackButton() {
     this._location.back();
