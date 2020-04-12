@@ -67,7 +67,7 @@ export class ContactsComponent implements OnInit {
                 contactType: elm.contactType,
               },
             ],
-            isArchieve: elm.contactType == "CONTACT" ? true : false,
+            isArchieve: elm.contactType != "CABINET" ? true : false,
             isImportant: false,
             hasFiles: false,
             isViewDetail: true,
@@ -147,7 +147,11 @@ export class ContactsComponent implements OnInit {
       if (a.isChecked && a.users[0].contactType == "CONTACT") {
         ids.push(a.id);
       }
-      if (a.isChecked && a.users[0].contactType == "MEDICAL") {
+      if (
+        a.isChecked &&
+        (a.users[0].contactType == "MEDICAL" ||
+          a.users[0].contactType == "CABINET")
+      ) {
         practicianIds.push(a.id);
       }
       if (a.isChecked && a.users[0].contactType == "SECRETARY") {
@@ -178,7 +182,10 @@ export class ContactsComponent implements OnInit {
   cardClicked(item) {
     if (item.users[0].contactType == "CONTACT") {
       this.router.navigate(["/features/contact-detail/" + item.id]);
-    } else if (item.users[0].contactType == "MEDICAL") {
+    } else if (
+      item.users[0].contactType == "MEDICAL" ||
+      item.users[0].contactType == "CABINET"
+    ) {
       this.router.navigate([
         "/features/practician-detail/" + item.practicianId,
       ]);
@@ -200,7 +207,10 @@ export class ContactsComponent implements OnInit {
     if (event.users[0].contactType == "CONTACT") {
       ids.push(event.id);
     }
-    if (event.users[0].contactType == "MEDICAL") {
+    if (
+      event.users[0].contactType == "MEDICAL" ||
+      event.users[0].contactType == "CABINET"
+    ) {
       practicianIds.push(event.id);
     }
     if (event.users[0].contactType == "SECRETARY") {
