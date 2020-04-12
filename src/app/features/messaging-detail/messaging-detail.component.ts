@@ -31,9 +31,10 @@ export class MessagingDetailComponent implements OnInit {
   links: any;
   hideTo = false;
   hidefrom = false;
+  isFromArchive = false;
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
-  topText = this.globalService.messagesDisplayScreen.Mailbox;
+  topText = this.globalService.messagesDisplayScreen.MailDetail;
   bottomText =
     this.number > 1
       ? this.globalService.messagesDisplayScreen.newMessages
@@ -64,18 +65,29 @@ export class MessagingDetailComponent implements OnInit {
             this.isFromInbox = false;
             this.showAcceptRefuse = false;
             this.hidefrom = true;
+            this.isFromArchive = false;
             break;
           }
           case "inbox": {
             this.isFromInbox = true;
             this.showAcceptRefuse = this.userRole == "PRACTICIAN";
             this.hideTo = true;
+            this.isFromArchive = false;
             break;
           }
           case "inboxPraticien": {
             this.isFromInbox = true;
             this.showAcceptRefuse = true;
             this.hideTo = false;
+            this.isFromArchive = true;
+            break;
+          }
+          case "archive": {
+            this.isFromInbox = true;
+            this.showAcceptRefuse = false;
+            this.hideTo = false;
+            this.hidefrom = false;
+            this.isFromArchive = true;
             break;
           }
         }
@@ -96,7 +108,7 @@ export class MessagingDetailComponent implements OnInit {
         this.messagingDetail = message;
         this.hideShowReplyBtn(this.messagingDetail);
         this.links = {
-          isArchieve: this.isFromInbox && this.hideTo == true,
+          isArchieve: !this.isFromArchive,
           isImportant: this.isFromInbox ? !message.important : false,
           isAddNote: true,
         };

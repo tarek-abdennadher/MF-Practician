@@ -80,7 +80,7 @@ export class ArchieveMessagesComponent implements OnInit {
     this.markMessageAsSeen(item.id);
     this.router.navigate(["/features/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "inbox",
+        context: "archive",
       },
     });
   }
