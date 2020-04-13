@@ -55,6 +55,7 @@ export class MessagingListComponent implements OnInit {
     this.route.params.subscribe((params) => {
       if (params["id"]) {
         this.isMyInbox = false;
+        this.featureService.selectedPracticianId = params["id"];
         this.myPracticians = this.featureService.myPracticians.getValue();
         if (this.myPracticians && this.myPracticians.length > 0) {
           this.inboxName =
