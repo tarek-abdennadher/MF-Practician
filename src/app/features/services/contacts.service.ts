@@ -29,6 +29,7 @@ export class ContactsService {
     other_phone: "Autre tél",
     validate: "Valider",
     title: "Titre",
+    civility: "Civilité",
     speciality: "Spécialité",
     facility_name: "Nom de l'établissement",
     confirm: "Confirmer",
@@ -42,6 +43,12 @@ export class ContactsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.contact_pro_all
+    );
+  }
+  getContactsProForSecretary() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro_all_secretary
     );
   }
   getAllSpecialities(): Observable<Array<Speciality>> {

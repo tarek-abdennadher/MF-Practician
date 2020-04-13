@@ -12,6 +12,7 @@ import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.compo
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
 import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 import { SendMessageComponent } from "./send-message/send-message.component";
+import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 
 const routes: Routes = [
   {
@@ -21,70 +22,78 @@ const routes: Routes = [
       { path: "", redirectTo: "messageries", pathMatch: "full" },
       {
         path: "messageries",
-        component: MessagingListComponent
+        component: MessagingListComponent,
+      },
+      {
+        path: "messageries/:id",
+        component: MessagingListComponent,
       },
       {
         path: "messagerie-lire/:id",
-        component: MessagingDetailComponent
+        component: MessagingDetailComponent,
       },
       {
         path: "mes-patients",
-        component: MyPatientsComponent
+        component: MyPatientsComponent,
       },
       {
         path: "messagerie-envoyes",
-        component: SentMessagesComponent
+        component: SentMessagesComponent,
       },
       {
         path: "contacts",
-        component: ContactsComponent
+        component: ContactsComponent,
       },
       {
         path: "contact-detail/:id",
-        component: ContactDetailComponent
+        component: ContactDetailComponent,
       },
       {
         path: "messagerie-repondre/:id",
-        component: MessagingReplyComponent
+        component: MessagingReplyComponent,
       },
       {
         path: "messagerie-repondre/:id",
-        component: MessagingReplyComponent
+        component: MessagingReplyComponent,
       },
       {
         path: "search",
-        component: PracticianSearchComponent
+        component: PracticianSearchComponent,
       },
       {
         path: "practician-detail/:id",
-        component: PracticianDetailComponent
+        component: PracticianDetailComponent,
       },
       {
         path: "archive",
-        component: ArchieveMessagesComponent
+        component: ArchieveMessagesComponent,
       },
       {
         path: "compte",
         loadChildren: () =>
-          import("./account/account.module").then(m => m.AccountModule)
+          import("./account/account.module").then((m) => m.AccountModule),
       },
       {
         path: "messagerie-ecrire",
-        component: SendMessageComponent
+        component: SendMessageComponent,
       },
       {
         path: "documents",
         loadChildren: () =>
           import("./my-documents/my-documents.module").then(
-            m => m.MyDocumentsModule
-          )
-      }
-    ]
-  }
+            (m) => m.MyDocumentsModule
+          ),
+      },
+      {
+        path: "secretaire-detail/:id",
+        component: SecretaryDetailComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class FeaturesRoutingModule {}

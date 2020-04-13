@@ -60,23 +60,30 @@ export class GlobalService {
     favorite: this.BASE_URL_CA + "/favorite/",
     RefuseTypes: this.BASE_URL_MA + "/refuseType",
     contact_pro_all: this.BASE_URL_CA + "/contact/contacts-practician-all",
+    contact_pro_all_secretary:
+      this.BASE_URL_CA + "/contact/contacts-secretary-all",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
     send_message_error: "Votre message n'a pas pu être envoyé",
     archived_message_success: "Message archivé.",
     archived_message_error: "Votre message n'a pas pu être archivé",
-    mark_important_message_success: "Message marquer comme important.",
+    mark_important_message_success: "Message marqué comme important.",
     mark_important_message_error:
-      "Votre message n'a pas pu être marquer comme important",
+      "Votre message n'a pas pu être marqué comme important",
   };
 
   public messagesDisplayScreen = {
     inbox: "INBOX",
     Mailbox: "Boite de réception",
-    newMessage: "nouveaux messages",
+    MailDetail: "Détails du message",
+    newMessage: "nouveau message",
+    newMessages: "nouveaux messages",
     writeMessage: "Ecrire un nouveau message",
     other: "autre",
+    patient: "patient",
+    patients: "patients",
+    my_patients: "Mes patients",
   };
   public call(
     method: RequestType,

@@ -12,6 +12,7 @@
   [messagingDetail]="messagingDetail"
   [role]="role"
   [isReply]="true"
+  [senderRolePatient]="messagingDetail.sender.role == 'PATIENT'"
   [objectsList]="objectsList"
   [refuseResponse]="refuseResponse"
   (sendAction)="replyMessage($event)"

@@ -50,6 +50,7 @@ export class AccountService {
     edit_secretary_success: "Secrétaire modifiée avec succès",
     confirm: "Confirmer",
     delete_account_confirm: "Êtes-vous sûr de vouloir supprimer votre compte ?",
+    delete: "Supprimer",
   };
   public errors = {
     required: "Champs obligatoire",
@@ -122,6 +123,19 @@ export class AccountService {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.url.account + "/desactivate-multiple",
+      ids
+    );
+  }
+  detachSecretaryFronAccount(id) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.secretary + "/detach/" + id
+    );
+  }
+  detachMultipleSecretaryFromAccount(ids) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.secretary + "/detach-multiple",
       ids
     );
   }

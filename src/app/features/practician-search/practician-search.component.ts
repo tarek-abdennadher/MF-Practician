@@ -1,17 +1,17 @@
-import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { PracticianSearchService } from './practician-search.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PracticianSearch } from './practician-search.model';
-import { search } from './search.model';
-import { FeaturesService } from '../features.service';
+import { Component, OnInit, OnChanges, SimpleChanges } from "@angular/core";
+import { PracticianSearchService } from "./practician-search.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PracticianSearch } from "./practician-search.model";
+import { search } from "./search.model";
+import { FeaturesService } from "../features.service";
+import { LocalStorageService } from "ngx-webstorage";
 
 @Component({
-  selector: 'app-practician-search',
-  templateUrl: './practician-search.component.html',
-  styleUrls: ['./practician-search.component.scss']
+  selector: "app-practician-search",
+  templateUrl: "./practician-search.component.html",
+  styleUrls: ["./practician-search.component.scss"],
 })
 export class PracticianSearchComponent implements OnInit {
-
   imageSource = "assets/imgs/IMG_3944.jpg";
   itemsList = [];
   page = "SEARCH";
@@ -21,14 +21,15 @@ export class PracticianSearchComponent implements OnInit {
   backButton = false;
   text: string;
   city: string;
-  links = {
-
-  };
+  links = {};
   texts: any;
-  constructor(public router: Router, 
-    private route: ActivatedRoute, 
+  constructor(
+    public router: Router,
+    private route: ActivatedRoute,
     private practicianSearchService: PracticianSearchService,
-    private featureService: FeaturesService) {
+    private featureService: FeaturesService,
+    private localSt: LocalStorageService
+  ) {
     this.texts = practicianSearchService.texts;
   }
 
@@ -37,46 +38,54 @@ export class PracticianSearchComponent implements OnInit {
       this.text = data.text;
       this.city = data.city;
       this.getPractians(data.text, data.city);
-    })
+    });
   }
   getPractians(text, city) {
-
     if (!text && !city) {
-      this.practicianSearchService.getAllPracticians().subscribe(list => {
-        list = list.filter(a => a.id != this.featureService.getUserId());
+      this.practicianSearchService.getAllPracticians().subscribe((list) => {
+        if (this.localSt.retrieve("role") == "PRACTICIAN") {
+          list = list.filter((a) => a.id != this.featureService.getUserId());
+        }
         this.itemsList = [];
         this.number = list.length;
-        list.forEach(message => {
+        list.forEach((message) => {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
         });
       });
     } else if (!text && city) {
-      this.practicianSearchService.getPracticiansByCity(city).subscribe(list => {
-        list = list.filter(a => a.id != this.featureService.getUserId());
-        this.itemsList = [];
-        this.number = list.length;
-        list.forEach(message => {
-          let practician = this.mappingPracticians(message);
-          this.itemsList.push(practician);
+      this.practicianSearchService
+        .getPracticiansByCity(city)
+        .subscribe((list) => {
+          if (this.localSt.retrieve("role") == "PRACTICIAN") {
+            list = list.filter((a) => a.id != this.featureService.getUserId());
+          }
+          this.itemsList = [];
+          this.number = list.length;
+          list.forEach((message) => {
+            let practician = this.mappingPracticians(message);
+            this.itemsList.push(practician);
+          });
         });
-      })
     } else {
-      this.practicianSearchService.getPracticiansBytextAndCity(text, city).subscribe(list => {
-        list = list.filter(a => a.id != this.featureService.getUserId());
-        this.itemsList = [];
-        this.number = list.length;
-        list.forEach(message => {
-          let practician = this.mappingPracticians(message);
-          this.itemsList.push(practician);
+      this.practicianSearchService
+        .getPracticiansBytextAndCity(text, city)
+        .subscribe((list) => {
+          if (this.localSt.retrieve("role") == "PRACTICIAN") {
+            list = list.filter((a) => a.id != this.featureService.getUserId());
+          }
+          this.itemsList = [];
+          this.number = list.length;
+          list.forEach((message) => {
+            let practician = this.mappingPracticians(message);
+            this.itemsList.push(practician);
+          });
         });
-      })
     }
-
   }
   edit() {
     jQuery(document).ready(function (e) {
-      jQuery(this).find('#dropdownMenuLinkSearch').trigger("click");
+      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
   mappingPracticians(message) {
@@ -90,13 +99,13 @@ export class PracticianSearchComponent implements OnInit {
           ? "assets/imgs/IMG_3944.jpg"
           : "assets/imgs/user.png",
         title: message.title,
-        type: "MEDICAL"
-      }
+        type: "MEDICAL",
+      },
     ];
     practician.object = {
       name: message.address,
       isImportant: false,
-      isLocalisation: true
+      isLocalisation: true,
     };
     practician.time = null;
     practician.isImportant = false;
@@ -109,12 +118,12 @@ export class PracticianSearchComponent implements OnInit {
     this.router.navigate(["/features/practician-detail/" + item.id]);
   }
   selectItem(event) {
-    this.itemsList.forEach(a => {
-      if (event.filter(b => b.id == a.id).length >= 1) {
+    this.itemsList.forEach((a) => {
+      if (event.filter((b) => b.id == a.id).length >= 1) {
         a.isChecked = true;
       } else {
         a.isChecked = false;
       }
-    })
+    });
   }
 }

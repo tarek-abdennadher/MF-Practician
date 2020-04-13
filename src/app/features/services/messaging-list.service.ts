@@ -1,30 +1,46 @@
 import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, BehaviorSubject } from "rxjs";
+import { FeaturesService } from '../features.service';
+import * as _ from "lodash";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessagingListService {
-  private notificationObs: Subject<any> = new Subject();
+  private notificationObs = new BehaviorSubject<Object>("");
 
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService, private featuresService: FeaturesService) {}
 
   getNotificationObs(): Observable<any> {
     return this.notificationObs.asObservable();
   }
 
-  setNotificationObs(notif) {
-    this.notificationObs.next(notif);
+  setNotificationObs(notification) {
+    if (!_.isEqual(notification, this.notificationObs.getValue())) {
+      this.notificationObs.next(notification);
+      this.featuresService.listNotifications.unshift({
+        id: notification.id,
+        sender: notification.senderFullName,
+        picture: "assets/imgs/user.png",
+        messageId: notification.messageId
+      });
+    }
   }
+
   public getMyInbox(): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "myInbox"
     );
   }
-
+  public getInboxByAccountId(id): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "inbox-by-account/" + id
+    );
+  }
   public markMessageAsSeen(id: number): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,

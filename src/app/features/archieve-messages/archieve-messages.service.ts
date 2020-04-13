@@ -4,7 +4,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ArchieveMessagesService {
   constructor(private globalService: GlobalService) {}
@@ -17,7 +17,9 @@ export class ArchieveMessagesService {
   }
 
   public markMessageAsSeen(id: number): Observable<boolean> {
-    return this.globalService.call(RequestType.POST,
-                                   this.globalService.url.receiverArchived + "markMessageSeen/" + id);
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.receiverArchived + "markMessageSeen/" + id
+    );
   }
 }

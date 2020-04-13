@@ -14,11 +14,18 @@
   [messagingDetail]="messagingDetail"
   [isFromInbox]="isFromInbox"
   [role]="role"
+  [hideTo]="hideTo"
+  [hidefrom]="hidefrom"
   [senderRolePatient]="senderRolePatient"
+  [showAcceptRefuse]="showAcceptRefuse"
+  [hideButtons]="prohibited"
   (replyAction)="replyAction()"
   (acceptAction)="acceptAction()"
   (refuseAction)="refuseAction()"
-></lib-hlsMessagingDetail>
+  (downloadAction)="download($event)"
+>
+  ></lib-hlsMessagingDetail
+>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">

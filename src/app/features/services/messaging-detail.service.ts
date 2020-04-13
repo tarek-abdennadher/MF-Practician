@@ -16,6 +16,10 @@ export class MessagingDetailService {
     );
   }
 
+  patientsProhibitedByCurrentPractician(): Observable<number[]> {
+    return this.globalService.call(RequestType.GET, this.globalService.url.favorite +
+      "currentPractician/prohibitedPatientId");
+  }
   public markMessageAsImportant(ids: number[]): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,
