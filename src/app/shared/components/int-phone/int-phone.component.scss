@@ -1,0 +1,27 @@
+$input-color: #F1F1F1;
+$color-helssy-blue: #1A56A7;
+.form-control{
+    background: $input-color 0% 0% no-repeat padding-box;
+    border-radius: 10px;
+    opacity: 1;
+    margin:-6px;
+    padding: 6px 6px 6px 50px;
+    border-color: $input-color !important;
+    font-family: Gotham-Book;
+    font-size:17px ;
+    line-height: 24px;
+    height: 50px;
+    }
+    // buttons CSS
+.btn-icon {
+    max-width: 40px;
+    background-color: $color-helssy-blue;
+    color: white;
+    cursor: pointer;
+    font-weight: lighter;
+    background: #41BDDF 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  height: 50px;
+  margin: -6px;
+}

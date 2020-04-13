@@ -11,6 +11,7 @@ import { MustMatch } from "./must-match";
 import { Speciality } from "@app/shared/models/speciality";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { LocalStorageService } from "ngx-webstorage";
+import { Subject } from 'rxjs';
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -30,12 +31,14 @@ export class PersonalInformationsComponent implements OnInit {
   showPasswordSuccess = false;
   showPasswordFailure = false;
   passwordSubmitted = false;
+  otherPhones = new Subject<any[]>();
   public infoForm: FormGroup;
   public passwordForm: FormGroup;
   public today = new Date().toISOString().substr(0, 10);
   account: any;
   imageSource = "assets/imgs/user.png";
   password = "";
+  public phones = new Array();
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -137,6 +140,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.accountService.getCurrentAccount().subscribe((account) => {
       if (account && account.practician) {
         this.account = account.practician;
+        this.otherPhones.next(account.otherPhones);
         this.infoForm.patchValue({
           id: account.practician.id ? account.practician.id : null,
           email: account.email ? account.email : "",
@@ -157,18 +161,14 @@ export class PersonalInformationsComponent implements OnInit {
           additional_address: account.practician.additionalAddress
             ? account.practician.additionalAddress
             : "",
-          other_phone: account.practician.otherPhoneNumber
-            ? account.practician.otherPhoneNumber
-            : "",
-          other_phone_note: account.practician.note
-            ? account.practician.note
-            : "",
+          otherPhones: account.otherPhones ? account.otherPhones : [],
           picture: account.practician.photoId
             ? account.practician.photoId
             : null,
         });
       } else if (account && account.secretary) {
         this.account = account.secretary;
+        this.otherPhones.next(account.otherPhones);
         this.infoForm.patchValue({
           id: account.secretary.id ? account.secretary.id : null,
           email: account.email ? account.email : "",
@@ -182,6 +182,7 @@ export class PersonalInformationsComponent implements OnInit {
           civility: account.secretary.civility
             ? account.secretary.civility
             : null,
+          otherPhones: account.otherPhones ? account.otherPhones : []
         });
       }
     });
@@ -196,6 +197,7 @@ export class PersonalInformationsComponent implements OnInit {
       model = {
         email: this.infoForm.value.email,
         phoneNumber: this.infoForm.value.phone,
+        otherPhones: this.phones,
         practician: {
           id: this.infoForm.value.id,
           firstName: this.infoForm.value.first_name,
@@ -204,8 +206,8 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                  (s) => s.id == this.infoForm.value.speciality
-                )
+                (s) => s.id == this.infoForm.value.speciality
+              )
               : null,
           address: this.infoForm.value.address,
           photoId: this.infoForm.value.picture,
@@ -218,6 +220,7 @@ export class PersonalInformationsComponent implements OnInit {
       model = {
         email: this.infoForm.value.email,
         phoneNumber: this.infoForm.value.phone,
+        otherPhones: this.phones,
         secretary: {
           id: this.infoForm.value.id,
           firstName: this.infoForm.value.first_name,
@@ -258,5 +261,8 @@ export class PersonalInformationsComponent implements OnInit {
           $("#alertPasswordFailure").alert();
         }
       });
+  }
+  getPhoneList(event) {
+    this.phones = event.value;
   }
 }
