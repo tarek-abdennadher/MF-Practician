@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -10,15 +10,16 @@ import { Subject } from 'rxjs';
 export class IntPhoneComponent implements OnInit {
   public phoneForm: FormGroup;
   @Output("phones") phones = new EventEmitter();
-
+  @Output("validPhones") validPhones = new EventEmitter<boolean>();
   @Input("editList") phonesToEdit = new Subject<[]>();
+  public submitted = false;
   constructor(private formBuilder: FormBuilder) { }
   get phoneList() {
     return <FormArray>this.phoneForm.get("phoneList");
   }
   newPhone(): FormGroup {
     return this.formBuilder.group({
-      phoneNumber: '',
+      phoneNumber: ['', Validators.required],
       note: ''
     });
   }
@@ -42,6 +43,7 @@ export class IntPhoneComponent implements OnInit {
           this.phoneList.push(this.updatePhone(p)));
       }
       else {
+        this.validPhones.emit(false);
         this.phoneForm = this.formBuilder.group({
           phoneList: this.formBuilder.array([this.newPhone()])
         });
@@ -50,6 +52,11 @@ export class IntPhoneComponent implements OnInit {
     this.onChanges();
   }
   addPhone(): void {
+    this.submitted = true;
+    if (this.phoneForm.invalid) {
+      this.validPhones.emit(false)
+      return;
+    }
     if (this.phoneList.length > 2) {
       return;
     }
@@ -63,6 +70,10 @@ export class IntPhoneComponent implements OnInit {
       this.phoneForm = this.formBuilder.group({
         phoneList: this.formBuilder.array([this.newPhone()])
       });
+      this.submitted = false;
+      this.phoneForm.reset();
+      this.phoneList.clear();
+      this.validPhones.emit(true)
       return;
     }
     this.phoneList.removeAt(index);
