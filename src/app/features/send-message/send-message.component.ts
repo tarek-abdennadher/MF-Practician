@@ -132,7 +132,7 @@ export class SendMessageComponent implements OnInit {
 
         const formData = new FormData();
         if (this.selectedFiles) {
-          newMessage.hasFiles;
+          newMessage.hasFiles = true;
           formData.append("model", JSON.stringify(newMessage));
           formData.append(
             "file",
