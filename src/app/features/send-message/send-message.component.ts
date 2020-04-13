@@ -93,77 +93,71 @@ export class SendMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
-    if (
-      message.to.length != 0 &&
-      (message.freeObject != "" || message.object != "") &&
-      message.body != undefined
-    ) {
-      this.uuid = uuid();
-      const newMessage = new Message();
-      message.to.forEach((to) => {
-        newMessage.toReceivers.push({ receiverId: to.id });
-      });
-      message.cc
-        ? message.cc.forEach((cc) => {
-            newMessage.ccReceivers.push({ receiverId: cc.id });
-          })
-        : null;
+    this.uuid = uuid();
+    const newMessage = new Message();
+    message.to.forEach((to) => {
+      newMessage.toReceivers.push({ receiverId: to.id });
+    });
+    message.cc
+      ? message.cc.forEach((cc) => {
+          newMessage.ccReceivers.push({ receiverId: cc.id });
+        })
+      : null;
 
-      newMessage.sender = {
-        senderId: this.featureService.getUserId(),
-      };
-      message.object != "" &&
-      message.object.name.toLowerCase() !=
-        this.globalService.messagesDisplayScreen.other
-        ? (newMessage.object = message.object.name)
-        : (newMessage.object = message.freeObject);
-      newMessage.body = message.body;
-      if (message.file !== undefined) {
-        newMessage.uuid = this.uuid;
-        this.selectedFiles = message.file;
+    newMessage.sender = {
+      senderId: this.featureService.getUserId(),
+    };
+    message.object != "" &&
+    message.object.name.toLowerCase() !=
+      this.globalService.messagesDisplayScreen.other
+      ? (newMessage.object = message.object.name)
+      : (newMessage.object = message.freeObject);
+    newMessage.body = message.body;
+    if (message.file !== undefined) {
+      newMessage.uuid = this.uuid;
+      this.selectedFiles = message.file;
 
-        const formData = new FormData();
-        if (this.selectedFiles) {
-          newMessage.hasFiles;
-          formData.append("model", JSON.stringify(newMessage));
-          formData.append(
-            "file",
-            this.selectedFiles.item(0),
-            this.selectedFiles.item(0).name
-          );
-        }
+      const formData = new FormData();
+      if (this.selectedFiles) {
+        newMessage.hasFiles;
+        formData.append("model", JSON.stringify(newMessage));
+        formData.append(
+          "file",
+          this.selectedFiles.item(0),
+          this.selectedFiles.item(0).name
+        );
+      }
 
-        this.nodeService
-          .saveFileInMemory(this.uuid, formData)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe((mess) => {
+      this.nodeService
+        .saveFileInMemory(this.uuid, formData)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((mess) => {
+          this.router.navigate(["/features/messageries"], {
+            queryParams: {
+              status: "sentSuccess",
+            },
+          });
+        });
+    } else {
+      this.messageService
+        .sendMessage(newMessage)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (mess) => {
             this.router.navigate(["/features/messageries"], {
               queryParams: {
                 status: "sentSuccess",
               },
             });
-          });
-      } else {
-        this.messageService
-          .sendMessage(newMessage)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(
-            (mess) => {
-              this.router.navigate(["/features/messageries"], {
-                queryParams: {
-                  status: "sentSuccess",
-                },
-              });
-            },
-            (error) => {
-              this.router.navigate(["/features/messageries"], {
-                queryParams: {
-                  status: "sentSuccess",
-                },
-              });
-            }
-          );
-      }
+          },
+          (error) => {
+            this.router.navigate(["/features/messageries"], {
+              queryParams: {
+                status: "sentSuccess",
+              },
+            });
+          }
+        );
     }
   }
   addProContactAction() {
