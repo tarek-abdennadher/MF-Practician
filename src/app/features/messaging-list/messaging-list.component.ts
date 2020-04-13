@@ -61,7 +61,7 @@ export class MessagingListComponent implements OnInit {
           this.inboxName =
             "Dr. " +
             this.myPracticians.find((p) => p.id == params["id"]).fullName;
-          this.topText = "Boite de réception  " + this.inboxName;
+          this.topText = "Boite de réception  -" + this.inboxName;
         }
         this.links = {
           isAllSelect: true,
