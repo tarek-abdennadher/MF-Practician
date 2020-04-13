@@ -26,6 +26,7 @@ export class FeaturesComponent implements OnInit {
     this.initializeWebSocketConnection();
   }
   public myPracticians = [];
+
   user = this.localSt.retrieve("user");
   userRole = this.localSt.retrieve("role");
   fullName = this.user?.firstName + " " + this.user?.lastName;
