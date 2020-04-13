@@ -44,7 +44,9 @@ export class PracticianSearchComponent implements OnInit {
     if (!text && !city) {
       this.practicianSearchService.getAllPracticians().subscribe((list) => {
         if (this.localSt.retrieve("role") == "PRACTICIAN") {
-          list = list.filter((a) => a.id != this.featureService.getUserId());
+          list = list.filter(
+            (a) => a.accountId != this.featureService.getUserId()
+          );
         }
         this.itemsList = [];
         this.number = list.length;
@@ -58,7 +60,9 @@ export class PracticianSearchComponent implements OnInit {
         .getPracticiansByCity(city)
         .subscribe((list) => {
           if (this.localSt.retrieve("role") == "PRACTICIAN") {
-            list = list.filter((a) => a.id != this.featureService.getUserId());
+            list = list.filter(
+              (a) => a.accountId != this.featureService.getUserId()
+            );
           }
           this.itemsList = [];
           this.number = list.length;
@@ -72,7 +76,9 @@ export class PracticianSearchComponent implements OnInit {
         .getPracticiansBytextAndCity(text, city)
         .subscribe((list) => {
           if (this.localSt.retrieve("role") == "PRACTICIAN") {
-            list = list.filter((a) => a.id != this.featureService.getUserId());
+            list = list.filter(
+              (a) => a.accountId != this.featureService.getUserId()
+            );
           }
           this.itemsList = [];
           this.number = list.length;
