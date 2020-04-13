@@ -1,0 +1,39 @@
+<div class="row">
+
+    <button (click)=" addPhone()" class="col-2 btn btn-xs btn-icon">
+        <i class="far fa-plus"></i>
+    </button>
+    <form [formGroup]="phoneForm" class="col-10">
+        <div formArrayName="phoneList" *ngFor="let p of phoneList.controls; let i = index;">
+            <div [formGroupName]="i">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <international-phone-number class="form-control" formControlName="phoneNumber"
+                                            placeholder="Téléphone" [maxlength]="20"
+                                            [defaultCountry]="phoneList.at(i).get('id')? '': 'fr'">
+                                        </international-phone-number>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <input type="text" class="form-control " formControlName="note"
+                                            placeholder="Note" />
+                                    </div>
+                                </div>
+                            </div>
+                            <button (click)="removePhone(i)" class="btn btn-xs btn-icon mb-2 col-md-2">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
