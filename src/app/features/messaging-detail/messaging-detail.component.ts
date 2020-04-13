@@ -100,19 +100,38 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   getMessageDetailById(id) {
-    this.messagingDetailService
-      .getMessagingDetailById(id)
-      .pipe(takeUntil(this._destroyed$))
+    if (this.isFromArchive) {
+      this.messagingDetailService
+      .getMessageArchivedById(id)
       .subscribe((message) => {
-        this.senderRolePatient = message.sender.role == "PATIENT";
+        message.sender = message.senderArchived;
+        message.toReceivers = message.toReceiversArchived;
+        message.ccReceivers = message.ccReceiversArchived;
+        message.senderArchived = null;
+        message.toReceiversArchived = null;
+        message.ccReceiversArchived = null;
+        this.messagingDetail = message;
+        console.log(this.messagingDetail)
+        this.hideShowReplyBtn(this.messagingDetail);
+        this.links = {
+          isArchieve: !this.isFromArchive,
+          isImportant: this.isFromInbox ? !message.important : false,
+          isAddNote : true,
+        };
+      });
+    } else {
+      this.messagingDetailService
+      .getMessagingDetailById(id)
+      .subscribe((message) => {
         this.messagingDetail = message;
         this.hideShowReplyBtn(this.messagingDetail);
         this.links = {
           isArchieve: !this.isFromArchive,
           isImportant: this.isFromInbox ? !message.important : false,
-          isAddNote: true,
+          isAddNote : true,
         };
       });
+    }
   }
 
   hideShowReplyBtn(message) {

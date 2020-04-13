@@ -16,6 +16,13 @@ export class MessagingDetailService {
     );
   }
 
+  getMessageArchivedById(id): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.archived_messages + id
+    );
+  }
+
   patientsProhibitedByCurrentPractician(): Observable<number[]> {
     return this.globalService.call(RequestType.GET, this.globalService.url.favorite +
       "currentPractician/prohibitedPatientId");
