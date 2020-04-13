@@ -11,12 +11,14 @@ import { NotifierService } from "angular-notifier";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
+import { LocalStorageService } from "ngx-webstorage";
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
   styleUrls: ["./messaging-reply.component.scss"],
 })
 export class MessagingReplyComponent implements OnInit {
+  isMyMessage = false;
   private _destroyed$ = new Subject();
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
@@ -51,7 +53,8 @@ export class MessagingReplyComponent implements OnInit {
     private router: Router,
     private globalService: GlobalService,
     notifierService: NotifierService,
-    private refuseTypeService: RefuseTypeService
+    private refuseTypeService: RefuseTypeService,
+    private localSt: LocalStorageService
   ) {
     this.notifier = notifierService;
   }
@@ -72,6 +75,11 @@ export class MessagingReplyComponent implements OnInit {
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((message) => {
+        message.toReceivers.forEach((element) => {
+          if (element.receiverId == this.featureService.getUserId()) {
+            this.isMyMessage = true;
+          }
+        });
         message.hasFiles = false;
         if (this.refuseResponse) {
           message.object = [];
@@ -92,7 +100,6 @@ export class MessagingReplyComponent implements OnInit {
   }
 
   replyMessage(message) {
-    console.log(message);
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
@@ -102,10 +109,18 @@ export class MessagingReplyComponent implements OnInit {
     replyMessage.object = !this.refuseResponse
       ? message.object
       : message.object.name;
+    let sendedFor = null;
+    if (!this.isMyMessage) {
+      sendedFor =
+        this.featureService.selectedPracticianId &&
+        this.featureService.selectedPracticianId !== 0
+          ? this.featureService.selectedPracticianId
+          : null;
+    }
     replyMessage.sender = {
       senderId: this.featureService.getUserId(),
       originalSenderId: this.featureService.getUserId(),
-      sendedForId: message.sendedForId ? message.sendedForId : null,
+      sendedForId: sendedFor,
     };
     replyMessage.toReceivers = [
       { receiverId: message.sender.senderId, seen: 0 },

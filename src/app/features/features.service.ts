@@ -10,6 +10,7 @@ import * as jwt_decode from "jwt-decode";
 })
 export class FeaturesService {
   public listNotifications = [];
+  public selectedPracticianId = 0;
   numberOfInbox: number = 0;
   numberOfArchieve: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
