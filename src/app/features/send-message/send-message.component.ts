@@ -26,6 +26,7 @@ export class SendMessageComponent implements OnInit {
   user = this.localSt.retrieve("user");
   connectedUser = "PR " + this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
+  forList = [];
   objectsList = [];
   selectedFiles: any;
   links = {};
@@ -51,6 +52,11 @@ export class SendMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.localSt.retrieve("role") == "SECRETARY") {
+      this.featureService.myPracticians.subscribe(
+        (val) => (this.forList = val)
+      );
+    }
     forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {});
@@ -106,6 +112,8 @@ export class SendMessageComponent implements OnInit {
 
     newMessage.sender = {
       senderId: this.featureService.getUserId(),
+      originalSenderId: this.featureService.getUserId(),
+      sendedForId: message.for && message.for.id ? message.for.id : null,
     };
     message.object != "" &&
     message.object.name.toLowerCase() !=
@@ -119,7 +127,7 @@ export class SendMessageComponent implements OnInit {
 
       const formData = new FormData();
       if (this.selectedFiles) {
-        newMessage.hasFiles;
+        newMessage.hasFiles = true;
         formData.append("model", JSON.stringify(newMessage));
         formData.append(
           "file",

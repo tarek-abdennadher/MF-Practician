@@ -11,12 +11,15 @@ import { FeaturesService } from "../features.service";
   styleUrls: ["./messaging-list.component.scss"],
 })
 export class MessagingListComponent implements OnInit {
+  showAcceptRefuse = true;
   isMyInbox = true;
+  inboxName = "";
   imageSource = "assets/imgs/IMG_3944.jpg";
   messages: Array<any>;
   itemsList: Array<any>;
   filtredItemList: Array<any> = new Array();
   selectedObjects: Array<any>;
+  myPracticians = [];
   links = {
     isAllSelect: true,
     isAllSeen: true,
@@ -47,10 +50,18 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.topText = "Boite de réception";
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       if (params["id"]) {
         this.isMyInbox = false;
+        this.myPracticians = this.featureService.myPracticians.getValue();
+        if (this.myPracticians && this.myPracticians.length > 0) {
+          this.inboxName =
+            "Dr. " +
+            this.myPracticians.find((p) => p.id == params["id"]).fullName;
+          this.topText = "Boite de réception  " + this.inboxName;
+        }
         this.links = {
           isAllSelect: true,
           isAllSeen: true,
@@ -90,7 +101,7 @@ export class MessagingListComponent implements OnInit {
     this.markMessageAsSeen(item);
     this.router.navigate(["/features/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "inbox",
+        context: this.isMyInbox ? "inbox" : "inboxPraticien",
       },
     });
     let notifLength = this.featureService.listNotifications.length;
@@ -177,7 +188,14 @@ export class MessagingListComponent implements OnInit {
           this.number > 1
             ? this.globalService.messagesDisplayScreen.newMessages
             : this.globalService.messagesDisplayScreen.newMessage;
-        this.featureService.numberOfInbox = this.number;
+        if (this.isMyInbox) {
+          this.featureService.numberOfInbox = this.number;
+        } else {
+          this.featureService.updateNumberOfInboxForPractician(
+            accountId,
+            this.number
+          );
+        }
         this.messages.sort(function (m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
@@ -263,7 +281,16 @@ export class MessagingListComponent implements OnInit {
 
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe((notif) => {
-      this.itemsList.unshift(this.parseMessage(notif.message));
+      if (notif != "") {
+        this.itemsList.unshift(this.parseMessage(notif.message));
+        if (this.isMyInbox) {
+          this.number++;
+          this.bottomText =
+            this.number > 1
+              ? this.globalService.messagesDisplayScreen.newMessages
+              : this.globalService.messagesDisplayScreen.newMessage;
+        }
+      }
     });
   }
 }

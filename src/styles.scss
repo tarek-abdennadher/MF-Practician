@@ -19,7 +19,7 @@
 $custom-typography: mat-typography-config(
   $font-family: "Gotham-book",
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500),
+  $body-1: mat-typography-level(16px, 24px, 500)
 );
 @include mat-base-typography($custom-typography);
 @include mat-checkbox-typography($custom-typography);
@@ -35,11 +35,7 @@ $patient-accent: mat-palette($mat-pink, A200, A100, A400);
 $patient-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$patient-theme: mat-light-theme(
-  $patient-primary,
-  $patient-accent,
-  $patient-warn
-);
+$patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -51,16 +47,23 @@ $patient-theme: mat-light-theme(
 html,
 body {
   height: 100%;
-}
-body {
   margin: 0;
-  background-color: #FFFFFF !important;
+  background-color: #f7f7f7 !important;
   @media (min-width: 400px) {
     zoom: 80%;
   }
   @media (min-width: 1920px) {
     zoom: 100%;
   }
+}
+input[type="text"],
+input[type="password"],
+input[type="date"],
+textarea {
+  font-family: initial !important;
+}
+a {
+  text-decoration: unset;
 }
 .modal-backdrop {
   width: 100% !important;
