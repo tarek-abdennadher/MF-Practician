@@ -103,35 +103,35 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   getMessageDetailById(id) {
-    if (this.isFromArchive) {
+    if (this.isFromArchive && !this.hideTo) {
       this.messagingDetailService
-      .getMessageArchivedById(id)
-      .subscribe((message) => {
-        message.sender = message.senderArchived;
-        message.toReceivers = message.toReceiversArchived;
-        message.ccReceivers = message.ccReceiversArchived;
-        this.messagingDetail = message;
-        this.prohibited = message.prohibited;
-        this.isFromInbox = true;
-        this.links = {
-          isArchieve: !this.isFromArchive,
-          isImportant: this.isFromInbox ? !message.important : false,
-          isAddNote : true,
-        };
-      });
+        .getMessageArchivedById(id)
+        .subscribe((message) => {
+          message.sender = message.senderArchived;
+          message.toReceivers = message.toReceiversArchived;
+          message.ccReceivers = message.ccReceiversArchived;
+          this.messagingDetail = message;
+          this.prohibited = message.prohibited;
+          this.isFromInbox = true;
+          this.links = {
+            isArchieve: !this.isFromArchive,
+            isImportant: this.isFromInbox ? !message.important : false,
+            isAddNote: true,
+          };
+        });
     } else {
       this.messagingDetailService
-      .getMessagingDetailById(id)
-      .subscribe((message) => {
-        this.messagingDetail = message;
-        this.prohibited = message.prohibited;
-        this.isFromInbox = this.IsinboxContext;
-        this.links = {
-          isArchieve: !this.isFromArchive,
-          isImportant: this.isFromInbox ? !message.important : false,
-          isAddNote : true,
-        };
-      });
+        .getMessagingDetailById(id)
+        .subscribe((message) => {
+          this.messagingDetail = message;
+          this.prohibited = message.prohibited;
+          this.isFromInbox = this.IsinboxContext;
+          this.links = {
+            isArchieve: !this.isFromArchive,
+            isImportant: this.isFromInbox ? !message.important : false,
+            isAddNote: true,
+          };
+        });
     }
   }
 
