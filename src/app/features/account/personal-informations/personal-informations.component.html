@@ -184,7 +184,7 @@
           <label for="other_phone" class="col-sm-1 col-form-label">{{
               labels.other_phone
             }}</label>
-          <div class="col-sm-10">
+          <div id="otherPhone" class="col-sm-10">
             <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" (validPhones)="submitPhones($event)">
             </int-phone>
           </div>
