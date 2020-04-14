@@ -1,3 +1,9 @@
+<lib-hlsLinks
+  [page]="page"
+  [topText]="topText"
+  [backButton]="backButton"
+  (backButtonAction)="goBack()"
+>
 <div id="documents">
   <lib-hls-documents [attachements]="attachements" (visualize)="visualizeFile($event)" (download)="downloadFile($event)"
     > </lib-hls-documents>
