@@ -40,7 +40,7 @@ export class PersonalInformationsComponent implements OnInit {
   password = "";
   public phones = new Array();
   public isPhonesValid = false;
-  failureAlert: boolean;
+  failureAlert = false;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -55,6 +55,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.passwordSubmitted = false;
     this.showPasswordSuccess = false;
     this.showPasswordFailure = false;
+    this.failureAlert = false;
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
