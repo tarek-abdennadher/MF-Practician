@@ -103,10 +103,12 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   getMessageDetailById(id) {
-    if (this.isFromArchive && !this.hideTo) {
+    if (this.isFromArchive && this.showAcceptRefuse == false) {
       this.messagingDetailService
         .getMessageArchivedById(id)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
+          this.senderRolePatient = message.sender.role == "PATIENT";
           message.sender = message.senderArchived;
           message.toReceivers = message.toReceiversArchived;
           message.ccReceivers = message.ccReceiversArchived;

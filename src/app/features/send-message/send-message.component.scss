@@ -6,3 +6,97 @@ a {
     color: #fff;
   }
 }
+@media (min-width: 800px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 52vw;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 55vw;
+    }
+  }
+}
+
+@media (min-width: 1000px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 57vw;
+    }
+  }
+}
+
+@media (min-width: 1100px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 60vw;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 63vw;
+    }
+  }
+}
+
+@media (min-width: 1300px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 65vw;
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 68vw;
+    }
+  }
+}
+
+@media (min-width: 1500px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 70vw;
+    }
+  }
+}
+
+@media (min-width: 1600px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 72vw;
+    }
+  }
+}
+
+@media (min-width: 1700px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 74vw;
+    }
+  }
+}
+
+@media (min-width: 1850px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 76.7vw;
+    }
+  }
+}
+@media (min-width: 2050px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 78vw;
+    }
+  }
+}
