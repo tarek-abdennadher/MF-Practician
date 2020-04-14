@@ -108,6 +108,7 @@ export class MessagingDetailComponent implements OnInit {
     if (this.isFromArchive && this.showAcceptRefuse == false) {
       this.messagingDetailService
         .getMessageArchivedById(id)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
           message.sender = message.senderArchived;
           message.toReceivers = message.toReceiversArchived;
@@ -125,6 +126,7 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .subscribe((message) => {
+          this.senderRolePatient = message.sender.role == "PATIENT";
           this.messagingDetail = message;
           this.prohibited = message.prohibited;
           this.isFromInbox = this.IsinboxContext;

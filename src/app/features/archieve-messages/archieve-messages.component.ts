@@ -16,7 +16,7 @@ export class ArchieveMessagesComponent implements OnInit {
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
-  bottomText = this.number > 1 ? "messages" : "message";
+  bottomText = "messages";
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
@@ -33,14 +33,13 @@ export class ArchieveMessagesComponent implements OnInit {
 
   getMyMessagesArchived() {
     this.archivedService.getMyArchivedMessages().subscribe((messages) => {
+      this.number = this.featureService.numberOfArchieve;
+      this.bottomText = this.number > 1 ? "messages" : "message";
       messages.forEach((message) => {
-        this.number = message.length;
         this.bottomText = this.number > 1 ? "messages" : "message";
         let archivedMessage = this.mappingMessageArchived(message);
         this.itemsList.push(archivedMessage);
       });
-      this.bottomText =
-        this.featureService.numberOfArchieve + " " + this.bottomText;
     });
   }
   mappingMessageArchived(message) {
