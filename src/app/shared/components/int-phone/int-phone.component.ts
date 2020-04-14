@@ -32,6 +32,7 @@ export class IntPhoneComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+    this.validPhones.emit(true)
     this.phoneForm = this.formBuilder.group({
       phoneList: this.formBuilder.array([])
     });
