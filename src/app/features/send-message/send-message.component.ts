@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { takeUntil, tap } from "rxjs/operators";
 import { Subject, forkJoin } from "rxjs";
 import { RequestTypeService } from "../services/request-type.service";
@@ -12,6 +12,7 @@ import { ContactsService } from "../services/contacts.service";
 import { FeaturesService } from "../features.service";
 import { Location } from "@angular/common";
 import { LocalStorageService } from "ngx-webstorage";
+import { NotifierService } from "angular-notifier";
 
 @Component({
   selector: "app-send-message",
@@ -34,6 +35,8 @@ export class SendMessageComponent implements OnInit {
   topText = this.globalService.messagesDisplayScreen.writeMessage;
   backButton = true;
   selectedPracticianId: number;
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private readonly notifier: NotifierService;
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService,
@@ -44,11 +47,13 @@ export class SendMessageComponent implements OnInit {
     private messageService: MessageService,
     private nodeService: NodeeService,
     private router: Router,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
+    notifierService: NotifierService
   ) {
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
     });
+    this.notifier = notifierService;
   }
 
   ngOnInit(): void {
@@ -85,6 +90,7 @@ export class SendMessageComponent implements OnInit {
       });
     });
     this.toList.next(myList);
+    console.log(myList);
   }
 
   getAllRequestTypes() {
@@ -139,13 +145,22 @@ export class SendMessageComponent implements OnInit {
       this.nodeService
         .saveFileInMemory(this.uuid, formData)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((mess) => {
-          this.router.navigate(["/features/messageries"], {
-            queryParams: {
-              status: "sentSuccess",
-            },
-          });
-        });
+        .subscribe(
+          (mess) => {
+            this.router.navigate(["/features/messageries"], {
+              queryParams: {
+                status: "sentSuccess",
+              },
+            });
+          },
+          (error) => {
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+          }
+        );
     } else {
       this.messageService
         .sendMessage(newMessage)
@@ -159,10 +174,10 @@ export class SendMessageComponent implements OnInit {
             });
           },
           (error) => {
-            this.router.navigate(["/features/messageries"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl,
             });
           }
         );
