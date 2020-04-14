@@ -43,7 +43,6 @@ export class IntPhoneComponent implements OnInit {
           this.phoneList.push(this.updatePhone(p)));
       }
       else {
-        this.validPhones.emit(false);
         this.phoneForm = this.formBuilder.group({
           phoneList: this.formBuilder.array([this.newPhone()])
         });
@@ -77,6 +76,7 @@ export class IntPhoneComponent implements OnInit {
       return;
     }
     this.phoneList.removeAt(index);
+    this.validPhones.emit(true)
   }
 
   onChanges(): void {
@@ -98,5 +98,16 @@ export class IntPhoneComponent implements OnInit {
         $(this).css("padding", "8px")
       });
     })
+  }
+  onSearchChange(searchValue: string): void {
+    if (this.phoneForm.invalid) {
+      this.validPhones.emit(false)
+    }
+    else {
+      this.validPhones.emit(true)
+    }
+    this.phoneForm.valueChanges.subscribe(val => {
+      this.phones.emit(this.phoneList)
+    });
   }
 }

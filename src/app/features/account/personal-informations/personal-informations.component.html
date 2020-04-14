@@ -7,6 +7,13 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
+  <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+    {{messages.phone_error}}
+    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </a>
   <br />
   <div class="col-md-12">
     <div class="form-group title">
