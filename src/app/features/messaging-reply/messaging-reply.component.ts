@@ -33,7 +33,7 @@ export class MessagingReplyComponent implements OnInit {
   };
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
-  topText = this.globalService.messagesDisplayScreen.Mailbox;
+  topText = this.globalService.messagesDisplayScreen.MailDetail;
   bottomText =
     this.number > 1
       ? this.globalService.messagesDisplayScreen.newMessages
