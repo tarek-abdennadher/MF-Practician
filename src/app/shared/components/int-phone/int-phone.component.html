@@ -15,7 +15,8 @@
                                         <international-phone-number class="form-control" formControlName="phoneNumber"
                                             placeholder="Téléphone" [maxlength]="20"
                                             [defaultCountry]="phoneList.at(i).get('id')? '': 'fr'"
-                                            [ngClass]="{ 'is-invalid': submitted && p.controls.phoneNumber.errors}">
+                                            [ngClass]="{ 'is-invalid': submitted && p.controls.phoneNumber.errors}"
+                                            (input)="onSearchChange($event.target.value)">
                                         </international-phone-number>
                                         <div *ngIf=" submitted  && p.controls.phoneNumber.invalid && p.controls.phoneNumber.length !== 0"
                                             class="invalid-feedback">

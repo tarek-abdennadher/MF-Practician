@@ -40,6 +40,7 @@ export class PersonalInformationsComponent implements OnInit {
   password = "";
   public phones = new Array();
   public isPhonesValid = false;
+  failureAlert: boolean;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -191,6 +192,8 @@ export class PersonalInformationsComponent implements OnInit {
   submit() {
     this.submitted = true;
     if (!this.isPhonesValid) {
+      this.failureAlert = true;
+      $("#FailureAlert").alert();
       return;
     }
     if (this.infoForm.invalid) {
