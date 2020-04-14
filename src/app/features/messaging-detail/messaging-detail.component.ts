@@ -79,6 +79,7 @@ export class MessagingDetailComponent implements OnInit {
           }
           case "inboxPraticien": {
             this.isFromInbox = false;
+            this.showAcceptRefuse = true;
             this.IsinboxContext = true;
             this.hideTo = false;
             this.isFromArchive = true;
