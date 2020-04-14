@@ -20,6 +20,7 @@ export class MessagingDetailComponent implements OnInit {
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox: boolean;
+  IsinboxContext: boolean = false;
   showAcceptRefuse: boolean;
   isMyMessage: boolean;
   senderRolePatient = false;
@@ -69,21 +70,23 @@ export class MessagingDetailComponent implements OnInit {
             break;
           }
           case "inbox": {
-            this.isFromInbox = true;
+            this.isFromInbox = false;
+            this.IsinboxContext = true;
             this.showAcceptRefuse = this.userRole == "PRACTICIAN";
             this.hideTo = true;
             this.isFromArchive = false;
             break;
           }
           case "inboxPraticien": {
-            this.isFromInbox = true;
+            this.isFromInbox = false;
             this.showAcceptRefuse = true;
+            this.IsinboxContext = true;
             this.hideTo = false;
             this.isFromArchive = true;
             break;
           }
           case "archive": {
-            this.isFromInbox = true;
+            this.isFromInbox = false;
             this.showAcceptRefuse = false;
             this.hideTo = false;
             this.hidefrom = false;
@@ -107,12 +110,9 @@ export class MessagingDetailComponent implements OnInit {
         message.sender = message.senderArchived;
         message.toReceivers = message.toReceiversArchived;
         message.ccReceivers = message.ccReceiversArchived;
-        message.senderArchived = null;
-        message.toReceiversArchived = null;
-        message.ccReceiversArchived = null;
         this.messagingDetail = message;
-        console.log(this.messagingDetail)
-        this.hideShowReplyBtn(this.messagingDetail);
+        this.prohibited = message.prohibited;
+        this.isFromInbox = true;
         this.links = {
           isArchieve: !this.isFromArchive,
           isImportant: this.isFromInbox ? !message.important : false,
@@ -124,7 +124,8 @@ export class MessagingDetailComponent implements OnInit {
       .getMessagingDetailById(id)
       .subscribe((message) => {
         this.messagingDetail = message;
-        this.hideShowReplyBtn(this.messagingDetail);
+        this.prohibited = message.prohibited;
+        this.isFromInbox = this.IsinboxContext;
         this.links = {
           isArchieve: !this.isFromArchive,
           isImportant: this.isFromInbox ? !message.important : false,
