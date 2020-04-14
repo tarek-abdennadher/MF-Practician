@@ -180,20 +180,18 @@
           </div>
         </div>
         <div class="row">
-
           <label for="other_phone" class="col-sm-1 col-form-label">{{
-              labels.other_phone
-            }}</label>
+            labels.other_phone
+          }}</label>
           <div id="otherPhone" class="col-sm-10">
             <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" (validPhones)="submitPhones($event)">
             </int-phone>
           </div>
-
         </div>
       </div>
       <br />
       <div class="row justify-content-center">
-        <button (click)="submit()" type="submit" class="btn btn-validate">
+        <button (click)="submit()" type="submit" class="btn btn-primary">
           {{ labels.validate }}
         </button>
       </div>
@@ -292,7 +290,7 @@
           </div>
           <br />
           <div class="row justify-content-center">
-            <button (click)="resetPasswordSubmit()" type="submit" class="btn btn-validate">
+            <button (click)="resetPasswordSubmit()" type="submit" class="btn btn-primary">
               {{ labels.validate }}
             </button>
           </div>
