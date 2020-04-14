@@ -39,6 +39,7 @@ export class PersonalInformationsComponent implements OnInit {
   imageSource = "assets/imgs/user.png";
   password = "";
   public phones = new Array();
+  public isPhonesValid = false;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -189,6 +190,9 @@ export class PersonalInformationsComponent implements OnInit {
   }
   submit() {
     this.submitted = true;
+    if (!this.isPhonesValid) {
+      return;
+    }
     if (this.infoForm.invalid) {
       return;
     }
@@ -264,5 +268,8 @@ export class PersonalInformationsComponent implements OnInit {
   }
   getPhoneList(event) {
     this.phones = event.value;
+  }
+  submitPhones(event) {
+    this.isPhonesValid = event
   }
 }
