@@ -125,6 +125,7 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .subscribe((message) => {
+          this.senderRolePatient = message.sender.role == "PATIENT";
           this.messagingDetail = message;
           this.prohibited = message.prohibited;
           this.isFromInbox = this.IsinboxContext;
