@@ -10,6 +10,7 @@ import { takeUntil } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
+import { DialogService } from "../services/dialog.service";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -53,7 +54,8 @@ export class MessagingDetailComponent implements OnInit {
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
     notifierService: NotifierService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private dialogService: DialogService
   ) {
     this.notifier = notifierService;
   }
@@ -200,27 +202,37 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   archieveActionClicked() {
-    console.log("te");
-    let ids = [];
-    ids.push(this.idMessage);
-    this.featureService.numberOfArchieve =
-      this.featureService.numberOfArchieve + 1;
-    this.messagingDetailService.markMessageAsArchived(ids).subscribe(
-      (resp) => {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_success,
-          type: "info",
-          template: this.customNotificationTmpl,
-        });
-      },
-      (error) => {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_error,
-          type: "error",
-          template: this.customNotificationTmpl,
-        });
-      }
-    );
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.archiving_confirmation_message
+      )
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          let ids = [];
+          ids.push(this.idMessage);
+          this.featureService.numberOfArchieve =
+            this.featureService.numberOfArchieve + 1;
+          this.messagingDetailService.markMessageAsArchived(ids).subscribe(
+            (resp) => {
+              this.notifier.show({
+                message: this.globalService.toastrMessages
+                  .archived_message_success,
+                type: "info",
+                template: this.customNotificationTmpl,
+              });
+            },
+            (error) => {
+              this.notifier.show({
+                message: this.globalService.toastrMessages
+                  .archived_message_error,
+                type: "error",
+                template: this.customNotificationTmpl,
+              });
+            }
+          );
+        }
+      });
   }
 
   goToBack() {

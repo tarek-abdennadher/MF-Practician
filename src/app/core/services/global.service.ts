@@ -84,7 +84,8 @@ export class GlobalService {
     patient: "patient",
     patients: "patients",
     my_patients: "Mes patients",
-    documents: "Mes documents"
+    documents: "Mes documents",
+    archiving_confirmation_message: "Voulez vous vraiment archiver ce message",
   };
   public call(
     method: RequestType,
