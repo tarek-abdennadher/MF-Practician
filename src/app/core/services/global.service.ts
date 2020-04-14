@@ -84,6 +84,7 @@ export class GlobalService {
     patient: "patient",
     patients: "patients",
     my_patients: "Mes patients",
+    documents: "Mes documents"
   };
   public call(
     method: RequestType,

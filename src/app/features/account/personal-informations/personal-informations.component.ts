@@ -39,6 +39,8 @@ export class PersonalInformationsComponent implements OnInit {
   imageSource = "assets/imgs/user.png";
   password = "";
   public phones = new Array();
+  public isPhonesValid = false;
+  failureAlert = false;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -53,6 +55,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.passwordSubmitted = false;
     this.showPasswordSuccess = false;
     this.showPasswordFailure = false;
+    this.failureAlert = false;
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
@@ -189,6 +192,11 @@ export class PersonalInformationsComponent implements OnInit {
   }
   submit() {
     this.submitted = true;
+    if (!this.isPhonesValid) {
+      this.failureAlert = true;
+      $("#FailureAlert").alert();
+      return;
+    }
     if (this.infoForm.invalid) {
       return;
     }
@@ -264,5 +272,8 @@ export class PersonalInformationsComponent implements OnInit {
   }
   getPhoneList(event) {
     this.phones = event.value;
+  }
+  submitPhones(event) {
+    this.isPhonesValid = event
   }
 }
