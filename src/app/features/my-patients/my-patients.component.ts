@@ -3,6 +3,7 @@ import { MyPatientsService } from "../services/my-patients.service";
 import { MyPatients } from "./my-patients";
 import { Router } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
+import { DialogService } from "../services/dialog.service";
 
 @Component({
   selector: "app-my-patients",
@@ -26,7 +27,8 @@ export class MyPatientsComponent implements OnInit {
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
-    private router: Router
+    private router: Router,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -102,12 +104,21 @@ export class MyPatientsComponent implements OnInit {
     console.log("edit");
   }
   deleteAction(item) {
-    this.myPatientsService
-      .deletePatientFromMyPatients(item.users[0].id)
-      .subscribe((resp) => {
-        this.filtredPatients = this.filtredPatients.filter(
-          (elm) => elm.users[0].id != item.users[0].id
-        );
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.delete_confirmation_patient
+      )
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          this.myPatientsService
+            .deletePatientFromMyPatients(item.users[0].id)
+            .subscribe((resp) => {
+              this.filtredPatients = this.filtredPatients.filter(
+                (elm) => elm.users[0].id != item.users[0].id
+              );
+            });
+        }
       });
   }
   authorizeAction(item) {

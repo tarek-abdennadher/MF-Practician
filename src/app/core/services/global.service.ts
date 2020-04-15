@@ -88,6 +88,7 @@ export class GlobalService {
     my_patients: "Mes patients",
     documents: "Mes documents",
     archiving_confirmation_message: "Voulez vous vraiment archiver ce message",
+    delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient",
   };
   public call(
     method: RequestType,
