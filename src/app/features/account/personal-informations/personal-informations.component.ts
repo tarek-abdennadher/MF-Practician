@@ -46,14 +46,7 @@ export class PersonalInformationsComponent implements OnInit {
   failureAlert = false;
   image: string | ArrayBuffer;
   hasImage = false;
-  public selectedFiles: any = undefined;
-  fileName: any;
-  currentFileUpload: any;
-  guid: any;
-  profilAttachementFolder: any;
   nodeId: any;
-  file: any;
-  fileUrl: string;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -326,13 +319,13 @@ export class PersonalInformationsComponent implements OnInit {
 
   // Select file to upload
   selectFileToUpload(event) {
-    this.selectedFiles = event.target.files;
-    this.fileName = this.selectedFiles.item(0).name;
+    let selectedFiles = event.target.files;
+    const fileName = selectedFiles.item(0).name;
 
-    if (this.selectedFiles) {
-      this.currentFileUpload = this.selectedFiles.item(0);
+    if (selectedFiles) {
+      const currentFileUpload = selectedFiles.item(0);
       this.documentService
-        .uploadFileSelected(this.nodeId, this.currentFileUpload)
+        .uploadFileSelected(this.nodeId,currentFileUpload)
         .subscribe((event) => {
           if (event.body) {
             const bodySplited = event.body.toString().split("/");
@@ -341,14 +334,14 @@ export class PersonalInformationsComponent implements OnInit {
 
           }
           if (event instanceof HttpResponse) {
-            this.file = this.selectedFiles[0];
+            const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
                 this.image = myReader.result;
 
             };
-            myReader.readAsDataURL(this.file);
-            this.selectedFiles = undefined;
+            myReader.readAsDataURL(file);
+            selectedFiles = undefined;
           }
         });
     }
@@ -358,12 +351,12 @@ export class PersonalInformationsComponent implements OnInit {
     this.documentService
       .getSiteById("helssycoreapplication")
       .subscribe((directory) => {
-        this.guid = directory.entry.guid;
-        this.documentService.getAllChildFolders(this.guid).subscribe((data) => {
-          this.profilAttachementFolder = data.list.entries.filter(
+        const guid = directory.entry.guid;
+        this.documentService.getAllChildFolders(guid).subscribe((data) => {
+          const profilAttachementFolder = data.list.entries.filter(
             (directory) => directory.entry.name === "Profiles Pictures"
           )[0].entry;
-          this.nodeId = this.profilAttachementFolder.id;
+          this.nodeId = profilAttachementFolder.id;
         });
       });
   }
