@@ -8,17 +8,19 @@ import * as Stomp from "stompjs";
 import * as SockJS from "sockjs-client";
 import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
-import { MyDocumentsService } from './my-documents/my-documents.service';
-import { AccountService } from './services/account.service';
+import { MyDocumentsService } from "./my-documents/my-documents.service";
+import { AccountService } from "./services/account.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
-  styleUrls: ["./features.component.scss"],
+  styleUrls: ["./features.component.scss"]
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
   account: any;
   hasImage: boolean;
+  text: string = "";
+  city: string = "";
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -41,31 +43,34 @@ export class FeaturesComponent implements OnInit {
   links = {
     isArchieve: true,
     isImportant: true,
-    isFilter: true,
+    isFilter: true
   };
   private stompClient;
 
   ngOnInit(): void {
     if (this.userRole && this.userRole == "SECRETARY") {
-      this.featuresService.getSecretaryPracticians().subscribe((value) => {
+      this.featuresService.getSecretaryPracticians().subscribe(value => {
         this.featuresService.myPracticians.next(value);
         this.myPracticians = this.featuresService.myPracticians.getValue();
       });
     }
+    this.featuresService.currentSearch.subscribe((data: search) => {
+      this.text = data.text;
+      this.city = data.city;
+    });
     this.getMyNotificationsNotSeen();
     this.countMyArchive();
     this.getPersonalInfo();
-
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
     this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function (frame) {
+    this.stompClient.connect({}, function(frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
-        (message) => {
+        message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
             that.messageListService.setNotificationObs(notification);
@@ -80,20 +85,20 @@ export class FeaturesComponent implements OnInit {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .subscribe((notifications) => {
-        notifications.forEach((notif) => {
+      .subscribe(notifications => {
+        notifications.forEach(notif => {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.senderFullName,
             picture: "assets/imgs/user.png",
-            messageId: notif.messageId,
+            messageId: notif.messageId
           });
         });
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
   countMyArchive() {
-    this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
+    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
       this.featuresService.numberOfArchieve = resp;
     });
   }
@@ -168,8 +173,10 @@ export class FeaturesComponent implements OnInit {
   searchActionClicked(event) {
     this.searchService.changeSearch(new search(event.search, event.city));
     this.router.navigate(["/features/search"]);
-    jQuery(document).ready(function (e) {
-      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
+    jQuery(document).ready(function(e) {
+      jQuery(this)
+        .find("#dropdownMenuLinkSearch")
+        .trigger("click");
     });
   }
 
@@ -182,8 +189,8 @@ export class FeaturesComponent implements OnInit {
           ["features/messagerie-lire/" + notification.messageId],
           {
             queryParams: {
-              context: "inbox",
-            },
+              context: "inbox"
+            }
           }
         );
         this.featuresService.numberOfInbox--;
@@ -194,7 +201,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
+    this.accountService.getCurrentAccount().subscribe(account => {
       if (account && account.practician) {
         this.account = account.practician;
         if (this.account.photoId) {
@@ -207,14 +214,14 @@ export class FeaturesComponent implements OnInit {
   // initialise profile picture
   getPictureProfile(nodeId) {
     this.documentService.downloadFile(nodeId).subscribe(
-      (response) => {
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
+        myReader.onloadend = e => {
           this.featuresService.imageSource = myReader.result;
         };
         let ok = myReader.readAsDataURL(response.body);
       },
-      (error) => {
+      error => {
         this.featuresService.imageSource = "assets/imgs/user.png";
       }
     );

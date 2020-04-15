@@ -4,9 +4,10 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable, BehaviorSubject } from "rxjs";
 import { LocalStorageService } from "ngx-webstorage";
 import * as jwt_decode from "jwt-decode";
+import { search } from "./practician-search/search.model";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class FeaturesService {
   public listNotifications = [];
@@ -15,7 +16,8 @@ export class FeaturesService {
   numberOfArchieve: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public imageSource: string | ArrayBuffer = "assets/imgs/user.png";
-
+  private searchSource = new BehaviorSubject(new search());
+  currentSearch = this.searchSource.asObservable();
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService
@@ -23,7 +25,7 @@ export class FeaturesService {
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
-      list.find((p) => p.id == accountId).number = inboxNumber;
+      list.find(p => p.id == accountId).number = inboxNumber;
     }
     this.myPracticians.next(list);
   }
@@ -58,5 +60,8 @@ export class FeaturesService {
       RequestType.GET,
       this.globalService.url.secretary + "/my-practicians"
     );
+  }
+  changeSearch(search: search) {
+    this.searchSource.next(search);
   }
 }

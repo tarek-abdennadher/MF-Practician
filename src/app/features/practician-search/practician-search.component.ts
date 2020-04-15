@@ -90,6 +90,7 @@ export class PracticianSearchComponent implements OnInit {
     }
   }
   edit() {
+    this.featureService.changeSearch(new search(this.text, this.city));
     jQuery(document).ready(function(e) {
       jQuery(this)
         .find("#dropdownMenuLinkSearch")
