@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
-import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-messaging-list",
@@ -129,17 +129,36 @@ export class MessagingListComponent implements OnInit {
   seenAllActionClicked() {
     const messagesId = this.filtredItemList.map((e) => e.id);
     if (messagesId.length > 0) {
-      this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
-        (resp) => {
-          if (resp == true) {
-            this.itemsList.forEach((item) => (item.isSeen = true));
-            this.filtredItemList.forEach((item) => (item.isSeen = true));
+      if (this.isMyInbox) {
+        this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
+          (resp) => {
+            if (resp == true) {
+              this.itemsList.forEach((item) => (item.isSeen = true));
+              this.filtredItemList.forEach((item) => (item.isSeen = true));
+            }
+          },
+          (error) => {
+            console.log("We have to find a way to notify user by this error");
           }
-        },
-        (error) => {
-          console.log("We have to find a way to notify user by this error");
-        }
-      );
+        );
+      } else {
+        this.messagesServ
+          .markMessageListAsSeenByReceiverId(
+            messagesId,
+            this.featureService.selectedPracticianId
+          )
+          .subscribe(
+            (resp) => {
+              if (resp == true) {
+                this.itemsList.forEach((item) => (item.isSeen = true));
+                this.filtredItemList.forEach((item) => (item.isSeen = true));
+              }
+            },
+            (error) => {
+              console.log("We have to find a way to notify user by this error");
+            }
+          );
+      }
     }
   }
 
@@ -254,31 +273,61 @@ export class MessagingListComponent implements OnInit {
       isMarkAsSeen: true,
       isArchieve: this.isMyInbox,
       photoId: message.sender.photoId,
-
     };
   }
 
   markMessageAsSeen(event) {
     let messageId = event.id;
-    this.messagesServ.markMessageAsSeen(messageId).subscribe(
-      (resp) => {
-        if (resp == true) {
-          let index = this.itemsList.findIndex((item) => item.id == messageId);
-          if (index != -1) {
-            this.itemsList[index].isSeen = true;
+    if (this.isMyInbox) {
+      this.messagesServ.markMessageAsSeen(messageId).subscribe(
+        (resp) => {
+          if (resp == true) {
+            let index = this.itemsList.findIndex(
+              (item) => item.id == messageId
+            );
+            if (index != -1) {
+              this.itemsList[index].isSeen = true;
+            }
+            let filtredIndex = this.filtredItemList.findIndex(
+              (item) => item.id == messageId
+            );
+            if (index != -1) {
+              this.filtredItemList[filtredIndex].isSeen = true;
+            }
           }
-          let filtredIndex = this.filtredItemList.findIndex(
-            (item) => item.id == messageId
-          );
-          if (index != -1) {
-            this.filtredItemList[filtredIndex].isSeen = true;
-          }
+        },
+        (error) => {
+          console.log("We have to find a way to notify user by this error");
         }
-      },
-      (error) => {
-        console.log("We have to find a way to notify user by this error");
-      }
-    );
+      );
+    } else {
+      this.messagesServ
+        .markMessageAsSeenByReveiverId(
+          messageId,
+          this.featureService.selectedPracticianId
+        )
+        .subscribe(
+          (resp) => {
+            if (resp == true) {
+              let index = this.itemsList.findIndex(
+                (item) => item.id == messageId
+              );
+              if (index != -1) {
+                this.itemsList[index].isSeen = true;
+              }
+              let filtredIndex = this.filtredItemList.findIndex(
+                (item) => item.id == messageId
+              );
+              if (index != -1) {
+                this.filtredItemList[filtredIndex].isSeen = true;
+              }
+            }
+          },
+          (error) => {
+            console.log("We have to find a way to notify user by this error");
+          }
+        );
+    }
   }
 
   archieveMessage(event) {
