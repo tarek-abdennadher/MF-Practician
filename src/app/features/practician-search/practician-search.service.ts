@@ -14,12 +14,12 @@ export class PracticianSearchService {
   text: string;
   city: string;
   texts = {
-
     searchText: "Nom, prénom, spécialité",
-
     city: "Ville",
-
-    edit: "Modifier ma recherche"
+    edit: "Modifier ma recherche",
+    question: "Vous ne trouvez pas un praticien ? ",
+    response: "Envoyez lui une invitation !",
+    return_chat: 'Retour à la messagerie'
 
   }
   constructor(private globalService: GlobalService) { }

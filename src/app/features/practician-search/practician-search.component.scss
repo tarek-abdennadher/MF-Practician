@@ -1,3 +1,4 @@
+$color-helssy-grey: #6e819b;
 .col-md-12,
 .col-md-7,
 .col-md-5.col-md-4 {
@@ -41,7 +42,7 @@ p {
   letter-spacing: -0.66px;
   color: #6e819b;
   font-weight: bold;
-  display: inline-flex;
+  display: inline-grid;
 }
 span {
   font-size: 17px;
@@ -49,4 +50,20 @@ span {
   letter-spacing: -0.75px;
   color: #6e819b;
   font-weight: normal;
+}
+a {
+  color: #6e819b;
+  font-weight: bold;
+  text-decoration: none;
+}
+.col-md-6 {
+  margin-top: 15px;
+}
+.link1 {
+  color: $color-helssy-grey;
+  font-size: 17px;
+  font-family: Gotham;
+}
+.container {
+  max-width: unset;
 }
