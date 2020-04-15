@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
+import { MyDocumentsService } from '../my-documents/my-documents.service';
 
 @Component({
   selector: "app-messaging-list",
@@ -44,7 +45,8 @@ export class MessagingListComponent implements OnInit {
     private route: ActivatedRoute,
     notifierService: NotifierService,
     private featureService: FeaturesService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private documentService: MyDocumentsService
   ) {
     this.notifier = notifierService;
   }
@@ -204,6 +206,24 @@ export class MessagingListComponent implements OnInit {
         });
         this.itemsList = this.messages.map((item) => this.parseMessage(item));
         this.filtredItemList = this.itemsList;
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       });
   }
 
@@ -233,6 +253,8 @@ export class MessagingListComponent implements OnInit {
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
       isArchieve: this.isMyInbox,
+      photoId: message.sender.photoId,
+
     };
   }
 

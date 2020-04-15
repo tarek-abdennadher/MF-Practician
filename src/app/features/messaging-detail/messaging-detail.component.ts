@@ -123,6 +123,54 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
+          this.messagingDetail.toReceivers.forEach(receiver => {
+            if(receiver.photoId){
+              this.documentService.downloadFile(receiver.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+
+                },
+                (error) => {
+                  receiver.img = "assets/imgs/user.png";
+                }
+              );
+            }
+          })
+          this.messagingDetail.ccReceivers.forEach(receiver => {
+            if(receiver.photoId){
+              this.documentService.downloadFile(receiver.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+
+                },
+                (error) => {
+                  receiver.img = "assets/imgs/user.png";
+                }
+              );
+            }
+          })
+          if(this.messagingDetail.sender.photoId){
+              this.documentService.downloadFile(this.messagingDetail.sender.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.img = "assets/imgs/user.png";
+                }
+              );
+            }
         });
     } else {
       this.messagingDetailService
@@ -140,6 +188,54 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
+          this.messagingDetail.toReceivers.forEach(receiver => {
+            if(receiver.photoId){
+              this.documentService.downloadFile(receiver.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+
+                },
+                (error) => {
+                  receiver.img = "assets/imgs/user.png";
+                }
+              );
+            }
+          })
+          this.messagingDetail.ccReceivers.forEach(receiver => {
+            if(receiver.photoId){
+              this.documentService.downloadFile(receiver.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+
+                },
+                (error) => {
+                  receiver.img = "assets/imgs/user.png";
+                }
+              );
+            }
+          })
+          if(this.messagingDetail.sender.photoId){
+              this.documentService.downloadFile(this.messagingDetail.sender.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.img = "assets/imgs/user.png";
+                }
+              );
+            }
         });
     }
   }

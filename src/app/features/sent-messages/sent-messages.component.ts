@@ -5,6 +5,7 @@ import { MessageService } from "../services/message.service";
 import { takeUntil } from "rxjs/operators";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { FeaturesService } from "../features.service";
+import { MyDocumentsService } from '../my-documents/my-documents.service';
 
 @Component({
   selector: "app-sent-messages",
@@ -30,7 +31,8 @@ export class SentMessagesComponent implements OnInit {
   constructor(
     public router: Router,
     private messageService: MessageService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private documentService: MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -45,6 +47,22 @@ export class SentMessagesComponent implements OnInit {
         messages.forEach((message) => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
+          messageSent.users.forEach((user) => {
+            if (user.photoId) {
+              this.documentService.downloadFile(user.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                    user.img = "assets/imgs/user.png";
+                }
+              );
+            }
+          });
           this.itemsList.push(messageSent);
           this.filtredItemList = this.itemsList;
         });
@@ -61,6 +79,7 @@ export class SentMessagesComponent implements OnInit {
         img: this.imageSource,
         title: r.jobTitle,
         type: r.role,
+        photoId: r.photoId,
       });
     });
     messageSent.object = {
