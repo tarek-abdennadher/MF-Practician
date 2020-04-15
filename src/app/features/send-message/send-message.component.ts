@@ -22,7 +22,7 @@ import { NotifierService } from "angular-notifier";
 export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   connectedUser = "PR " + this.user?.firstName + " " + this.user?.lastName;
