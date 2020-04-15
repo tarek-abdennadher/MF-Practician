@@ -12,7 +12,7 @@ import { MyDocumentsService } from '../my-documents/my-documents.service';
   styleUrls: ["./archieve-messages.component.scss"],
 })
 export class ArchieveMessagesComponent implements OnInit {
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
 
   page = "INBOX";
   number = 0;
@@ -68,9 +68,7 @@ export class ArchieveMessagesComponent implements OnInit {
         fullName:
           message.senderDetail[message.senderDetail.role.toLowerCase()]
             .fullName,
-        img: message.senderDetail.patient
-          ? "assets/imgs/IMG_3944.jpg"
-          : "assets/imgs/user.png",
+        img: "assets/imgs/user.png",
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
           : "",

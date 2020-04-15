@@ -16,7 +16,7 @@ export class ContactsComponent implements OnInit {
   itemsList: Array<any> = new Array<any>();
   filtredItemsList: Array<any> = new Array<any>();
   types: Array<string> = [];
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
   links = {
     isAllSelect: this.localSt.retrieve("role") == "PRACTICIAN",
     isDelete: this.localSt.retrieve("role") == "PRACTICIAN",
@@ -59,7 +59,7 @@ export class ContactsComponent implements OnInit {
               {
                 id: elm.id,
                 fullName: elm.fullName,
-                img: "assets/imgs/IMG_3944.jpg",
+                img: "assets/imgs/user.png",
                 title: elm.title,
                 type: "MEDICAL",
                 speciality: elm.speciality ? elm.speciality : "Tout",
@@ -95,7 +95,7 @@ export class ContactsComponent implements OnInit {
               {
                 id: elm.id,
                 fullName: elm.fullName,
-                img: "assets/imgs/IMG_3944.jpg",
+                img: "assets/imgs/user.png",
                 title: elm.title,
                 type: "MEDICAL",
                 speciality: elm.speciality ? elm.speciality : "Tout",

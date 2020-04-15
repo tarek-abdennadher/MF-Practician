@@ -15,7 +15,7 @@ export class MessagingListComponent implements OnInit {
   showAcceptRefuse = true;
   isMyInbox = true;
   inboxName = "";
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
   messages: Array<any>;
   itemsList: Array<any>;
   filtredItemList: Array<any> = new Array();
@@ -235,7 +235,7 @@ export class MessagingListComponent implements OnInit {
         {
           id: message.sender.id,
           fullName: message.sender.fullName,
-          img: "assets/imgs/IMG_3944.jpg",
+          img: "assets/imgs/user.png",
           title: message.sender.jobTitle,
           type:
             message.sender.role == "PRACTICIAN"

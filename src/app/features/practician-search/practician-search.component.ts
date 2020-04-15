@@ -12,7 +12,7 @@ import { LocalStorageService } from "ngx-webstorage";
   styleUrls: ["./practician-search.component.scss"]
 })
 export class PracticianSearchComponent implements OnInit {
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
   itemsList = [];
   page = "SEARCH";
   number = 0;
@@ -104,9 +104,7 @@ export class PracticianSearchComponent implements OnInit {
     practician.users = [
       {
         fullName: message.fullName,
-        img: message.photoId
-          ? "assets/imgs/IMG_3944.jpg"
-          : "assets/imgs/user.png",
+        img:"assets/imgs/user.png",
         title: message.title,
         type: "MEDICAL"
       }
