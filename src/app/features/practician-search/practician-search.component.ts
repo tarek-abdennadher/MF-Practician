@@ -73,7 +73,7 @@ export class PracticianSearchComponent implements OnInit {
         });
     } else {
       this.practicianSearchService
-        .getPracticiansBytextAndCity(text, city)
+        .getPracticiansBytextAndCity(text, city == undefined ? "" : city)
         .subscribe(list => {
           if (this.localSt.retrieve("role") == "PRACTICIAN") {
             list = list.filter(
