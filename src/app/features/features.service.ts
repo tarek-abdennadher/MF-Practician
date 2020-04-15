@@ -14,6 +14,8 @@ export class FeaturesService {
   numberOfInbox: number = 0;
   numberOfArchieve: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  public imageSource: string | ArrayBuffer = "assets/imgs/user.png";
+
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService

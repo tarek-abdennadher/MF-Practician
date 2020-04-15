@@ -12,6 +12,9 @@ import { Speciality } from "@app/shared/models/speciality";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { Subject } from 'rxjs';
+import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
+import { HttpResponse } from '@angular/common/http';
+import { FeaturesService } from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -41,12 +44,17 @@ export class PersonalInformationsComponent implements OnInit {
   public phones = new Array();
   public isPhonesValid = false;
   failureAlert = false;
+  image: string | ArrayBuffer;
+  hasImage = false;
+  nodeId: any;
   constructor(
     public router: Router,
     public accountService: AccountService,
     private formBuilder: FormBuilder,
     private contactsService: ContactsService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private documentService: MyDocumentsService,
+    private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -64,6 +72,8 @@ export class PersonalInformationsComponent implements OnInit {
     this.initInfoForm();
     this.initPasswordForm();
     this.getPersonalInfo();
+    this.getAttachementFolderId();
+
   }
   initInfoForm() {
     if (this.isPractician) {
@@ -144,6 +154,10 @@ export class PersonalInformationsComponent implements OnInit {
       if (account && account.practician) {
         this.account = account.practician;
         this.otherPhones.next(account.otherPhones);
+        if (this.account.photoId) {
+          this.hasImage = true;
+          this.getPictureProfile(this.account.photoId);
+        }
         this.infoForm.patchValue({
           id: account.practician.id ? account.practician.id : null,
           email: account.email ? account.email : "",
@@ -172,6 +186,10 @@ export class PersonalInformationsComponent implements OnInit {
       } else if (account && account.secretary) {
         this.account = account.secretary;
         this.otherPhones.next(account.otherPhones);
+        if (this.account.photoId) {
+          this.hasImage = true;
+          this.getPictureProfile(this.account.photoId);
+        }
         this.infoForm.patchValue({
           id: account.secretary.id ? account.secretary.id : null,
           email: account.email ? account.email : "",
@@ -218,10 +236,11 @@ export class PersonalInformationsComponent implements OnInit {
               )
               : null,
           address: this.infoForm.value.address,
-          photoId: this.infoForm.value.picture,
           additionalAddress: this.infoForm.value.additional_address,
           otherPhoneNumber: this.infoForm.value.other_phone,
           note: this.infoForm.value.other_phone_note,
+          photoId: this.account.photoId,
+
         },
       };
     } else {
@@ -243,6 +262,11 @@ export class PersonalInformationsComponent implements OnInit {
       this.showAlert = true;
       $(".alert").alert();
       this.submitted = false;
+      if (this.image) {
+        this.featureService.imageSource = this.image;
+      } else {
+        this.featureService.imageSource = "assets/imgs/user.png";
+      }
     });
   }
   resetPasswordSubmit() {
@@ -275,5 +299,71 @@ export class PersonalInformationsComponent implements OnInit {
   }
   submitPhones(event) {
     this.isPhonesValid = event
+  }
+
+
+  // initialise profile picture
+  getPictureProfile(nodeId) {
+    this.documentService.downloadFile(nodeId).subscribe((response) => {
+      let myReader: FileReader = new FileReader();
+      myReader.onloadend = (e) => {
+          this.image = myReader.result;
+
+      };
+      let ok = myReader.readAsDataURL(response.body);
+    }, error => {
+      this.image = "assets/imgs/user.png";
+
+    });
+  }
+
+  // Select file to upload
+  selectFileToUpload(event) {
+    let selectedFiles = event.target.files;
+    const fileName = selectedFiles.item(0).name;
+
+    if (selectedFiles) {
+      const currentFileUpload = selectedFiles.item(0);
+      this.documentService
+        .uploadFileSelected(this.nodeId,currentFileUpload)
+        .subscribe((event) => {
+          if (event.body) {
+            const bodySplited = event.body.toString().split("/");
+              this.account.photoId = bodySplited[bodySplited.length - 1];
+              this.hasImage = true;
+
+          }
+          if (event instanceof HttpResponse) {
+            const file = selectedFiles[0];
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+                this.image = myReader.result;
+
+            };
+            myReader.readAsDataURL(file);
+            selectedFiles = undefined;
+          }
+        });
+    }
+  }
+
+  getAttachementFolderId() {
+    this.documentService
+      .getSiteById("helssycoreapplication")
+      .subscribe((directory) => {
+        const guid = directory.entry.guid;
+        this.documentService.getAllChildFolders(guid).subscribe((data) => {
+          const profilAttachementFolder = data.list.entries.filter(
+            (directory) => directory.entry.name === "Profiles Pictures"
+          )[0].entry;
+          this.nodeId = profilAttachementFolder.id;
+        });
+      });
+  }
+
+  deletePicture() {
+      this.image = null;
+      this.account.photoId = null;
+      this.hasImage = false;
   }
 }
