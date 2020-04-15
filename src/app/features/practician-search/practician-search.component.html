@@ -37,3 +37,19 @@
   [isCheckbox]="false"
   [imageSource]="imageSource"
 ></lib-hlsMessagingList>
+<div class="container form-inline">
+  <div class="col-md-6">
+    <a
+      >{{ texts.question }}<span>{{ texts.response }}</span></a
+    >
+  </div>
+  <div class="col-md-6 text-right">
+    <a
+      href="javascript:void(0);"
+      id="returnmessagerie"
+      class="link1"
+      (click)="return()"
+      ><i class="far fa-chevron-left">&nbsp;&nbsp;{{ texts.return_chat }}</i></a
+    >
+  </div>
+</div>
