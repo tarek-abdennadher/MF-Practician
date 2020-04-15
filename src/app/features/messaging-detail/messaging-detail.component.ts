@@ -45,6 +45,7 @@ export class MessagingDetailComponent implements OnInit {
   private readonly notifier: NotifierService;
   userRole = this.localSt.retrieve("role");
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  sentContext = false;
   constructor(
     private _location: Location,
     private router: Router,
@@ -69,6 +70,7 @@ export class MessagingDetailComponent implements OnInit {
             this.showAcceptRefuse = false;
             this.hidefrom = true;
             this.isFromArchive = false;
+            this.sentContext = true;
             break;
           }
           case "inbox": {
@@ -126,7 +128,10 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .subscribe((message) => {
-          this.senderRolePatient = message.sender.role == "PATIENT";
+          this.senderRolePatient =
+            this.sentContext && message.toReceivers.length == 1
+              ? message.toReceivers[0].role == "PATIENT"
+              : message.sender.role == "PATIENT";
           this.messagingDetail = message;
           this.prohibited = message.prohibited;
           this.isFromInbox = this.IsinboxContext;
