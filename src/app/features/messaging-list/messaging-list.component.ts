@@ -12,6 +12,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
   styleUrls: ["./messaging-list.component.scss"],
 })
 export class MessagingListComponent implements OnInit {
+  person;
   showAcceptRefuse = true;
   isMyInbox = true;
   inboxName = "";
@@ -60,10 +61,27 @@ export class MessagingListComponent implements OnInit {
         this.featureService.selectedPracticianId = params["id"];
         this.myPracticians = this.featureService.myPracticians.getValue();
         if (this.myPracticians && this.myPracticians.length > 0) {
-          this.inboxName =
-            "Dr. " +
-            this.myPracticians.find((p) => p.id == params["id"]).fullName;
-          this.topText = "Boite de réception  -" + this.inboxName;
+          this.person = {
+            fullName: this.myPracticians.find((p) => p.id == params["id"])
+              .fullName,
+            picture: this.imageSource,
+          };
+          let photoId = this.myPracticians.find((p) => p.id == params["id"])
+            .photo;
+          if (photoId && photoId != null) {
+            this.documentService.downloadFile(photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.person.picture = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                this.person.picture = this.imageSource;
+              }
+            );
+          }
         }
         this.links = {
           isAllSelect: true,
