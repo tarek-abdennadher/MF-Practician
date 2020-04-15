@@ -28,6 +28,8 @@ export class GlobalService {
     sentMessage: this.BASE_URL_MA + "/messages/sender",
     node: this.BASE_URL_FL + "/node",
     attachements: this.BASE_URL_FL + "/attachement",
+    site: this.BASE_URL_FL + "/directories",
+    folderChild: this.BASE_URL_FL + "/node/fils",
     account_create_patient: this.BASE_URL_CA + "/account/patient/",
     account_validation_sms: this.BASE_URL_SMS + "/validation/sendCode/",
     account_validation_code: this.BASE_URL_CA + "/validation/byEmail/",

@@ -8,6 +8,8 @@ import * as Stomp from "stompjs";
 import * as SockJS from "sockjs-client";
 import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
+import { MyDocumentsService } from './my-documents/my-documents.service';
+import { AccountService } from './services/account.service';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -15,13 +17,17 @@ import { MessagingListService } from "./services/messaging-list.service";
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
+  account: any;
+  hasImage: boolean;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
     public featuresService: FeaturesService,
     private searchService: PracticianSearchService,
     private globalService: GlobalService,
-    private messageListService: MessagingListService
+    private messageListService: MessagingListService,
+    private documentService: MyDocumentsService,
+    private accountService: AccountService
   ) {
     this.initializeWebSocketConnection();
   }
@@ -30,7 +36,6 @@ export class FeaturesComponent implements OnInit {
   user = this.localSt.retrieve("user");
   userRole = this.localSt.retrieve("role");
   fullName = this.user?.firstName + " " + this.user?.lastName;
-  imageSource = "assets/imgs/IMG_3944.jpg";
   role: string =
     this.localSt.retrieve("role") == "SECRETARY" ? "secretary" : "medical";
   links = {
@@ -49,6 +54,8 @@ export class FeaturesComponent implements OnInit {
     }
     this.getMyNotificationsNotSeen();
     this.countMyArchive();
+    this.getPersonalInfo();
+
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
@@ -184,5 +191,32 @@ export class FeaturesComponent implements OnInit {
   }
   displayInboxOfPracticiansAction(event) {
     this.router.navigate(["/features/messageries/" + event]);
+  }
+
+  getPersonalInfo() {
+    this.accountService.getCurrentAccount().subscribe((account) => {
+      if (account && account.practician) {
+        this.account = account.practician;
+        if (this.account.photoId) {
+          this.hasImage = true;
+          this.getPictureProfile(this.account.photoId);
+        }
+      }
+    });
+  }
+  // initialise profile picture
+  getPictureProfile(nodeId) {
+    this.documentService.downloadFile(nodeId).subscribe(
+      (response) => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = (e) => {
+          this.featuresService.imageSource = myReader.result;
+        };
+        let ok = myReader.readAsDataURL(response.body);
+      },
+      (error) => {
+        this.featuresService.imageSource = "assets/imgs/user.png";
+      }
+    );
   }
 }
