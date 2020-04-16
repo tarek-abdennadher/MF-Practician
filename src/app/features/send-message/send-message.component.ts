@@ -25,7 +25,7 @@ export class SendMessageComponent implements OnInit {
   imageSource = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
-  connectedUser = "PR " + this.user?.firstName + " " + this.user?.lastName;
+  connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList = [];
   objectsList = [];
@@ -50,6 +50,9 @@ export class SendMessageComponent implements OnInit {
     public route: ActivatedRoute,
     notifierService: NotifierService
   ) {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      this.connectedUser = "Dr " + this.connectedUser;
+    }
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
     });
