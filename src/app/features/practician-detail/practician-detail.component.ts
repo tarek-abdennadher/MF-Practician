@@ -4,12 +4,16 @@ import { ActivatedRoute, Router } from "@angular/router";
 import * as jwt_decode from "jwt-decode";
 import { LocalStorageService } from "ngx-webstorage";
 import { Location } from "@angular/common";
+import { Observable } from "rxjs";
+import { LoginService } from "@app/core/services/login.service";
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
   styleUrls: ["./practician-detail.component.scss"],
 })
 export class PracticianDetailComponent implements OnInit {
+  public contacts: Observable<any[]> = this.loginService.getUsers();
+  public outgoingCall$: Observable<any> = this.loginService.getOutgoingCalls();
   practician: any;
   imageSource: string = "assets/imgs/user.png";
   public isFavorite: boolean = false;
@@ -25,10 +29,14 @@ export class PracticianDetailComponent implements OnInit {
     private router: Router,
     private practicianDetailService: PracticianDetailService,
     private localSt: LocalStorageService,
-    private _location: Location
+    private _location: Location,
+    private loginService: LoginService
   ) {}
 
   ngOnInit(): void {
+    this.contacts.subscribe((res) => {
+      console.log(res);
+    });
     this.route.params.subscribe((params) => {
       this.isMyFAvorite(params["id"]);
       this.getPractician(params["id"]);
@@ -75,5 +83,12 @@ export class PracticianDetailComponent implements OnInit {
   }
   BackButton() {
     this._location.back();
+  }
+
+  public voiceCall(userId: string): void {
+    this.loginService.startVoiceCall(userId).subscribe();
+  }
+  public videoCall(userId: string): void {
+    this.loginService.startVideoCall(userId).subscribe();
   }
 }

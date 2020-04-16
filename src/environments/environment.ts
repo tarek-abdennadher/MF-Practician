@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   BASE_END_POINT: "http://localhost:8765",
-  PATIENT_SITE: "http://localhost:4200"
+  PATIENT_SITE: "http://localhost:4200",
+  appId: "17130ed3aa1e958",
+  apiKey: "9bc1e080576b1e4aaec8b8af5e40c8dbae034bdb",
 };
 
 /*
