@@ -2,13 +2,14 @@
 // For more information: https://material.angular.io/guide/theming
 @import "~@angular/material/theming";
 // Plus imports for other components in your app.
+
 @font-face {
-  font-family: "Gotham-Medium";
-  src: url("./assets/fonts/GOTHAM-MEDIUM.TTF");
+  font-family: "Segoe UI Bold";
+  src: url("./assets/fonts/Segoe-UI-Bold.ttf");
 }
 @font-face {
-  font-family: "Gotham-book";
-  src: url("./assets/fonts/GothamBook.ttf");
+  font-family: "Segoe UI Medium";
+  src: url("./assets/fonts/Segoe-UI-Medium.ttf");
 }
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
@@ -17,7 +18,7 @@
 // Be sure that you only ever include this mixin once!
 
 $custom-typography: mat-typography-config(
-  $font-family: "Gotham-book",
+  $font-family: "Segoe UI",
   $headline: mat-typography-level(32px, 48px, 700),
   $body-1: mat-typography-level(16px, 24px, 500),
 );
