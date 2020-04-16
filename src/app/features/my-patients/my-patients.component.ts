@@ -11,7 +11,7 @@ import { DialogService } from "../services/dialog.service";
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
   myPatients = [];
   filtredPatients = [];
   isMyPatients = true;
@@ -132,5 +132,15 @@ export class MyPatientsComponent implements OnInit {
           this.filtredPatients[index].isProhibited = false;
         }
       });
+  }
+
+  acceptInvitation(item) {
+    this.myPatientsService
+    .acceptPatientInvitation(item.users[0].id)
+    .subscribe((resp) => {
+      if (resp == true) {
+        console.log(true);
+      }
+    });
   }
 }

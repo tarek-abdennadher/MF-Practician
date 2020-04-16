@@ -208,6 +208,12 @@ export class FeaturesComponent implements OnInit {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
         }
+      }else if (account && account.secretary) {
+        this.account = account.secretary;
+        if (this.account.photoId) {
+          this.hasImage = true;
+          this.getPictureProfile(this.account.photoId);
+        }
       }
     });
   }

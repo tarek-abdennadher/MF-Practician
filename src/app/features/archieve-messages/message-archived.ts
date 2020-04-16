@@ -4,9 +4,10 @@ export class MessageArchived {
   users: [
     {
       fullName: string;
-      img: string;
+      img: string |ArrayBuffer;
       title: string;
       type: string;
+      photoId: string;
     }
   ];
   object: {

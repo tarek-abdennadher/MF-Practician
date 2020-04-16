@@ -135,7 +135,7 @@ export class MySecretariesComponent implements OnInit {
               {
                 id: elm.id,
                 fullName: elm.fullName,
-                img: "assets/imgs/IMG_3944.jpg",
+                img: "assets/imgs/user.png",
                 type: "MEDICAL",
               },
             ],

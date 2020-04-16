@@ -11,10 +11,10 @@ import { MustMatch } from "./must-match";
 import { Speciality } from "@app/shared/models/speciality";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { LocalStorageService } from "ngx-webstorage";
-import { Subject } from 'rxjs';
-import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
-import { HttpResponse } from '@angular/common/http';
-import { FeaturesService } from '@app/features/features.service';
+import { Subject } from "rxjs";
+import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
+import { HttpResponse } from "@angular/common/http";
+import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -73,7 +73,6 @@ export class PersonalInformationsComponent implements OnInit {
     this.initPasswordForm();
     this.getPersonalInfo();
     this.getAttachementFolderId();
-
   }
   initInfoForm() {
     if (this.isPractician) {
@@ -203,7 +202,7 @@ export class PersonalInformationsComponent implements OnInit {
           civility: account.secretary.civility
             ? account.secretary.civility
             : null,
-          otherPhones: account.otherPhones ? account.otherPhones : []
+          otherPhones: account.otherPhones ? account.otherPhones : [],
         });
       }
     });
@@ -232,15 +231,14 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                (s) => s.id == this.infoForm.value.speciality
-              )
+                  (s) => s.id == this.infoForm.value.speciality
+                )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
           otherPhoneNumber: this.infoForm.value.other_phone,
           note: this.infoForm.value.other_phone_note,
           photoId: this.account.photoId,
-
         },
       };
     } else {
@@ -253,7 +251,7 @@ export class PersonalInformationsComponent implements OnInit {
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           civility: this.infoForm.value.civility,
-          photoId: this.infoForm.value.picture,
+          photoId: this.account.photoId,
         },
       };
     }
@@ -271,7 +269,7 @@ export class PersonalInformationsComponent implements OnInit {
   }
   resetPasswordSubmit() {
     this.passwordSubmitted = true;
-    if (this.passwordForm.invalid && !this.isPasswordValid) {
+    if (this.passwordForm.invalid || !this.isPasswordValid) {
       return;
     }
     this.accountService
@@ -298,23 +296,23 @@ export class PersonalInformationsComponent implements OnInit {
     this.phones = event.value;
   }
   submitPhones(event) {
-    this.isPhonesValid = event
+    this.isPhonesValid = event;
   }
-
 
   // initialise profile picture
   getPictureProfile(nodeId) {
-    this.documentService.downloadFile(nodeId).subscribe((response) => {
-      let myReader: FileReader = new FileReader();
-      myReader.onloadend = (e) => {
+    this.documentService.downloadFile(nodeId).subscribe(
+      (response) => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = (e) => {
           this.image = myReader.result;
-
-      };
-      let ok = myReader.readAsDataURL(response.body);
-    }, error => {
-      this.image = "assets/imgs/user.png";
-
-    });
+        };
+        let ok = myReader.readAsDataURL(response.body);
+      },
+      (error) => {
+        this.image = "assets/imgs/user.png";
+      }
+    );
   }
 
   // Select file to upload
@@ -325,20 +323,18 @@ export class PersonalInformationsComponent implements OnInit {
     if (selectedFiles) {
       const currentFileUpload = selectedFiles.item(0);
       this.documentService
-        .uploadFileSelected(this.nodeId,currentFileUpload)
+        .uploadFileSelected(this.nodeId, currentFileUpload)
         .subscribe((event) => {
           if (event.body) {
             const bodySplited = event.body.toString().split("/");
-              this.account.photoId = bodySplited[bodySplited.length - 1];
-              this.hasImage = true;
-
+            this.account.photoId = bodySplited[bodySplited.length - 1];
+            this.hasImage = true;
           }
           if (event instanceof HttpResponse) {
             const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
-                this.image = myReader.result;
-
+              this.image = myReader.result;
             };
             myReader.readAsDataURL(file);
             selectedFiles = undefined;
@@ -362,8 +358,8 @@ export class PersonalInformationsComponent implements OnInit {
   }
 
   deletePicture() {
-      this.image = null;
-      this.account.photoId = null;
-      this.hasImage = false;
+    this.image = null;
+    this.account.photoId = null;
+    this.hasImage = false;
   }
 }

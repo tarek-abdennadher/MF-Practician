@@ -4,6 +4,7 @@ import { ArchieveMessagesService } from "./archieve-messages.service";
 import { MessageArchived } from "./message-archived";
 import { Location } from "@angular/common";
 import { FeaturesService } from "../features.service";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-archieve-messages",
@@ -11,7 +12,7 @@ import { FeaturesService } from "../features.service";
   styleUrls: ["./archieve-messages.component.scss"],
 })
 export class ArchieveMessagesComponent implements OnInit {
-  imageSource = "assets/imgs/IMG_3944.jpg";
+  imageSource = "assets/imgs/user.png";
 
   page = "INBOX";
   number = 0;
@@ -24,7 +25,8 @@ export class ArchieveMessagesComponent implements OnInit {
     public router: Router,
     private archivedService: ArchieveMessagesService,
     private _location: Location,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private documentService: MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -38,6 +40,22 @@ export class ArchieveMessagesComponent implements OnInit {
       messages.forEach((message) => {
         this.bottomText = this.number > 1 ? "messages" : "message";
         let archivedMessage = this.mappingMessageArchived(message);
+        archivedMessage.users.forEach((user) => {
+          if (user.photoId) {
+            this.documentService.downloadFile(user.photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  user.img = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                user.img = "assets/imgs/user.png";
+              }
+            );
+          }
+        });
         this.itemsList.push(archivedMessage);
       });
     });
@@ -51,9 +69,7 @@ export class ArchieveMessagesComponent implements OnInit {
         fullName:
           message.senderDetail[message.senderDetail.role.toLowerCase()]
             .fullName,
-        img: message.senderDetail.patient
-          ? "assets/imgs/IMG_3944.jpg"
-          : "assets/imgs/user.png",
+        img: "assets/imgs/user.png",
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
           : "",
@@ -61,6 +77,7 @@ export class ArchieveMessagesComponent implements OnInit {
           message.senderDetail.role == "PRACTICIAN"
             ? "MEDICAL"
             : message.senderDetail.role,
+        photoId: this.getPhotoId(message.senderDetail),
       },
     ];
     messageArchived.object = {
@@ -90,5 +107,18 @@ export class ArchieveMessagesComponent implements OnInit {
 
   markMessageAsSeen(messageId) {
     this.archivedService.markMessageAsSeen(messageId).subscribe();
+  }
+
+  getPhotoId(senderDetail): string {
+    switch (senderDetail.role) {
+      case "PATIENT":
+        return senderDetail.patient.photoId;
+      case "PRACTICIAN":
+        return senderDetail.practician.photoId;
+      case "SECRETARY":
+        return senderDetail.secretary.photoId;
+      default:
+        return null;
+    }
   }
 }
