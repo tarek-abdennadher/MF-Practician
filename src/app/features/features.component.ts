@@ -226,4 +226,7 @@ export class FeaturesComponent implements OnInit {
       }
     );
   }
+  resetInputs() {
+    this.featuresService.changeSearch(new search("", ""));
+  }
 }
