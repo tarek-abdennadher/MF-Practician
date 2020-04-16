@@ -1,19 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   ActivatedRouteSnapshot,
   CanActivateChild,
   Router,
-  RouterStateSnapshot
-} from '@angular/router';
-import { LocalStorageService } from 'ngx-webstorage';
-
+  RouterStateSnapshot,
+} from "@angular/router";
+import { LocalStorageService } from "ngx-webstorage";
 
 @Injectable()
 export class AuthGuard implements CanActivateChild {
-  constructor(
-    private router: Router,
-    private localSt: LocalStorageService
-  ) { }
+  constructor(private router: Router, private localSt: LocalStorageService) {}
 
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
@@ -23,11 +19,16 @@ export class AuthGuard implements CanActivateChild {
     if (token && token !== null) {
       return true;
     }
-    this.router.navigate(['/connexion'], {
-      queryParams: {
-        return: state.url
-      }
-    });
+    console.log(state.url);
+    if (state.url == "/messagerie" || state.url == "messagerie") {
+      this.router.navigate(["/connexion"]);
+    } else {
+      this.router.navigate(["/connexion"], {
+        queryParams: {
+          return: state.url,
+        },
+      });
+    }
     return false;
   }
 }

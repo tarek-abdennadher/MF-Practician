@@ -13,7 +13,7 @@ import { AccountService } from "./services/account.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
-  styleUrls: ["./features.component.scss"]
+  styleUrls: ["./features.component.scss"],
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
@@ -43,13 +43,13 @@ export class FeaturesComponent implements OnInit {
   links = {
     isArchieve: true,
     isImportant: true,
-    isFilter: true
+    isFilter: true,
   };
   private stompClient;
 
   ngOnInit(): void {
     if (this.userRole && this.userRole == "SECRETARY") {
-      this.featuresService.getSecretaryPracticians().subscribe(value => {
+      this.featuresService.getSecretaryPracticians().subscribe((value) => {
         this.featuresService.myPracticians.next(value);
         this.myPracticians = this.featuresService.myPracticians.getValue();
       });
@@ -67,10 +67,10 @@ export class FeaturesComponent implements OnInit {
     this.stompClient = Stomp.over(ws);
     this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function(frame) {
+    this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
-        message => {
+        (message) => {
           if (message.body) {
             let notification = JSON.parse(message.body);
             that.messageListService.setNotificationObs(notification);
@@ -85,53 +85,53 @@ export class FeaturesComponent implements OnInit {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .subscribe(notifications => {
-        notifications.forEach(notif => {
+      .subscribe((notifications) => {
+        notifications.forEach((notif) => {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.senderFullName,
             picture: "assets/imgs/user.png",
-            messageId: notif.messageId
+            messageId: notif.messageId,
           });
         });
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
   countMyArchive() {
-    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
+    this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
       this.featuresService.numberOfArchieve = resp;
     });
   }
   openAccountInterface() {
-    this.router.navigate(["/features/compte/mes-informations"]);
+    this.router.navigate(["/compte/mes-informations"]);
   }
   signOutAction() {
     this.router.navigate(["/connexion"]);
   }
 
   displayInboxAction() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
-    this.router.navigate(["/features/messagerie-ecrire"]);
+    this.router.navigate(["/messagerie-ecrire"]);
   }
   displaySentAction() {
-    this.router.navigate(["features/messagerie-envoyes"]);
+    this.router.navigate(["/messagerie-envoyes"]);
   }
   displayArchieveAction() {
-    this.router.navigate(["/features/archive"]);
+    this.router.navigate(["/messagerie-archives"]);
   }
   displayMyPatientsAction() {
-    this.router.navigate(["/features/mes-patients"]);
+    this.router.navigate(["/mes-patients"]);
   }
   displayMyMedicalsAction() {
-    this.router.navigate(["/features/favorites"]);
+    this.router.navigate(["/favorites"]);
   }
   displayMyProContactsAction() {
-    this.router.navigate(["features/contacts"]);
+    this.router.navigate(["/mes-contacts-pro"]);
   }
   displayMyDocumentsAction() {
-    this.router.navigate(["features/documents"]);
+    this.router.navigate(["/mes-documents"]);
   }
   displayHelpAction() {
     console.log("displayHelpAction");
@@ -161,7 +161,7 @@ export class FeaturesComponent implements OnInit {
     console.log(event);
   }
   logoClicked() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   receiveCollapsed($event) {
     this.collapedSideBar = $event;
@@ -172,11 +172,9 @@ export class FeaturesComponent implements OnInit {
 
   searchActionClicked(event) {
     this.searchService.changeSearch(new search(event.search, event.city));
-    this.router.navigate(["/features/search"]);
-    jQuery(document).ready(function(e) {
-      jQuery(this)
-        .find("#dropdownMenuLinkSearch")
-        .trigger("click");
+    this.router.navigate(["/praticien-recherche"]);
+    jQuery(document).ready(function (e) {
+      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
 
@@ -185,30 +183,27 @@ export class FeaturesComponent implements OnInit {
       .markMessageAsSeenByNotification(notification.messageId)
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
-        this.router.navigate(
-          ["features/messagerie-lire/" + notification.messageId],
-          {
-            queryParams: {
-              context: "inbox"
-            }
-          }
-        );
+        this.router.navigate(["/messagerie-lire/" + notification.messageId], {
+          queryParams: {
+            context: "inbox",
+          },
+        });
         this.featuresService.numberOfInbox--;
       });
   }
   displayInboxOfPracticiansAction(event) {
-    this.router.navigate(["/features/messageries/" + event]);
+    this.router.navigate(["/messagerie/" + event]);
   }
 
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe(account => {
+    this.accountService.getCurrentAccount().subscribe((account) => {
       if (account && account.practician) {
         this.account = account.practician;
         if (this.account.photoId) {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
         }
-      }else if (account && account.secretary) {
+      } else if (account && account.secretary) {
         this.account = account.secretary;
         if (this.account.photoId) {
           this.hasImage = true;
@@ -220,14 +215,14 @@ export class FeaturesComponent implements OnInit {
   // initialise profile picture
   getPictureProfile(nodeId) {
     this.documentService.downloadFile(nodeId).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           this.featuresService.imageSource = myReader.result;
         };
         let ok = myReader.readAsDataURL(response.body);
       },
-      error => {
+      (error) => {
         this.featuresService.imageSource = "assets/imgs/user.png";
       }
     );

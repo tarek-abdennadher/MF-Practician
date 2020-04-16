@@ -82,7 +82,7 @@ export class MyPatientsComponent implements OnInit {
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }
   writeAction(item) {
-    this.router.navigate(["/features/messagerie-ecrire/"], {
+    this.router.navigate(["/messagerie-ecrire/"], {
       queryParams: {
         id: item.users[0].accountId,
       },
@@ -136,11 +136,11 @@ export class MyPatientsComponent implements OnInit {
 
   acceptInvitation(item) {
     this.myPatientsService
-    .acceptPatientInvitation(item.users[0].id)
-    .subscribe((resp) => {
-      if (resp == true) {
-        console.log(true);
-      }
-    });
+      .acceptPatientInvitation(item.users[0].id)
+      .subscribe((resp) => {
+        if (resp == true) {
+          console.log(true);
+        }
+      });
   }
 }

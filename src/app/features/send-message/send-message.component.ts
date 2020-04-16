@@ -149,7 +149,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
-            this.router.navigate(["/features/messageries"], {
+            this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
               },
@@ -169,7 +169,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
-            this.router.navigate(["/features/messageries"], {
+            this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
               },
@@ -186,7 +186,7 @@ export class SendMessageComponent implements OnInit {
     }
   }
   addProContactAction() {
-    this.router.navigate(["/features/search"]);
+    this.router.navigate(["/praticien-recherche"]);
   }
 
   goToBack() {

@@ -121,7 +121,7 @@ export class MySecretariesComponent implements OnInit {
     }
   }
   return() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   getMySecretaries() {
     this.accountService.getMySecretaries().subscribe(

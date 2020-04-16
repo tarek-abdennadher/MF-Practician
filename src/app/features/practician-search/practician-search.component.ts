@@ -9,7 +9,7 @@ import { LocalStorageService } from "ngx-webstorage";
 @Component({
   selector: "app-practician-search",
   templateUrl: "./practician-search.component.html",
-  styleUrls: ["./practician-search.component.scss"]
+  styleUrls: ["./practician-search.component.scss"],
 })
 export class PracticianSearchComponent implements OnInit {
   imageSource = "assets/imgs/user.png";
@@ -42,15 +42,15 @@ export class PracticianSearchComponent implements OnInit {
   }
   getPractians(text, city) {
     if (!text && !city) {
-      this.practicianSearchService.getAllPracticians().subscribe(list => {
+      this.practicianSearchService.getAllPracticians().subscribe((list) => {
         if (this.localSt.retrieve("role") == "PRACTICIAN") {
           list = list.filter(
-            a => a.accountId != this.featureService.getUserId()
+            (a) => a.accountId != this.featureService.getUserId()
           );
         }
         this.itemsList = [];
         this.number = list.length;
-        list.forEach(message => {
+        list.forEach((message) => {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
         });
@@ -58,15 +58,15 @@ export class PracticianSearchComponent implements OnInit {
     } else if (!text && city) {
       this.practicianSearchService
         .getPracticiansByCity(city)
-        .subscribe(list => {
+        .subscribe((list) => {
           if (this.localSt.retrieve("role") == "PRACTICIAN") {
             list = list.filter(
-              a => a.accountId != this.featureService.getUserId()
+              (a) => a.accountId != this.featureService.getUserId()
             );
           }
           this.itemsList = [];
           this.number = list.length;
-          list.forEach(message => {
+          list.forEach((message) => {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
           });
@@ -74,15 +74,15 @@ export class PracticianSearchComponent implements OnInit {
     } else {
       this.practicianSearchService
         .getPracticiansBytextAndCity(text, city == undefined ? "" : city)
-        .subscribe(list => {
+        .subscribe((list) => {
           if (this.localSt.retrieve("role") == "PRACTICIAN") {
             list = list.filter(
-              a => a.accountId != this.featureService.getUserId()
+              (a) => a.accountId != this.featureService.getUserId()
             );
           }
           this.itemsList = [];
           this.number = list.length;
-          list.forEach(message => {
+          list.forEach((message) => {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
           });
@@ -91,10 +91,8 @@ export class PracticianSearchComponent implements OnInit {
   }
   edit() {
     this.featureService.changeSearch(new search(this.text, this.city));
-    jQuery(document).ready(function(e) {
-      jQuery(this)
-        .find("#dropdownMenuLinkSearch")
-        .trigger("click");
+    jQuery(document).ready(function (e) {
+      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
   mappingPracticians(message) {
@@ -104,15 +102,15 @@ export class PracticianSearchComponent implements OnInit {
     practician.users = [
       {
         fullName: message.fullName,
-        img:"assets/imgs/user.png",
+        img: "assets/imgs/user.png",
         title: message.title,
-        type: "MEDICAL"
-      }
+        type: "MEDICAL",
+      },
     ];
     practician.object = {
       name: message.address,
       isImportant: false,
-      isLocalisation: true
+      isLocalisation: true,
     };
     practician.time = null;
     practician.isImportant = false;
@@ -122,11 +120,11 @@ export class PracticianSearchComponent implements OnInit {
     return practician;
   }
   cardClicked(item) {
-    this.router.navigate(["/features/practician-detail/" + item.id]);
+    this.router.navigate(["/praticien-detail/" + item.id]);
   }
   selectItem(event) {
-    this.itemsList.forEach(a => {
-      if (event.filter(b => b.id == a.id).length >= 1) {
+    this.itemsList.forEach((a) => {
+      if (event.filter((b) => b.id == a.id).length >= 1) {
         a.isChecked = true;
       } else {
         a.isChecked = false;
@@ -134,6 +132,6 @@ export class PracticianSearchComponent implements OnInit {
     });
   }
   return() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
 }

@@ -181,20 +181,18 @@ export class ContactsComponent implements OnInit {
 
   cardClicked(item) {
     if (item.users[0].contactType == "CONTACT") {
-      this.router.navigate(["/features/contact-detail/" + item.id]);
+      this.router.navigate(["/contact-detail/" + item.id]);
     } else if (
       item.users[0].contactType == "MEDICAL" ||
       item.users[0].contactType == "CABINET"
     ) {
-      this.router.navigate([
-        "/features/practician-detail/" + item.practicianId,
-      ]);
+      this.router.navigate(["/praticien-detail/" + item.practicianId]);
     } else if (item.users[0].contactType == "SECRETARY") {
-      this.router.navigate(["/features/secretaire-detail/" + item.id]);
+      this.router.navigate(["/secretaire-detail/" + item.id]);
     }
   }
   markAsSeenClicked(item) {
-    this.router.navigate(["/features/messagerie-ecrire"], {
+    this.router.navigate(["/messagerie-ecrire"], {
       queryParams: {
         id: item.id,
       },
@@ -249,7 +247,7 @@ export class ContactsComponent implements OnInit {
     );
   }
   addContact() {
-    this.router.navigate(["/features/contact-detail/add"]);
+    this.router.navigate(["/contact-detail/add"]);
   }
   selectItem(event) {
     this.selectedObjects = event.filter((a) => a.isChecked == true);
