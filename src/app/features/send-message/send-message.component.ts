@@ -90,7 +90,6 @@ export class SendMessageComponent implements OnInit {
       });
     });
     this.toList.next(myList);
-    console.log(myList);
   }
 
   getAllRequestTypes() {
