@@ -251,7 +251,7 @@ export class PersonalInformationsComponent implements OnInit {
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           civility: this.infoForm.value.civility,
-          photoId: this.infoForm.value.picture,
+          photoId: this.account.photoId,
         },
       };
     }
