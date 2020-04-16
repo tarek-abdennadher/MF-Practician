@@ -144,7 +144,7 @@ export class MessagingReplyComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (message) => {
-            this.router.navigate(["/features/messageries"], {
+            this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
               },
@@ -164,7 +164,7 @@ export class MessagingReplyComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (message) => {
-            this.router.navigate(["/features/messageries"], {
+            this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
               },

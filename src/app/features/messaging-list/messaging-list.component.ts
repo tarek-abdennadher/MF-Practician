@@ -120,7 +120,7 @@ export class MessagingListComponent implements OnInit {
 
   cardClicked(item) {
     this.markMessageAsSeen(item);
-    this.router.navigate(["/features/messagerie-lire/" + item.id], {
+    this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
         context: this.isMyInbox ? "inbox" : "inboxPraticien",
       },

@@ -123,8 +123,8 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
-          this.messagingDetail.toReceivers.forEach(receiver => {
-            if(receiver.photoId){
+          this.messagingDetail.toReceivers.forEach((receiver) => {
+            if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
@@ -132,16 +132,15 @@ export class MessagingDetailComponent implements OnInit {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
-
                 },
                 (error) => {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
             }
-          })
-          this.messagingDetail.ccReceivers.forEach(receiver => {
-            if(receiver.photoId){
+          });
+          this.messagingDetail.ccReceivers.forEach((receiver) => {
+            if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
@@ -149,16 +148,17 @@ export class MessagingDetailComponent implements OnInit {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
-
                 },
                 (error) => {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
             }
-          })
-          if(this.messagingDetail.sender.photoId){
-              this.documentService.downloadFile(this.messagingDetail.sender.photoId).subscribe(
+          });
+          if (this.messagingDetail.sender.photoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.photoId)
+              .subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
                   myReader.onloadend = (e) => {
@@ -170,7 +170,7 @@ export class MessagingDetailComponent implements OnInit {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
                 }
               );
-            }
+          }
         });
     } else {
       this.messagingDetailService
@@ -188,8 +188,8 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
-          this.messagingDetail.toReceivers.forEach(receiver => {
-            if(receiver.photoId){
+          this.messagingDetail.toReceivers.forEach((receiver) => {
+            if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
@@ -197,16 +197,15 @@ export class MessagingDetailComponent implements OnInit {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
-
                 },
                 (error) => {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
             }
-          })
-          this.messagingDetail.ccReceivers.forEach(receiver => {
-            if(receiver.photoId){
+          });
+          this.messagingDetail.ccReceivers.forEach((receiver) => {
+            if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
@@ -214,16 +213,17 @@ export class MessagingDetailComponent implements OnInit {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
-
                 },
                 (error) => {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
             }
-          })
-          if(this.messagingDetail.sender.photoId){
-              this.documentService.downloadFile(this.messagingDetail.sender.photoId).subscribe(
+          });
+          if (this.messagingDetail.sender.photoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.photoId)
+              .subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
                   myReader.onloadend = (e) => {
@@ -235,7 +235,7 @@ export class MessagingDetailComponent implements OnInit {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
                 }
               );
-            }
+          }
         });
     }
   }
@@ -260,15 +260,15 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   replyAction() {
-    this.router.navigate(["/features/messagerie-repondre/", this.idMessage]);
+    this.router.navigate(["/messagerie-repondre/", this.idMessage]);
   }
 
   acceptAction() {
-    this.router.navigate(["/features/messagerie-repondre/", this.idMessage]);
+    this.router.navigate(["/messagerie-repondre/", this.idMessage]);
   }
 
   refuseAction() {
-    this.router.navigate(["/features/messagerie-repondre/", this.idMessage], {
+    this.router.navigate(["/messagerie-repondre/", this.idMessage], {
       queryParams: {
         status: "refus",
       },

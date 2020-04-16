@@ -122,7 +122,7 @@ export class ContactDetailComponent implements OnInit {
         .subscribe((res) => (successResult = res));
     }
     this.router
-      .navigate(["features/contacts"])
+      .navigate(["/mes-contacts-pro"])
       .then(() => window.location.reload());
   }
   resetOtherPhone() {
