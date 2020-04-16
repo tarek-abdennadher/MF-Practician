@@ -385,6 +385,24 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
+  <a
+    *ngIf="showPasswordFailure"
+    id="alertPasswordFailure"
+    (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer"
+    role="alert"
+  >
+    {{ passwordErrorMessage }}
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </a>
   <br />
   <div class="col-md-12">
     <div class="form-group title">
@@ -397,24 +415,6 @@
   <div class="card-body">
     <div class="col-md-12">
       <div class="container">
-        <a
-          *ngIf="showPasswordFailure"
-          id="alertPasswordFailure"
-          (click)="close()"
-          class="alert alert-danger alert-dismissible fade show pointer"
-          role="alert"
-        >
-          {{ messages.edit_password_failure }}
-          <button
-            type="button"
-            (click)="close()"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </a>
         <form
           [formGroup]="passwordForm"
           (ngSubmit)="isPasswordValid && resetPasswordSubmit()"
