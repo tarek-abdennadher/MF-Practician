@@ -19,7 +19,6 @@ export class AuthGuard implements CanActivateChild {
     if (token && token !== null) {
       return true;
     }
-    console.log(state.url);
     if (state.url == "/messagerie" || state.url == "messagerie") {
       this.router.navigate(["/connexion"]);
     } else {
