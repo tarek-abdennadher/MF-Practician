@@ -1,6 +1,12 @@
 <div class="group-element">
   <span class="title-span">{{ data.title }}</span>
-  <mat-icon id="close-icon" (click)="closeDialog()">close</mat-icon>
+  <mat-icon
+    id="close-icon"
+    class="close"
+    aria-label="Close"
+    (click)="closeDialog()"
+    >close</mat-icon
+  >
 </div>
 <br />
 <div class="group-element">
@@ -8,6 +14,21 @@
     {{ data.message }}
   </p>
   <br />
-  <button mat-flat-button id="no-button" [mat-dialog-close]="false">Non</button>
-  <button mat-flat-button id="yes-button" [mat-dialog-close]="true">Oui</button>
+
+  <button
+    mat-flat-button
+    id="no-button"
+    [mat-dialog-close]="false"
+    class="btn-space"
+  >
+    Non
+  </button>
+  <button
+    mat-flat-button
+    id="yes-button"
+    [mat-dialog-close]="true"
+    class="btn-space"
+  >
+    Oui
+  </button>
 </div>

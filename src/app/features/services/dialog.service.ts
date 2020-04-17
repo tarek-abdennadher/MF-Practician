@@ -14,7 +14,7 @@ export class DialogService {
       height: "215px",
       panelClass: "confirm-dialog-container",
       disableClose: true,
-      position: { top: "400px" },
+      position: { top: "250px" },
       data: {
         message: msg,
         title: titre,
