@@ -21,6 +21,7 @@ export class FeaturesComponent implements OnInit {
   hasImage: boolean;
   text: string = "";
   city: string = "";
+  numberOfPending = 0;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -61,6 +62,8 @@ export class FeaturesComponent implements OnInit {
     this.getMyNotificationsNotSeen();
     this.countMyArchive();
     this.getPersonalInfo();
+    this.countMyPatientPending();
+    this.setNumberOfPending();
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
@@ -73,8 +76,13 @@ export class FeaturesComponent implements OnInit {
         message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
-            that.messageListService.setNotificationObs(notification);
-            that.featuresService.numberOfInbox++;
+            if (notification.type == "MESSAGE") {
+              that.messageListService.setNotificationObs(notification);
+              that.featuresService.setNumberOfInbox(that.featuresService.numberOfInbox + 1);
+            } else {
+              that.messageListService.setInvitationNotificationObs(notification);
+              that.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
+            }
           }
         }
       );
@@ -102,6 +110,19 @@ export class FeaturesComponent implements OnInit {
       this.featuresService.numberOfArchieve = resp;
     });
   }
+
+  countMyPatientPending() {
+    this.featuresService.getCountOfMyPatientPending().subscribe(num => {
+      this.featuresService.setNumberOfPending(num);
+    })
+  }
+
+  setNumberOfPending() {
+    this.featuresService.getNumberOfPendingObs().subscribe(num => {
+      this.numberOfPending = num;
+    })
+  }
+
   openAccountInterface() {
     this.router.navigate(["/features/compte/mes-informations"]);
   }
@@ -121,8 +142,12 @@ export class FeaturesComponent implements OnInit {
   displayArchieveAction() {
     this.router.navigate(["/features/archive"]);
   }
-  displayMyPatientsAction() {
-    this.router.navigate(["/features/mes-patients"]);
+  displayMyPatientsAction(event) {
+    this.router.navigate(["/features/mes-patients"], {
+      queryParams: {
+        section: event,
+      },
+    });
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/features/favorites"]);
@@ -193,7 +218,7 @@ export class FeaturesComponent implements OnInit {
             }
           }
         );
-        this.featuresService.numberOfInbox--;
+        this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox-1)
       });
   }
   displayInboxOfPracticiansAction(event) {
