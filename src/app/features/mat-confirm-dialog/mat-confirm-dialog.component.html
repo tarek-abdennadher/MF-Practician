@@ -1,6 +1,12 @@
 <div class="group-element">
   <span class="title-span">{{ data.title }}</span>
-  <mat-icon id="close-icon" (click)="closeDialog()">close</mat-icon>
+  <mat-icon
+    id="close-icon"
+    class="close"
+    aria-label="Close"
+    (click)="closeDialog()"
+    >close</mat-icon
+  >
 </div>
 <br />
 <div class="group-element">

@@ -107,8 +107,9 @@ a {
   background: #f1f1f1 0% 0% no-repeat padding-box;
   opacity: 1;
   border-radius: 30px;
-  padding-top: 2px;
+  padding-top: 3px;
   padding-left: 2px;
+  margin-right: 12px;
 }
 .confirm-dialog-container #close-icon:hover {
   cursor: pointer;
@@ -159,7 +160,6 @@ a {
   color: #6e819b;
   opacity: 1;
   text-transform: uppercase;
-  margin: 184px;
 }
 .group-element {
   text-align: center;
