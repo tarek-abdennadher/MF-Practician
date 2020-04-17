@@ -185,10 +185,16 @@ export class MessagingListComponent implements OnInit {
       .filter((e) => e.isChecked == true)
       .map((e) => e.id);
     if (messagesId.length > 0) {
-      this.featureService.numberOfArchieve =
-        this.featureService.numberOfArchieve + messagesId.length;
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         (resp) => {
+          let listToArchive = this.itemsList = this.itemsList.filter(function (elm, ind) {
+            return messagesId.indexOf(elm.id) != -1;
+          });
+          listToArchive.forEach(message => {
+            if(!message.isSeen){
+              this.featureService.numberOfArchieve++
+            }
+          });
           this.itemsList = this.itemsList.filter(function (elm, ind) {
             return messagesId.indexOf(elm.id) == -1;
           });
@@ -358,7 +364,9 @@ export class MessagingListComponent implements OnInit {
         this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
-        this.featureService.numberOfArchieve++;
+        if(!event.isSeen){
+          this.featureService.numberOfArchieve++;
+        }
       },
       (error) => {
         console.log("We have to find a way to notify user by this error");
