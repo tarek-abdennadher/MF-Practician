@@ -46,6 +46,7 @@ export class MessagingDetailComponent implements OnInit {
   userRole = this.localSt.retrieve("role");
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   sentContext = false;
+  attachements: string[]=[];
   constructor(
     private _location: Location,
     private router: Router,
@@ -112,6 +113,7 @@ export class MessagingDetailComponent implements OnInit {
         .getMessageArchivedById(id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
+          this.getAttachements(message.nodesId);
           message.sender = message.senderArchived;
           message.toReceivers = message.toReceiversArchived;
           message.ccReceivers = message.ccReceiversArchived;
@@ -176,6 +178,7 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .subscribe((message) => {
+          this.getAttachements(message.nodesId);
           this.senderRolePatient =
             this.sentContext && message.toReceivers.length == 1
               ? message.toReceivers[0].role == "PATIENT"
@@ -371,5 +374,19 @@ export class MessagingDetailComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
+  }
+
+  getAttachements(nodesId: string[]) {
+    if(nodesId){
+      nodesId.forEach(id => {
+        this.documentService
+        .getNodeDetailsFromAlfresco(id)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((node) => {
+          this.attachements.push(node.entry.name);
+        });
+      });
+    }
+
   }
 }
