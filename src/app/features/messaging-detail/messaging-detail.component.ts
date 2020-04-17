@@ -46,7 +46,7 @@ export class MessagingDetailComponent implements OnInit {
   userRole = this.localSt.retrieve("role");
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   sentContext = false;
-  attachements: string[]=[];
+  attachements: string[] = [];
   constructor(
     private _location: Location,
     private router: Router,
@@ -308,7 +308,8 @@ export class MessagingDetailComponent implements OnInit {
   archieveActionClicked() {
     this.dialogService
       .openConfirmDialog(
-        this.globalService.messagesDisplayScreen.archiving_confirmation_message
+        this.globalService.messagesDisplayScreen.archiving_confirmation_message,
+        this.globalService.messagesDisplayScreen.archiving_title_message
       )
       .afterClosed()
       .subscribe((res) => {
@@ -377,16 +378,15 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   getAttachements(nodesId: string[]) {
-    if(nodesId){
-      nodesId.forEach(id => {
+    if (nodesId) {
+      nodesId.forEach((id) => {
         this.documentService
-        .getNodeDetailsFromAlfresco(id)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((node) => {
-          this.attachements.push(node.entry.name);
-        });
+          .getNodeDetailsFromAlfresco(id)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((node) => {
+            this.attachements.push(node.entry.name);
+          });
       });
     }
-
   }
 }
