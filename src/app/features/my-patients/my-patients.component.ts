@@ -1,9 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { MyPatientsService } from "../services/my-patients.service";
 import { MyPatients } from "./my-patients";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
+import { FeaturesService } from '../features.service';
 
 @Component({
   selector: "app-my-patients",
@@ -15,6 +16,8 @@ export class MyPatientsComponent implements OnInit {
   myPatients = [];
   filtredPatients = [];
   isMyPatients = true;
+  section: string;
+  isInvitation: Boolean = false;
 
   page = "PATIENT";
   topText = this.globalService.messagesDisplayScreen.my_patients;
@@ -28,15 +31,79 @@ export class MyPatientsComponent implements OnInit {
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
     private router: Router,
-    private dialogService: DialogService
+    private route: ActivatedRoute,
+    private dialogService: DialogService,
+    private featureService: FeaturesService
   ) {}
 
   ngOnInit(): void {
-    this.getPatientsOfCurrentParactician();
+    this.route.queryParams.subscribe((params) => {
+      if (params["section"]) {
+        switch (params["section"]) {
+          case "accepted": {
+            this.search = "accepted"
+            this.isInvitation = false;
+            this.getPatientsOfCurrentParactician();
+            break;
+          }
+          case "pending": {
+            this.search = "pending"
+            this.isInvitation = true;
+            this.getPatientsPendingOfCurrentParactician();
+            break;
+          }
+          case "prohibit": {
+            this.search = "prohibit"
+            this.isInvitation = false;
+            this.getPatientsProhibitedOfCurrentParactician();
+            break;
+          }
+        }
+      }
+    });
   }
   getPatientsOfCurrentParactician() {
+    this.myPatients =[];
     this.myPatientsService
       .getPatientsOfCurrentParactician()
+      .subscribe((myPatients) => {
+        this.number = myPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+        myPatients.forEach((elm) => {
+          this.myPatients.push(
+            this.mappingMyPatients(elm.patient, elm.prohibited)
+          );
+        });
+        this.filtredPatients = this.myPatients;
+      });
+  }
+
+  getPatientsProhibitedOfCurrentParactician() {
+    this.myPatients =[];
+    this.myPatientsService
+      .getPatientsProhibitedOfCurrentParactician()
+      .subscribe((myPatients) => {
+        this.number = myPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+        myPatients.forEach((elm) => {
+          this.myPatients.push(
+            this.mappingMyPatients(elm.patient, elm.prohibited)
+          );
+        });
+        this.filtredPatients = this.myPatients;
+      });
+  }
+
+  getPatientsPendingOfCurrentParactician() {
+    this.myPatients =[];
+    this.myPatientsService
+      .getPatientsPendingOfCurrentParactician()
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -93,10 +160,9 @@ export class MyPatientsComponent implements OnInit {
       .prohibitePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          const index = this.filtredPatients.findIndex(
-            (elm) => elm.users[0].id == item.users[0].id
-          );
-          this.filtredPatients[index].isProhibited = true;
+          this.filtredPatients = this.filtredPatients.filter(elm => {
+            elm.users[0].id != item.users[0].id
+          });
         }
       });
   }
@@ -126,21 +192,27 @@ export class MyPatientsComponent implements OnInit {
       .authorizePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          const index = this.filtredPatients.findIndex(
-            (elm) => elm.users[0].id == item.users[0].id
-          );
-          this.filtredPatients[index].isProhibited = false;
+          this.filtredPatients = this.filtredPatients.filter(elm => {
+            elm.users[0].id != item.users[0].id
+          });
         }
       });
   }
 
-  acceptInvitation(item) {
+  acceptedAction(item) {
     this.myPatientsService
-      .acceptPatientInvitation(item.users[0].id)
-      .subscribe((resp) => {
-        if (resp == true) {
-          console.log(true);
-        }
-      });
+    .acceptPatientInvitation(item.users[0].id)
+    .subscribe((resp) => {
+      if (resp == true) {
+        this.filtredPatients = this.filtredPatients.filter(elm => {
+          elm.users[0].id != item.users[0].id
+        });
+        this.featureService.setNumberOfPending(this.featureService.getNumberOfPendingValue()-1)
+      }
+    });
+  }
+
+  refuseAction(item) {
+
   }
 }

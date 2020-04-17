@@ -12,16 +12,41 @@ import { search } from "./practician-search/search.model";
 export class FeaturesService {
   public listNotifications = [];
   public selectedPracticianId = 0;
-  numberOfInbox: number = 0;
+  private _numberOfInbox: number = 0;
   numberOfArchieve: number = 0;
+  numberOfAccepted: number = 0;
+  private _numberOfPending = new BehaviorSubject<number>(0);
+  numberOfProhibited: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public imageSource: string | ArrayBuffer = "assets/imgs/user.png";
   private searchSource = new BehaviorSubject(new search());
   currentSearch = this.searchSource.asObservable();
+
+  getNumberOfPendingObs() {
+    return this._numberOfPending.asObservable();
+  }
+
+  getNumberOfPendingValue() {
+    return this._numberOfPending.getValue();
+  }
+
+  setNumberOfPending(numberOfPending) {
+    this._numberOfPending.next(numberOfPending);
+  }
+
+  get numberOfInbox() {
+    return this._numberOfInbox;
+  }
+
+  setNumberOfInbox(number) {
+    this._numberOfInbox = number;
+  }
+
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService
   ) {}
+
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
@@ -63,5 +88,12 @@ export class FeaturesService {
   }
   changeSearch(search: search) {
     this.searchSource.next(search);
+  }
+
+  getCountOfMyPatientPending() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/countPending"
+    );
   }
 }

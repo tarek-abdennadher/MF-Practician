@@ -28,6 +28,19 @@ export class MessagingListService {
         sender: notification.senderFullName,
         picture: "assets/imgs/user.png",
         messageId: notification.messageId,
+        type: notification.type,
+      });
+    }
+  }
+
+  setInvitationNotificationObs(notification) {
+    if (!_.isEqual(notification, this.notificationObs.getValue())) {
+      this.notificationObs.next(notification);
+      this.featuresService.listNotifications.unshift({
+        id: notification.id,
+        sender: notification.senderFullName,
+        picture: "assets/imgs/user.png",
+        type: notification.type,
       });
     }
   }
