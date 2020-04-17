@@ -124,39 +124,39 @@ export class FeaturesComponent implements OnInit {
   }
 
   openAccountInterface() {
-    this.router.navigate(["/features/compte/mes-informations"]);
+    this.router.navigate(["/compte/mes-informations"]);
   }
   signOutAction() {
     this.router.navigate(["/connexion"]);
   }
 
   displayInboxAction() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
-    this.router.navigate(["/features/messagerie-ecrire"]);
+    this.router.navigate(["/messagerie-ecrire"]);
   }
   displaySentAction() {
-    this.router.navigate(["features/messagerie-envoyes"]);
+    this.router.navigate(["/messagerie-envoyes"]);
   }
   displayArchieveAction() {
-    this.router.navigate(["/features/archive"]);
+    this.router.navigate(["/messagerie-archives"]);
   }
   displayMyPatientsAction(event) {
-    this.router.navigate(["/features/mes-patients"], {
+    this.router.navigate(["/mes-patients"], {
       queryParams: {
         section: event,
       },
     });
   }
   displayMyMedicalsAction() {
-    this.router.navigate(["/features/favorites"]);
+    this.router.navigate(["/favorites"]);
   }
   displayMyProContactsAction() {
-    this.router.navigate(["features/contacts"]);
+    this.router.navigate(["/mes-contacts-pro"]);
   }
   displayMyDocumentsAction() {
-    this.router.navigate(["features/documents"]);
+    this.router.navigate(["/mes-documents"]);
   }
   displayHelpAction() {
     console.log("displayHelpAction");
@@ -186,7 +186,7 @@ export class FeaturesComponent implements OnInit {
     console.log(event);
   }
   logoClicked() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   receiveCollapsed($event) {
     this.collapedSideBar = $event;
@@ -197,11 +197,9 @@ export class FeaturesComponent implements OnInit {
 
   searchActionClicked(event) {
     this.searchService.changeSearch(new search(event.search, event.city));
-    this.router.navigate(["/features/search"]);
-    jQuery(document).ready(function(e) {
-      jQuery(this)
-        .find("#dropdownMenuLinkSearch")
-        .trigger("click");
+    this.router.navigate(["/praticien-recherche"]);
+    jQuery(document).ready(function (e) {
+      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
 
@@ -211,7 +209,7 @@ export class FeaturesComponent implements OnInit {
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
         this.router.navigate(
-          ["features/messagerie-lire/" + notification.messageId],
+          ["/messagerie-lire/" + notification.messageId],
           {
             queryParams: {
               context: "inbox"
@@ -222,7 +220,7 @@ export class FeaturesComponent implements OnInit {
       });
   }
   displayInboxOfPracticiansAction(event) {
-    this.router.navigate(["/features/messageries/" + event]);
+    this.router.navigate(["/messageries/" + event]);
   }
 
   getPersonalInfo() {
@@ -239,16 +237,19 @@ export class FeaturesComponent implements OnInit {
   // initialise profile picture
   getPictureProfile(nodeId) {
     this.documentService.downloadFile(nodeId).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           this.featuresService.imageSource = myReader.result;
         };
         let ok = myReader.readAsDataURL(response.body);
       },
-      error => {
+      (error) => {
         this.featuresService.imageSource = "assets/imgs/user.png";
       }
     );
+  }
+  resetInputs() {
+    this.featuresService.changeSearch(new search("", ""));
   }
 }
