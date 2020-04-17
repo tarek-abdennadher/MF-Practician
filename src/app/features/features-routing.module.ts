@@ -19,13 +19,13 @@ const routes: Routes = [
     path: "",
     component: FeaturesComponent,
     children: [
-      { path: "", redirectTo: "messageries", pathMatch: "full" },
+      { path: "", redirectTo: "messagerie", pathMatch: "full" },
       {
-        path: "messageries",
+        path: "messagerie",
         component: MessagingListComponent,
       },
       {
-        path: "messageries/:id",
+        path: "messagerie/:id",
         component: MessagingListComponent,
       },
       {
@@ -41,7 +41,7 @@ const routes: Routes = [
         component: SentMessagesComponent,
       },
       {
-        path: "contacts",
+        path: "mes-contacts-pro",
         component: ContactsComponent,
       },
       {
@@ -57,15 +57,15 @@ const routes: Routes = [
         component: MessagingReplyComponent,
       },
       {
-        path: "search",
+        path: "praticien-recherche",
         component: PracticianSearchComponent,
       },
       {
-        path: "practician-detail/:id",
+        path: "praticien-detail/:id",
         component: PracticianDetailComponent,
       },
       {
-        path: "archive",
+        path: "messagerie-archives",
         component: ArchieveMessagesComponent,
       },
       {
@@ -78,7 +78,7 @@ const routes: Routes = [
         component: SendMessageComponent,
       },
       {
-        path: "documents",
+        path: "mes-documents",
         loadChildren: () =>
           import("./my-documents/my-documents.module").then(
             (m) => m.MyDocumentsModule

@@ -4,7 +4,7 @@ import { ArchieveMessagesService } from "./archieve-messages.service";
 import { MessageArchived } from "./message-archived";
 import { Location } from "@angular/common";
 import { FeaturesService } from "../features.service";
-import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-archieve-messages",
@@ -40,8 +40,8 @@ export class ArchieveMessagesComponent implements OnInit {
       messages.forEach((message) => {
         this.bottomText = this.number > 1 ? "messages" : "message";
         let archivedMessage = this.mappingMessageArchived(message);
-        archivedMessage.users.forEach(user => {
-          if(user.photoId){
+        archivedMessage.users.forEach((user) => {
+          if (user.photoId) {
             this.documentService.downloadFile(user.photoId).subscribe(
               (response) => {
                 let myReader: FileReader = new FileReader();
@@ -51,10 +51,11 @@ export class ArchieveMessagesComponent implements OnInit {
                 let ok = myReader.readAsDataURL(response.body);
               },
               (error) => {
-                  user.img = "assets/imgs/user.png";
+                user.img = "assets/imgs/user.png";
+              }
+            );
           }
-        );}
-      })
+        });
         this.itemsList.push(archivedMessage);
       });
     });
@@ -76,8 +77,7 @@ export class ArchieveMessagesComponent implements OnInit {
           message.senderDetail.role == "PRACTICIAN"
             ? "MEDICAL"
             : message.senderDetail.role,
-        photoId: message.senderDetail.patient?message.senderDetail.patient.photoId:message.senderDetail.practician.photoId
-
+        photoId: this.getPhotoId(message.senderDetail),
       },
     ];
     messageArchived.object = {
@@ -94,7 +94,7 @@ export class ArchieveMessagesComponent implements OnInit {
   }
   cardClicked(item) {
     this.markMessageAsSeen(item.id);
-    this.router.navigate(["/features/messagerie-lire/" + item.id], {
+    this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
         context: "archive",
       },
@@ -107,5 +107,18 @@ export class ArchieveMessagesComponent implements OnInit {
 
   markMessageAsSeen(messageId) {
     this.archivedService.markMessageAsSeen(messageId).subscribe();
+  }
+
+  getPhotoId(senderDetail): string {
+    switch (senderDetail.role) {
+      case "PATIENT":
+        return senderDetail.patient.photoId;
+      case "PRACTICIAN":
+        return senderDetail.practician.photoId;
+      case "SECRETARY":
+        return senderDetail.secretary.photoId;
+      default:
+        return null;
+    }
   }
 }

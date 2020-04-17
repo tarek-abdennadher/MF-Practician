@@ -25,7 +25,7 @@ export class SendMessageComponent implements OnInit {
   imageSource = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
-  connectedUser = "PR " + this.user?.firstName + " " + this.user?.lastName;
+  connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList = [];
   objectsList = [];
@@ -50,6 +50,9 @@ export class SendMessageComponent implements OnInit {
     public route: ActivatedRoute,
     notifierService: NotifierService
   ) {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      this.connectedUser = "Dr " + this.connectedUser;
+    }
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
     });
@@ -90,7 +93,6 @@ export class SendMessageComponent implements OnInit {
       });
     });
     this.toList.next(myList);
-    console.log(myList);
   }
 
   getAllRequestTypes() {
@@ -147,7 +149,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
-            this.router.navigate(["/features/messageries"], {
+            this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
               },
@@ -167,7 +169,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
-            this.router.navigate(["/features/messageries"], {
+            this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
               },
@@ -184,7 +186,7 @@ export class SendMessageComponent implements OnInit {
     }
   }
   addProContactAction() {
-    this.router.navigate(["/features/search"]);
+    this.router.navigate(["/praticien-recherche"]);
   }
 
   goToBack() {

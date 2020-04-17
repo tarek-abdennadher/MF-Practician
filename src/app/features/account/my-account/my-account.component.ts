@@ -34,9 +34,9 @@ export class MyAccountComponent implements OnInit {
     });
   }
   BackButton() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   return() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
 }

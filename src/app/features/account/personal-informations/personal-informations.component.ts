@@ -25,6 +25,7 @@ export class PersonalInformationsComponent implements OnInit {
   specialities: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
+  passwordErrorMessage = "";
   successMessage = "";
   public messages: any;
   public labels: any;
@@ -142,11 +143,12 @@ export class PersonalInformationsComponent implements OnInit {
     this.isPasswordValid = event;
   }
   return() {
-    this.router.navigate(["/features/messageries"]);
+    this.router.navigate(["/messagerie"]);
   }
   close() {
     this.showAlert = false;
     this.showPasswordSuccess = false;
+    this.showPasswordFailure = false;
   }
   getPersonalInfo() {
     this.accountService.getCurrentAccount().subscribe((account) => {
@@ -251,7 +253,7 @@ export class PersonalInformationsComponent implements OnInit {
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           civility: this.infoForm.value.civility,
-          photoId: this.infoForm.value.picture,
+          photoId: this.account.photoId,
         },
       };
     }
@@ -273,24 +275,8 @@ export class PersonalInformationsComponent implements OnInit {
       return;
     }
     this.accountService
-      .updatePassword(this.passwordForm.value.new_password)
-      .subscribe((res) => {
-        if (res) {
-          this.showPasswordSuccess = true;
-          $("#alertPasswordSuccess").alert();
-          this.passwordForm.patchValue({
-            new_password: "",
-            confirm_password: "",
-          });
-          this.isPasswordValid = false;
-          this.initPasswordForm();
-          this.passwordForm.setErrors(null);
-          this.passwordSubmitted = false;
-        } else {
-          this.showPasswordFailure = true;
-          $("#alertPasswordFailure").alert();
-        }
-      });
+      .updatePasswordV2(this.passwordForm.value.new_password)
+      .subscribe(this.handleResponsePasswordUpdate, this.handleError);
   }
   getPhoneList(event) {
     this.phones = event.value;
@@ -362,4 +348,31 @@ export class PersonalInformationsComponent implements OnInit {
     this.account.photoId = null;
     this.hasImage = false;
   }
+  handleError = (err) => {
+    if (err && err.error && err.error.apierror) {
+      this.passwordErrorMessage = err.error.apierror.message;
+      this.showPasswordFailure = true;
+      $("#alertPasswordFailure").alert();
+    } else {
+      throw err;
+    }
+  };
+  handleResponsePasswordUpdate = (response) => {
+    if (response) {
+      this.showPasswordSuccess = true;
+      $("#alertPasswordSuccess").alert();
+      this.passwordForm.patchValue({
+        new_password: "",
+        confirm_password: "",
+      });
+      this.isPasswordValid = false;
+      this.initPasswordForm();
+      this.passwordForm.setErrors(null);
+      this.passwordSubmitted = false;
+    } else {
+      this.passwordErrorMessage = this.accountService.messages.edit_password_failure;
+      this.showPasswordFailure = true;
+      $("#alertPasswordFailure").alert();
+    }
+  };
 }

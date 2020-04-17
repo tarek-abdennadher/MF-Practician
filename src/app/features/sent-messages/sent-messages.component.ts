@@ -5,7 +5,7 @@ import { MessageService } from "../services/message.service";
 import { takeUntil } from "rxjs/operators";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { FeaturesService } from "../features.service";
-import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-sent-messages",
@@ -58,7 +58,7 @@ export class SentMessagesComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                    user.img = "assets/imgs/user.png";
+                  user.img = "assets/imgs/user.png";
                 }
               );
             }
@@ -95,7 +95,7 @@ export class SentMessagesComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/features/messagerie-lire/" + item.id], {
+    this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
         context: "sent",
       },
