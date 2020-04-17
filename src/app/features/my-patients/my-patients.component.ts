@@ -149,7 +149,7 @@ export class MyPatientsComponent implements OnInit {
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }
   writeAction(item) {
-    this.router.navigate(["/features/messagerie-ecrire/"], {
+    this.router.navigate(["/messagerie-ecrire/"], {
       queryParams: {
         id: item.users[0].accountId,
       },

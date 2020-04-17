@@ -220,13 +220,19 @@ export class FeaturesComponent implements OnInit {
       });
   }
   displayInboxOfPracticiansAction(event) {
-    this.router.navigate(["/messageries/" + event]);
+    this.router.navigate(["/messagerie/" + event]);
   }
 
   getPersonalInfo() {
     this.accountService.getCurrentAccount().subscribe(account => {
       if (account && account.practician) {
         this.account = account.practician;
+        if (this.account.photoId) {
+          this.hasImage = true;
+          this.getPictureProfile(this.account.photoId);
+        }
+      } else if (account && account.secretary) {
+        this.account = account.secretary;
         if (this.account.photoId) {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
