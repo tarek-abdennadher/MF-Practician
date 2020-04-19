@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { DialogService } from "@app/features/services/dialog.service";
+import { emailValidator } from "@app/core/Validators/email.validator";
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -52,7 +53,7 @@ export class MySecretariesComponent implements OnInit {
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, Validators.email],
+        validators: [Validators.required, emailValidator],
       }),
       civility: new FormControl(null, Validators.required),
       phone: new FormControl(null, {
