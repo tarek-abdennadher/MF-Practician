@@ -130,8 +130,9 @@ export class MessagingListComponent implements OnInit {
       (notif) => notif.messageId != item.id
     );
     if (notifLength > this.featureService.listNotifications.length) {
-      this.featureService.setNumberOfInbox(this.featureService.numberOfInbox-1)
-      ;
+      this.featureService.setNumberOfInbox(
+        this.featureService.numberOfInbox - 1
+      );
     }
   }
 

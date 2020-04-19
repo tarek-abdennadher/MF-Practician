@@ -4,6 +4,7 @@ import { ContactsService } from "@app/features/services/contacts.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
+import { emailValidator } from "@app/core/Validators/email.validator";
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
@@ -47,7 +48,7 @@ export class ContactDetailComponent implements OnInit {
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, Validators.email],
+        validators: [Validators.required, emailValidator],
       }),
       title: new FormControl(null),
       speciality: new FormControl(null),
