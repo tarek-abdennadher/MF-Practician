@@ -50,6 +50,7 @@ export class MyPatientsComponent implements OnInit {
             this.section = "pending";
             this.isInvitation = true;
             this.getPendingListRealTime();
+            this.markNotificationsAsSeen();
             break;
           }
           case "prohibit": {
@@ -61,6 +62,15 @@ export class MyPatientsComponent implements OnInit {
         }
       }
     });
+
+  }
+
+  markNotificationsAsSeen() {
+    this.featureService.markReceivedNotifAsSeen().subscribe(resp => {
+      this.featureService.listNotifications = this.featureService.listNotifications.filter(notif => {
+        notif.messageId != null;
+      })
+    })
   }
   getPatientsOfCurrentParactician() {
     this.myPatients =[];

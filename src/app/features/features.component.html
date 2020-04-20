@@ -8,6 +8,7 @@
   (searchAction)="searchActionClicked($event)"
   [listNotifications]="featuresService.listNotifications"
   (notificationsOpened)="openNotifications()"
+  (notificationClosed)="closeNotification()"
   (notificationSelected)="selectNotification($event)"
   (logoAction)="logoClicked()"
   (resetSearchInputAction)="resetInputs()"
