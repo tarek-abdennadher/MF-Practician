@@ -172,7 +172,7 @@ export class MyPatientsComponent implements OnInit {
   deleteAction(item) {
     this.dialogService
       .openConfirmDialog(
-        this.globalService.messagesDisplayScreen.delete_confirmation_patient
+        this.globalService.messagesDisplayScreen.delete_confirmation_patient, "Suppression"
       )
       .afterClosed()
       .subscribe((res) => {
