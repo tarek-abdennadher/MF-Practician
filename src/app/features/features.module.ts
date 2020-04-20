@@ -29,7 +29,7 @@ import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.co
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { PracticianInvitationComponent } from './practician-invitation/practician-invitation.component';
+import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -43,7 +43,7 @@ const notifierOptions: NotifierOptions = {
   },
   theme: "material",
   behaviour: {
-    autoHide: 5000,
+    autoHide: 2000,
     onClick: false,
     onMouseover: "pauseAutoHide",
     showDismissButton: false,
