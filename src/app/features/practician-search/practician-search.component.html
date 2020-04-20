@@ -39,9 +39,12 @@
 ></lib-hlsMessagingList>
 <div class="container form-inline">
   <div class="col-md-6">
-    <a
-      >{{ texts.question }}<span>{{ texts.response }}</span></a
-    >
+    <span>
+      {{ texts.question }}
+    </span>
+    <a (click)="sendInvitation()" style="cursor: pointer;">
+      {{ texts.response }}
+    </a>
   </div>
   <div class="col-md-6 text-right">
     <a

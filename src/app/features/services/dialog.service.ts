@@ -8,14 +8,16 @@ import { MatDialog } from "@angular/material/dialog";
 export class DialogService {
   constructor(private dialog: MatDialog) {}
 
-  openConfirmDialog(msg) {
+  openConfirmDialog(msg, titre) {
     return this.dialog.open(MatConfirmDialogComponent, {
-      width: "390px",
+      width: "609px",
+      height: "215px",
       panelClass: "confirm-dialog-container",
       disableClose: true,
       position: { top: "250px" },
       data: {
         message: msg,
+        title: titre,
       },
     });
   }

@@ -137,4 +137,7 @@ export class PracticianSearchComponent implements OnInit {
   return() {
     this.router.navigate(["/messagerie"]);
   }
+  sendInvitation() {
+    this.router.navigate(["/praticien-invitation"]);
+  }
 }

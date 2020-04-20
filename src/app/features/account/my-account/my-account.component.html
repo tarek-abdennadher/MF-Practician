@@ -80,39 +80,11 @@
         href="javascript:void(0);"
         id="delete"
         class="link1 float-right"
-        (click)="desactivateAccountModal()"
+        (click)="desactivateAccount()"
         ><i class="far fa-trash-alt"
           >&nbsp;&nbsp;{{ labels.delete_account }}</i
         ></a
       >
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="deleteAccountModal" role="dialog">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">
-          {{ labels.delete }}
-        </h4>
-        <button type="button" class="close" data-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center">
-        {{ labels.delete_account_confirm }}
-      </div>
-      <div class="modal-footer text-center">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          {{ labels.cancel }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="desactivateAccount()"
-        >
-          {{ labels.confirm }}
-        </button>
-      </div>
     </div>
   </div>
 </div>

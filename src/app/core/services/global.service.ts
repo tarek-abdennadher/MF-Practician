@@ -64,6 +64,7 @@ export class GlobalService {
     contact_pro_all: this.BASE_URL_CA + "/contact/contacts-practician-all",
     contact_pro_all_secretary:
       this.BASE_URL_CA + "/contact/contacts-secretary-all",
+    practician_invitation: this.BASE_URL_CA + "/account/invitePractician",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
@@ -87,8 +88,11 @@ export class GlobalService {
     patients: "patients",
     my_patients: "Mes patients",
     documents: "Mes documents",
-    archiving_confirmation_message: "Voulez vous vraiment archiver ce message",
-    delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient",
+    archiving_confirmation_message:
+      "Voulez vous vraiment archiver ce message ?",
+    archiving_title_message: "Archiver le message",
+    delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
+    delete_title_patient: "Supprimer le patient",
   };
   public call(
     method: RequestType,
