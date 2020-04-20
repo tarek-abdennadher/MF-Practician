@@ -10,6 +10,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
+import { forkJoin } from 'rxjs';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -78,10 +79,10 @@ export class FeaturesComponent implements OnInit {
             let notification = JSON.parse(message.body);
             if (notification.type == "MESSAGE") {
               that.messageListService.setNotificationObs(notification);
-              that.featuresService.setNumberOfInbox(that.featuresService.numberOfInbox + 1);
-            } else {
+            } else if (notification.type == "INVITATION") {
               that.messageListService.setInvitationNotificationObs(notification);
-              that.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
+            } else if (notification.type == "REMOVED") {
+              that.messageListService.removeInvitationNotificationObs(notification);
             }
           }
         }
@@ -98,10 +99,41 @@ export class FeaturesComponent implements OnInit {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.senderFullName,
+            senderId: notif.senderId,
             picture: "assets/imgs/user.png",
-            messageId: notif.messageId
+            messageId: notif.messageId,
+            type: notif.type,
+            photoId: notif.senderPhotoId,
           });
         });
+        let photoIds: Set<string> = new Set();
+        notifications.forEach((notif) => {
+          photoIds.add(notif.senderPhotoId);
+        });
+        let photosMap: Map<string, string | ArrayBuffer> = new Map();
+        let arrayOfObservables = [];
+        photoIds.forEach((id) => {
+          arrayOfObservables.push(this.documentService.downloadFile(id));
+        });
+        forkJoin(arrayOfObservables).subscribe((result:any[]) => {
+          for (let i = 0; i < photoIds.size; i++) {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              photosMap.set(Array.from(photoIds)[i], myReader.result);
+              if(photosMap.size == photoIds.size){
+                notificationsFormated.forEach((notif) => {
+                  if(photosMap.has(notif.photoId)){
+                    notif.picture = photosMap.get(notif.photoId);
+                  }
+                });
+              }
+            };
+            let ok = myReader.readAsDataURL(result[i].body);
+          }
+
+
+        });
+
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
@@ -204,7 +236,8 @@ export class FeaturesComponent implements OnInit {
   }
 
   selectNotification(notification) {
-    this.featuresService
+    if (notification.type == "MESSAGE") {
+      this.featuresService
       .markMessageAsSeenByNotification(notification.messageId)
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
@@ -218,6 +251,20 @@ export class FeaturesComponent implements OnInit {
         );
         this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox-1)
       });
+    } else if (notification.type == "INVITATION") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+        .subscribe((resp) => {
+          this.getMyNotificationsNotSeen();
+          this.router.navigate(["/mes-patients"],
+          {
+            queryParams: {
+              section: "pending"
+            }
+          }
+          );
+        });
+    }
   }
   displayInboxOfPracticiansAction(event) {
     this.router.navigate(["/messagerie/" + event]);

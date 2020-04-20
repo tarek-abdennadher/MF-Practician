@@ -54,4 +54,9 @@ export class MyPatientsService {
     return this.globalService.call(RequestType.PUT,
       this.globalService.url.favorite + "acceptPatient/" + patientId);
   }
+
+  declinePatientInvitation(patientId: number): Observable<Boolean> {
+    return this.globalService.call(RequestType.PUT,
+      this.globalService.url.favorite + "declinePatient/" + patientId);
+  }
 }

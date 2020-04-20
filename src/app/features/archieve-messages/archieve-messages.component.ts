@@ -93,7 +93,9 @@ export class ArchieveMessagesComponent implements OnInit {
     return messageArchived;
   }
   cardClicked(item) {
-    this.markMessageAsSeen(item.id);
+    if(!item.isSeen){
+      this.markMessageAsSeen(item.id);
+    }
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
         context: "archive",
@@ -106,7 +108,9 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   markMessageAsSeen(messageId) {
-    this.archivedService.markMessageAsSeen(messageId).subscribe();
+    this.archivedService.markMessageAsSeen(messageId).subscribe(result => {
+      this.featureService.numberOfArchieve--;
+    });
   }
 
   getPhotoId(senderDetail): string {
