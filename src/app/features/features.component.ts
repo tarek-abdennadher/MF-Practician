@@ -10,6 +10,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
+import { forkJoin } from 'rxjs';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -99,9 +100,39 @@ export class FeaturesComponent implements OnInit {
             id: notif.id,
             sender: notif.senderFullName,
             picture: "assets/imgs/user.png",
-            messageId: notif.messageId
+            messageId: notif.messageId,
+            type: notif.type,
+            photoId: notif.senderPhotoId,
           });
         });
+        let photoIds: Set<string> = new Set();
+        notifications.forEach((notif) => {
+          photoIds.add(notif.senderPhotoId);
+        });
+        let photosMap: Map<string, string | ArrayBuffer> = new Map();
+        let arrayOfObservables = [];
+        photoIds.forEach((id) => {
+          arrayOfObservables.push(this.documentService.downloadFile(id));
+        });
+        forkJoin(arrayOfObservables).subscribe((result:any[]) => {
+          for (let i = 0; i < photoIds.size; i++) {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              photosMap.set(Array.from(photoIds)[i], myReader.result);
+              if(photosMap.size == photoIds.size){
+                notificationsFormated.forEach((notif) => {
+                  if(photosMap.has(notif.photoId)){
+                    notif.picture = photosMap.get(notif.photoId);
+                  }
+                });
+              }
+            };
+            let ok = myReader.readAsDataURL(result[i].body);
+          }
+
+
+        });
+
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
