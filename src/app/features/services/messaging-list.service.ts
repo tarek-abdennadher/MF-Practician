@@ -26,10 +26,12 @@ export class MessagingListService {
       this.featuresService.listNotifications.unshift({
         id: notification.id,
         sender: notification.senderFullName,
+        senderId: notification.senderId,
         picture: "assets/imgs/user.png",
         messageId: notification.messageId,
         type: notification.type,
       });
+      this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox + 1);
     }
   }
 
@@ -39,9 +41,20 @@ export class MessagingListService {
       this.featuresService.listNotifications.unshift({
         id: notification.id,
         sender: notification.senderFullName,
+        senderId: notification.senderId,
         picture: "assets/imgs/user.png",
         type: notification.type,
       });
+      this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
+    }
+  }
+
+  removeInvitationNotificationObs(notification) {
+    if (this.featuresService.listNotifications.findIndex(notif => notif.id == notification.id) !=-1) {
+      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(notif => {
+        notif.id != notification.id
+      })
+      this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()-1)
     }
   }
 

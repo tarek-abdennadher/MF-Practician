@@ -79,10 +79,10 @@ export class FeaturesComponent implements OnInit {
             let notification = JSON.parse(message.body);
             if (notification.type == "MESSAGE") {
               that.messageListService.setNotificationObs(notification);
-              that.featuresService.setNumberOfInbox(that.featuresService.numberOfInbox + 1);
-            } else {
+            } else if (notification.type == "INVITATION") {
               that.messageListService.setInvitationNotificationObs(notification);
-              that.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
+            } else if (notification.type == "REMOVED") {
+              that.messageListService.removeInvitationNotificationObs(notification);
             }
           }
         }
@@ -99,6 +99,7 @@ export class FeaturesComponent implements OnInit {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.senderFullName,
+            senderId: notif.senderId,
             picture: "assets/imgs/user.png",
             messageId: notif.messageId,
             type: notif.type,
@@ -235,7 +236,8 @@ export class FeaturesComponent implements OnInit {
   }
 
   selectNotification(notification) {
-    this.featuresService
+    if (notification.type == "MESSAGE") {
+      this.featuresService
       .markMessageAsSeenByNotification(notification.messageId)
       .subscribe(() => {
         this.getMyNotificationsNotSeen();
@@ -249,6 +251,20 @@ export class FeaturesComponent implements OnInit {
         );
         this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox-1)
       });
+    } else if (notification.type == "INVITATION") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+        .subscribe((resp) => {
+          this.getMyNotificationsNotSeen();
+          this.router.navigate(["/mes-patients"],
+          {
+            queryParams: {
+              section: "pending"
+            }
+          }
+          );
+        });
+    }
   }
   displayInboxOfPracticiansAction(event) {
     this.router.navigate(["/messagerie/" + event]);

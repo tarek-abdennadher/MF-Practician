@@ -4,7 +4,7 @@ import { MyPatients } from "./my-patients";
 import { Router, ActivatedRoute } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
-import { FeaturesService } from "../features.service";
+import { FeaturesService } from '../features.service';
 
 @Component({
   selector: "app-my-patients",
@@ -41,19 +41,19 @@ export class MyPatientsComponent implements OnInit {
       if (params["section"]) {
         switch (params["section"]) {
           case "accepted": {
-            this.search = "accepted";
+            this.section = "accepted";
             this.isInvitation = false;
             this.getPatientsOfCurrentParactician();
             break;
           }
           case "pending": {
-            this.search = "pending";
+            this.section = "pending";
             this.isInvitation = true;
-            this.getPatientsPendingOfCurrentParactician();
+            this.getPendingListRealTime();
             break;
           }
           case "prohibit": {
-            this.search = "prohibit";
+            this.section = "prohibit";
             this.isInvitation = false;
             this.getPatientsProhibitedOfCurrentParactician();
             break;
@@ -63,7 +63,7 @@ export class MyPatientsComponent implements OnInit {
     });
   }
   getPatientsOfCurrentParactician() {
-    this.myPatients = [];
+    this.myPatients =[];
     this.myPatientsService
       .getPatientsOfCurrentParactician()
       .subscribe((myPatients) => {
@@ -82,7 +82,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsProhibitedOfCurrentParactician() {
-    this.myPatients = [];
+    this.myPatients =[];
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician()
       .subscribe((myPatients) => {
@@ -101,7 +101,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsPendingOfCurrentParactician() {
-    this.myPatients = [];
+    this.myPatients =[];
     this.myPatientsService
       .getPatientsPendingOfCurrentParactician()
       .subscribe((myPatients) => {
@@ -160,8 +160,8 @@ export class MyPatientsComponent implements OnInit {
       .prohibitePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
+          this.filtredPatients = this.filtredPatients.filter(elm => {
+            elm.users[0].id != item.users[0].id
           });
         }
       });
@@ -172,8 +172,7 @@ export class MyPatientsComponent implements OnInit {
   deleteAction(item) {
     this.dialogService
       .openConfirmDialog(
-        this.globalService.messagesDisplayScreen.delete_confirmation_patient,
-        this.globalService.messagesDisplayScreen.archiving_title_message
+        this.globalService.messagesDisplayScreen.delete_confirmation_patient
       )
       .afterClosed()
       .subscribe((res) => {
@@ -193,8 +192,8 @@ export class MyPatientsComponent implements OnInit {
       .authorizePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
+          this.filtredPatients = this.filtredPatients.filter(elm => {
+            elm.users[0].id != item.users[0].id
           });
         }
       });
@@ -202,18 +201,44 @@ export class MyPatientsComponent implements OnInit {
 
   acceptedAction(item) {
     this.myPatientsService
-      .acceptPatientInvitation(item.users[0].id)
-      .subscribe((resp) => {
-        if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
-          this.featureService.setNumberOfPending(
-            this.featureService.getNumberOfPendingValue() - 1
-          );
-        }
-      });
+    .acceptPatientInvitation(item.users[0].id)
+    .subscribe((resp) => {
+      if (resp == true) {
+        this.filtredPatients = this.filtredPatients.filter(elm => {
+          elm.users[0].id != item.users[0].id
+        });
+        this.featureService.setNumberOfPending(this.featureService.getNumberOfPendingValue()-1)
+        this.featureService.listNotifications = this.featureService.listNotifications.filter(notif => {
+          (notif.senderId != item.users[0].accountId);
+        })
+        this.featureService.markNotificationAsSeenBySenderId(item.users[0].accountId).subscribe(resp => {
+          console.log("invitation accepter");
+        })
+      }
+    });
   }
 
-  refuseAction(item) {}
+  refuseAction(item) {
+    this.myPatientsService
+    .declinePatientInvitation(item.users[0].id)
+    .subscribe((resp) => {
+      if (resp == true) {
+        this.filtredPatients = this.filtredPatients.filter(elm => {
+          elm.users[0].id != item.users[0].id
+        });
+        this.featureService.setNumberOfPending(this.featureService.getNumberOfPendingValue()-1)
+        this.featureService.listNotifications = this.featureService.listNotifications.filter(notif => {
+          notif.senderId != item.users[0].accountId;
+        })
+      }
+    });
+  }
+
+  getPendingListRealTime() {
+    this.featureService.getNumberOfPendingObs().subscribe(resp => {
+      if (this.featureService.getNumberOfPendingValue() != this.number) {
+        this.getPatientsPendingOfCurrentParactician();
+      }
+    })
+  }
 }

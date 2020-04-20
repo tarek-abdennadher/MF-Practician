@@ -68,6 +68,21 @@ export class FeaturesService {
     );
   }
 
+
+  markNotificationAsSeen(notidId:number):Observable<boolean> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.BASE_URL_MA + "/notifications/" + notidId + "/markAsSeen"
+    );
+  }
+
+  markNotificationAsSeenBySenderId(senderId:number):Observable<boolean> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.BASE_URL_MA + "/notifications/" + senderId + "/INVITATION/markAsSeen"
+    );
+  }
+
   getUserId(): number {
     const token = this.localSt.retrieve("token");
     var decoded = jwt_decode(token);
