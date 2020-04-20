@@ -27,11 +27,7 @@ export class MessagingReplyComponent implements OnInit {
   senderRolePatient = true;
   messagingDetail: any;
   idMessage: number;
-  links = {
-    isSeen: true,
-    isArchieve: true,
-    isImportant: true,
-  };
+
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.MailDetail;
