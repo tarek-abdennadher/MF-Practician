@@ -5,6 +5,7 @@ import { MessageArchived } from "./message-archived";
 import { Location } from "@angular/common";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: "app-archieve-messages",
@@ -17,7 +18,9 @@ export class ArchieveMessagesComponent implements OnInit {
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
-  bottomText = "messages";
+  bottomText = this.number > 1
+  ? this.globalService.messagesDisplayScreen.newArchivedMessages
+  : this.globalService.messagesDisplayScreen.newArchivedMessage;
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
@@ -26,7 +29,8 @@ export class ArchieveMessagesComponent implements OnInit {
     private archivedService: ArchieveMessagesService,
     private _location: Location,
     private featureService: FeaturesService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private globalService: GlobalService
   ) {}
 
   ngOnInit(): void {
@@ -36,9 +40,10 @@ export class ArchieveMessagesComponent implements OnInit {
   getMyMessagesArchived() {
     this.archivedService.getMyArchivedMessages().subscribe((messages) => {
       this.number = this.featureService.numberOfArchieve;
-      this.bottomText = this.number > 1 ? "messages" : "message";
+      this.bottomText = this.number > 1
+      ? this.globalService.messagesDisplayScreen.newArchivedMessages
+      : this.globalService.messagesDisplayScreen.newArchivedMessage;
       messages.forEach((message) => {
-        this.bottomText = this.number > 1 ? "messages" : "message";
         let archivedMessage = this.mappingMessageArchived(message);
         archivedMessage.users.forEach((user) => {
           if (user.photoId) {
