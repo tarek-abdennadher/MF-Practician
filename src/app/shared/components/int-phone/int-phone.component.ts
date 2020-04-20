@@ -18,6 +18,7 @@ export class IntPhoneComponent implements OnInit {
     return <FormArray>this.phoneForm.get("phoneList");
   }
   newPhone(): FormGroup {
+    this.validPhones.emit(false)
     return this.formBuilder.group({
       phoneNumber: ['', Validators.required],
       note: ''

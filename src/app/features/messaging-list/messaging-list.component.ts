@@ -32,7 +32,7 @@ export class MessagingListComponent implements OnInit {
   };
   page = "INBOX";
   number = 0;
-  topText = "Boite de réception";
+  topText = "Boîte de réception";
   bottomText =
     this.number > 1
       ? this.globalService.messagesDisplayScreen.newMessages
@@ -53,7 +53,7 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.topText = "Boite de réception";
+    this.topText = "Boîte de réception";
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       if (params["id"]) {
