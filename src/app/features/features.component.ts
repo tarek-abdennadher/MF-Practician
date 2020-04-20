@@ -102,6 +102,7 @@ export class FeaturesComponent implements OnInit {
             picture: "assets/imgs/user.png",
             messageId: notif.messageId,
             type: notif.type,
+            photoId: notif.senderPhotoId,
           });
         });
         this.featuresService.listNotifications = notificationsFormated;
