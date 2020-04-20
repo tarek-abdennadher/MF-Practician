@@ -88,9 +88,6 @@ export class GlobalService {
     patients: "patients",
     my_patients: "Mes patients",
     documents: "Mes documents",
-    archiving_confirmation_message:
-      "Voulez vous vraiment archiver ce message ?",
-    archiving_title_message: "Archiver le message",
     delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
     delete_title_patient: "Supprimer le patient",
     newArchivedMessage: "message non lu",
