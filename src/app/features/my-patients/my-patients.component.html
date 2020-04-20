@@ -20,6 +20,7 @@
   [isCheckbox]="false"
   [list]="filtredPatients"
   [imageSource]="imageSource"
+  [isInvitationPending]="isInvitation"
   [isMyPatients]="isMyPatients"
   (markAsSeenAction)="writeAction($event)"
   (writeAction)="writeAction($event)"
@@ -27,4 +28,6 @@
   (editAction)="editAction($event)"
   (deleteAction)="deleteAction($event)"
   (authorizedAction)="authorizeAction($event)"
+  (acceptedAction)="acceptedAction($event)"
+  (refuseAction)="refuseAction($event)"
 ></lib-hlsMessagingList>

@@ -16,6 +16,20 @@ export class MyPatientsService {
     );
   }
 
+  getPatientsProhibitedOfCurrentParactician(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/prohibited"
+    );
+  }
+
+  getPatientsPendingOfCurrentParactician(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/pending"
+    );
+  }
+
   addPatientToMyPatients(patientId: number): Observable<Boolean> {
     return this.globalService.call(RequestType.POST,
       this.globalService.url.favorite + "addPatient/" + patientId);

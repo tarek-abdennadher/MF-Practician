@@ -8,6 +8,8 @@ import {
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import { ContactsService } from "@app/features/services/contacts.service";
+import { DialogService } from "@app/features/services/dialog.service";
+import { emailValidator } from "@app/core/Validators/email.validator";
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -32,7 +34,8 @@ export class MySecretariesComponent implements OnInit {
   constructor(
     public router: Router,
     public accountService: AccountService,
-    private contactsService: ContactsService
+    private contactsService: ContactsService,
+    private dialogService: DialogService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -50,7 +53,7 @@ export class MySecretariesComponent implements OnInit {
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, Validators.email],
+        validators: [Validators.required, emailValidator],
       }),
       civility: new FormControl(null, Validators.required),
       phone: new FormControl(null, {
@@ -173,16 +176,23 @@ export class MySecretariesComponent implements OnInit {
   }
   selectItem(event) {}
   deleteActionClicked() {}
-  archieveClicked(item) {
+
+  deleteSecretary(item) {
     this.selectedSecretary = item;
-    $("#exampleModal").appendTo("body").modal("toggle");
-  }
-  deleteSecretary() {
-    this.accountService
-      .detachSecretaryFronAccount(this.selectedSecretary.id)
-      .subscribe((resp) => {
-        $("#exampleModal").modal("toggle");
-        this.getMySecretaries();
+    this.dialogService
+      .openConfirmDialog(
+        this.labels.delete_sec_title,
+        this.labels.delete_sec_confirm
+      )
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          this.accountService
+            .detachSecretaryFronAccount(this.selectedSecretary.id)
+            .subscribe((resp) => {
+              this.getMySecretaries();
+            });
+        }
       });
   }
 }

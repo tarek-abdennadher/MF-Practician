@@ -64,8 +64,9 @@ body {
 input[type="text"],
 input[type="password"],
 input[type="date"],
+select,
 textarea {
-  font-family: initial !important;
+  font-family: "Segoe UI" !important;
 }
 a {
   text-decoration: unset;
@@ -76,6 +77,7 @@ a {
 }
 
 /* for dialog pop-up */
+
 .btn-dialog-close {
   width: 45px;
   min-width: 0px !important;
@@ -86,55 +88,82 @@ a {
 /* mat-confirm-dialog (customised dialog) */
 .confirm-dialog-container .mat-dialog-container {
   box-shadow: 0px 2px 0px #0000000d;
-  border-radius: 5px;
+  border-radius: 23px;
   opacity: 1;
   padding: 0px;
 }
-
+.close {
+  color: #bcbcbc !important;
+}
 .confirm-dialog-container .content-container {
-  margin: 5px 5px 15px 5px;
-  color: #8f9cb5;
+  margin: 20px 5px 15px 5px;
+  color: #bcbcbc;
   display: flex;
+  text-align: center;
 }
 .confirm-dialog-container #close-icon {
-  margin-left: auto;
-  order: 2;
-  font-weight: bolder;
+  text-align: left;
+  font-size: 20px;
+  background: #f1f1f1 0% 0% no-repeat padding-box;
+  opacity: 1;
+  border-radius: 30px;
+  padding-top: 3px;
+  padding-left: 2px;
+  margin-right: 12px;
 }
 .confirm-dialog-container #close-icon:hover {
   cursor: pointer;
 }
 
 .confirm-dialog-container #no-button {
-  height: 50px;
-  width: 50%;
-  background-color: #c74020;
-  color: white;
-  border-radius: 5px;
+  width: 214px;
+  height: 42px;
+  background: #ff0063 0% 0% no-repeat padding-box;
+  border-radius: 23px;
+  opacity: 1;
+  text-align: center;
+  font-size: 11px;
+  font-weight: Gotham;
+  letter-spacing: 0px;
+  color: #ffffff;
   opacity: 1;
 }
 
 .confirm-dialog-container #yes-button {
-  height: 50px;
-  width: 50%;
-  background-color: #41bddf;
-  color: white;
-  border-radius: 5px;
+  width: 214px;
+  height: 42px;
+  background: #bcbcbc 0% 0% no-repeat padding-box;
+  border-radius: 23px;
+  opacity: 1;
+  text-align: center;
+  font-size: 11px;
+  font-weight: Gotham;
+  letter-spacing: 0px;
+  color: #ffffff;
   opacity: 1;
 }
 
-.confirm-dialog-container span.content-span {
-  padding: 35px 16px;
+.confirm-dialog-container p.content-p {
   text-align: center;
-  font-size: 20px;
-  letter-spacing: -0.35px;
+  font-size: 16px;
+  font-weight: Bold;
+  letter-spacing: 0px;
   color: #6e819b;
   opacity: 1;
 }
-#close-icon {
-  text-align: left;
-  font-weight: Regular 17px/20px;
-  letter-spacing: -0.75px;
+
+.confirm-dialog-container span.title-span {
+  font-size: 17px;
+  font-weight: Bold;
+  letter-spacing: 0px;
   color: #6e819b;
   opacity: 1;
+  text-transform: uppercase;
+}
+.group-element {
+  text-align: center;
+  padding-top: 14px;
+}
+.btn-space {
+  margin-right: 15px;
 }

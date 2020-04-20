@@ -17,7 +17,7 @@ export class PracticianSearchComponent implements OnInit {
   page = "SEARCH";
   number = 0;
   topText = "Résultats de recherche";
-  bottomText = "résultats";
+  bottomText = "résultat";
   backButton = false;
   text: string;
   city: string;
@@ -50,6 +50,7 @@ export class PracticianSearchComponent implements OnInit {
         }
         this.itemsList = [];
         this.number = list.length;
+        this.bottomText = this.number > 1 ? "résultats" : "résultat";
         list.forEach((message) => {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
@@ -66,6 +67,7 @@ export class PracticianSearchComponent implements OnInit {
           }
           this.itemsList = [];
           this.number = list.length;
+          this.bottomText = this.number > 1 ? "résultats" : "résultat";
           list.forEach((message) => {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
@@ -82,6 +84,7 @@ export class PracticianSearchComponent implements OnInit {
           }
           this.itemsList = [];
           this.number = list.length;
+          this.bottomText = this.number > 1 ? "résultats" : "résultat";
           list.forEach((message) => {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
@@ -133,5 +136,8 @@ export class PracticianSearchComponent implements OnInit {
   }
   return() {
     this.router.navigate(["/messagerie"]);
+  }
+  sendInvitation() {
+    this.router.navigate(["/praticien-invitation"]);
   }
 }
