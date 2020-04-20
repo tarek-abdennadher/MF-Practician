@@ -93,6 +93,8 @@ export class GlobalService {
     archiving_title_message: "Archiver le message",
     delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
     delete_title_patient: "Supprimer le patient",
+    newArchivedMessage: "message non lu",
+    newArchivedMessages: "messages non lus",
   };
   public call(
     method: RequestType,
