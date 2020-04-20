@@ -1,0 +1,272 @@
+<lib-hlsLinks
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="BackButton()"
+></lib-hlsLinks>
+<div class="container" id="messaging-detail">
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row form-inline m-b-30">
+                <span class="span1">
+                  {{ texts.pourquoi }}
+                </span>
+                <span class="span2"> &nbsp;{{ texts.helssy }} </span>
+                <span class="span1"> &nbsp;?</span>
+              </div>
+              <div class="row form-inline m-b-20">
+                <div class="col-4">
+                  <img [src]="imageSource" />
+                </div>
+                <div class="col-8">
+                  <p>
+                    Pellentesque habitant morbi tristique senectus et netus et
+                    malesuada fames ac turpis egestas. Vestibulum tortor quam,
+                    feugiat vitae, ultricies eget, tempor sit amet, ante. Donec
+                    eu libero sit amet quam egestas semper. Aenean ultricies mi
+                    vitae est. Mauris placerat eleifend leo. Quisque sit amet
+                    est et sapien ullamcorper pharetra. Vestibulum erat wisi, eu
+                    vulputate magna eros eleifend leo eu erat. Aliquam erat
+                    volutpat. Nam dui mi, tincidunt quis placerat eleifend leo,
+                    accumsan porttitor, facilisis luctus, metus
+                  </p>
+                </div>
+              </div>
+              <div class="row m-b-10">
+                <span>
+                  <i class="fas fa-plus"></i>Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit.</span
+                >
+              </div>
+              <div class="row m-b-10">
+                <span>
+                  <i class="fas fa-plus"></i>Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit.</span
+                >
+              </div>
+              <div class="row m-b-10">
+                <span>
+                  <i class="fas fa-plus"></i>Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit.</span
+                >
+              </div>
+              <div class="row">
+                <span>
+                  <i class="fas fa-plus"></i>Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit.</span
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row form-inline">
+                <label for="title" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                  <select
+                    formControlName="title"
+                    class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }"
+                    id="title"
+                  >
+                    <option value="null" disabled="true">{{
+                      texts.title
+                    }}</option>
+                    <option value="Dr">Dr</option>
+                    <option value="Pr">Pr</option>
+                  </select>
+                  <div
+                    *ngIf="submitted && ctr.title.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.title.errors.required">
+                      {{ texts.required }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="speciality" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                  <select
+                    formControlName="speciality"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.speciality.errors
+                    }"
+                    id="speciality"
+                  >
+                    <option value="null" disabled="true">{{
+                      texts.speciality
+                    }}</option>
+                    <option *ngFor="let s of specialities" [value]="s.id">{{
+                      s.name
+                    }}</option>
+                  </select>
+                  <div
+                    *ngIf="submitted && ctr.speciality.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.speciality.errors.required">
+                      {{ texts.required }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="last_name" class="col-sm-3 col-form-label"
+                  >{{ texts.last_name }}
+                  <span style="color: #ff0063;"> *</span></label
+                >
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    formControlName="last_name"
+                    class="form-control"
+                    id="last_name"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.last_name.errors
+                    }"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.last_name.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.last_name.errors.required">
+                      {{ texts.required }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="first_name" class="col-sm-3 col-form-label"
+                  >{{ texts.first_name }}
+                  <span style="color: #ff0063;"> *</span></label
+                >
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    formControlName="first_name"
+                    class="form-control"
+                    id="first_name"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.first_name.errors
+                    }"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.first_name.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.first_name.errors.required">
+                      {{ texts.required }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="email" class="col-sm-3 col-form-label"
+                  >{{ texts.email }}
+                  <span style="color: #ff0063;"> *</span></label
+                >
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    formControlName="email"
+                    class="form-control"
+                    id="email"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.email.errors
+                    }"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.email.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.email.errors.required">
+                      {{ texts.required }}
+                    </div>
+                    <div *ngIf="ctr.email.errors.email">
+                      {{ texts.email_invalid_format }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="phone" class="col-sm-3 col-form-label">{{
+                  texts.phone
+                }}</label>
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    formControlName="phone"
+                    class="form-control"
+                    id="phone"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.phone.errors
+                    }"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.phone.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.phone.errors.pattern">
+                      {{ texts.phone_invalid }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="address" class="col-sm-3 col-form-label">{{
+                  texts.address
+                }}</label>
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    formControlName="address"
+                    class="form-control"
+                    id="address"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 form-inline buttons">
+            <div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                id="postal-send-button"
+              >
+                <i class="far fa-paper-plane"></i> {{ texts.send_postal }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="submit"
+                (click)="submit()"
+                class="btn btn-primary"
+                id="email-send-button"
+              >
+                <i class="far fa-paper-plane"></i> {{ texts.send_email }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-times" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
+</ng-template>

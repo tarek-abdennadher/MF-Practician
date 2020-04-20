@@ -15,6 +15,7 @@ import { Subject } from "rxjs";
 import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
 import { HttpResponse } from "@angular/common/http";
 import { FeaturesService } from "@app/features/features.service";
+import { emailValidator } from "@app/core/Validators/email.validator";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -82,7 +83,7 @@ export class PersonalInformationsComponent implements OnInit {
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, Validators.email],
+          validators: [Validators.required, emailValidator],
         }),
         title: new FormControl(null, Validators.required),
         speciality: new FormControl(null, Validators.required),
@@ -101,7 +102,7 @@ export class PersonalInformationsComponent implements OnInit {
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, Validators.email],
+          validators: [Validators.required, emailValidator],
         }),
         phone: new FormControl(null, {
           validators: [Validators.required, Validators.pattern("[0-9]*")],

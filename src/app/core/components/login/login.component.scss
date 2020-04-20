@@ -79,10 +79,10 @@ $color-helssy-white: #FFFFFF;
     margin-top: 50px;
   }
   .links {
-    margin-top: 5%;
+    margin-top: 25%;
   }
 }
-@media (min-width: 499px) and (max-width: 699px) {
+@media (min-width: 400px) and (max-width: 699px) {
   .hls-connexion {
     margin-left: 0px;
     margin-top: 50px;
@@ -90,7 +90,7 @@ $color-helssy-white: #FFFFFF;
   .links {
     margin-left: 15%;
     margin-right: 15%;
-    margin-top: 5%;
+    margin-top: 20%;
   }
 }
 @media (min-width: 700px) and (orientation: portrait) {
@@ -191,7 +191,7 @@ $color-helssy-white: #FFFFFF;
   .links {
     margin-left: 10%;
     margin-right: 10%;
-    margin-top: 10%;
+    margin-top: 25%;
   }
 }
 @media (min-width: 1250px) and (orientation: landscape) {
@@ -216,7 +216,7 @@ $color-helssy-white: #FFFFFF;
   .links {
     margin-left: 0%;
     margin-right: 10%;
-    margin-top: 5%;
+    margin-top: 25%;
   }
 }
 

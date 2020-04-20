@@ -13,6 +13,7 @@ import { PracticianSearchComponent } from "./practician-search/practician-search
 import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
+import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 
 const routes: Routes = [
   {
@@ -87,6 +88,10 @@ const routes: Routes = [
       {
         path: "secretaire-detail/:id",
         component: SecretaryDetailComponent,
+      },
+      {
+        path: "praticien-invitation",
+        component: PracticianInvitationComponent,
       },
     ],
   },

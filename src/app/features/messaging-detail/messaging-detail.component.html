@@ -4,7 +4,7 @@
 <lib-hlsMessagingDetail [imageSource]="imageSource" [messagingDetail]="messagingDetail" [isFromInbox]="isFromInbox"
   [role]="role" [hideTo]="hideTo" [hidefrom]="hidefrom" [senderRolePatient]="senderRolePatient"
   [showAcceptRefuse]="showAcceptRefuse" [hideButtons]="prohibited" (replyAction)="replyAction()"
-  (acceptAction)="acceptAction()" (refuseAction)="refuseAction()" (downloadAction)="download($event)">
+  (acceptAction)="acceptAction()" (refuseAction)="refuseAction()" (downloadAction)="download($event)"[attachements]="attachements">
   ></lib-hlsMessagingDetail>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">

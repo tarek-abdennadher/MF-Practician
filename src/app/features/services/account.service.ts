@@ -52,6 +52,7 @@ export class AccountService {
     delete_account_confirm: "Êtes-vous sûr de vouloir supprimer votre compte ?",
     delete: "Supprimer",
     phone_error: "      Veuillez vérifier les téléphones saisis",
+    title_delete_account: "supprimer un compte",
   };
   public errors = {
     required: "Champs obligatoire",
