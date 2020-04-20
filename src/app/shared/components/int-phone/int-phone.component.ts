@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 
@@ -9,14 +9,22 @@ import { Subject } from 'rxjs';
 })
 export class IntPhoneComponent implements OnInit {
   public phoneForm: FormGroup;
+  public errorMessage = "Le numéro de téléphone saisi est invalide";
+  /* List of phone numbers to display */
   @Output("phones") phones = new EventEmitter();
+  /* Boolean to check if the inserted numbers are valid or not to block actions of submit*/
   @Output("validPhones") validPhones = new EventEmitter<boolean>();
+  /* List of exisiting phone numbers (patching the value)*/
   @Input("editList") phonesToEdit = new Subject<[]>();
+
   public submitted = false;
+
   constructor(private formBuilder: FormBuilder) { }
+
   get phoneList() {
     return <FormArray>this.phoneForm.get("phoneList");
   }
+  /* Method to add a new phone number field */
   newPhone(): FormGroup {
     this.validPhones.emit(false)
     return this.formBuilder.group({
@@ -24,7 +32,7 @@ export class IntPhoneComponent implements OnInit {
       note: ''
     });
   }
-
+  /* Method to update an exisiting phone number field */
   updatePhone(p): FormGroup {
     return this.formBuilder.group({
       id: [p.id ? p.id : null],
@@ -32,18 +40,21 @@ export class IntPhoneComponent implements OnInit {
       note: [p.note ? p.note : ""]
     });
   }
+
   ngOnInit(): void {
     this.validPhones.emit(true)
     this.phoneForm = this.formBuilder.group({
       phoneList: this.formBuilder.array([])
     });
     this.updateCSS();
+    /* Patch list if contains elements */
     this.phonesToEdit.subscribe(list => {
       if (list) {
         this.updateCSS();
         list.forEach(p =>
           this.phoneList.push(this.updatePhone(p)));
       }
+      /* Initialize list when there is no exisiting elements */
       else {
         this.phoneForm = this.formBuilder.group({
           phoneList: this.formBuilder.array([this.newPhone()])
@@ -52,6 +63,8 @@ export class IntPhoneComponent implements OnInit {
     });
     this.onChanges();
   }
+
+  /* Method to add a new phone and a note while respecting the constraints */
   addPhone(): void {
     this.submitted = true;
     if (this.phoneForm.invalid) {
@@ -64,6 +77,7 @@ export class IntPhoneComponent implements OnInit {
     this.updateCSS();
     this.phoneList.push(this.newPhone());
   }
+  /* Method to remove an exisiting phone number */
   removePhone(index) {
     if (this.phoneList.length == 1) {
       this.updateCSS();
@@ -86,7 +100,7 @@ export class IntPhoneComponent implements OnInit {
       this.phones.emit(this.phoneList)
     });
   }
-
+  /* Method to override CSS of the phone component */
   updateCSS() {
     $(document).ready(function () {
       $('.form-control').each(function () {
@@ -101,7 +115,8 @@ export class IntPhoneComponent implements OnInit {
       });
     })
   }
-  onSearchChange(searchValue: string): void {
+  /* Method to emit changes constantly to main component */
+  onValueChange(): void {
     if (this.phoneForm.invalid) {
       this.validPhones.emit(false)
     }
