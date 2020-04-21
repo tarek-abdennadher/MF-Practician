@@ -51,9 +51,9 @@ export class MessagingListService {
 
   removeInvitationNotificationObs(notification) {
     if (this.featuresService.listNotifications.findIndex(notif => notif.id == notification.id) !=-1) {
-      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(notif => {
+      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(notif =>
         notif.id != notification.id
-      })
+      )
       this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()-1)
     }
   }
