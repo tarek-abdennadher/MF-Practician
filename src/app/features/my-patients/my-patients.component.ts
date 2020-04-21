@@ -67,9 +67,7 @@ export class MyPatientsComponent implements OnInit {
   markNotificationsAsSeen() {
     this.featureService.markReceivedNotifAsSeen().subscribe((resp) => {
       this.featureService.listNotifications = this.featureService.listNotifications.filter(
-        (notif) => {
-          notif.messageId != null;
-        }
+        (notif) => notif.messageId != null
       );
     });
   }
