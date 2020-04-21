@@ -18,6 +18,7 @@ import { DialogService } from "../services/dialog.service";
 })
 export class MessagingDetailComponent implements OnInit {
   private _destroyed$ = new Subject();
+  previousURL = "";
   role: string = "MEDICAL";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox: boolean;
@@ -71,6 +72,7 @@ export class MessagingDetailComponent implements OnInit {
             this.hidefrom = true;
             this.isFromArchive = false;
             this.sentContext = true;
+            this.previousURL = "/messagerie-envoyes"
             break;
           }
           case "inbox": {
@@ -79,6 +81,7 @@ export class MessagingDetailComponent implements OnInit {
             this.showAcceptRefuse = this.userRole == "PRACTICIAN";
             this.hideTo = true;
             this.isFromArchive = false;
+            this.previousURL = "/messagerie";
             break;
           }
           case "inboxPraticien": {
@@ -311,10 +314,10 @@ export class MessagingDetailComponent implements OnInit {
       this.featureService.numberOfArchieve + 1;
     this.messagingDetailService.markMessageAsArchived(ids).subscribe(
       (resp) => {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_success,
-          type: "info",
-          template: this.customNotificationTmpl,
+        this.router.navigate([this.previousURL], {
+          queryParams: {
+            status: "archiveSuccess",
+          },
         });
       },
       (error) => {
