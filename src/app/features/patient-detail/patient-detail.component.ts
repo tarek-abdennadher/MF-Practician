@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { Location } from "@angular/common";
-import { PracticianDetailService } from "../practician-detail/practician-detail.service";
 import { MyPatientsService } from "../services/my-patients.service";
+import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
 
 @Component({
   selector: "app-patient-detail",
@@ -26,7 +26,8 @@ export class PatientDetailComponent implements OnInit {
     private router: Router,
     private myPatientService: MyPatientsService,
     private localSt: LocalStorageService,
-    private _location: Location
+    private _location: Location,
+    private enumCorespondencePipe: EnumCorrespondencePipe
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +41,14 @@ export class PatientDetailComponent implements OnInit {
       .subscribe((response) => {
         this.bottomText = response.fullName;
         this.patient = response;
+        if (this.patient.linkedPatients.length != 0) {
+          this.patient.linkedPatients.forEach((patient) => {
+            patient.correspondence = this.enumCorespondencePipe.transform(
+              patient.correspondence
+            );
+            console.log(patient.correspondence);
+          });
+        }
       });
   }
 

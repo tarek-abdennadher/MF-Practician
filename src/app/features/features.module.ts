@@ -30,7 +30,8 @@ import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dial
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
-import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
+import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -87,6 +88,7 @@ const notifierOptions: NotifierOptions = {
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
     PatientDetailComponent,
+    EnumCorrespondencePipe,
   ],
   imports: [
     FormsModule,
