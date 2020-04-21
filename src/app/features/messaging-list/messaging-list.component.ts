@@ -108,6 +108,10 @@ export class MessagingListComponent implements OnInit {
               .send_message_success;
             break;
           }
+          case "archiveSuccess": {
+            notifMessage = this.globalService.toastrMessages.archived_message_success
+            break;
+          }
         }
         this.notifier.show({
           message: notifMessage,

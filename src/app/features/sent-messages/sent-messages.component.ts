@@ -1,11 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 import { MessageService } from "../services/message.service";
 import { takeUntil } from "rxjs/operators";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { NotifierService } from 'angular-notifier';
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: "app-sent-messages",
@@ -13,6 +15,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
   styleUrls: ["./sent-messages.component.scss"],
 })
 export class SentMessagesComponent implements OnInit {
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   imageSource = "assets/imgs/user.png";
   links = {
@@ -28,14 +31,29 @@ export class SentMessagesComponent implements OnInit {
   itemsList = [];
   selectedObjects: Array<any>;
   filtredItemList: Array<any> = new Array();
+  private readonly notifier: NotifierService;
   constructor(
+    notifierService: NotifierService,
+    private route: ActivatedRoute,
+    private globalService: GlobalService,
     public router: Router,
     private messageService: MessageService,
     private featureService: FeaturesService,
     private documentService: MyDocumentsService
-  ) {}
+  ) {
+    this.notifier = notifierService;
+  }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params["status"] == "archiveSuccess") {
+        this.notifier.show({
+          message: this.globalService.toastrMessages.archived_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+      }
+    });
     this.sentMessage();
   }
 
