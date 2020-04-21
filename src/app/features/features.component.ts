@@ -229,9 +229,8 @@ export class FeaturesComponent implements OnInit {
   closeNotification() {
     console.log("notifications not seen");
     this.featuresService.markReceivedNotifAsSeen().subscribe(resp => {
-      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(notif => {
-        notif.messageId != null;
-      })
+      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(notif =>
+        notif.messageId != null)
     })
   }
 
