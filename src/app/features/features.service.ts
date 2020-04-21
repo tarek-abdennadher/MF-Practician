@@ -82,6 +82,12 @@ export class FeaturesService {
       this.globalService.BASE_URL_MA + "/notifications/" + senderId + "/INVITATION/markAsSeen"
     );
   }
+  markReceivedNotifAsSeen() {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.BASE_URL_MA + "/notifications/markAsSeenByType/INVITATION"
+    );
+  }
 
   getUserId(): number {
     const token = this.localSt.retrieve("token");
