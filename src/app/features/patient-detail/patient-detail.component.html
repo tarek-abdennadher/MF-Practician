@@ -1,0 +1,16 @@
+<lib-hlsLinks
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="BackButton()"
+></lib-hlsLinks>
+<lib-hls-practician-detail
+  [practician]="patient"
+  [imageSource]="imageSource"
+  [isFavorite]="isPatient"
+  [isPatient]="isPatient"
+  (sendMessageAction)="sendMessageClicked($event)"
+></lib-hls-practician-detail>

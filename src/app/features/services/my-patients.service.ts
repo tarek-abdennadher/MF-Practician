@@ -4,7 +4,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MyPatientsService {
   constructor(private globalService: GlobalService) {}
@@ -31,32 +31,51 @@ export class MyPatientsService {
   }
 
   addPatientToMyPatients(patientId: number): Observable<Boolean> {
-    return this.globalService.call(RequestType.POST,
-      this.globalService.url.favorite + "addPatient/" + patientId);
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.favorite + "addPatient/" + patientId
+    );
   }
 
   deletePatientFromMyPatients(patientId: number): Observable<Boolean> {
-    return this.globalService.call(RequestType.DELETE,
-      this.globalService.url.favorite + "deletePatient/" + patientId);
+    return this.globalService.call(
+      RequestType.DELETE,
+      this.globalService.url.favorite + "deletePatient/" + patientId
+    );
   }
 
   prohibitePatient(patientId: number): Observable<Boolean> {
-    return this.globalService.call(RequestType.PUT,
-      this.globalService.url.favorite + "prohibite/" + patientId);
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.favorite + "prohibite/" + patientId
+    );
   }
 
   authorizePatient(patientId: number): Observable<Boolean> {
-    return this.globalService.call(RequestType.PUT,
-      this.globalService.url.favorite + "authorize/" + patientId);
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.favorite + "authorize/" + patientId
+    );
   }
 
   acceptPatientInvitation(patientId: number): Observable<Boolean> {
-    return this.globalService.call(RequestType.PUT,
-      this.globalService.url.favorite + "acceptPatient/" + patientId);
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.favorite + "acceptPatient/" + patientId
+    );
   }
 
   declinePatientInvitation(patientId: number): Observable<Boolean> {
-    return this.globalService.call(RequestType.PUT,
-      this.globalService.url.favorite + "declinePatient/" + patientId);
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.favorite + "declinePatient/" + patientId
+    );
+  }
+
+  getPatientWithPeopleAttached(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patient + id + "/withLinkedPatients"
+    );
   }
 }
