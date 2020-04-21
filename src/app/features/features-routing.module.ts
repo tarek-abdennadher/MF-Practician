@@ -14,6 +14,7 @@ import { PracticianDetailComponent } from "./practician-detail/practician-detail
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
+import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 
 const routes: Routes = [
   {
@@ -64,6 +65,10 @@ const routes: Routes = [
       {
         path: "praticien-detail/:id",
         component: PracticianDetailComponent,
+      },
+      {
+        path: "patient-detail/:id",
+        component: PatientDetailComponent,
       },
       {
         path: "messagerie-archives",
