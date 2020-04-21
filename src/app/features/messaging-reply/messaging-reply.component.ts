@@ -12,6 +12,7 @@ import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
 import { LocalStorageService } from "ngx-webstorage";
+import { MyDocumentsService } from '../my-documents/my-documents.service';
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
@@ -26,11 +27,7 @@ export class MessagingReplyComponent implements OnInit {
   senderRolePatient = true;
   messagingDetail: any;
   idMessage: number;
-  links = {
-    isSeen: true,
-    isArchieve: true,
-    isImportant: true,
-  };
+
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.MailDetail;
@@ -54,7 +51,8 @@ export class MessagingReplyComponent implements OnInit {
     private globalService: GlobalService,
     notifierService: NotifierService,
     private refuseTypeService: RefuseTypeService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private documentService: MyDocumentsService
   ) {
     this.notifier = notifierService;
   }
@@ -87,6 +85,58 @@ export class MessagingReplyComponent implements OnInit {
         }
         message.body = "";
         this.messagingDetail = message;
+        this.messagingDetail.toReceivers.forEach((receiver) => {
+          if (receiver.photoId) {
+            this.documentService
+              .downloadFile(receiver.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  receiver.img = "assets/imgs/user.png";
+                }
+              );
+          }
+        });
+        this.messagingDetail.ccReceivers.forEach((receiver) => {
+          if (receiver.photoId) {
+            this.documentService
+              .downloadFile(receiver.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  receiver.img = "assets/imgs/user.png";
+                }
+              );
+          }
+        });
+        if (this.messagingDetail.sender.photoId) {
+          this.documentService
+            .downloadFile(this.messagingDetail.sender.photoId)
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.messagingDetail.sender.img = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                this.messagingDetail.sender.img = "assets/imgs/user.png";
+              }
+            );
+        }
       });
   }
 
