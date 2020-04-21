@@ -1,35 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginService } from '@app/core/services/login.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LocalStorageService } from 'ngx-webstorage';
-import { GlobalService } from '@app/core/services/global.service';
+import { Component, OnInit } from "@angular/core";
+import { LoginService } from "@app/core/services/login.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { LocalStorageService } from "ngx-webstorage";
+import { GlobalService } from "@app/core/services/global.service";
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+  selector: "app-reset-password",
+  templateUrl: "./reset-password.component.html",
+  styleUrls: ["./reset-password.component.scss"]
 })
 export class ResetPasswordComponent implements OnInit {
-  public errorMessage = '';
-  email = '';
-  public successMessage = '';
+  public errorMessage = "";
+  email = "";
+  public successMessage = "";
   messages: any;
   url: any;
-  constructor(public loginService: LoginService,
+  constructor(
+    public loginService: LoginService,
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
     public router: Router,
-    public globalService: GlobalService) {
+    public globalService: GlobalService
+  ) {
     this.messages = loginService.messages;
     this.url = globalService.url;
   }
 
   ngOnInit(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage = "";
+    this.successMessage = "";
   }
   submit(model) {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage = "";
+    this.successMessage = "";
     this.loginService.resetPassword(model.email).subscribe(res => {
       if (res) {
         this.successMessage = this.loginService.messages.reset_password_success;
@@ -39,8 +41,11 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
   signupAction() {
-    this.errorMessage = '';
-    this.successMessage = '';
-    this.router.navigate(['/demonstration']);
+    this.errorMessage = "";
+    this.successMessage = "";
+    this.router.navigate(["/demonstration"]);
+  }
+  logoAction() {
+    this.router.navigate(["/connexion"]);
   }
 }
