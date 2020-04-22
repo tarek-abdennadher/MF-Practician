@@ -4,6 +4,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable, Subject, BehaviorSubject } from "rxjs";
 import { FeaturesService } from "../features.service";
 import * as _ from "lodash";
+import { MyDocumentsService } from '../my-documents/my-documents.service';
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +14,8 @@ export class MessagingListService {
 
   constructor(
     private globalService: GlobalService,
-    private featuresService: FeaturesService
+    private featuresService: FeaturesService,
+    private documentService: MyDocumentsService
   ) {}
 
   getNotificationObs(): Observable<any> {
@@ -23,14 +25,46 @@ export class MessagingListService {
   setNotificationObs(notification) {
     if (!_.isEqual(notification, this.notificationObs.getValue())) {
       this.notificationObs.next(notification);
-      this.featuresService.listNotifications.unshift({
-        id: notification.id,
-        sender: notification.senderFullName,
-        senderId: notification.senderId,
-        picture: "assets/imgs/user.png",
-        messageId: notification.messageId,
-        type: notification.type,
-      });
+
+      if (notification.message.sender.photoId) {
+        this.documentService
+          .downloadFile(notification.message.sender.photoId)
+          .subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: myReader.result,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+              sender: notification.senderFullName,
+              senderId: notification.senderId,
+              picture: "assets/imgs/user.png",
+              messageId: notification.messageId,
+              type: notification.type,
+              });
+            }
+          );}else {
+            this.featuresService.listNotifications.unshift({
+              id: notification.id,
+              sender: notification.senderFullName,
+              senderId: notification.senderId,
+              picture: "assets/imgs/user.png",
+              messageId: notification.messageId,
+              type: notification.type,
+            });
+          }
+
       this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox + 1);
     }
   }
@@ -38,15 +72,44 @@ export class MessagingListService {
   setInvitationNotificationObs(notification) {
     if (!_.isEqual(notification, this.notificationObs.getValue())) {
       this.notificationObs.next(notification);
-      this.featuresService.listNotifications.unshift({
-        id: notification.id,
-        sender: notification.senderFullName,
-        senderId: notification.senderId,
-        picture: "assets/imgs/user.png",
-        type: notification.type,
-      });
+      this.documentService
+          .downloadFile(notification.message.sender.photoId)
+          .subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: myReader.result,
+                  type: notification.type,
+                });
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/user.png",
+                type: notification.type,
+              });
+            }
+          );}
+          else {
+            this.featuresService.listNotifications.unshift({
+              id: notification.id,
+              sender: notification.senderFullName,
+              senderId: notification.senderId,
+              picture: "assets/imgs/user.png",
+              type: notification.type,
+            });
+          }
+
       this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
-    }
+
   }
 
   removeInvitationNotificationObs(notification) {
