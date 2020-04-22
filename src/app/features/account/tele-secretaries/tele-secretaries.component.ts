@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '@app/features/services/account.service';
 
 @Component({
   selector: 'app-tele-secretaries',
@@ -6,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tele-secretaries.component.scss']
 })
 export class TeleSecretariesComponent implements OnInit {
+  public messages: any;
+  constructor(public accountService: AccountService) {
 
-  constructor() { }
+    this.messages = this.accountService.messages;
+  }
 
   ngOnInit(): void {
   }

@@ -15,6 +15,7 @@ import { HlsPasswordStrengthModule } from 'hls-password-strength';
 import { HlsMessagingListModule } from 'hls-messaging-list';
 import { IntPhoneComponent } from '@app/shared/components/int-phone/int-phone.component';
 import { SharedModule } from '@app/shared/shared.module';
+import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
 @NgModule({
   declarations: [
     MyAccountComponent,
@@ -32,7 +33,8 @@ import { SharedModule } from '@app/shared/shared.module';
     HlsLinksModule,
     HlsMessagingListModule,
     HlsPasswordStrengthModule,
-    SharedModule
+    SharedModule,
+    InternationalPhoneNumberModule
   ],
   providers: [
     AccountService
