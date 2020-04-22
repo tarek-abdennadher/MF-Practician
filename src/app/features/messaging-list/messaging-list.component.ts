@@ -224,7 +224,7 @@ export class MessagingListComponent implements OnInit {
         : this.itemsList.filter(
             (item) =>
               item.users[0].type.toLowerCase() ==
-              (event == "doctor" ? "medical" : event)
+              (event == "doctor" ? "medical" : event == "secretary" ? "telesecretarygroup" || "secretary" : event)
           );
   }
 
@@ -387,7 +387,31 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ.getNotificationObs().subscribe((notif) => {
       if (notif != "") {
         if (this.isMyInbox) {
-          this.itemsList.unshift(this.parseMessage(notif.message));
+          let message=this.parseMessage(notif.message);
+          console.log(notif)
+          if (notif.message.sender.photoId) {
+            this.documentService
+              .downloadFile(notif.message.sender.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    message.users.forEach((user) => {
+                      user.img = myReader.result;
+                    });
+                    this.itemsList.unshift(message);
+
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  notif.users.forEach((user) => {
+                    user.img = "assets/imgs/user.png";
+                  });
+                  this.itemsList.unshift(message);
+                }
+              );
+          }
           this.number++;
           this.bottomText =
             this.number > 1

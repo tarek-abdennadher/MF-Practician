@@ -122,7 +122,7 @@ export class FeaturesComponent implements OnInit {
               photosMap.set(Array.from(photoIds)[i], myReader.result);
               if(photosMap.size == photoIds.size){
                 notificationsFormated.forEach((notif) => {
-                  if(photosMap.has(notif.photoId)){
+                  if(notif.photoId && photosMap.has(notif.photoId)){
                     notif.picture = photosMap.get(notif.photoId);
                   }
                 });

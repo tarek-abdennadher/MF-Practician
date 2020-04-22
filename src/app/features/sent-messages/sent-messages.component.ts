@@ -147,8 +147,6 @@ export class SentMessagesComponent implements OnInit {
       .filter((e) => e.isChecked == true)
       .map((e) => e.id);
     if (messagesId.length > 0) {
-      this.featureService.numberOfArchieve =
-        this.featureService.numberOfArchieve + messagesId.length;
       this.messageService.markMessageAsArchived(messagesId).subscribe(
         (resp) => {
           this.itemsList = this.itemsList.filter(function (elm, ind) {
@@ -177,7 +175,6 @@ export class SentMessagesComponent implements OnInit {
         this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
-        this.featureService.numberOfArchieve++;
       },
       (error) => {
         console.log("We have to find a way to notify user by this error");
@@ -194,7 +191,7 @@ export class SentMessagesComponent implements OnInit {
         : this.itemsList.filter(
             (item) =>
               item.users[0].type.toLowerCase() ==
-              (event == "doctor" ? "medical" : event)
+              (event == "doctor" ? "medical" : event == "secretary" ? "telesecretarygroup" || "secretary" : event)
           );
   }
   selectItem(event) {
