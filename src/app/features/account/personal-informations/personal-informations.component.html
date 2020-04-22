@@ -114,15 +114,17 @@
                 labels.phone
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="phone" class="form-control" id="phone"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }" />
+                <international-phone-number class="form-control phone" id="phone" formControlName="phone"
+                  placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
+                  [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors}">
+                </international-phone-number>
                 <div *ngIf="submitted && ctr.phone.errors" class="invalid-feedback">
                   <div *ngIf="ctr.phone.errors.required">
                     {{ labels.required }}
                   </div>
-                  <div *ngIf="ctr.phone.errors.pattern">
-                    {{ labels.phone_invalid }}
-                  </div>
+                </div>
+                <div *ngIf=" ctr.phone.invalid && ctr.phone.touched" class="invalid-feedback">
+                  {{ errors.invalid_phone }}
                 </div>
               </div>
             </div>
@@ -201,13 +203,13 @@
               </div>
               <div class="col-md-7 align-self-center">
                 <div class="row">
-                  <label for="file-upload" class="far form-control btn btn-primary btn-xs fit-content text-left">
+                  <label for="file-upload" class="btn btn-primary btn-xs fit-content text-left">
                     <i class="far fa-cog">&nbsp; </i>
                   </label>
                   <input id="file-upload" type="file" (change)="selectFileToUpload($event)" />
                 </div>
                 <div class="row mt-2">
-                  <a class="form-control btn btn-danger fit-content btn-xs text-left" (click)="deletePicture()">
+                  <a class=" btn btn-danger btn-xs fit-content text-left" (click)="deletePicture()">
                     <i class="far fa-trash-alt">&nbsp;</i>
                   </a>
                 </div>
