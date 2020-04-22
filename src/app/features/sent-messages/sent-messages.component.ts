@@ -191,7 +191,7 @@ export class SentMessagesComponent implements OnInit {
         : this.itemsList.filter(
             (item) =>
               item.users[0].type.toLowerCase() ==
-              (event == "doctor" ? "medical" : event)
+              (event == "doctor" ? "medical" : event == "secretary" ? "telesecretarygroup" || "secretary" : event)
           );
   }
   selectItem(event) {
