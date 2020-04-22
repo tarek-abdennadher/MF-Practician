@@ -139,7 +139,7 @@ export class MessagingReplyComponent implements OnInit {
         }
         if (this.messagingDetail.sender.senderForPhotoId) {
           this.documentService
-            .downloadFile(this.messagingDetail.sender.photoId)
+            .downloadFile(this.messagingDetail.sender.senderForPhotoId)
             .subscribe(
               (response) => {
                 let myReader: FileReader = new FileReader();
