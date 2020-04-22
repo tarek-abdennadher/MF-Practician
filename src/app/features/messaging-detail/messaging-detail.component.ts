@@ -173,6 +173,22 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           }
+          if (this.messagingDetail.sender.senderForPhotoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.forImg = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.forImg = "assets/imgs/user.png";
+                }
+              );
+          }
         });
     } else {
       this.messagingDetailService
@@ -236,6 +252,22 @@ export class MessagingDetailComponent implements OnInit {
                 },
                 (error) => {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
+                }
+              );
+          }
+          if (this.messagingDetail.sender.senderForPhotoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.forImg = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.forImg = "assets/imgs/user.png";
                 }
               );
           }

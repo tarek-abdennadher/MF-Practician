@@ -137,6 +137,22 @@ export class MessagingReplyComponent implements OnInit {
               }
             );
         }
+        if (this.messagingDetail.sender.senderForPhotoId) {
+          this.documentService
+            .downloadFile(this.messagingDetail.sender.photoId)
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.messagingDetail.sender.forImg = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                this.messagingDetail.sender.forImg = "assets/imgs/user.png";
+              }
+            );
+        }
       });
   }
 
