@@ -69,6 +69,7 @@ export class PersonalInformationsComponent implements OnInit {
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
+    this.updateCSS();
     this.passwordSubmitted = false;
     this.getAllSpeciality();
     this.initInfoForm();
@@ -89,11 +90,7 @@ export class PersonalInformationsComponent implements OnInit {
         speciality: new FormControl(null, Validators.required),
         address: new FormControl(null, Validators.required),
         additional_address: new FormControl(null),
-        phone: new FormControl(null, {
-          validators: [Validators.required, Validators.pattern("[0-9]*")],
-        }),
-        other_phone: new FormControl(null, Validators.pattern("[0-9]*")),
-        other_phone_note: new FormControl(null),
+        phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
       });
     } else {
@@ -104,13 +101,12 @@ export class PersonalInformationsComponent implements OnInit {
         email: new FormControl(null, {
           validators: [Validators.required, emailValidator],
         }),
-        phone: new FormControl(null, {
-          validators: [Validators.required, Validators.pattern("[0-9]*")],
-        }),
+        phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
         civility: new FormControl(null, Validators.required),
       });
     }
+    this.updateCSS();
   }
   initPasswordForm() {
     this.passwordForm = this.formBuilder.group(
@@ -163,7 +159,7 @@ export class PersonalInformationsComponent implements OnInit {
         this.infoForm.patchValue({
           id: account.practician.id ? account.practician.id : null,
           email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "",
+          phone: account.phoneNumber ? account.phoneNumber : '+33',
           last_name: account.practician.lastName
             ? account.practician.lastName
             : "",
@@ -195,7 +191,7 @@ export class PersonalInformationsComponent implements OnInit {
         this.infoForm.patchValue({
           id: account.secretary.id ? account.secretary.id : null,
           email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "",
+          phone: account.phoneNumber ? account.phoneNumber : "+33",
           last_name: account.secretary.lastName
             ? account.secretary.lastName
             : "",
@@ -234,12 +230,11 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                  (s) => s.id == this.infoForm.value.speciality
-                )
+                (s) => s.id == this.infoForm.value.speciality
+              )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          otherPhoneNumber: this.infoForm.value.other_phone,
           note: this.infoForm.value.other_phone_note,
           photoId: this.account.photoId,
         },
@@ -376,4 +371,18 @@ export class PersonalInformationsComponent implements OnInit {
       $("#alertPasswordFailure").alert();
     }
   };
+
+  updateCSS() {
+    $(document).ready(function () {
+      $(".form-control").each(function () {
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border-color", "#F1F1F1");
+      });
+      $(".dropbtn.btn").each(function () {
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border-color", "#F1F1F1");
+        $(this).css("padding", "8px");
+      });
+    });
+  }
 }

@@ -1,35 +1,29 @@
-<div class="register-container">
-  <div class="card responsive-register">
-    <div class="card-body">
-      <img
-        id="helssy-logo"
-        class="logo"
-        src="assets/imgs/helssy_bleu_long.svg"
-        alt="Helssy"
-      />
-      <div class="hls-connexion">
-        <lib-hls-connexion
-          [errorMessage]="errorMessage"
-          [successMessage]="successMessage"
-          [title]="messages.card_title"
-          (submitAction)="submit($event)"
-          (forgotPasswordAction)="forgotPassword()"
-        ></lib-hls-connexion>
-      </div>
-      <div class="links row">
-        <p class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">
-          {{ messages.new_account }}
-          <a class="pink" (click)="practicianConnexion()">{{
-            messages.register
-          }}</a>
-        </p>
-        <p class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">
-          {{ messages.new_patient_registration }}
-          <a class="blue" [href]="url.patient_connexion">{{
-            messages.connexion
-          }}</a>
-        </p>
+<section>
+  <div class="right">
+    <div class="card ">
+      <div class="card-body">
+        <img id="helssy-logo" src="assets/imgs/helssy_bleu_long.svg" alt="Helssy" />
+        <div class="hls-connexion">
+          <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage"
+            [title]="messages.card_title" (submitAction)="submit($event)" (forgotPasswordAction)="forgotPassword()">
+          </lib-hls-connexion>
+        </div>
+
+        <div class="links row">
+          <p class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">
+            {{ messages.new_account }}
+            <a class="pink" (click)="practicianConnexion()">{{
+                    messages.register
+                  }}</a>
+          </p>
+          <p class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">
+            {{ messages.new_patient_registration }}
+            <a class="blue" [href]="url.patient_connexion">{{
+                    messages.connexion
+                  }}</a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
