@@ -118,6 +118,23 @@ export class MessagingListComponent implements OnInit {
         this.getMyInbox(this.featureService.selectedPracticianId);
       } else {
         this.isPatientFile
+          ? (this.links = {
+              isAllSelect: true,
+              isAllSeen: true,
+              isSeen: false,
+              isArchieve: false,
+              isImportant: false,
+              isFilter: false,
+            })
+          : (this.links = {
+              isAllSelect: true,
+              isAllSeen: true,
+              isSeen: false,
+              isArchieve: false,
+              isImportant: false,
+              isFilter: true,
+            });
+        this.isPatientFile
           ? (this.topText = "Echanges avec le patient")
           : (this.topText = "Boîte de réception");
         this.featureService.selectedPracticianId = 0;
@@ -256,7 +273,11 @@ export class MessagingListComponent implements OnInit {
         : this.itemsList.filter(
             (item) =>
               item.users[0].type.toLowerCase() ==
-              (event == "doctor" ? "medical" : event == "secretary" ? "telesecretarygroup" || "secretary" : event)
+              (event == "doctor"
+                ? "medical"
+                : event == "secretary"
+                ? "telesecretarygroup" || "secretary"
+                : event)
           );
   }
 
@@ -423,8 +444,8 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ.getNotificationObs().subscribe((notif) => {
       if (notif != "") {
         if (this.isMyInbox) {
-          let message=this.parseMessage(notif.message);
-          console.log(notif)
+          let message = this.parseMessage(notif.message);
+          console.log(notif);
           if (notif.message.sender.photoId) {
             this.documentService
               .downloadFile(notif.message.sender.photoId)
@@ -436,7 +457,6 @@ export class MessagingListComponent implements OnInit {
                       user.img = myReader.result;
                     });
                     this.itemsList.unshift(message);
-
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
