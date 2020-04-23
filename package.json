@@ -45,6 +45,7 @@
     "lodash": "^4.17.15",
     "mat-select-filter": "^2.3.6",
     "net": "^1.0.2",
+    "ngx-bootstrap": "^5.3.2",
     "ngx-international-phone-number": "^1.0.6",
     "ngx-webstorage": "^5.0.0",
     "popper.js": "^1.16.1",
