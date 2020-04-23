@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, Input } from "@angular/core";
 import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
@@ -12,6 +12,8 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
   styleUrls: ["./messaging-list.component.scss"],
 })
 export class MessagingListComponent implements OnInit {
+  @Input("isPatientFile") isPatientFile = false;
+  @Input("idAccount") idAccount: number;
   person;
   showAcceptRefuse = true;
   isMyInbox = true;
@@ -53,21 +55,33 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.topText = "Boîte de réception";
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
-      if (params["id"]) {
+      if (
+        params["id"] ||
+        (this.isPatientFile &&
+          this.featureService.selectedPracticianId != 0 &&
+          this.featureService.selectedPracticianId !=
+            this.featureService.getUserId())
+      ) {
+        this.isPatientFile
+          ? (this.topText = "Echanges entre le patient et ")
+          : (this.topText = "Boîte de réception");
         this.isMyInbox = false;
-        this.featureService.selectedPracticianId = params["id"];
+        this.featureService.selectedPracticianId = params["id"]
+          ? params["id"]
+          : this.featureService.selectedPracticianId;
         this.myPracticians = this.featureService.myPracticians.getValue();
         if (this.myPracticians && this.myPracticians.length > 0) {
           this.person = {
-            fullName: this.myPracticians.find((p) => p.id == params["id"])
-              .fullName,
+            fullName: this.myPracticians.find(
+              (p) => p.id == this.featureService.selectedPracticianId
+            ).fullName,
             picture: this.imageSource,
           };
-          let photoId = this.myPracticians.find((p) => p.id == params["id"])
-            .photo;
+          let photoId = this.myPracticians.find(
+            (p) => p.id == this.featureService.selectedPracticianId
+          ).photo;
           if (photoId && photoId != null) {
             this.documentService.downloadFile(photoId).subscribe(
               (response) => {
@@ -83,16 +97,30 @@ export class MessagingListComponent implements OnInit {
             );
           }
         }
-        this.links = {
-          isAllSelect: true,
-          isAllSeen: true,
-          isSeen: false,
-          isArchieve: false,
-          isImportant: false,
-          isFilter: true,
-        };
-        this.getMyInbox(params["id"]);
+
+        this.isPatientFile
+          ? (this.links = {
+              isAllSelect: true,
+              isAllSeen: true,
+              isSeen: false,
+              isArchieve: false,
+              isImportant: false,
+              isFilter: false,
+            })
+          : (this.links = {
+              isAllSelect: true,
+              isAllSeen: true,
+              isSeen: false,
+              isArchieve: false,
+              isImportant: false,
+              isFilter: true,
+            });
+        this.getMyInbox(this.featureService.selectedPracticianId);
       } else {
+        this.isPatientFile
+          ? (this.topText = "Echanges avec le patient")
+          : (this.topText = "Boîte de réception");
+        this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;
         this.getMyInbox(this.featureService.getUserId());
       }
@@ -109,7 +137,8 @@ export class MessagingListComponent implements OnInit {
             break;
           }
           case "archiveSuccess": {
-            notifMessage = this.globalService.toastrMessages.archived_message_success
+            notifMessage = this.globalService.toastrMessages
+              .archived_message_success;
             break;
           }
         }
@@ -193,12 +222,15 @@ export class MessagingListComponent implements OnInit {
     if (messagesId.length > 0) {
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         (resp) => {
-          let listToArchive = this.itemsList = this.itemsList.filter(function (elm, ind) {
+          let listToArchive = (this.itemsList = this.itemsList.filter(function (
+            elm,
+            ind
+          ) {
             return messagesId.indexOf(elm.id) != -1;
-          });
-          listToArchive.forEach(message => {
-            if(!message.isSeen){
-              this.featureService.numberOfArchieve++
+          }));
+          listToArchive.forEach((message) => {
+            if (!message.isSeen) {
+              this.featureService.numberOfArchieve++;
             }
           });
           this.itemsList = this.itemsList.filter(function (elm, ind) {
@@ -232,8 +264,12 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ
       .getInboxByAccountId(accountId)
       .subscribe((retrievedMess) => {
-        this.messages = retrievedMess;
-        this.number = retrievedMess.filter(
+        this.messages = this.isPatientFile
+          ? retrievedMess.filter(
+              (message) => message.sender.senderId == this.idAccount
+            )
+          : retrievedMess;
+        this.number = this.messages.filter(
           (a) => a.seenAsReceiver == false
         ).length;
         this.bottomText =
@@ -370,7 +406,7 @@ export class MessagingListComponent implements OnInit {
         this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
-        if(!event.isSeen){
+        if (!event.isSeen) {
           this.featureService.numberOfArchieve++;
         }
       },

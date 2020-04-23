@@ -67,7 +67,7 @@ const routes: Routes = [
         component: PracticianDetailComponent,
       },
       {
-        path: "patient-detail/:id",
+        path: "patient-detail/:idAccount",
         component: PatientDetailComponent,
       },
       {

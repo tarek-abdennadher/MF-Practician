@@ -21,6 +21,7 @@ export class PatientDetailComponent implements OnInit {
   backButton = true;
   isPatient = true;
   links = {};
+  idAccount: number;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -32,7 +33,8 @@ export class PatientDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.getPatientWithPeopleAttached(params["id"]);
+      this.idAccount = params["idAccount"];
+      this.getPatientWithPeopleAttached(this.idAccount);
     });
   }
   getPatientWithPeopleAttached(id) {
@@ -46,7 +48,6 @@ export class PatientDetailComponent implements OnInit {
             patient.correspondence = this.enumCorespondencePipe.transform(
               patient.correspondence
             );
-            console.log(patient.correspondence);
           });
         }
       });

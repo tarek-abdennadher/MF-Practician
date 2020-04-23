@@ -263,6 +263,6 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/patient-detail/" + item.users[0].id]);
+    this.router.navigate(["/patient-detail/" + item.users[0].accountId]);
   }
 }
