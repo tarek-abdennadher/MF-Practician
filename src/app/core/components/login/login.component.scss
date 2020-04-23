@@ -3,267 +3,188 @@ $color-helssy-blue: #1a56a7;
 $color-hlessy-grey: #707070;
 $color-helssy-white: #FFFFFF;
 
-@media (min-width: 1024px)
- {
-  .register-container {
-    overflow-y: auto;
-    background-image: url("assets/imgs/home-page.png");
-    background-position-x: 450px, center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    position: relative;
-    display: flex;
-    background-color: $color-helssy-white;
-  }
-}
-@media (min-width: 1125px)  {
-  .register-container {
-    overflow-y: auto;
-    background-image: url("assets/imgs/home-page.png");
-    background-position-x: 600px, center;
-    background-repeat: no-repeat;
-    background-size: 80% 100%;
-    position: relative;
-    display: flex;
-    background-color: $color-helssy-white;
-  }
-}
-@media (min-width: 1330px) {
-  .register-container {
-    overflow-y: auto;
+/* Begin Background image in large screen */
+@media (min-width: 1100px){
+  .card{
+    float: right;
+    .card-body{
+      margin-left: -30%;
+    }
+    }
+    @media (max-width: 1399px){
+      section {
+        width: 100%;
+        float: left;
+        background-image: url("assets/imgs/home-page.png");
+        background-color: $color-helssy-white;
+        background-repeat: no-repeat;
+        background-position: left;
+        height:100%;
+      }
+    }
+    @media (min-width: 1400px){
+  section {
+    width: 100%;
+    float: left;
     background-image: url("assets/imgs/home-page.png");
     background-color: $color-helssy-white;
-    background-position-x: 690px, center;
     background-repeat: no-repeat;
-    background-size: 80% 100%;
-    position: relative;
-    display: flex;
+    background-position: left;
+    height:100%;
   }
 }
-@media (min-width: 1490px) {
-  .register-container {
-    overflow-y: auto;
-    background-image: url("assets/imgs/home-page.png");
-    background-color: $color-helssy-white;
-    background-position-x: 770px, center;
-    background-repeat: no-repeat;
-    background-size: 80% 100%;
-    position: relative;
-    display: flex;
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+    height: 100%;
   }
 }
-
+/* End Background CSS */ 
 /* Logo CSS*/
 
-.logo {
+#helssy-logo {
+  margin-left: 8%;
+  margin-right: auto;
+  display: block;
+  padding-left: 0px !important;
+  margin-bottom: 30px;
   padding-left: 10px !important;
   margin-top: 20px !important;
   height: auto !important;
   width: 250px !important;
 }
-
-#helssy-logo {
-  margin-left: 15%;
-  margin-right: auto;
-  display: block;
-  padding-left: 0px !important;
-  margin-bottom: 30px;
-}
-/* End Logo CSS */
-// Responsive CSS
-
-/* Begin Screen portrait CSS */
-@media (max-width: 399px) and (orientation: portrait) {
-  .hls-connexion {
-    margin-left: -5%;
-    margin-top: 50px;
-  }
-  .links {
-    margin-top: 25%;
-  }
-}
-@media (min-width: 400px) and (max-width: 699px) {
-  .hls-connexion {
-    margin-left: 0px;
-    margin-top: 50px;
-  }
-  .links {
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 20%;
+@media (min-width: 400px) and (orientation: portrait) {
+  #helssy-logo {
+    margin-left: 20% !important;
+    display: block;
+    padding-left: 0px !important;
+    margin-bottom: 30px;
+    margin-top: 20px !important;
+    height: 70px !important;
+    width: auto !important;
   }
 }
 @media (min-width: 700px) and (orientation: portrait) {
-  .hls-connexion {
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 50px;
-  }
-
   #helssy-logo {
+    margin-left: 34% !important;
     display: block;
     padding-left: 0px !important;
     margin-bottom: 30px;
-  }
-
-  .logo {
-    margin-left: 30% !important;
     margin-top: 20px !important;
-    height: 60px !important;
+    height: 70px !important;
     width: auto !important;
   }
-  .links {
-    margin-top: 10%;
-  }
 }
-
-/* End Screen portrait CSS */
 @media (max-width: 798px) and (orientation: landscape) {
-  .hls-connexion {
-    margin-top: 70px;
-    margin-left: 10%;
-    margin-right: 10%;
-  }
-
   #helssy-logo {
     display: block;
     padding-left: 0px !important;
     margin-bottom: 30px;
-  }
-
-  .logo {
-    margin-left: 30% !important;
-    margin-top: 20px !important;
-    height: 60px !important;
-    width: auto !important;
-  }
-  .links {
-    margin-left: 0%;
-    margin-right: 5%;
-    margin-top: 10%;
-  }
-}
-@media (min-width: 799px) and (max-width: 1023px) and (orientation: landscape) {
-  .hls-connexion {
-    margin-top: 70px;
-    margin-left: 20%;
-    margin-right: 10%;
-  }
-
-  #helssy-logo {
-    display: block;
-    padding-left: 0px !important;
-    margin-bottom: 30px;
-  }
-
-  .logo {
     margin-left: 30% !important;
     margin-top: 20px !important;
     height: 70px !important;
     width: auto !important;
   }
-  .links {
-    margin-left: 0%;
-    margin-right: 5%;
-    margin-top: 10%;
+ }
+ @media (min-width: 799px) and (orientation: landscape) {
+  #helssy-logo {
+    display: block;
+    padding-left: 0px !important;
+    margin-bottom: 30px;
+    margin-left: 35% !important;
+    margin-top: 20px !important;
+    height: 70px !important;
+    width: auto !important;
   }
-}
-@media (min-width: 1024px) and(max-width:1249px) and (orientation: landscape) {
-  .hls-connexion {
-    margin-top: 70px;
-    margin-left: 10%;
-    margin-right: 10%;
-  }
-
+ }
+@media (min-width: 1024px) and (orientation: landscape) {
   #helssy-logo {
     display: block;
     padding-top: 10px !important;
     padding-left: 0px !important;
     margin-bottom: 30px;
-  }
-
-  .logo {
-    margin-left: 20% !important;
+    margin-left: 35% !important;
     margin-top: 30px !important;
-    width: 345px;
-    height: 95px;
-  }
-  .links {
-    margin-left: 10%;
-    margin-right: 10%;
-    margin-top: 25%;
+    height: 100px !important;
+    width: auto !important;
   }
 }
 @media (min-width: 1250px) and (orientation: landscape) {
-  .hls-connexion {
-    margin-top: 50px;
-    margin-left: 5%;
-    margin-right: 5%;
-  }
-
   #helssy-logo {
     display: block;
     padding-top: 10px !important;
     padding-left: 0px !important;
     margin-bottom: 30px;
+    margin-left: 33% !important;
+    height: 100px !important;
+    width: auto !important;
+  }
+}
+/* End Logo CSS */
+
+/* Begin Content  CSS */ 
+.card{
+  border: 0px;
+  opacity: 1;
+  height:100%
   }
 
-  .logo {
-    margin-left: 27% !important;
-    width: 345px;
-    height: 95px;
+@media (max-width: 399px) {
+.hls-connexion {
+margin-left: 0%;
+margin-top: 50px;
+}
+}
+
+@media (min-width: 400px) {
+  .hls-connexion {
+    margin-left: 5%;
+    margin-top: 50px;
+  }
+ }
+
+ @media (min-width: 700px) and (orientation: portrait) {
+  .hls-connexion {
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 50px;
   }
   .links {
     margin-left: 0%;
-    margin-right: 10%;
-    margin-top: 25%;
+    margin-right: 5%;
   }
 }
 
-// Responsive CSS End
-/* Begin Screen landscape CSS */
-//IPAD screen
-@media (width: 1024px) and (orientation: landscape) {
-  .responsive-register {
-    overflow-y: auto;
-    border-radius: 20px;
-    opacity: 1;
-    padding: 0px;
-    width: 45vw;
-    min-height: 100vh;
+@media (max-width: 798px) and (orientation: landscape) {
+  .hls-connexion {
+    margin-top: 70px;
+    margin-left: 15%;
+    margin-right: 15%;
+  }
+  .links {
+    margin-left: 0%;
+    margin-right: 5%;
   }
 }
-@media (min-width: 1025px) and (max-width: 1799px) and (orientation: landscape) {
-  .responsive-register {
-    overflow-y: auto;
-    border-radius: 20px;
-    opacity: 1;
-    padding: 0px;
-    width: 45vw;
-    min-height: 125vh;
+@media (min-width: 799px) and (orientation: landscape) {
+  .hls-connexion {
+    margin-top: 70px;
+    margin-left: 30%;
+    margin-right: 20%;
+  }
+  .links {
+    margin-left: 10%;
+    margin-right: 5%;
   }
 }
-@media (orientation: portrait) {
-  .responsive-register {
-    min-height: 100vh;
-  }
-}
-// large screens
-@media (min-width: 1800px) and (orientation: landscape) {
-  .responsive-register {
-    overflow-y: auto;
-    border-radius: 20px;
-    opacity: 1;
-    padding: 0px;
-    width: 40vw;
-    min-height: 100vh;
-  }
-}
-/* End Screen landscape CSS */
+/* End Content CSS */ 
 
+/* Begin Links CSS */
 p {
   text-align: center;
-  font-size: 17px;
+  font-size: 18px;
   font-family: "Segoe UI";
   line-height: 25px;
   letter-spacing: 0;
@@ -271,7 +192,7 @@ p {
 }
 
 a {
-  font-size: 17px;
+  font-size: 18px;
   font-family: "Segoe UI";
   line-height: 25px;
   font-weight: bold;
@@ -292,8 +213,7 @@ a:active,
 a:focus {
   text-decoration: underline;
 }
-.card{
-background: $color-helssy-white 0% 0% no-repeat padding-box;
-border: 0px;
-opacity: 1;
-}
+
+/* End Links CSS */ 
+
+
