@@ -7,6 +7,7 @@
   [backButton]="backButton"
   (backButtonAction)="BackButton()"
 ></lib-hlsLinks>
+
 <lib-hls-practician-detail
   [practician]="patient"
   [imageSource]="imageSource"
@@ -14,3 +15,7 @@
   [isPatient]="isPatient"
   (sendMessageAction)="sendMessageClicked($event)"
 ></lib-hls-practician-detail>
+<app-messaging-list
+  [isPatientFile]="true"
+  [idAccount]="idAccount"
+></app-messaging-list>

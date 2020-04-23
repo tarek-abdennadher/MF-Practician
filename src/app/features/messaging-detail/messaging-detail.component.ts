@@ -72,7 +72,7 @@ export class MessagingDetailComponent implements OnInit {
             this.hidefrom = true;
             this.isFromArchive = false;
             this.sentContext = true;
-            this.previousURL = "/messagerie-envoyes"
+            this.previousURL = "/messagerie-envoyes";
             break;
           }
           case "inbox": {
@@ -378,5 +378,8 @@ export class MessagingDetailComponent implements OnInit {
           });
       });
     }
+  }
+  displayPatientFile(idAccount) {
+    this.router.navigate(["/patient-detail/" + idAccount]);
   }
 }
