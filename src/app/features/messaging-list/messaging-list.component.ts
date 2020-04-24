@@ -33,7 +33,7 @@ export class MessagingListComponent implements OnInit {
     isFilter: true,
   };
   page = "INBOX";
-  number = 0;
+  number : number;
   topText = "Boîte de réception";
   bottomText =
     this.number > 1
@@ -55,6 +55,7 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.number = this.featureService.numberOfInbox;
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       if (
@@ -290,16 +291,12 @@ export class MessagingListComponent implements OnInit {
               (message) => message.sender.senderId == this.idAccount
             )
           : retrievedMess;
-        this.number = this.messages.filter(
-          (a) => a.seenAsReceiver == false
-        ).length;
+        this.number = this.featureService.numberOfInbox
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.newMessages
             : this.globalService.messagesDisplayScreen.newMessage;
-        if (this.isMyInbox) {
-          this.featureService.setNumberOfInbox(this.number);
-        } else {
+        if (!this.isMyInbox) {
           this.featureService.updateNumberOfInboxForPractician(
             accountId,
             this.number
