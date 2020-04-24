@@ -52,7 +52,7 @@ $patient-theme: mat-light-theme(
 html,
 body {
   margin: 0;
-  background-color: #ffffff;
+  background-color: #f7f7f7 !important;
   @media (min-width: 400px) {
     zoom: 90%;
   }
