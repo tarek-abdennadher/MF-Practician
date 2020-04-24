@@ -127,6 +127,14 @@ export class MessagingListService {
       this.globalService.url.messages + "myInbox"
     );
   }
+
+  public countMyInboxNotSeen(): Observable<number> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "countMyInboxNotSeen"
+    );
+  }
+
   public getInboxByAccountId(id): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
