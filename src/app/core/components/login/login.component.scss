@@ -11,18 +11,6 @@ $color-helssy-white: #FFFFFF;
       margin-left: -30%;
     }
     }
-    @media (max-width: 1399px){
-      section {
-        width: 100%;
-        float: left;
-        background-image: url("assets/imgs/home-page.png");
-        background-color: $color-helssy-white;
-        background-repeat: no-repeat;
-        background-position: left;
-        height:100%;
-      }
-    }
-    @media (min-width: 1400px){
   section {
     width: 100%;
     float: left;
@@ -31,7 +19,6 @@ $color-helssy-white: #FFFFFF;
     background-repeat: no-repeat;
     background-position: left;
     height:100%;
-  }
 }
   .left {
     float: left;
