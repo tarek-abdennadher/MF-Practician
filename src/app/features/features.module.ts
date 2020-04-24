@@ -36,7 +36,7 @@ const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
       position: "left",
-      distance: 400,
+      distance: 370,
     },
     vertical: {
       position: "top",
