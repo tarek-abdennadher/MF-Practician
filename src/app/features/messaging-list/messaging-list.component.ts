@@ -123,7 +123,7 @@ export class MessagingListComponent implements OnInit {
               isAllSelect: true,
               isAllSeen: true,
               isSeen: false,
-              isArchieve: false,
+              isArchieve: true,
               isImportant: false,
               isFilter: false,
             })
@@ -131,7 +131,7 @@ export class MessagingListComponent implements OnInit {
               isAllSelect: true,
               isAllSeen: true,
               isSeen: false,
-              isArchieve: false,
+              isArchieve: true,
               isImportant: false,
               isFilter: true,
             });
