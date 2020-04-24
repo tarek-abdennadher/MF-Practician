@@ -5,6 +5,7 @@ import { PracticianSearch } from "./practician-search.model";
 import { search } from "./search.model";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-practician-search",
@@ -28,7 +29,8 @@ export class PracticianSearchComponent implements OnInit {
     private route: ActivatedRoute,
     private practicianSearchService: PracticianSearchService,
     private featureService: FeaturesService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private documentService: MyDocumentsService
   ) {
     this.texts = practicianSearchService.texts;
   }
@@ -102,14 +104,44 @@ export class PracticianSearchComponent implements OnInit {
     const practician = new PracticianSearch();
     practician.id = message.id;
     practician.isSeen = true;
-    practician.users = [
-      {
-        fullName: message.fullName,
-        img: "assets/imgs/user.png",
-        title: message.title,
-        type: "MEDICAL",
-      },
-    ];
+
+    if (message.photoId) {
+      this.documentService.downloadFile(message.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            practician.users = [
+              {
+                fullName: message.fullName,
+                img: myReader.result,
+                title: message.title,
+                type: "MEDICAL",
+              },
+            ];
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          practician.users = [
+            {
+              fullName: message.fullName,
+              img: "assets/imgs/user.png",
+              title: message.title,
+              type: "MEDICAL",
+            },
+          ];
+        }
+      );
+    } else {
+      practician.users = [
+        {
+          fullName: message.fullName,
+          img: "assets/imgs/user.png",
+          title: message.title,
+          type: "MEDICAL",
+        },
+      ];
+    }
     practician.object = {
       name: message.address,
       isImportant: false,
