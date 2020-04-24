@@ -61,6 +61,7 @@ export class FeaturesComponent implements OnInit {
       this.city = data.city;
     });
     this.getMyNotificationsNotSeen();
+    this.countMyInboxNotSeen();
     this.countMyArchive();
     this.getPersonalInfo();
     this.countMyPatientPending();
@@ -137,6 +138,13 @@ export class FeaturesComponent implements OnInit {
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
+
+  countMyInboxNotSeen() {
+    this.messageListService.countMyInboxNotSeen().subscribe(num => {
+      this.featuresService.setNumberOfInbox(num);
+    })
+  }
+
   countMyArchive() {
     this.featuresService.getCountOfMyArchieve().subscribe(resp => {
       this.featuresService.numberOfArchieve = resp;
