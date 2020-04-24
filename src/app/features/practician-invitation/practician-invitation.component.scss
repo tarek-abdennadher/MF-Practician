@@ -122,7 +122,7 @@ $color-helssy-light-blue: #f6fbfc;
   }
 }
 
-@media (min-width: 1850px) {
+@media (min-width: 1880px) {
   ::ng-deep {
     .notifier__notification--material {
       width: 76.7vw;
@@ -132,7 +132,7 @@ $color-helssy-light-blue: #f6fbfc;
 @media (min-width: 2050px) {
   ::ng-deep {
     .notifier__notification--material {
-      width: 76.5vw;
+      width: 78vw;
     }
   }
 }
