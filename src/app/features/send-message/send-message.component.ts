@@ -52,6 +52,7 @@ export class SendMessageComponent implements OnInit {
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
+      this.connectedUserType = "MEDICAL";
     }
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
@@ -61,6 +62,7 @@ export class SendMessageComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.localSt.retrieve("role") == "SECRETARY") {
+      this.connectedUserType = "SECRETARY";
       this.featureService.myPracticians.subscribe(
         (val) => (this.forList = val)
       );
