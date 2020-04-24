@@ -65,7 +65,7 @@ export class MessagingListComponent implements OnInit {
             this.featureService.getUserId())
       ) {
         this.isPatientFile
-          ? (this.topText = "Echanges entre le patient et ")
+          ? (this.topText = "Historique des échanges avec")
           : (this.topText = "Boîte de réception");
         this.isMyInbox = false;
         this.featureService.selectedPracticianId = params["id"]
@@ -135,7 +135,7 @@ export class MessagingListComponent implements OnInit {
               isFilter: true,
             });
         this.isPatientFile
-          ? (this.topText = "Echanges avec le patient")
+          ? (this.topText = "Historique des échanges")
           : (this.topText = "Boîte de réception");
         this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;

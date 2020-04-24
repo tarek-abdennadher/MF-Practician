@@ -16,7 +16,7 @@ export class PatientDetailComponent implements OnInit {
   public isFavorite: boolean = false;
   page = "MY_PRACTICIANS";
   number = null;
-  topText = "Détails du patient";
+  topText = "Fiche Patient";
   bottomText = "";
   backButton = true;
   isPatient = true;
