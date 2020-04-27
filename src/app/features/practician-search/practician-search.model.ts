@@ -20,4 +20,5 @@ export class PracticianSearch {
   isViewDetail: boolean;
   isArchieve: boolean;
   isChecked: boolean;
+  photoId: string;
 }

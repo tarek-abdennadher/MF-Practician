@@ -13,6 +13,7 @@ import { FeaturesService } from "../features.service";
 import { Location } from "@angular/common";
 import { LocalStorageService } from "ngx-webstorage";
 import { NotifierService } from "angular-notifier";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-send-message",
@@ -22,7 +23,7 @@ import { NotifierService } from "angular-notifier";
 export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
-  imageSource = "assets/imgs/user.png";
+  imageSource: any = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
@@ -48,7 +49,8 @@ export class SendMessageComponent implements OnInit {
     private nodeService: NodeeService,
     private router: Router,
     public route: ActivatedRoute,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    private documentService: MyDocumentsService
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
@@ -61,6 +63,20 @@ export class SendMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.user?.photoId) {
+      this.documentService.downloadFile(this.user?.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            this.imageSource = myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          this.imageSource = "assets/imgs/user.png";
+        }
+      );
+    }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.myPracticians.subscribe(
