@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-my-patients",
@@ -33,7 +34,8 @@ export class MyPatientsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private documentService: MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -87,6 +89,24 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = this.myPatients;
+        this.myPatients.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       });
   }
 
@@ -106,6 +126,24 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = this.myPatients;
+        this.myPatients.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       });
   }
 
@@ -125,6 +163,24 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = this.myPatients;
+        this.myPatients.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       });
   }
 
@@ -138,6 +194,7 @@ export class MyPatientsComponent implements OnInit {
       img: "assets/imgs/user.png",
       type: "PATIENT",
     });
+    myPatients.photoId = patient.photoId;
     myPatients.isMarkAsSeen = true;
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;

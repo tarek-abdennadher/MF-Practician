@@ -75,9 +75,28 @@ export class ContactsComponent implements OnInit {
             isViewDetail: true,
             isMarkAsSeen: elm.contactType != "CONTACT" ? true : false,
             isChecked: false,
+            photoId: elm.photoId,
           };
         });
         this.filtredItemsList = this.itemsList;
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       },
       (error) => {
         console.log("en attendant un model de popup à afficher");
@@ -111,6 +130,7 @@ export class ContactsComponent implements OnInit {
             isViewDetail: true,
             isMarkAsSeen: elm.contactType != "CONTACT" ? true : false,
             isChecked: false,
+            photoId: elm.photoId,
           };
         });
         this.filtredItemsList = this.itemsList;

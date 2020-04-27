@@ -57,6 +57,24 @@ export class PracticianSearchComponent implements OnInit {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
         });
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       });
     } else if (!text && city) {
       this.practicianSearchService
@@ -73,6 +91,24 @@ export class PracticianSearchComponent implements OnInit {
           list.forEach((message) => {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
+          });
+          this.itemsList.forEach((item) => {
+            if (item.photoId) {
+              item.users.forEach((user) => {
+                this.documentService.downloadFile(item.photoId).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      user.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    user.img = "assets/imgs/user.png";
+                  }
+                );
+              });
+            }
           });
         });
     } else {
@@ -130,6 +166,7 @@ export class PracticianSearchComponent implements OnInit {
         type: "MEDICAL",
       },
     ];
+    practician.photoId = message.photoId;
     practician.object = {
       name: message.address,
       isImportant: false,
