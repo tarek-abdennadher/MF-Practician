@@ -33,7 +33,7 @@ export class MessagingListComponent implements OnInit {
     isFilter: true,
   };
   page = "INBOX";
-  number : number;
+  number: number;
   topText = "Boîte de réception";
   bottomText =
     this.number > 1
@@ -291,17 +291,21 @@ export class MessagingListComponent implements OnInit {
               (message) => message.sender.senderId == this.idAccount
             )
           : retrievedMess;
-        this.number = this.featureService.numberOfInbox
-        this.bottomText =
-          this.number > 1
-            ? this.globalService.messagesDisplayScreen.newMessages
-            : this.globalService.messagesDisplayScreen.newMessage;
-        if (!this.isMyInbox) {
+        this.number = this.featureService.numberOfInbox;
+        if (!this.isMyInbox && !this.isPatientFile) {
+          this.number = this.messages.filter(
+            (m) => m.seenAsReceiver == false
+          ).length;
           this.featureService.updateNumberOfInboxForPractician(
             accountId,
             this.number
           );
         }
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newMessages
+            : this.globalService.messagesDisplayScreen.newMessage;
+
         this.messages.sort(function (m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()

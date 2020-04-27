@@ -7,7 +7,7 @@ import * as jwt_decode from "jwt-decode";
 import { search } from "./practician-search/search.model";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class FeaturesService {
   public listNotifications = [];
@@ -50,7 +50,7 @@ export class FeaturesService {
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
-      list.find(p => p.id == accountId).number = inboxNumber;
+      list.find((p) => p.id == accountId).number = inboxNumber;
     }
     this.myPracticians.next(list);
   }
@@ -68,24 +68,30 @@ export class FeaturesService {
     );
   }
 
-
-  markNotificationAsSeen(notidId:number):Observable<boolean> {
+  markNotificationAsSeen(notidId: number): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.BASE_URL_MA + "/notifications/" + notidId + "/markAsSeen"
+      this.globalService.BASE_URL_MA +
+        "/notifications/" +
+        notidId +
+        "/markAsSeen"
     );
   }
 
-  markNotificationAsSeenBySenderId(senderId:number):Observable<boolean> {
+  markNotificationAsSeenBySenderId(senderId: number): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.BASE_URL_MA + "/notifications/" + senderId + "/INVITATION/markAsSeen"
+      this.globalService.BASE_URL_MA +
+        "/notifications/" +
+        senderId +
+        "/INVITATION/markAsSeen"
     );
   }
   markReceivedNotifAsSeen() {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.BASE_URL_MA + "/notifications/markAsSeenByType/INVITATION"
+      this.globalService.BASE_URL_MA +
+        "/notifications/markAsSeenByType/INVITATION"
     );
   }
 
