@@ -89,35 +89,24 @@ export class PracticianSearchComponent implements OnInit {
           this.bottomText = this.number > 1 ? "résultats" : "résultat";
           list.forEach((message) => {
             let practician = this.mappingPracticians(message);
-            if (message.photoId) {
-              this.documentService.downloadFile(message.photoId).subscribe(
+            this.itemsList.push(practician);
+          });
+          this.itemsList.forEach((item) => {
+            if (item.photoId) {
+              item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
                   myReader.onloadend = (e) => {
-                    practician.users = [
-                      {
-                        fullName: message.fullName,
-                        img: myReader.result,
-                        title: message.title,
-                        type: "MEDICAL",
-                      },
-                    ];
+                    user.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  practician.users = [
-                    {
-                      fullName: message.fullName,
-                      img: "assets/imgs/user.png",
-                      title: message.title,
-                      type: "MEDICAL",
-                    },
-                  ];
+                  user.img = "assets/imgs/user.png";
                 }
-              );
+              );}
             }
-            this.itemsList.push(practician);
           });
         });
     }
