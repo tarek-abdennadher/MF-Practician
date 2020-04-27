@@ -3,4 +3,5 @@ export class MyPatients {
   isMarkAsSeen: boolean;
   isSeen: boolean;
   isProhibited: boolean;
+  photoId: string;
 }

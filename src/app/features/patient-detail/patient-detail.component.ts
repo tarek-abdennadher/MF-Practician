@@ -4,6 +4,7 @@ import { LocalStorageService } from "ngx-webstorage";
 import { Location } from "@angular/common";
 import { MyPatientsService } from "../services/my-patients.service";
 import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-patient-detail",
@@ -28,7 +29,8 @@ export class PatientDetailComponent implements OnInit {
     private myPatientService: MyPatientsService,
     private localSt: LocalStorageService,
     private _location: Location,
-    private enumCorespondencePipe: EnumCorrespondencePipe
+    private enumCorespondencePipe: EnumCorrespondencePipe,
+    private documentService: MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +51,20 @@ export class PatientDetailComponent implements OnInit {
               patient.correspondence
             );
           });
+        }
+        if (this.patient.photoId) {
+          this.documentService.downloadFile(this.patient.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                this.patient.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              this.patient.img = "assets/imgs/user.png";
+            }
+          );
         }
       });
   }

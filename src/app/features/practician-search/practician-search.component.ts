@@ -130,6 +130,7 @@ export class PracticianSearchComponent implements OnInit {
         type: "MEDICAL",
       },
     ];
+    practician.photoId = message.photoId;
     practician.object = {
       name: message.address,
       isImportant: false,
