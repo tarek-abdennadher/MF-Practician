@@ -32,6 +32,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
+import { NgxSpinnerModule } from "ngx-spinner";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -106,6 +107,8 @@ const notifierOptions: NotifierOptions = {
     HlsSendMessageModule,
     MatDialogModule,
     MatIconModule,
+    NgxSpinnerModule
+
   ],
 
   providers: [MessageService, ContactsService],

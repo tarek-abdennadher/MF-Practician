@@ -14,6 +14,7 @@ import { Location } from "@angular/common";
 import { LocalStorageService } from "ngx-webstorage";
 import { NotifierService } from "angular-notifier";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: "app-send-message",
@@ -50,7 +51,9 @@ export class SendMessageComponent implements OnInit {
     private router: Router,
     public route: ActivatedRoute,
     notifierService: NotifierService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private spinner: NgxSpinnerService
+
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
@@ -125,6 +128,7 @@ export class SendMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
+    this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
     message.to.forEach((to) => {
@@ -167,6 +171,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
@@ -174,6 +179,7 @@ export class SendMessageComponent implements OnInit {
             });
           },
           (error) => {
+            this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
@@ -187,6 +193,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
@@ -194,6 +201,7 @@ export class SendMessageComponent implements OnInit {
             });
           },
           (error) => {
+            this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
