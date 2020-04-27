@@ -91,6 +91,23 @@ export class PracticianSearchComponent implements OnInit {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
           });
+          this.itemsList.forEach((item) => {
+            if (item.photoId) {
+              item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );}
+            }
+          });
         });
     }
   }
@@ -104,44 +121,14 @@ export class PracticianSearchComponent implements OnInit {
     const practician = new PracticianSearch();
     practician.id = message.id;
     practician.isSeen = true;
-
-    if (message.photoId) {
-      this.documentService.downloadFile(message.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            practician.users = [
-              {
-                fullName: message.fullName,
-                img: myReader.result,
-                title: message.title,
-                type: "MEDICAL",
-              },
-            ];
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          practician.users = [
-            {
-              fullName: message.fullName,
-              img: "assets/imgs/user.png",
-              title: message.title,
-              type: "MEDICAL",
-            },
-          ];
-        }
-      );
-    } else {
-      practician.users = [
-        {
-          fullName: message.fullName,
-          img: "assets/imgs/user.png",
-          title: message.title,
-          type: "MEDICAL",
-        },
-      ];
-    }
+    practician.users = [
+      {
+        fullName: message.fullName,
+        img: "assets/imgs/user.png",
+        title: message.title,
+        type: "MEDICAL",
+      },
+    ];
     practician.object = {
       name: message.address,
       isImportant: false,
