@@ -5,6 +5,7 @@ import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { AccountService } from "../services/account.service";
 import { LocalStorageService } from "ngx-webstorage";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
@@ -32,7 +33,8 @@ export class ContactsComponent implements OnInit {
     private _location: Location,
     private router: Router,
     private contactsService: ContactsService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private documentService: MyDocumentsService
   ) {}
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
@@ -112,6 +114,24 @@ export class ContactsComponent implements OnInit {
           };
         });
         this.filtredItemsList = this.itemsList;
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       },
       (error) => {
         console.log("en attendant un model de popup à afficher");

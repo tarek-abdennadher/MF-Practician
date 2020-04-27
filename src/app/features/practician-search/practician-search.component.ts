@@ -94,18 +94,19 @@ export class PracticianSearchComponent implements OnInit {
           this.itemsList.forEach((item) => {
             if (item.photoId) {
               item.users.forEach((user) => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );}
+                this.documentService.downloadFile(item.photoId).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      user.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    user.img = "assets/imgs/user.png";
+                  }
+                );
+              });
             }
           });
         });
