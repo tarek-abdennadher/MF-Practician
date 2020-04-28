@@ -80,6 +80,10 @@ export class FeaturesComponent implements OnInit {
             let notification = JSON.parse(message.body);
             if (notification.type == "MESSAGE") {
               that.messageListService.setNotificationObs(notification);
+            } else if (notification.type == "MESSAGE_IN_PROGRESS") {
+              that.messageListService.setNotificationMessageStateObs(notification);
+            } else if (notification.type == "MESSAGE_TREATED") {
+              that.messageListService.setNotificationMessageStateObs(notification);
             } else if (notification.type == "INVITATION") {
               that.messageListService.setInvitationNotificationObs(notification);
             } else if (notification.type == "REMOVED") {
@@ -266,7 +270,22 @@ export class FeaturesComponent implements OnInit {
         );
         this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox-1)
       });
-    } else if (notification.type == "INVITATION") {
+    } else if (notification.type == "MESSAGE_IN_PROGRESS" || notification.type == "MESSAGE_TREATED") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+        .subscribe((resp) => {
+      this.getMyNotificationsNotSeen();
+      this.router.navigate(
+        ["/messagerie-lire/" + notification.messageId],
+        {
+          queryParams: {
+            context: "sent"
+          }
+        }
+      );
+    });
+    }
+    else if (notification.type == "INVITATION") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
         .subscribe((resp) => {
