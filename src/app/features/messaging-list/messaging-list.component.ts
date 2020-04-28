@@ -206,6 +206,9 @@ export class MessagingListComponent implements OnInit {
             if (resp == true) {
               this.itemsList.forEach((item) => (item.isSeen = true));
               this.filtredItemList.forEach((item) => (item.isSeen = true));
+              this.featureService.listNotifications=[];
+              this.featureService.setNumberOfInbox(0);
+              this.number=0;
             }
           },
           (error) => {
