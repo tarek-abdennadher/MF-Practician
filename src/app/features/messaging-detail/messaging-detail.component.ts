@@ -297,7 +297,15 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   replyAction() {
+    if(this.messagingDetail.sender.senderId == this.featureService.getUserId()){
+      this.notifier.show({
+        message: this.globalService.toastrMessages.send_message_to_myself,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+    }else {
     this.router.navigate(["/messagerie-repondre/", this.idMessage]);
+  }
   }
 
   acceptAction() {
