@@ -175,15 +175,15 @@ export class MySecretariesComponent implements OnInit {
       this.isList = false;
     });
   }
-  selectItem(event) { }
-  deleteActionClicked() { }
+  selectItem(event) {}
+  deleteActionClicked() {}
 
   deleteSecretary(item) {
     this.selectedSecretary = item;
     this.dialogService
       .openConfirmDialog(
-        this.labels.delete_sec_title,
-        this.labels.delete_sec_confirm
+        this.labels.delete_sec_confirm,
+        this.labels.delete_sec_title
       )
       .afterClosed()
       .subscribe((res) => {
@@ -198,13 +198,13 @@ export class MySecretariesComponent implements OnInit {
   }
   updateCSS() {
     $(document).ready(function () {
-      $("input").prop('disabled', true);
+      $("input").prop("disabled", true);
       $(".form-control").each(function () {
         $(this).css("background", "#F1F1F1");
         $(this).css("border-color", "#F1F1F1");
       });
       $(".dropbtn.btn").each(function () {
-        $(this).attr('disabled', true);
+        $(this).attr("disabled", true);
         $(this).css("background", "#F1F1F1");
         $(this).css("border-color", "#F1F1F1");
         $(this).css("padding", "8px");
