@@ -35,7 +35,7 @@ export class ContactsService {
     confirm: "Confirmer",
     cancel: "Annuler",
     delete_sec_confirm: "êtes-vous sûr de vouloir supprimer cette secrétaire ?",
-    delete_sec_title: "Supprimer",
+    delete_sec_title: "Supprimer une secrétaire",
   };
   constructor(private globalService: GlobalService) {}
 
