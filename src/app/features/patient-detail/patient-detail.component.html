@@ -7,14 +7,25 @@
   [backButton]="backButton"
   (backButtonAction)="BackButton()"
 ></lib-hlsLinks>
-
-<lib-hls-practician-detail
-  [practician]="patient"
+<app-personal-informations
+  *ngIf="patient"
+  [isPatientFile]="true"
+  [infoPatient]="patient"
+></app-personal-informations>
+<div class="col-md-12">
+  <div class="form-group title">
+    <hr width="3%" color="#ff0063" align="left" />
+    <i class="far fa-user-plus"
+      ><span>&nbsp;&nbsp;{{ message.attachedPersonnes }}</span></i
+    >
+  </div>
+</div>
+<lib-hlsMessagingList
+  [isCheckbox]="false"
+  [list]="itemsList"
   [imageSource]="imageSource"
-  [isFavorite]="isPatient"
-  [isPatient]="isPatient"
-  (sendMessageAction)="sendMessageClicked($event)"
-></lib-hls-practician-detail>
+>
+</lib-hlsMessagingList>
 <app-messaging-list
   [isPatientFile]="true"
   [idAccount]="idAccount"
