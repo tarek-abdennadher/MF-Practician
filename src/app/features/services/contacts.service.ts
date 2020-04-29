@@ -29,13 +29,14 @@ export class ContactsService {
     other_phone: "Autre tél",
     validate: "Valider",
     title: "Titre",
-    civility: "Civilité",
     speciality: "Spécialité",
+    civility: "Civilité (*)",
     facility_name: "Nom de l'établissement",
     confirm: "Confirmer",
     cancel: "Annuler",
     delete_sec_confirm: "êtes-vous sûr de vouloir supprimer cette secrétaire ?",
     delete_sec_title: "Supprimer une secrétaire",
+    birth_date: "Date de naissance (*)",
   };
   constructor(private globalService: GlobalService) {}
 

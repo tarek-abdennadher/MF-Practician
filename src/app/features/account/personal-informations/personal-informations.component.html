@@ -86,10 +86,19 @@
         <div class="row" *ngIf="isPractician">
           <div class="col">
             <div class="form-group row">
-              <label for="title" class="col-sm-3 col-form-label">{{
-                labels.title
-              }}</label>
-              <div class="col-sm-9">
+              <label
+                *ngIf="!this.isPatientFile"
+                for="title"
+                class="col-sm-3 col-form-label"
+                >{{ labels.title }}</label
+              >
+              <label
+                *ngIf="this.isPatientFile"
+                for="title"
+                class="col-sm-3 col-form-label"
+                >{{ labels.civility }}</label
+              >
+              <div *ngIf="!isPatientFile" class="col-sm-9">
                 <select
                   formControlName="title"
                   class="civility custom-select"
@@ -111,10 +120,31 @@
                   </div>
                 </div>
               </div>
+              <div class="col-sm-9">
+                <select
+                  formControlName="civility"
+                  class="civility custom-select"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
+                >
+                  <option value="null" disabled="true" [selected]="true">{{
+                    labels.civility
+                  }}</option>
+                  <option value="M">M</option>
+                  <option value="MME">MME</option>
+                </select>
+                <div
+                  *ngIf="submitted && ctr.civility.errors"
+                  class="text-danger"
+                >
+                  <div *ngIf="ctr.civility.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col">
-            <div class="form-group row">
+            <div *ngIf="!isPatientFile" class="form-group row">
               <label for="speciality" class="col-sm-3 col-form-label">{{
                 labels.speciality
               }}</label>
@@ -134,6 +164,34 @@
                     s.name
                   }}</option>
                 </select>
+                <div
+                  *ngIf="submitted && ctr.speciality.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="ctr.speciality.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="isPatientFile" class="form-group row">
+              <label for="birthday" class="col-sm-3 col-form-label">{{
+                labels.birth_date
+              }}</label>
+              <div class="col-sm-9 input-icons">
+                <i class="fa fa-calendar icon"></i>
+                <input
+                  type="text"
+                  formControlName="birthday"
+                  class="calender form-control input-field"
+                  placeholder="{{ messages.birth_date }}"
+                  bsDatepicker
+                  [maxDate]="maxDate"
+                  [placement]="placement"
+                  [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+                  [ngClass]="{ 'is-invalid': submitted && f.birth_date.errors }"
+                />
                 <div
                   *ngIf="submitted && ctr.speciality.errors"
                   class="invalid-feedback"

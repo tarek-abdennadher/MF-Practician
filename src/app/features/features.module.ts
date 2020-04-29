@@ -37,6 +37,7 @@ import { PersonalInformationsComponent } from "./account/personal-informations/p
 import { HlsPasswordStrengthModule } from "hls-password-strength";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
+import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -116,6 +117,7 @@ const notifierOptions: NotifierOptions = {
     HlsPasswordStrengthModule,
     InternationalPhoneNumberModule,
     SharedModule,
+    BsDatepickerModule.forRoot(),
   ],
 
   providers: [MessageService, ContactsService],

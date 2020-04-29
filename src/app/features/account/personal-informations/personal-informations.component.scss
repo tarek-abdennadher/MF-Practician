@@ -147,9 +147,8 @@ input[type="file"] {
   i,
   hr {
     margin-left: 10px;
-
   }
-  i{
+  i {
     font-size: 17px;
   }
   span {
@@ -177,7 +176,21 @@ input[type="file"] {
   height: 50px;
 }
 
-.btn.btn-primary.btn-xs, .btn.btn-danger.btn-xs{
+.btn.btn-primary.btn-xs,
+.btn.btn-danger.btn-xs {
   width: 40px;
 }
 
+.input-icons i {
+  position: absolute;
+}
+
+.input-icons {
+  width: 100%;
+  margin-bottom: -45px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+}

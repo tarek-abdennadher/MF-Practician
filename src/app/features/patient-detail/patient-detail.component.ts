@@ -93,7 +93,7 @@ export class PatientDetailComponent implements OnInit {
         patient.id = element.id;
         patient.users = [
           {
-            fullName: element.firstName + " " + element.lastName,
+            fullName: element.fullName,
             img: element.photoId ? image : "assets/imgs/user.png",
             title: "",
             type: "PATIENT",

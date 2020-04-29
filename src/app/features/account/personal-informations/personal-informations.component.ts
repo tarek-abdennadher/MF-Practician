@@ -80,21 +80,35 @@ export class PersonalInformationsComponent implements OnInit {
     this.getAttachementFolderId();
   }
   initInfoForm() {
-    if (this.isPractician) {
-      this.infoForm = new FormGroup({
-        id: new FormControl(null),
-        last_name: new FormControl(null, Validators.required),
-        first_name: new FormControl(null, Validators.required),
-        email: new FormControl(null, {
-          validators: [Validators.required, emailValidator],
-        }),
-        title: new FormControl(null, Validators.required),
-        speciality: new FormControl(null, Validators.required),
-        address: new FormControl(null, Validators.required),
-        additional_address: new FormControl(null),
-        phone: new FormControl(null, Validators.required),
-        picture: new FormControl(null),
-      });
+    if (!this.isPatientFile) {
+      if (this.isPractician) {
+        this.infoForm = new FormGroup({
+          id: new FormControl(null),
+          last_name: new FormControl(null, Validators.required),
+          first_name: new FormControl(null, Validators.required),
+          email: new FormControl(null, {
+            validators: [Validators.required, emailValidator],
+          }),
+          title: new FormControl(null, Validators.required),
+          speciality: new FormControl(null, Validators.required),
+          address: new FormControl(null, Validators.required),
+          additional_address: new FormControl(null),
+          phone: new FormControl(null, Validators.required),
+          picture: new FormControl(null),
+        });
+      } else {
+        this.infoForm = new FormGroup({
+          id: new FormControl(null),
+          last_name: new FormControl(null, Validators.required),
+          first_name: new FormControl(null, Validators.required),
+          email: new FormControl(null, {
+            validators: [Validators.required, emailValidator],
+          }),
+          phone: new FormControl(null, Validators.required),
+          picture: new FormControl(null),
+          civility: new FormControl(null, Validators.required),
+        });
+      }
     } else {
       this.infoForm = new FormGroup({
         id: new FormControl(null),
@@ -103,9 +117,12 @@ export class PersonalInformationsComponent implements OnInit {
         email: new FormControl(null, {
           validators: [Validators.required, emailValidator],
         }),
+        civility: new FormControl(null, Validators.required),
+        birthday: new FormControl(null, Validators.required),
+        address: new FormControl(null, Validators.required),
+        additional_address: new FormControl(null),
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
-        civility: new FormControl(null, Validators.required),
       });
     }
     this.updateCSS();
@@ -152,7 +169,7 @@ export class PersonalInformationsComponent implements OnInit {
   getPersonalInfo() {
     if (this.isPatientFile) {
       this.account = this.infoPatient;
-      this.otherPhones.next(this.account.otherPhoneNumber);
+      this.otherPhones.next(this.account.otherPhones);
       if (this.account.photoId) {
         this.hasImage = true;
         this.getPictureProfile(this.account.photoId);
@@ -160,11 +177,13 @@ export class PersonalInformationsComponent implements OnInit {
       this.infoForm.patchValue({
         id: this.account.id ? this.account.id : null,
         email: this.account.email ? this.account.email : "",
-        phone: this.account.phoneNumber ? this.account.phoneNumber : "+33",
+        phone: this.account.phoneNumber
+          ? "+" + this.account.phoneNumber
+          : "+33",
         last_name: this.account.lastName ? this.account.lastName : "",
         first_name: this.account.firstName ? this.account.firstName : "",
-        title: this.account.civility ? this.account.civility : null,
-        speciality: this.account.speciality ? this.account.speciality.id : null,
+        civility: this.account.civility ? this.account.civility : null,
+        birthday: this.account.birthday ? this.account.birthday : null,
         address: this.account.address ? this.account.address : "",
         additional_address: this.account.additionalAddress
           ? this.account.additionalAddress
