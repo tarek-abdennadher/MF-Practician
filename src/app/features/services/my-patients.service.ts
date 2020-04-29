@@ -30,6 +30,13 @@ export class MyPatientsService {
     );
   }
 
+  getPatientsArchivedOfCurrentParactician(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/archived"
+    );
+  }
+
   addPatientToMyPatients(patientId: number): Observable<Boolean> {
     return this.globalService.call(
       RequestType.POST,
@@ -55,6 +62,13 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.favorite + "authorize/" + patientId
+    );
+  }
+
+  archivePatient(patientId: number): Observable<Boolean> {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.favorite + "archive/" + patientId
     );
   }
 
