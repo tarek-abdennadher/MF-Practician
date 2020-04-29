@@ -64,7 +64,7 @@ export class ContactDetailComponent implements OnInit {
       speciality: new FormControl(null),
       address: new FormControl(null),
       additional_address: new FormControl(null),
-      phone: new FormControl("+33"),
+      phone: new FormControl(null),
       picture: new FormControl(null),
     });
   }
