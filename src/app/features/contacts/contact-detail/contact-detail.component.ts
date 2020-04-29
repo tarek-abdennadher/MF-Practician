@@ -85,7 +85,7 @@ export class ContactDetailComponent implements OnInit {
         speciality: contact.speciality ? contact.speciality.id : null,
         address: contact.address,
         additional_address: contact.additionalAddress,
-        phone: contact.phoneNumber,
+        phone: contact.phoneNumber ? contact.phoneNumber : "+33",
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId
       });
