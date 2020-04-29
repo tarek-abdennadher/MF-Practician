@@ -91,7 +91,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
@@ -111,7 +111,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
@@ -131,7 +131,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
@@ -151,7 +151,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
@@ -180,7 +180,7 @@ export class MyPatientsComponent implements OnInit {
     });
   }
 
-  mappingMyPatients(patient, prohibited) {
+  mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];
     myPatients.users.push({
@@ -194,6 +194,7 @@ export class MyPatientsComponent implements OnInit {
     myPatients.isMarkAsSeen = true;
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;
+    myPatients.isArchived = archived;
     return myPatients;
   }
 
@@ -225,6 +226,7 @@ export class MyPatientsComponent implements OnInit {
           this.filtredPatients = this.filtredPatients.filter((elm) =>
             elm.users[0].id != item.users[0].id
           );
+          this.number--;
         }
       });
   }
@@ -246,6 +248,7 @@ export class MyPatientsComponent implements OnInit {
               this.filtredPatients = this.filtredPatients.filter(
                 (elm) => elm.users[0].id != item.users[0].id
               );
+              this.number--;
             });
         }
       });
@@ -259,6 +262,7 @@ export class MyPatientsComponent implements OnInit {
             elm.users[0].id != item.users[0].id
           );
         }
+        this.number--;
       });
   }
 
@@ -270,6 +274,7 @@ export class MyPatientsComponent implements OnInit {
           this.filtredPatients = this.filtredPatients.filter((elm) =>
             elm.users[0].id != item.users[0].id
           );
+          this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
@@ -295,6 +300,7 @@ export class MyPatientsComponent implements OnInit {
           this.filtredPatients = this.filtredPatients.filter((elm) =>
             elm.users[0].id != item.users[0].id
           );
+          this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
@@ -315,6 +321,20 @@ export class MyPatientsComponent implements OnInit {
           this.filtredPatients = this.filtredPatients.filter((elm) =>
             elm.users[0].id != item.users[0].id
           );
+          this.number--;
+        }
+      });
+  }
+
+  activatedAction(item) {
+    this.myPatientsService
+      .activatePatient(item.users[0].id)
+      .subscribe((resp) => {
+        if (resp == true) {
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
+          this.number--;
         }
       });
   }

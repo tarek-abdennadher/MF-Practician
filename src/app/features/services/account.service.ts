@@ -150,4 +150,10 @@ export class AccountService {
       ids
     );
   }
+  getAccountDetails(id:number){
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.account + "/detail/"+id
+    );
+  }
 }

@@ -72,6 +72,13 @@ export class MyPatientsService {
     );
   }
 
+  activatePatient(patientId: number): Observable<Boolean> {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.favorite + "activate/" + patientId
+    );
+  }
+
   acceptPatientInvitation(patientId: number): Observable<Boolean> {
     return this.globalService.call(
       RequestType.PUT,

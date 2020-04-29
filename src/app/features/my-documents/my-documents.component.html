@@ -1,11 +1,27 @@
-<lib-hlsLinks
+<div class="form-inline col-md-12">
+<lib-hlsLinks     class="col-md-9 padd-right"
   [page]="page"
   [topText]="topText"
   [backButton]="backButton"
   (backButtonAction)="goBack()"
 >
 </lib-hlsLinks>
-<div id="documents">
-  <lib-hls-documents [attachements]="attachements" (visualize)="visualizeFile($event)" (download)="downloadFile($event)"
-    > </lib-hls-documents>
+<div class="col-md-3 input-icons">
+  <i  class="fa fa-search"></i>
+  <input
+  (keyup)="searchAction(search)"
+    [(ngModel)]="search"
+    placeholder="Nom, prénom"
+    type="text"
+    class="form-control input-field"
+  />
 </div>
+</div>
+<lib-hlsMessagingList
+  [isCheckbox]="isCheckbox"
+  [list]="itemsList"
+  (cardAction)="cardClicked($event)"
+  (detailAction)="cardClicked($event)"
+  [imageSource]="imageSource"
+></lib-hlsMessagingList>
+
