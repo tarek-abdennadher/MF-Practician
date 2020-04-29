@@ -56,7 +56,7 @@ export class IntPhoneComponent implements OnInit {
     this.updateCSS();
     /* Patch list if contains elements */
     this.phonesToEdit.subscribe(list => {
-      if (list && list.length > 0) {
+      if (list) {
         this.updateCSS();
         list.forEach(p =>
           this.phoneList.push(this.updatePhone(p)));
