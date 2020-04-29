@@ -173,6 +173,7 @@ export class MessagingReplyComponent implements OnInit {
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
+    delete message.sender.img
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
