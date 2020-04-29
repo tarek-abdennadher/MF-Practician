@@ -2,18 +2,52 @@ import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { Observable, observable } from "rxjs";
 import { RequestType } from "@app/shared/enmus/requestType";
-import { HttpRequest, HttpClient } from '@angular/common/http';
+import { HttpEvent, HttpRequest, HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: "root"
 })
 export class MyDocumentsService {
-  constructor(private globalService: GlobalService,private http: HttpClient) {}
+  public person:any;
+  constructor(private globalService: GlobalService, private http: HttpClient) {}
 
   getMyAttachements(): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.attachements + "/my"
+    );
+  }
+
+  getMyAttachementsBySenderOrReceiverId(id:number): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/my/"+id
+    );
+  }
+  getMyAttachementsByObject(id:number,object:string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/my/"+id+"/object/"+object
+    );
+  }
+  getMyAttachementsBySenderForId(id:number,senderForId:string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/my/"+id+"/senderFor/"+senderForId
+    );
+  }
+
+  getMyAttachementsBySenderForIdAndObject(id:number,senderForId:string,object:string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/my/"+id+"/object/"+object+"/senderFor/"+senderForId
+    );
+  }
+
+  getMySendersAndeceiversDetails(): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/mySendersAndReceivers"
     );
   }
 
