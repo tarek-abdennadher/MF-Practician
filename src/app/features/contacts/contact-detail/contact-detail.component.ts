@@ -5,6 +5,7 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
+import { Subject } from 'rxjs';
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
@@ -17,10 +18,15 @@ export class ContactDetailComponent implements OnInit {
   labels;
   public infoForm: FormGroup;
   submitted = false;
-  topText = "Mes contacts PRO";
+  topText = "Fiche contact Pro";
   page = "MY_PRO_CONTACTS";
+  bottomText = ""
   backButton = true;
   param;
+  public phones = new Array();
+  public isPhonesValid = false;
+  otherPhones = new Subject<any[]>();
+  addnewPhone = new Subject<boolean>();
   constructor(
     private _location: Location,
     private route: ActivatedRoute,
@@ -41,6 +47,7 @@ export class ContactDetailComponent implements OnInit {
     });
   }
   initForm() {
+    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       type: new FormControl(null, Validators.required),
@@ -54,9 +61,7 @@ export class ContactDetailComponent implements OnInit {
       speciality: new FormControl(null),
       address: new FormControl(null),
       additional_address: new FormControl(null),
-      phone: new FormControl(null, Validators.pattern("[0-9]*")),
-      other_phone: new FormControl(null, Validators.pattern("[0-9]*")),
-      other_phone_note: new FormControl(null),
+      phone: new FormControl(null),
       picture: new FormControl(null),
     });
   }
@@ -65,6 +70,7 @@ export class ContactDetailComponent implements OnInit {
   }
   getContact(id) {
     this.contactsService.getContactById(id).subscribe((contact) => {
+      this.otherPhones.next(contact.otherPhones);
       this.infoForm.patchValue({
         id: contact.id,
         type: contact.contactType,
@@ -77,11 +83,12 @@ export class ContactDetailComponent implements OnInit {
         address: contact.address,
         additional_address: contact.additionalAddress,
         phone: contact.phoneNumber,
-        other_phone: contact.otherPhoneNumber,
-        other_phone_note: contact.note,
-        picture: contact.photoId,
+        otherPhones: contact.otherPhones ? contact.otherPhones : [],
+        picture: contact.photoId
       });
+      this.bottomText = contact.lastName + contact.firstName
     });
+
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
@@ -106,11 +113,10 @@ export class ContactDetailComponent implements OnInit {
       firstName: value.first_name,
       lastName: value.last_name,
       phoneNumber: value.phone,
+      otherPhones: this.phones,
       email: value.email,
       address: value.address,
-      additionalAddress: value.additional_address,
-      otherPhoneNumber: value.other_phone,
-      note: value.other_phone_note,
+      additionalAddress: value.additional_address
     };
     let successResult = false;
     if (this.param == "add") {
@@ -126,13 +132,32 @@ export class ContactDetailComponent implements OnInit {
       .navigate(["/mes-contacts-pro"])
       .then(() => window.location.reload());
   }
-  resetOtherPhone() {
-    this.infoForm.patchValue({
-      other_phone: null,
-      other_phone_note: null,
-    });
-  }
+
   BackButton() {
     this._location.back();
+  }
+  // Phone component CSS
+  updateCSS() {
+    $(document).ready(function () {
+      $(".form-control").each(function () {
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border-color", "#F1F1F1");
+      });
+      $(".dropbtn.btn").each(function () {
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border-color", "#F1F1F1");
+        $(this).css("padding", "8px");
+      });
+    });
+  }
+  // Other phones list 
+  getPhoneList(event) {
+    this.phones = event.value;
+  }
+  submitPhones(event) {
+    this.isPhonesValid = event;
+  }
+  addPhone() {
+    this.addnewPhone.next(true);
   }
 }

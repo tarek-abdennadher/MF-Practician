@@ -130,12 +130,7 @@ export class PersonalInformationsComponent implements OnInit {
       this.specialities = specialitiesList;
     });
   }
-  resetOtherPhone() {
-    this.infoForm.patchValue({
-      other_phone: null,
-      other_phone_note: null,
-    });
-  }
+
   passwordValid(event) {
     this.isPasswordValid = event;
   }
@@ -235,7 +230,6 @@ export class PersonalInformationsComponent implements OnInit {
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          note: this.infoForm.value.other_phone_note,
           photoId: this.account.photoId,
         },
       };
