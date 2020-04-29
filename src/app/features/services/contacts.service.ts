@@ -100,4 +100,11 @@ export class ContactsService {
       this.globalService.url.contact_pro + "/contacts-practician"
     );
   }
+
+  getAllContactsPracticianWithAditionalPatient(patientId): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/contacts-practician/additionalId/"+patientId
+    );
+  }
 }
