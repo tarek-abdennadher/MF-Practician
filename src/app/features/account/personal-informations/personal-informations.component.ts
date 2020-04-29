@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import {
@@ -23,6 +23,8 @@ declare var $: any;
   styleUrls: ["./personal-informations.component.scss"],
 })
 export class PersonalInformationsComponent implements OnInit {
+  @Input("isPatientFile") isPatientFile = false;
+  @Input("infoPatient") infoPatient: any;
   specialities: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
@@ -143,63 +145,89 @@ export class PersonalInformationsComponent implements OnInit {
     this.showPasswordFailure = false;
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
-      if (account && account.practician) {
-        this.account = account.practician;
-        this.otherPhones.next(account.otherPhones);
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        }
-        this.infoForm.patchValue({
-          id: account.practician.id ? account.practician.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : '+33',
-          last_name: account.practician.lastName
-            ? account.practician.lastName
-            : "",
-          first_name: account.practician.firstName
-            ? account.practician.firstName
-            : "",
-          title: account.practician.jobTitle
-            ? account.practician.jobTitle
-            : null,
-          speciality: account.practician.speciality
-            ? account.practician.speciality.id
-            : null,
-          address: account.practician.address ? account.practician.address : "",
-          additional_address: account.practician.additionalAddress
-            ? account.practician.additionalAddress
-            : "",
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-          picture: account.practician.photoId
-            ? account.practician.photoId
-            : null,
-        });
-      } else if (account && account.secretary) {
-        this.account = account.secretary;
-        this.otherPhones.next(account.otherPhones);
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        }
-        this.infoForm.patchValue({
-          id: account.secretary.id ? account.secretary.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "+33",
-          last_name: account.secretary.lastName
-            ? account.secretary.lastName
-            : "",
-          first_name: account.secretary.firstName
-            ? account.secretary.firstName
-            : "",
-          civility: account.secretary.civility
-            ? account.secretary.civility
-            : null,
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-        });
+    if (this.isPatientFile) {
+      this.account = this.infoPatient;
+      this.otherPhones.next(this.account.otherPhoneNumber);
+      if (this.account.photoId) {
+        this.hasImage = true;
+        this.getPictureProfile(this.account.photoId);
       }
-    });
+      this.infoForm.patchValue({
+        id: this.account.id ? this.account.id : null,
+        email: this.account.email ? this.account.email : "",
+        phone: this.account.phoneNumber ? this.account.phoneNumber : "+33",
+        last_name: this.account.lastName ? this.account.lastName : "",
+        first_name: this.account.firstName ? this.account.firstName : "",
+        title: this.account.civility ? this.account.civility : null,
+        speciality: this.account.speciality ? this.account.speciality.id : null,
+        address: this.account.address ? this.account.address : "",
+        additional_address: this.account.additionalAddress
+          ? this.account.additionalAddress
+          : "",
+        otherPhones: this.account.otherPhones ? this.account.otherPhones : [],
+        picture: this.account.photoId ? this.account.photoId : null,
+      });
+    } else {
+      this.accountService.getCurrentAccount().subscribe((account) => {
+        if (account && account.practician) {
+          this.account = account.practician;
+          this.otherPhones.next(account.otherPhones);
+          if (this.account.photoId) {
+            this.hasImage = true;
+            this.getPictureProfile(this.account.photoId);
+          }
+          this.infoForm.patchValue({
+            id: account.practician.id ? account.practician.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.practician.lastName
+              ? account.practician.lastName
+              : "",
+            first_name: account.practician.firstName
+              ? account.practician.firstName
+              : "",
+            title: account.practician.jobTitle
+              ? account.practician.jobTitle
+              : null,
+            speciality: account.practician.speciality
+              ? account.practician.speciality.id
+              : null,
+            address: account.practician.address
+              ? account.practician.address
+              : "",
+            additional_address: account.practician.additionalAddress
+              ? account.practician.additionalAddress
+              : "",
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+            picture: account.practician.photoId
+              ? account.practician.photoId
+              : null,
+          });
+        } else if (account && account.secretary) {
+          this.account = account.secretary;
+          this.otherPhones.next(account.otherPhones);
+          if (this.account.photoId) {
+            this.hasImage = true;
+            this.getPictureProfile(this.account.photoId);
+          }
+          this.infoForm.patchValue({
+            id: account.secretary.id ? account.secretary.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.secretary.lastName
+              ? account.secretary.lastName
+              : "",
+            first_name: account.secretary.firstName
+              ? account.secretary.firstName
+              : "",
+            civility: account.secretary.civility
+              ? account.secretary.civility
+              : null,
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+          });
+        }
+      });
+    }
   }
   submit() {
     this.submitted = true;
@@ -225,8 +253,8 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                (s) => s.id == this.infoForm.value.speciality
-              )
+                  (s) => s.id == this.infoForm.value.speciality
+                )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
