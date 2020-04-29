@@ -183,7 +183,9 @@ export class PersonalInformationsComponent implements OnInit {
         last_name: this.account.lastName ? this.account.lastName : "",
         first_name: this.account.firstName ? this.account.firstName : "",
         civility: this.account.civility ? this.account.civility : null,
-        birthday: this.account.birthday ? this.account.birthday : null,
+        birthday: this.account.birthday
+          ? new Date(this.account.birthday)
+          : null,
         address: this.account.address ? this.account.address : "",
         additional_address: this.account.additionalAddress
           ? this.account.additionalAddress
@@ -420,16 +422,41 @@ export class PersonalInformationsComponent implements OnInit {
   };
 
   updateCSS() {
-    $(document).ready(function () {
-      $(".form-control").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
+    console.log(this.isPatientFile);
+    if (!this.isPatientFile) {
+      $(document).ready(function () {
+        $(".form-control").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+        });
+        $(".dropbtn.btn").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+          $(this).css("padding", "8px");
+        });
       });
-      $(".dropbtn.btn").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("padding", "8px");
+    } else {
+      $(document).ready(function () {
+        $(".form-control").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+          $(this).css("pointer-events", "none");
+        });
+        $(".dropbtn.btn").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+          $(this).css("padding", "8px");
+          $(this).css("pointer-events", "none");
+        });
       });
-    });
+    }
+  }
+
+  testInput(event) {
+    console.log(event);
+    if (this.isPatientFile) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
 }

@@ -120,26 +120,16 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-9">
+              <div *ngIf="isPatientFile" class="col-sm-9">
                 <select
+                  [attr.disabled]="isPatientFile"
                   formControlName="civility"
                   class="civility custom-select"
                   [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
                 >
-                  <option value="null" disabled="true" [selected]="true">{{
-                    labels.civility
-                  }}</option>
                   <option value="M">M</option>
                   <option value="MME">MME</option>
                 </select>
-                <div
-                  *ngIf="submitted && ctr.civility.errors"
-                  class="text-danger"
-                >
-                  <div *ngIf="ctr.civility.errors.required">
-                    {{ labels.required }}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -182,24 +172,13 @@
               <div class="col-sm-9 input-icons">
                 <i class="fa fa-calendar icon"></i>
                 <input
+                  disabled
                   type="text"
                   formControlName="birthday"
                   class="calender form-control input-field"
                   placeholder="{{ messages.birth_date }}"
                   bsDatepicker
-                  [maxDate]="maxDate"
-                  [placement]="placement"
-                  [bsConfig]="{ containerClass: 'theme-dark-blue' }"
-                  [ngClass]="{ 'is-invalid': submitted && f.birth_date.errors }"
                 />
-                <div
-                  *ngIf="submitted && ctr.speciality.errors"
-                  class="invalid-feedback"
-                >
-                  <div *ngIf="ctr.speciality.errors.required">
-                    {{ labels.required }}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -212,6 +191,7 @@
               }}</label>
               <div class="col-sm-9">
                 <input
+                  disabled="isPatientFile"
                   type="text"
                   formControlName="last_name"
                   class="form-control"
@@ -237,6 +217,7 @@
               }}</label>
               <div class="col-sm-9">
                 <international-phone-number
+                  [attr.disabled]="isPatientFile"
                   class="form-control phone"
                   id="phone"
                   formControlName="phone"
@@ -268,6 +249,7 @@
               >
               <div class="col-sm-9">
                 <input
+                  disabled="isPatientFile"
                   type="text"
                   formControlName="address"
                   class="form-control"
@@ -292,6 +274,7 @@
               }}</label>
               <div class="col-sm-9">
                 <input
+                  disabled="isPatientFile"
                   type="text"
                   formControlName="first_name"
                   class="form-control"
@@ -316,6 +299,7 @@
               }}</label>
               <div class="col-sm-9">
                 <input
+                  disabled="isPatientFile"
                   disabled
                   type="text"
                   formControlName="email"
@@ -342,6 +326,7 @@
               }}</label>
               <div class="col-sm-9">
                 <input
+                  disabled="isPatientFile"
                   type="text"
                   formControlName="additional_address"
                   class="form-control"
