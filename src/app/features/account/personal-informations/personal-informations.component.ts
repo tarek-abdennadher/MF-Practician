@@ -39,6 +39,7 @@ export class PersonalInformationsComponent implements OnInit {
   showPasswordFailure = false;
   passwordSubmitted = false;
   otherPhones = new Subject<any[]>();
+  addnewPhone = new Subject<boolean>();
   public infoForm: FormGroup;
   public passwordForm: FormGroup;
   public today = new Date().toISOString().substr(0, 10);
@@ -149,12 +150,7 @@ export class PersonalInformationsComponent implements OnInit {
       this.specialities = specialitiesList;
     });
   }
-  resetOtherPhone() {
-    this.infoForm.patchValue({
-      other_phone: null,
-      other_phone_note: null,
-    });
-  }
+
   passwordValid(event) {
     this.isPasswordValid = event;
   }
@@ -279,12 +275,11 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                  (s) => s.id == this.infoForm.value.speciality
-                )
+                (s) => s.id == this.infoForm.value.speciality
+              )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          note: this.infoForm.value.other_phone_note,
           photoId: this.account.photoId,
         },
       };
@@ -449,5 +444,8 @@ export class PersonalInformationsComponent implements OnInit {
         });
       });
     }
+  }
+  addPhone() {
+    this.addnewPhone.next(true);
   }
 }
