@@ -17,6 +17,7 @@ export class FeaturesService {
   numberOfAccepted: number = 0;
   private _numberOfPending = new BehaviorSubject<number>(0);
   numberOfProhibited: number = 0;
+  numberOfArchivedPatient: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public imageSource: string | ArrayBuffer = "assets/imgs/user.png";
   private searchSource = new BehaviorSubject(new search());

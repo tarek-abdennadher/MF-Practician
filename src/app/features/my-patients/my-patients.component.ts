@@ -61,6 +61,12 @@ export class MyPatientsComponent implements OnInit {
             this.getPatientsProhibitedOfCurrentParactician();
             break;
           }
+          case "archived": {
+            this.section = "archived";
+            this.isInvitation = false;
+            this.getPatientsArchivedOfCurrentParactician();
+            break;
+          }
         }
       }
     });
@@ -89,24 +95,7 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = this.myPatients;
-        this.myPatients.forEach((item) => {
-          if (item.photoId) {
-            item.users.forEach((user) => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          }
-        });
+        this.retriveImg(this.myPatients);
       });
   }
 
@@ -126,24 +115,7 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = this.myPatients;
-        this.myPatients.forEach((item) => {
-          if (item.photoId) {
-            item.users.forEach((user) => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          }
-        });
+        this.retriveImg(this.myPatients);
       });
   }
 
@@ -163,25 +135,49 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = this.myPatients;
-        this.myPatients.forEach((item) => {
-          if (item.photoId) {
-            item.users.forEach((user) => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          }
-        });
+        this.retriveImg(this.myPatients);
       });
+  }
+
+  getPatientsArchivedOfCurrentParactician() {
+    this.myPatients = [];
+    this.myPatientsService
+      .getPatientsArchivedOfCurrentParactician()
+      .subscribe((myPatients) => {
+        this.number = myPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+        myPatients.forEach((elm) => {
+          this.myPatients.push(
+            this.mappingMyPatients(elm.patient, elm.prohibited)
+          );
+        });
+        this.filtredPatients = this.myPatients;
+        this.retriveImg(this.myPatients);
+      });
+  }
+
+  retriveImg(list) {
+    list.forEach((item) => {
+      if (item.photoId) {
+        item.users.forEach((user) => {
+          this.documentService.downloadFile(item.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        });
+      }
+    });
   }
 
   mappingMyPatients(patient, prohibited) {
@@ -226,9 +222,9 @@ export class MyPatientsComponent implements OnInit {
       .prohibitePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
         }
       });
   }
@@ -259,9 +255,9 @@ export class MyPatientsComponent implements OnInit {
       .authorizePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
         }
       });
   }
@@ -271,16 +267,16 @@ export class MyPatientsComponent implements OnInit {
       .acceptPatientInvitation(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => {
-              notif.senderId != item.users[0].accountId;
-            }
+            (notif) =>
+              notif.senderId != item.users[0].accountId
+
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
@@ -296,16 +292,28 @@ export class MyPatientsComponent implements OnInit {
       .declinePatientInvitation(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => {
-              notif.senderId != item.users[0].accountId;
-            }
+            (notif) =>
+              notif.senderId != item.users[0].accountId
+
+          );
+        }
+      });
+  }
+
+  archivedAction(item) {
+    this.myPatientsService
+      .archivePatient(item.users[0].id)
+      .subscribe((resp) => {
+        if (resp == true) {
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
           );
         }
       });
