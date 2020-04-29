@@ -33,10 +33,11 @@ import { PracticianInvitationComponent } from "./practician-invitation/practicia
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
 import { NgxSpinnerModule } from "ngx-spinner";
-import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
-import { SharedModule } from '@app/shared/shared.module';
+import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
+import { SharedModule } from "@app/shared/shared.module";
 import { PersonalInformationsComponent } from "./account/personal-informations/personal-informations.component";
 import { HlsPasswordStrengthModule } from "hls-password-strength";
+import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -94,7 +95,7 @@ const notifierOptions: NotifierOptions = {
     PracticianInvitationComponent,
     PatientDetailComponent,
     EnumCorrespondencePipe,
-    PersonalInformationsComponent
+    PersonalInformationsComponent,
   ],
   imports: [
     FormsModule,
@@ -115,10 +116,11 @@ const notifierOptions: NotifierOptions = {
     NgxSpinnerModule,
     InternationalPhoneNumberModule,
     SharedModule,
+    BsDatepickerModule.forRoot(),
     HlsPasswordStrengthModule,
-    InternationalPhoneNumberModule
+    InternationalPhoneNumberModule,
   ],
 
   providers: [MessageService, ContactsService],
 })
-export class FeaturesModule { }
+export class FeaturesModule {}

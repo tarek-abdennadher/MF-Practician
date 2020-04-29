@@ -133,7 +133,6 @@ input[type="file"] {
   padding: 6px 6px 6px 50px !important;
 }
 
-
 .title {
   color: $color-helssy-grey;
   font-size: 18px !important;
@@ -144,9 +143,8 @@ input[type="file"] {
   i,
   hr {
     margin-left: 10px;
-
   }
-  i{
+  i {
     font-size: 17px;
   }
   span {
@@ -174,25 +172,26 @@ input[type="file"] {
   height: 50px;
 }
 
-.btn.btn-primary.btn-xs, .btn.btn-danger.btn-xs{
+.btn.btn-primary.btn-xs,
+.btn.btn-danger.btn-xs {
   width: 40px;
 }
 
-    // buttons add phone CSS
-    .btn-icon {
-      max-width: 40px;
-      color: white;
-      cursor: pointer;
-      font-weight: lighter;
-      background: #41BDDF 0% 0% no-repeat padding-box;
-      border-radius: 5px;
-      opacity: 1;
-      height: 50px;
-        }
+// buttons add phone CSS
+.btn-icon {
+  max-width: 40px;
+  color: white;
+  cursor: pointer;
+  font-weight: lighter;
+  background: #41bddf 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  height: 50px;
+}
 // Image CSS
 .image-container {
   width: 100%;
-height: auto;
+  height: auto;
   .image {
     opacity: 1;
     transition: 0.5s ease;
@@ -225,4 +224,17 @@ height: auto;
 }
 .image-icon {
   cursor: pointer;
+}
+.input-icons i {
+  position: absolute;
+}
+
+.input-icons {
+  width: 100%;
+  margin-bottom: -45px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
 }

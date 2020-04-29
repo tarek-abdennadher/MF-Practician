@@ -29,16 +29,17 @@ export class ContactsService {
     other_phone: "Autre tél",
     validate: "Valider",
     title: "Titre",
-    civility: "Civilité",
     speciality: "Spécialité",
+    civility: "Civilité (*)",
     facility_name: "Nom de l'établissement",
     confirm: "Confirmer",
     cancel: "Annuler",
     delete_sec_confirm: "êtes-vous sûr de vouloir supprimer cette secrétaire ?",
     delete_sec_title: "Supprimer une secrétaire",
-    phone_error: "      Veuillez vérifier les téléphones saisis"
+    birth_date: "Date de naissance (*)",
+    phone_error: "      Veuillez vérifier les téléphones saisis",
   };
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
 
   getContactsPro() {
     return this.globalService.call(
