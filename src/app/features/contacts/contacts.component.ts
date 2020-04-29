@@ -26,7 +26,7 @@ export class ContactsComponent implements OnInit {
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts PRO";
-  page = "MY_PRO_CONTACTS";
+  page = "MY_PRACTICIANS";
   backButton = true;
   constructor(
     public accountService: AccountService,
@@ -35,7 +35,7 @@ export class ContactsComponent implements OnInit {
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService
-  ) {}
+  ) { }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.itemsList = new Array();

@@ -2,8 +2,8 @@
   <form [formGroup]="phoneForm">
     <div formArrayName="phoneList" *ngFor="let p of phoneList.controls; let i = index">
       <div [formGroupName]="i" class="phoneList">
-        <div class="row">
-          <div class="col-sm-6 form-group row">
+        <div class="row ml-1 ">
+          <div class="col-sm-11 form-group row">
             <international-phone-number class="form-control" formControlName="phoneNumber" placeholder="Téléphone"
               [maxlength]="20" [defaultCountry]="phoneList.at(i).get('id') ? '' : 'fr'" [ngClass]="{
                         'is-invalid': submitted && p.controls.phoneNumber.errors
@@ -18,13 +18,15 @@
               {{ errorMessage }}
             </div>
           </div>
-          <div class="col-sm-5">
-            <input type="text" class="form-control" formControlName="note" placeholder="Préciser..." />
-          </div>
           <div class="col-sm-1">
             <button (click)="removePhone(i)" class="btn btn-xs btn-icon mb-2">
               <i class="far fa-trash-alt"></i>
             </button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ml-1 col-sm-12">
+            <input type="text" class="form-control" formControlName="note" placeholder="Préciser..." />
           </div>
         </div>
       </div>

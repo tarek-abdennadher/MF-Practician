@@ -6,6 +6,7 @@ import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from 'rxjs';
+declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
@@ -19,10 +20,11 @@ export class ContactDetailComponent implements OnInit {
   public infoForm: FormGroup;
   submitted = false;
   topText = "Fiche contact Pro";
-  page = "MY_PRO_CONTACTS";
+  page = "MY_PRACTICIANS";
   bottomText = ""
   backButton = true;
   param;
+  failureAlert = false;
   public phones = new Array();
   public isPhonesValid = false;
   otherPhones = new Subject<any[]>();
@@ -34,6 +36,7 @@ export class ContactDetailComponent implements OnInit {
     private contactsService: ContactsService
   ) {
     this.labels = this.contactsService.messages;
+    this.failureAlert = false;
     this.initForm();
   }
 
@@ -61,7 +64,7 @@ export class ContactDetailComponent implements OnInit {
       speciality: new FormControl(null),
       address: new FormControl(null),
       additional_address: new FormControl(null),
-      phone: new FormControl(null),
+      phone: new FormControl("+33"),
       picture: new FormControl(null),
     });
   }
@@ -86,7 +89,7 @@ export class ContactDetailComponent implements OnInit {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId
       });
-      this.bottomText = contact.lastName + contact.firstName
+      this.bottomText = contact.lastName + " " + contact.firstName
     });
 
   }
@@ -97,6 +100,11 @@ export class ContactDetailComponent implements OnInit {
   }
   submit() {
     this.submitted = true;
+    if (!this.isPhonesValid) {
+      this.failureAlert = true;
+      $("#FailureAlert").alert();
+      return;
+    }
     if (this.infoForm.invalid) {
       return;
     }
@@ -159,5 +167,8 @@ export class ContactDetailComponent implements OnInit {
   }
   addPhone() {
     this.addnewPhone.next(true);
+  }
+  close() {
+    this.failureAlert = false;
   }
 }

@@ -3,6 +3,15 @@
 </lib-hlsLinks>
 <br>
 <div class="card">
+  <br>
+  <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+    {{ labels.phone_error }}
+    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </a>
+  <br />
   <div class="card-body">
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
       <div class="container">
@@ -96,6 +105,21 @@
         <div class="row">
           <div class="col">
             <div class="form-group row">
+              <label for="last_name" class="col-sm-3 col-form-label">{{
+                labels.last_name
+              }}</label>
+              <div class="col-sm-9">
+                <input type="text" formControlName="last_name" class="form-control" id="last_name" [ngClass]="{
+                    'is-invalid': submitted && ctr.last_name.errors
+                  }" />
+                <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+                  <div *ngIf="ctr.last_name.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
               <label for="first_name" class="col-sm-3 col-form-label">{{
                 labels.first_name
               }}</label>
@@ -110,6 +134,26 @@
                 </div>
               </div>
             </div>
+            <div class="form-group row">
+              <label for="address" class="col-sm-3 col-form-label">{{
+                labels.address
+              }}</label>
+              <div class="col-sm-9">
+                <input type="text" formControlName="address" class="form-control" id="address" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="additional_address" class="col-sm-3 col-form-label">{{
+                labels.additional_address
+              }}</label>
+              <div class="col-sm-9">
+                <input type="text" formControlName="additional_address" class="form-control" id="additional_address"
+                  [ngClass]="{ 'is-invalid': submitted }" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
             <div class="form-group row">
               <label for="email" class="col-sm-3 col-form-label">{{
                 labels.email_input
@@ -127,6 +171,7 @@
                 </div>
               </div>
             </div>
+
             <div class="form-group row">
               <label for="phone" class="col-sm-3 col-form-label">{{labels.phone}}</label>
               <div class="col-sm-8">
@@ -152,41 +197,6 @@
                 <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" [addnewPhone]="addnewPhone"
                   (validPhones)="submitPhones($event)">
                 </int-phone>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group row">
-              <label for="last_name" class="col-sm-3 col-form-label">{{
-                labels.last_name
-              }}</label>
-              <div class="col-sm-9">
-                <input type="text" formControlName="last_name" class="form-control" id="last_name" [ngClass]="{
-                    'is-invalid': submitted && ctr.last_name.errors
-                  }" />
-                <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
-                  <div *ngIf="ctr.last_name.errors.required">
-                    {{ labels.required }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="address" class="col-sm-3 col-form-label">{{
-                labels.address
-              }}</label>
-              <div class="col-sm-9">
-                <input type="text" formControlName="address" class="form-control" id="address" />
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="additional_address" class="col-sm-3 col-form-label">{{
-                labels.additional_address
-              }}</label>
-              <div class="col-sm-9">
-                <input type="text" formControlName="additional_address" class="form-control" id="additional_address"
-                  [ngClass]="{ 'is-invalid': submitted }" />
               </div>
             </div>
 
