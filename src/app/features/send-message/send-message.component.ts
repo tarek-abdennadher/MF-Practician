@@ -92,7 +92,17 @@ export class SendMessageComponent implements OnInit {
   }
 
   getAllContactsPractician() {
-    return this.contactsService
+    if (this.selectedPracticianId) {
+      return this.contactsService
+      .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((contactsPractician: any) => {
+          this.parseContactsPractician(contactsPractician);
+        })
+      );
+    } else {
+      return this.contactsService
       .getAllContactsPractician()
       .pipe(takeUntil(this._destroyed$))
       .pipe(
@@ -100,6 +110,7 @@ export class SendMessageComponent implements OnInit {
           this.parseContactsPractician(contactsPractician);
         })
       );
+    }
   }
 
   parseContactsPractician(contactsPractician) {
