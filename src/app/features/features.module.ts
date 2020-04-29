@@ -33,6 +33,10 @@ import { PracticianInvitationComponent } from "./practician-invitation/practicia
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
 import { NgxSpinnerModule } from "ngx-spinner";
+import { PersonalInformationsComponent } from "./account/personal-informations/personal-informations.component";
+import { HlsPasswordStrengthModule } from "hls-password-strength";
+import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
+import { SharedModule } from "@app/shared/shared.module";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -90,6 +94,7 @@ const notifierOptions: NotifierOptions = {
     PracticianInvitationComponent,
     PatientDetailComponent,
     EnumCorrespondencePipe,
+    PersonalInformationsComponent,
   ],
   imports: [
     FormsModule,
@@ -107,8 +112,10 @@ const notifierOptions: NotifierOptions = {
     HlsSendMessageModule,
     MatDialogModule,
     MatIconModule,
-    NgxSpinnerModule
-
+    NgxSpinnerModule,
+    HlsPasswordStrengthModule,
+    InternationalPhoneNumberModule,
+    SharedModule,
   ],
 
   providers: [MessageService, ContactsService],

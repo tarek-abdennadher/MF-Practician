@@ -94,6 +94,7 @@ export class GlobalService {
     delete_title_patient: "Supprimer le patient",
     newArchivedMessage: "message non lu",
     newArchivedMessages: "messages non lus",
+    attachedPersonnes: "Personnes Rattachées au patient",
   };
   public call(
     method: RequestType,

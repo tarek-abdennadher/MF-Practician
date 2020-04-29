@@ -66,7 +66,7 @@ export class MessagingListComponent implements OnInit {
             this.featureService.getUserId())
       ) {
         this.isPatientFile
-          ? (this.topText = "Historique des échanges avec")
+          ? (this.topText = "Historique des échanges -")
           : (this.topText = "Boîte de réception");
         this.isMyInbox = false;
         this.featureService.selectedPracticianId = params["id"]
@@ -206,11 +206,11 @@ export class MessagingListComponent implements OnInit {
             if (resp == true) {
               this.itemsList.forEach((item) => (item.isSeen = true));
               this.filtredItemList.forEach((item) => (item.isSeen = true));
-              this.featureService.listNotifications=this.featureService.listNotifications.filter(
-                notification => notification.type != "MESSAGE"
+              this.featureService.listNotifications = this.featureService.listNotifications.filter(
+                (notification) => notification.type != "MESSAGE"
               );
               this.featureService.setNumberOfInbox(0);
-              this.number=0;
+              this.number = 0;
             }
           },
           (error) => {
