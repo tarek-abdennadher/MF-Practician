@@ -16,7 +16,7 @@ export class ContactsService {
     email_invalid_format: "Format email invalide",
     email_not_same: "L 'email ne correspond pas",
     required: "Le champ est obligatoire",
-    email_input: "Email (*)",
+    email_input: "Adresse e-mail (*)",
     phone_input: "Téléphone mobile ou fixe (*)",
     firstname: "Prénom (*)",
     name: "Nom (*)",
@@ -36,8 +36,9 @@ export class ContactsService {
     cancel: "Annuler",
     delete_sec_confirm: "êtes-vous sûr de vouloir supprimer cette secrétaire ?",
     delete_sec_title: "Supprimer une secrétaire",
+    phone_error: "      Veuillez vérifier les téléphones saisis"
   };
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService) { }
 
   getContactsPro() {
     return this.globalService.call(
