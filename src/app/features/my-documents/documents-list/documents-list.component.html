@@ -1,0 +1,25 @@
+<lib-hlsLinks
+  [page]="page"
+  [topText]="topText"
+  [backButton]="backButton"
+  (backButtonAction)="goBack()"
+  [person]="documentsService.person"
+>
+</lib-hlsLinks>
+<form *ngIf="links?.isMyDocuments" [formGroup]="filterDocumentsForm" class="d-flex p-2 flex-row-reverse bd-highlight">
+  <select id="documentType" class="form-control col-md-2" formControlName="documentType" (change)="filter()">
+    <option [value]="''"> Type</option>
+    <option *ngFor="let item of documentTypes" [value]="item">{{ item }}</option>
+  </select>
+  <select *ngIf="destinations?.size >0" id="destination" class="form-control col-md-2" formControlName="destination" (change)="filter()">
+    <option [value]="''">Moi même </option>
+    <option *ngFor="let item of destinations" [value]="item.id">{{ item.firstName }} {{item.lastName}}</option>
+  </select>
+</form>
+<lib-hlsMessagingList
+  [list]="itemList"
+  [imageSource]="imageSource"
+  (downloadAction)="downloadFile($event)"
+  (visualizeAction)="visualizeFile($event)"
+></lib-hlsMessagingList>
+
