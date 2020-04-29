@@ -122,11 +122,15 @@ export class MessagingDetailComponent implements OnInit {
           this.messagingDetail = message;
           this.prohibited = message.prohibited;
           this.isFromInbox = true;
+
           this.links = {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
+          if(this.messagingDetail.sender.senderId == this.featureService.getUserId()){
+            this.isFromInbox=false;
+          }
           this.messagingDetail.toReceivers.forEach((receiver) => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
@@ -297,15 +301,7 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   replyAction() {
-    if(this.messagingDetail.sender.senderId == this.featureService.getUserId()){
-      this.notifier.show({
-        message: this.globalService.toastrMessages.send_message_to_myself,
-        type: "error",
-        template: this.customNotificationTmpl,
-      });
-    }else {
     this.router.navigate(["/messagerie-repondre/", this.idMessage]);
-  }
   }
 
   acceptAction() {

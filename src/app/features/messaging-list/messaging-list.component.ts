@@ -254,7 +254,12 @@ export class MessagingListComponent implements OnInit {
           listToArchive.forEach((message) => {
             if (!message.isSeen) {
               this.featureService.numberOfArchieve++;
+              this.featureService.setNumberOfInbox(this.featureService.numberOfInbox - 1);
+              this.number--;
             }
+            this.featureService.listNotifications=this.featureService.listNotifications.filter(notification =>
+              !listToArchive.map(message =>message.id).includes(notification.messageId)
+            )
           });
           this.itemsList = this.itemsList.filter(function (elm, ind) {
             return messagesId.indexOf(elm.id) == -1;
@@ -435,6 +440,11 @@ export class MessagingListComponent implements OnInit {
         });
         if (!event.isSeen) {
           this.featureService.numberOfArchieve++;
+          this.featureService.setNumberOfInbox(this.featureService.numberOfInbox-1);
+          this.number--;
+          this.featureService.listNotifications=this.featureService.listNotifications.filter(notification =>
+            notification.messageId != event.id
+          )
         }
       },
       (error) => {
