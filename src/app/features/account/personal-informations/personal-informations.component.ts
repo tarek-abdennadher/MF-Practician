@@ -422,7 +422,6 @@ export class PersonalInformationsComponent implements OnInit {
   };
 
   updateCSS() {
-    console.log(this.isPatientFile);
     if (!this.isPatientFile) {
       $(document).ready(function () {
         $(".form-control").each(function () {
@@ -449,14 +448,6 @@ export class PersonalInformationsComponent implements OnInit {
           $(this).css("pointer-events", "none");
         });
       });
-    }
-  }
-
-  testInput(event) {
-    console.log(event);
-    if (this.isPatientFile) {
-      event.stopPropagation();
-      event.preventDefault();
     }
   }
 }
