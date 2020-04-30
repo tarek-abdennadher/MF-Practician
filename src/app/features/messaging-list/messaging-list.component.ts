@@ -226,6 +226,14 @@ export class MessagingListComponent implements OnInit {
           .subscribe(
             (resp) => {
               if (resp == true) {
+                let list: any[] = this.featureService.myPracticians.getValue();
+                if (list && list.length > 0) {
+                 this.featureService.updateNumberOfInboxForPractician(this.featureService.selectedPracticianId,0)
+                }
+                  this.number=0
+                  this.bottomText =this.globalService.messagesDisplayScreen.newMessage;
+
+
                 this.itemsList.forEach((item) => (item.isSeen = true));
                 this.filtredItemList.forEach((item) => (item.isSeen = true));
               }
@@ -420,6 +428,20 @@ export class MessagingListComponent implements OnInit {
         )
         .subscribe(
           (resp) => {
+            if(!event.isSeen){
+              let list: any[] = this.featureService.myPracticians.getValue();
+              let selectedInboxNumber;
+              if (list && list.length > 0) {
+               selectedInboxNumber =list.find((p) => p.id == this.featureService.selectedPracticianId).number;
+               this.featureService.updateNumberOfInboxForPractician(this.featureService.selectedPracticianId,selectedInboxNumber-1)
+              }
+                this.number--;
+                this.bottomText =
+                  this.number > 1
+                    ? this.globalService.messagesDisplayScreen.newMessages
+                    : this.globalService.messagesDisplayScreen.newMessage;
+
+              }
             if (resp == true) {
               let index = this.itemsList.findIndex(
                 (item) => item.id == messageId
