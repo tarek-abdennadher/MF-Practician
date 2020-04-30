@@ -176,15 +176,6 @@ export class MessagingListComponent implements OnInit {
         context: this.isMyInbox ? "inbox" : "inboxPraticien",
       },
     });
-    let notifLength = this.featureService.listNotifications.length;
-    this.featureService.listNotifications = this.featureService.listNotifications.filter(
-      (notif) => notif.messageId != item.id
-    );
-    if (notifLength > this.featureService.listNotifications.length) {
-      this.featureService.setNumberOfInbox(
-        this.featureService.numberOfInbox - 1
-      );
-    }
   }
 
   selectAllActionClicked() {
@@ -387,21 +378,22 @@ export class MessagingListComponent implements OnInit {
     if (this.isMyInbox) {
       this.messagesServ.markMessageAsSeen(messageId).subscribe(
         (resp) => {
-          if(!event.isSeen){
-            this.number--;
-            this.bottomText =
-              this.number > 1
-                ? this.globalService.messagesDisplayScreen.newMessages
-                : this.globalService.messagesDisplayScreen.newMessage;
-            let notifLength = this.featureService.listNotifications.length;
-            this.featureService.listNotifications = this.featureService.listNotifications.filter(
-              (notif) => notif.messageId != event.id
-            );
-              this.featureService.setNumberOfInbox(
-                this.featureService.numberOfInbox - 1
-              );
-          }
+
           if (resp == true) {
+            if(!event.isSeen){
+              this.number--;
+              this.bottomText =
+                this.number > 1
+                  ? this.globalService.messagesDisplayScreen.newMessages
+                  : this.globalService.messagesDisplayScreen.newMessage;
+              let notifLength = this.featureService.listNotifications.length;
+              this.featureService.listNotifications = this.featureService.listNotifications.filter(
+                (notif) => notif.messageId != event.id
+              );
+                this.featureService.setNumberOfInbox(
+                  this.featureService.numberOfInbox - 1
+                );
+            }
             let index = this.itemsList.findIndex(
               (item) => item.id == messageId
             );
@@ -495,38 +487,38 @@ export class MessagingListComponent implements OnInit {
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe((notif) => {
       if (notif != "") {
-        if (this.isMyInbox) {
-          let message = this.parseMessage(notif.message);
-          console.log(notif);
-          if (notif.message.sender.photoId) {
-            this.documentService
-              .downloadFile(notif.message.sender.photoId)
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    message.users.forEach((user) => {
-                      user.img = myReader.result;
-                    });
-                    this.itemsList.unshift(message);
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  notif.users.forEach((user) => {
-                    user.img = "assets/imgs/user.png";
+        if(this.isMyInbox){
+        let message = this.parseMessage(notif.message);
+        if (notif.message.sender.photoId) {
+          this.documentService
+            .downloadFile(notif.message.sender.photoId)
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  message.users.forEach((user) => {
+                    user.img = myReader.result;
                   });
-                  this.itemsList.unshift(message);
-                }
-              );
-          }
-          this.number++;
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                message.users.forEach((user) => {
+                  user.img = "assets/imgs/user.png";
+                });
+              }
+            );
         }
+
+        this.itemsList.unshift(message);
+
+        this.number++;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newMessages
+            : this.globalService.messagesDisplayScreen.newMessage;
       }
+    }
     });
-  }
+}
 }
