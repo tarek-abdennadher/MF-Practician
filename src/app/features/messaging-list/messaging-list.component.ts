@@ -379,6 +379,20 @@ export class MessagingListComponent implements OnInit {
     if (this.isMyInbox) {
       this.messagesServ.markMessageAsSeen(messageId).subscribe(
         (resp) => {
+          if(!event.isSeen){
+            this.number--;
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
+            let notifLength = this.featureService.listNotifications.length;
+            this.featureService.listNotifications = this.featureService.listNotifications.filter(
+              (notif) => notif.messageId != event.id
+            );
+              this.featureService.setNumberOfInbox(
+                this.featureService.numberOfInbox - 1
+              );
+          }
           if (resp == true) {
             let index = this.itemsList.findIndex(
               (item) => item.id == messageId
