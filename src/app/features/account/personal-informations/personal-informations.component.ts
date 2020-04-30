@@ -40,6 +40,7 @@ export class PersonalInformationsComponent implements OnInit {
   passwordSubmitted = false;
   otherPhones = new Subject<any[]>();
   addnewPhone = new Subject<boolean>();
+  isLabelShow: boolean;
   public infoForm: FormGroup;
   public passwordForm: FormGroup;
   public today = new Date().toISOString().substr(0, 10);
@@ -69,6 +70,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.showPasswordSuccess = false;
     this.showPasswordFailure = false;
     this.failureAlert = false;
+    this.isLabelShow = false;
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
@@ -250,6 +252,9 @@ export class PersonalInformationsComponent implements OnInit {
         }
       });
     }
+    if (this.account.otherPhones) {
+      this.isLabelShow = true;
+    }
   }
   submit() {
     this.submitted = true;
@@ -320,6 +325,12 @@ export class PersonalInformationsComponent implements OnInit {
   }
   getPhoneList(event) {
     this.phones = event.value;
+    if (this.phones.length > 0) {
+      this.isLabelShow = true;
+    }
+    else {
+      this.isLabelShow = false;
+    }
   }
   submitPhones(event) {
     this.isPhonesValid = event;
@@ -447,5 +458,6 @@ export class PersonalInformationsComponent implements OnInit {
   }
   addPhone() {
     this.addnewPhone.next(true);
+    this.isLabelShow = true;
   }
 }

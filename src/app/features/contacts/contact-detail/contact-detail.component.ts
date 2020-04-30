@@ -29,6 +29,7 @@ export class ContactDetailComponent implements OnInit {
   public isPhonesValid = false;
   otherPhones = new Subject<any[]>();
   addnewPhone = new Subject<boolean>();
+  isLabelShow: boolean;
   constructor(
     private _location: Location,
     private route: ActivatedRoute,
@@ -38,6 +39,7 @@ export class ContactDetailComponent implements OnInit {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
     this.initForm();
+    this.isLabelShow = false;
   }
 
   ngOnInit(): void {
@@ -64,7 +66,7 @@ export class ContactDetailComponent implements OnInit {
       speciality: new FormControl(null),
       address: new FormControl(null),
       additional_address: new FormControl(null),
-      phone: new FormControl(null),
+      phone: new FormControl("+33"),
       picture: new FormControl(null),
     });
   }
@@ -89,7 +91,10 @@ export class ContactDetailComponent implements OnInit {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId
       });
-      this.bottomText = contact.lastName + " " + contact.firstName
+      this.bottomText = contact.lastName + " " + contact.firstName;
+      if (contact.otherPhones.length > 0) {
+        this.isLabelShow = true;
+      }
     });
 
   }
@@ -161,12 +166,19 @@ export class ContactDetailComponent implements OnInit {
   // Other phones list 
   getPhoneList(event) {
     this.phones = event.value;
+    if (this.phones.length > 0) {
+      this.isLabelShow = true;
+    }
+    else {
+      this.isLabelShow = false;
+    }
   }
   submitPhones(event) {
     this.isPhonesValid = event;
   }
   addPhone() {
     this.addnewPhone.next(true);
+    this.isLabelShow = true;
   }
   close() {
     this.failureAlert = false;

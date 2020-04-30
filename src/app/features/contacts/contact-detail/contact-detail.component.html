@@ -190,7 +190,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="other_phone" class="col-sm-3 col-form-label">{{
+              <label *ngIf="isLabelShow" for="other_phone" class="col-sm-3 col-form-label">{{
           labels.other_phone
         }}</label>
               <div id="otherPhone" class="col-sm-9">
