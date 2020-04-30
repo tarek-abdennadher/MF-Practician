@@ -11,7 +11,7 @@ export class NodeeService {
 
   ngOnInit() {}
 
-  saveFileInMemory(uuid, file): Observable<HttpEvent<{}>> {
+  saveFileInMemory(uuid, file): Observable<any> {
     return this.globalService.call(RequestType.POST,this.globalService.url.node + "/save-file-create-message"
     ,file,
     {
