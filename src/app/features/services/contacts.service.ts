@@ -16,7 +16,7 @@ export class ContactsService {
     email_invalid_format: "Format email invalide",
     email_not_same: "L 'email ne correspond pas",
     required: "Le champ est obligatoire",
-    email_input: "Email (*)",
+    email_input: "Adresse e-mail (*)",
     phone_input: "Téléphone mobile ou fixe (*)",
     firstname: "Prénom (*)",
     name: "Nom (*)",
@@ -29,13 +29,15 @@ export class ContactsService {
     other_phone: "Autre tél",
     validate: "Valider",
     title: "Titre",
-    civility: "Civilité",
     speciality: "Spécialité",
+    civility: "Civilité (*)",
     facility_name: "Nom de l'établissement",
     confirm: "Confirmer",
     cancel: "Annuler",
     delete_sec_confirm: "êtes-vous sûr de vouloir supprimer cette secrétaire ?",
-    delete_sec_title: "Supprimer",
+    delete_sec_title: "Supprimer une secrétaire",
+    birth_date: "Date de naissance (*)",
+    phone_error: "      Veuillez vérifier les téléphones saisis",
   };
   constructor(private globalService: GlobalService) {}
 
@@ -98,6 +100,13 @@ export class ContactsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.contact_pro + "/contacts-practician"
+    );
+  }
+
+  getAllContactsPracticianWithAditionalPatient(patientId): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/contacts-practician/additionalId/"+patientId
     );
   }
 }

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import * as jwt_decode from "jwt-decode";
 import { LocalStorageService } from "ngx-webstorage";
 import { Location } from "@angular/common";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -25,7 +26,8 @@ export class PracticianDetailComponent implements OnInit {
     private router: Router,
     private practicianDetailService: PracticianDetailService,
     private localSt: LocalStorageService,
-    private _location: Location
+    private _location: Location,
+    private documentService: MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +42,20 @@ export class PracticianDetailComponent implements OnInit {
       .subscribe((response) => {
         this.bottomText = response.fullName;
         this.practician = response;
+        if (this.practician.photoId) {
+          this.documentService.downloadFile(this.practician.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                this.practician.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              this.practician.img = "assets/imgs/user.png";
+            }
+          );
+        }
       });
   }
   isMyFAvorite(id) {

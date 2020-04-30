@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { MyDocumentsService } from "./my-documents.service";
 import * as FileSaver from "file-saver";
-import { GlobalService } from "@app/core/services/global.service";
 import { Location } from "@angular/common";
+import { GlobalService } from "@app/core/services/global.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PracticianSearch } from '../practician-search/practician-search.model';
 
 @Component({
   selector: "app-my-documents",
@@ -10,124 +12,115 @@ import { Location } from "@angular/common";
   styleUrls: ["./my-documents.component.scss"],
 })
 export class MyDocumentsComponent implements OnInit {
-  links = {
-    isFilter: true,
-  };
+
   attachements = [];
   page = this.globalService.messagesDisplayScreen.documents;
   topText = this.globalService.messagesDisplayScreen.documents;
 
   backButton = true;
+
+  isCheckbox: boolean = false;
+  itemsList = [];
+  filtredItemsList = [];
+  imageSource = "assets/imgs/user.png";
+  search: string;
+
   constructor(
     private mydocumentsService: MyDocumentsService,
     private globalService: GlobalService,
-    private _location: Location
+    private _location: Location,
+    public router: Router,
+    private documentService: MyDocumentsService
+
+
   ) {}
 
   ngOnInit(): void {
-    this.getMyAttachements();
+    this.getMySendersAndReceivers();
   }
-  getMyAttachements() {
-    this.mydocumentsService.getMyAttachements().subscribe((attachements) => {
-      attachements.forEach((attachement) => {
-        this.mydocumentsService
-          .getNodeDetailsFromAlfresco(attachement.nodeId)
-          .subscribe((node) => {
-            const splitName = node.entry.name.split(".");
-            const extention = splitName[splitName.length - 1];
-            if (node.entry) {
-              this.attachements.push({
-                title: node.entry.name,
-                date: new Date(node.entry.createdAt).toLocaleDateString(),
-                name:
-                  attachement.senderDetails.patient != null
-                    ? attachement.senderDetails.patient.fullName
-                    : attachement.senderDetails.practician.fullName,
-                type: extention,
-                nodeId: attachement.nodeId,
-              });
-            }
+
+  getMySendersAndReceivers(){
+    this.mydocumentsService.getMySendersAndeceiversDetails().subscribe(sendersAndReceivers => {
+      sendersAndReceivers.forEach((element) => {
+        let senderAndReceiver = this.mappingSendersAndReceivers(element);
+        this.itemsList.push(senderAndReceiver);
+      });
+      this.itemsList.forEach((item) => {
+        if (item.photoId) {
+          item.users.forEach((user) => {
+            this.documentService.downloadFile(item.photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  user.img = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                user.img = "assets/imgs/user.png";
+              }
+            );
           });
-      });
-    });
-  }
-  downloadFile(attachement) {
-    this.mydocumentsService
-      .downloadFile(attachement.nodeId)
-      .subscribe((response) => {
-        const blob = new Blob([response.body]);
-        const filename = attachement.title;
-        const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
-        const extension = filename.substring(dotIndex + 1, filename.length);
-        let resultname: string;
-        if (filenameDisplay !== "") {
-          resultname = filenameDisplay.includes(extension)
-            ? filenameDisplay
-            : filenameDisplay + "." + extension;
-        } else {
-          resultname = filename;
         }
-        FileSaver.saveAs(blob, resultname);
       });
+    })
   }
-  getType(extention: string) {
-    switch (extention.toLowerCase()) {
-      case "pdf":
-        return "application/pdf";
-      case "png":
-        return "image/png";
-      case "jpeg":
-        return "image/jpeg";
-      case "jpg":
-        return "image/jpg";
+  getDetailSwitchRole(senderDetail) {
+    switch (senderDetail.role) {
+      case "PATIENT":
+        return senderDetail.patient;
+      case "PRACTICIAN":
+        return senderDetail.practician;
+      case "SECRETARY":
+        return senderDetail.secretary;
       default:
-        return "text/plain";
+        return null;
     }
   }
-  visualizeFile(attachement) {
-    this.mydocumentsService
-      .downloadFile(attachement.nodeId)
-      .subscribe((response) => {
-        const filename = attachement.title;
-        const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
-        const extension = filename.substring(dotIndex + 1, filename.length);
-
-        const blob = new Blob([response.body], {
-          type: this.getType(extension),
-        });
-
-        let resultname: string;
-        if (filenameDisplay !== "") {
-          resultname = filenameDisplay.includes(extension)
-            ? filenameDisplay
-            : filenameDisplay + "." + extension;
-        } else {
-          resultname = filename;
-        }
-        this.openFile("", filename, blob);
-      });
+  mappingSendersAndReceivers(senderAndReceiver) {
+    const practician = new PracticianSearch();
+    const detail = this.getDetailSwitchRole(senderAndReceiver)
+    practician.id = senderAndReceiver.id;
+    practician.isSeen = true;
+    practician.users = [
+      {
+        fullName: detail.fullName,
+        img: "assets/imgs/user.png",
+        title: detail.title,
+        type: senderAndReceiver.role == "PRACTICIAN"
+        ? "MEDICAL"
+        :senderAndReceiver.role,
+      },
+    ];
+    practician.object = {
+      name: detail.address,
+      isImportant: false,
+      isLocalisation: detail.address?true:false,
+    };
+    practician.time = null;
+    practician.isImportant = false;
+    practician.hasFiles = false;
+    practician.isViewDetail = true;
+    practician.isChecked = false;
+    practician.photoId = detail.photoId;
+    return practician;
   }
 
-  openFile(resData, fileName, blob) {
-    var ieEDGE = navigator.userAgent.match(/Edge/g);
-    var ie = navigator.userAgent.match(/.NET/g); // IE 11+
-    var oldIE = navigator.userAgent.match(/MSIE/g);
 
-    if (ie || oldIE || ieEDGE) {
-      window.navigator.msSaveBlob(blob, fileName);
-    } else {
-      var fileURL = URL.createObjectURL(blob);
-      var win = window.open();
-      win.document.write(
-        '<iframe src="' +
-          fileURL +
-          '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
-      );
-    }
-  }
   goBack() {
     this._location.back();
+  }
+
+  cardClicked(item) {
+    this.router.navigate(["/mes-documents/list/" + item.id]);
+  }
+
+  searchAction(search){
+    if(this.filtredItemsList.length<this.itemsList.length){
+      this.filtredItemsList=this.itemsList;
+    }
+    this.itemsList=this.filtredItemsList;
+    this.itemsList=this.itemsList.filter(item =>
+      item.users[0].fullName.toLowerCase().includes(search));
   }
 }

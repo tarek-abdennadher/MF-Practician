@@ -74,6 +74,8 @@ export class GlobalService {
     mark_important_message_success: "Message marqué comme important.",
     mark_important_message_error:
       "Votre message n'a pas pu être marqué comme important",
+    send_message_to_myself: "Vous ne pouvez pas répondre à un message que vous avez envoyé",
+
   };
 
   public messagesDisplayScreen = {
@@ -92,6 +94,7 @@ export class GlobalService {
     delete_title_patient: "Supprimer le patient",
     newArchivedMessage: "message non lu",
     newArchivedMessages: "messages non lus",
+    attachedPersonnes: "Personnes Rattachées au patient",
   };
   public call(
     method: RequestType,

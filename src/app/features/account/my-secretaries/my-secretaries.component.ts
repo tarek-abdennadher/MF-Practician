@@ -47,6 +47,7 @@ export class MySecretariesComponent implements OnInit {
     this.getMySecretaries();
   }
   initInfoForm() {
+    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       sec_id: new FormControl(null),
@@ -56,9 +57,7 @@ export class MySecretariesComponent implements OnInit {
         validators: [Validators.required, emailValidator],
       }),
       civility: new FormControl(null, Validators.required),
-      phone: new FormControl(null, {
-        validators: [Validators.required, Validators.pattern("[0-9]*")],
-      }),
+      phone: new FormControl(null, Validators.required),
       picture: new FormControl(null),
     });
   }
@@ -127,6 +126,7 @@ export class MySecretariesComponent implements OnInit {
     this.router.navigate(["/messagerie"]);
   }
   getMySecretaries() {
+    this.updateCSS();
     this.accountService.getMySecretaries().subscribe(
       (contacts) => {
         this.users = contacts;
@@ -139,7 +139,7 @@ export class MySecretariesComponent implements OnInit {
                 id: elm.id,
                 fullName: elm.fullName,
                 img: "assets/imgs/user.png",
-                type: "MEDICAL",
+                type: "SECRETARY",
               },
             ],
             isArchieve: true,
@@ -169,6 +169,7 @@ export class MySecretariesComponent implements OnInit {
         phone: value.phoneNumber,
         picture: value.secretary ? value.secretary.photoId : null,
       });
+      this.updateCSS();
       this.infoForm.disable();
       this.isEdit = true;
       this.isList = false;
@@ -181,8 +182,8 @@ export class MySecretariesComponent implements OnInit {
     this.selectedSecretary = item;
     this.dialogService
       .openConfirmDialog(
-        this.labels.delete_sec_title,
-        this.labels.delete_sec_confirm
+        this.labels.delete_sec_confirm,
+        this.labels.delete_sec_title
       )
       .afterClosed()
       .subscribe((res) => {
@@ -194,5 +195,20 @@ export class MySecretariesComponent implements OnInit {
             });
         }
       });
+  }
+  updateCSS() {
+    $(document).ready(function () {
+      $("input").prop("disabled", true);
+      $(".form-control").each(function () {
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border-color", "#F1F1F1");
+      });
+      $(".dropbtn.btn").each(function () {
+        $(this).attr("disabled", true);
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border-color", "#F1F1F1");
+        $(this).css("padding", "8px");
+      });
+    });
   }
 }

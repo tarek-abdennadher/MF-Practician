@@ -1,60 +1,24 @@
-<lib-hlsLinks
-  [topText]="topText"
-  [page]="page"
-  [backButton]="backButton"
-  (backButtonAction)="BackButton()"
->
+<lib-hlsLinks [topText]="topText" [page]="page" [backButton]="backButton" (backButtonAction)="BackButton()">
 </lib-hlsLinks>
 
-<nav mat-tab-nav-bar>
-  <a
-    mat-tab-link
-    [routerLink]="'mes-informations'"
-    routerLinkActive
-    #rla="routerLinkActive"
-    [active]="rla.isActive"
-  >
+<a *ngIf="userRole !== 'PRACTICIAN'" [routerLink]="'mes-informations'" routerLinkActive>
+</a>
+
+<nav *ngIf="userRole == 'PRACTICIAN'" mat-tab-nav-bar>
+  <a mat-tab-link [routerLink]="'mes-informations'" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
     <i class="far fa-cog my-tab-icon"></i> {{ labels.info_tab }}
   </a>
-  <a
-    *ngIf="userRole == 'PRACTICIAN'"
-    mat-tab-link
-    [routerLink]="'mes-secretaires'"
-    routerLinkActive
-    #rlb="routerLinkActive"
-    [active]="rlb.isActive"
-  >
-    <i class="far fa-user-headset my-tab-icon"></i>
+  <a mat-tab-link [routerLink]="'mes-secretaires'" routerLinkActive #rlb="routerLinkActive" [active]="rlb.isActive">
+    <i class="far fa-keyboard my-tab-icon"></i>
     {{ labels.my_secretaries_tab }}
   </a>
-  <a
-    *ngIf="userRole == 'PRACTICIAN'"
-    mat-tab-link
-    [routerLink]="'mon-telesecretariat'"
-    routerLinkActive
-    #rlc="routerLinkActive"
-    [active]="rlc.isActive"
-  >
-    <i class="far fa-user-md my-tab-icon"></i> {{ labels.tele_secretariat_tab }}
+  <a mat-tab-link [routerLink]="'mon-telesecretariat'" routerLinkActive #rlc="routerLinkActive" [active]="rlc.isActive">
+    <i class="far fa-user-headset my-tab-icon"></i> {{ labels.tele_secretariat_tab }}
   </a>
-  <a
-    *ngIf="userRole == 'PRACTICIAN'"
-    mat-tab-link
-    [routerLink]="'mes-factures'"
-    routerLinkActive
-    #rld="routerLinkActive"
-    [active]="rld.isActive"
-  >
+  <a mat-tab-link [routerLink]="'mes-factures'" routerLinkActive #rld="routerLinkActive" [active]="rld.isActive">
     <i class="far fa-file-alt my-tab-icon"></i> {{ labels.factures_tab }}
   </a>
-  <a
-    *ngIf="userRole == 'PRACTICIAN'"
-    mat-tab-link
-    [routerLink]="'mes-stats'"
-    routerLinkActive
-    #rle="routerLinkActive"
-    [active]="rle.isActive"
-  >
+  <a mat-tab-link [routerLink]="'mes-stats'" routerLinkActive #rle="routerLinkActive" [active]="rle.isActive">
     <i class="far fa-chart-pie-alt my-tab-icon"></i> {{ labels.stats_tab }}
   </a>
 </nav>
@@ -65,26 +29,12 @@
 <div class="container">
   <div class="row justify-content-between">
     <div class="col-4">
-      <a
-        href="javascript:void(0);"
-        id="returnmessagerie"
-        class="link1"
-        (click)="return()"
-        ><i class="far fa-chevron-left"
-          >&nbsp;&nbsp;{{ labels.return_chat }}</i
-        ></a
-      >
+      <a href="javascript:void(0);" id="returnmessagerie" class="link1" (click)="return()"><i
+          class="far fa-chevron-left">&nbsp;&nbsp;{{ labels.return_chat }}</i></a>
     </div>
     <div class="col-4 float-right">
-      <a
-        href="javascript:void(0);"
-        id="delete"
-        class="link1 float-right"
-        (click)="desactivateAccount()"
-        ><i class="far fa-trash-alt"
-          >&nbsp;&nbsp;{{ labels.delete_account }}</i
-        ></a
-      >
+      <a href="javascript:void(0);" id="delete" class="link1 float-right" (click)="desactivateAccount()"><i
+          class="far fa-trash-alt">&nbsp;&nbsp;{{ labels.delete_account }}</i></a>
     </div>
   </div>
 </div>

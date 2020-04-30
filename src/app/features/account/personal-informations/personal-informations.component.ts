@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import {
@@ -23,6 +23,8 @@ declare var $: any;
   styleUrls: ["./personal-informations.component.scss"],
 })
 export class PersonalInformationsComponent implements OnInit {
+  @Input("isPatientFile") isPatientFile = false;
+  @Input("infoPatient") infoPatient: any;
   specialities: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
@@ -37,6 +39,8 @@ export class PersonalInformationsComponent implements OnInit {
   showPasswordFailure = false;
   passwordSubmitted = false;
   otherPhones = new Subject<any[]>();
+  addnewPhone = new Subject<boolean>();
+  isLabelShow: boolean;
   public infoForm: FormGroup;
   public passwordForm: FormGroup;
   public today = new Date().toISOString().substr(0, 10);
@@ -66,9 +70,11 @@ export class PersonalInformationsComponent implements OnInit {
     this.showPasswordSuccess = false;
     this.showPasswordFailure = false;
     this.failureAlert = false;
+    this.isLabelShow = false;
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
+    this.updateCSS();
     this.passwordSubmitted = false;
     this.getAllSpeciality();
     this.initInfoForm();
@@ -77,25 +83,35 @@ export class PersonalInformationsComponent implements OnInit {
     this.getAttachementFolderId();
   }
   initInfoForm() {
-    if (this.isPractician) {
-      this.infoForm = new FormGroup({
-        id: new FormControl(null),
-        last_name: new FormControl(null, Validators.required),
-        first_name: new FormControl(null, Validators.required),
-        email: new FormControl(null, {
-          validators: [Validators.required, emailValidator],
-        }),
-        title: new FormControl(null, Validators.required),
-        speciality: new FormControl(null, Validators.required),
-        address: new FormControl(null, Validators.required),
-        additional_address: new FormControl(null),
-        phone: new FormControl(null, {
-          validators: [Validators.required, Validators.pattern("[0-9]*")],
-        }),
-        other_phone: new FormControl(null, Validators.pattern("[0-9]*")),
-        other_phone_note: new FormControl(null),
-        picture: new FormControl(null),
-      });
+    if (!this.isPatientFile) {
+      if (this.isPractician) {
+        this.infoForm = new FormGroup({
+          id: new FormControl(null),
+          last_name: new FormControl(null, Validators.required),
+          first_name: new FormControl(null, Validators.required),
+          email: new FormControl(null, {
+            validators: [Validators.required, emailValidator],
+          }),
+          title: new FormControl(null, Validators.required),
+          speciality: new FormControl(null, Validators.required),
+          address: new FormControl(null, Validators.required),
+          additional_address: new FormControl(null),
+          phone: new FormControl(null, Validators.required),
+          picture: new FormControl(null),
+        });
+      } else {
+        this.infoForm = new FormGroup({
+          id: new FormControl(null),
+          last_name: new FormControl(null, Validators.required),
+          first_name: new FormControl(null, Validators.required),
+          email: new FormControl(null, {
+            validators: [Validators.required, emailValidator],
+          }),
+          phone: new FormControl(null, Validators.required),
+          picture: new FormControl(null),
+          civility: new FormControl(null, Validators.required),
+        });
+      }
     } else {
       this.infoForm = new FormGroup({
         id: new FormControl(null),
@@ -104,13 +120,15 @@ export class PersonalInformationsComponent implements OnInit {
         email: new FormControl(null, {
           validators: [Validators.required, emailValidator],
         }),
-        phone: new FormControl(null, {
-          validators: [Validators.required, Validators.pattern("[0-9]*")],
-        }),
-        picture: new FormControl(null),
         civility: new FormControl(null, Validators.required),
+        birthday: new FormControl(null, Validators.required),
+        address: new FormControl(null, Validators.required),
+        additional_address: new FormControl(null),
+        phone: new FormControl(null, Validators.required),
+        picture: new FormControl(null),
       });
     }
+    this.updateCSS();
   }
   initPasswordForm() {
     this.passwordForm = this.formBuilder.group(
@@ -134,12 +152,7 @@ export class PersonalInformationsComponent implements OnInit {
       this.specialities = specialitiesList;
     });
   }
-  resetOtherPhone() {
-    this.infoForm.patchValue({
-      other_phone: null,
-      other_phone_note: null,
-    });
-  }
+
   passwordValid(event) {
     this.isPasswordValid = event;
   }
@@ -152,63 +165,96 @@ export class PersonalInformationsComponent implements OnInit {
     this.showPasswordFailure = false;
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
-      if (account && account.practician) {
-        this.account = account.practician;
-        this.otherPhones.next(account.otherPhones);
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        }
-        this.infoForm.patchValue({
-          id: account.practician.id ? account.practician.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "",
-          last_name: account.practician.lastName
-            ? account.practician.lastName
-            : "",
-          first_name: account.practician.firstName
-            ? account.practician.firstName
-            : "",
-          title: account.practician.jobTitle
-            ? account.practician.jobTitle
-            : null,
-          speciality: account.practician.speciality
-            ? account.practician.speciality.id
-            : null,
-          address: account.practician.address ? account.practician.address : "",
-          additional_address: account.practician.additionalAddress
-            ? account.practician.additionalAddress
-            : "",
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-          picture: account.practician.photoId
-            ? account.practician.photoId
-            : null,
-        });
-      } else if (account && account.secretary) {
-        this.account = account.secretary;
-        this.otherPhones.next(account.otherPhones);
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        }
-        this.infoForm.patchValue({
-          id: account.secretary.id ? account.secretary.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "",
-          last_name: account.secretary.lastName
-            ? account.secretary.lastName
-            : "",
-          first_name: account.secretary.firstName
-            ? account.secretary.firstName
-            : "",
-          civility: account.secretary.civility
-            ? account.secretary.civility
-            : null,
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-        });
+    if (this.isPatientFile) {
+      this.account = this.infoPatient;
+      this.otherPhones.next(this.account.otherPhones);
+      if (this.account.photoId) {
+        this.hasImage = true;
+        this.getPictureProfile(this.account.photoId);
       }
-    });
+      this.infoForm.patchValue({
+        id: this.account.id ? this.account.id : null,
+        email: this.account.email ? this.account.email : "",
+        phone: this.account.phoneNumber
+          ? "+" + this.account.phoneNumber
+          : "+33",
+        last_name: this.account.lastName ? this.account.lastName : "",
+        first_name: this.account.firstName ? this.account.firstName : "",
+        civility: this.account.civility ? this.account.civility : null,
+        birthday: this.account.birthday
+          ? new Date(this.account.birthday)
+          : null,
+        address: this.account.address ? this.account.address : "",
+        additional_address: this.account.additionalAddress
+          ? this.account.additionalAddress
+          : "",
+        otherPhones: this.account.otherPhones ? this.account.otherPhones : [],
+        picture: this.account.photoId ? this.account.photoId : null,
+      });
+    } else {
+      this.accountService.getCurrentAccount().subscribe((account) => {
+        if (account && account.practician) {
+          this.account = account.practician;
+          this.otherPhones.next(account.otherPhones);
+          if (this.account.photoId) {
+            this.hasImage = true;
+            this.getPictureProfile(this.account.photoId);
+          }
+          this.infoForm.patchValue({
+            id: account.practician.id ? account.practician.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.practician.lastName
+              ? account.practician.lastName
+              : "",
+            first_name: account.practician.firstName
+              ? account.practician.firstName
+              : "",
+            title: account.practician.jobTitle
+              ? account.practician.jobTitle
+              : null,
+            speciality: account.practician.speciality
+              ? account.practician.speciality.id
+              : null,
+            address: account.practician.address
+              ? account.practician.address
+              : "",
+            additional_address: account.practician.additionalAddress
+              ? account.practician.additionalAddress
+              : "",
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+            picture: account.practician.photoId
+              ? account.practician.photoId
+              : null,
+          });
+        } else if (account && account.secretary) {
+          this.account = account.secretary;
+          this.otherPhones.next(account.otherPhones);
+          if (this.account.photoId) {
+            this.hasImage = true;
+            this.getPictureProfile(this.account.photoId);
+          }
+          this.infoForm.patchValue({
+            id: account.secretary.id ? account.secretary.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.secretary.lastName
+              ? account.secretary.lastName
+              : "",
+            first_name: account.secretary.firstName
+              ? account.secretary.firstName
+              : "",
+            civility: account.secretary.civility
+              ? account.secretary.civility
+              : null,
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+          });
+        }
+      });
+    }
+    if (this.account.otherPhones) {
+      this.isLabelShow = true;
+    }
   }
   submit() {
     this.submitted = true;
@@ -234,13 +280,11 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                  (s) => s.id == this.infoForm.value.speciality
-                )
+                (s) => s.id == this.infoForm.value.speciality
+              )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          otherPhoneNumber: this.infoForm.value.other_phone,
-          note: this.infoForm.value.other_phone_note,
           photoId: this.account.photoId,
         },
       };
@@ -281,6 +325,12 @@ export class PersonalInformationsComponent implements OnInit {
   }
   getPhoneList(event) {
     this.phones = event.value;
+    if (this.phones.length > 0) {
+      this.isLabelShow = true;
+    }
+    else {
+      this.isLabelShow = false;
+    }
   }
   submitPhones(event) {
     this.isPhonesValid = event;
@@ -376,4 +426,38 @@ export class PersonalInformationsComponent implements OnInit {
       $("#alertPasswordFailure").alert();
     }
   };
+
+  updateCSS() {
+    if (!this.isPatientFile) {
+      $(document).ready(function () {
+        $(".form-control").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+        });
+        $(".dropbtn.btn").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+          $(this).css("padding", "8px");
+        });
+      });
+    } else {
+      $(document).ready(function () {
+        $(".form-control").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+          $(this).css("pointer-events", "none");
+        });
+        $(".dropbtn.btn").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border-color", "#F1F1F1");
+          $(this).css("padding", "8px");
+          $(this).css("pointer-events", "none");
+        });
+      });
+    }
+  }
+  addPhone() {
+    this.addnewPhone.next(true);
+    this.isLabelShow = true;
+  }
 }

@@ -13,6 +13,7 @@ import { Subject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
@@ -52,7 +53,9 @@ export class MessagingReplyComponent implements OnInit {
     notifierService: NotifierService,
     private refuseTypeService: RefuseTypeService,
     private localSt: LocalStorageService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private spinner: NgxSpinnerService
+
   ) {
     this.notifier = notifierService;
   }
@@ -137,6 +140,22 @@ export class MessagingReplyComponent implements OnInit {
               }
             );
         }
+        if (this.messagingDetail.sender.senderForPhotoId) {
+          this.documentService
+            .downloadFile(this.messagingDetail.sender.senderForPhotoId)
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.messagingDetail.sender.forImg = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                this.messagingDetail.sender.forImg = "assets/imgs/user.png";
+              }
+            );
+        }
       });
   }
 
@@ -150,9 +169,11 @@ export class MessagingReplyComponent implements OnInit {
   }
 
   replyMessage(message) {
+    this.spinner.show();
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
+    delete message.sender.img
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
@@ -194,6 +215,7 @@ export class MessagingReplyComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (message) => {
+            this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
@@ -201,6 +223,7 @@ export class MessagingReplyComponent implements OnInit {
             });
           },
           (error) => {
+            this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
@@ -214,6 +237,7 @@ export class MessagingReplyComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (message) => {
+            this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
@@ -221,6 +245,7 @@ export class MessagingReplyComponent implements OnInit {
             });
           },
           (error) => {
+            this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",

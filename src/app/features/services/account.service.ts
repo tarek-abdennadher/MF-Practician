@@ -12,6 +12,7 @@ export class AccountService {
     edit_password_failure: "Erreur lors de la modification du mot de passe",
     my_account: "Mon compte",
     my_info: "Mes informations personnelles",
+    patient_info: "informations personnelles",
     civilite: "Civilité (*)",
     nom: "Nom (*)",
     prenom: "Prénom (*)",
@@ -59,6 +60,7 @@ export class AccountService {
     invalid_format: "Format invalide",
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
+    invalid_phone: "Le numéro de téléphone saisi est invalide",
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -146,6 +148,12 @@ export class AccountService {
       RequestType.POST,
       this.globalService.url.secretary + "/detach-multiple",
       ids
+    );
+  }
+  getAccountDetails(id:number){
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.account + "/detail/"+id
     );
   }
 }

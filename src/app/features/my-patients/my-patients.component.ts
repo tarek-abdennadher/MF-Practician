@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-my-patients",
@@ -33,7 +34,8 @@ export class MyPatientsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private documentService: MyDocumentsService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +59,12 @@ export class MyPatientsComponent implements OnInit {
             this.section = "prohibit";
             this.isInvitation = false;
             this.getPatientsProhibitedOfCurrentParactician();
+            break;
+          }
+          case "archived": {
+            this.section = "archived";
+            this.isInvitation = false;
+            this.getPatientsArchivedOfCurrentParactician();
             break;
           }
         }
@@ -83,10 +91,11 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
+        this.retriveImg(this.myPatients);
       });
   }
 
@@ -102,10 +111,11 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
+        this.retriveImg(this.myPatients);
       });
   }
 
@@ -121,14 +131,56 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited)
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
         this.filtredPatients = this.myPatients;
+        this.retriveImg(this.myPatients);
       });
   }
 
-  mappingMyPatients(patient, prohibited) {
+  getPatientsArchivedOfCurrentParactician() {
+    this.myPatients = [];
+    this.myPatientsService
+      .getPatientsArchivedOfCurrentParactician()
+      .subscribe((myPatients) => {
+        this.number = myPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+        myPatients.forEach((elm) => {
+          this.myPatients.push(
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+          );
+        });
+        this.filtredPatients = this.myPatients;
+        this.retriveImg(this.myPatients);
+      });
+  }
+
+  retriveImg(list) {
+    list.forEach((item) => {
+      if (item.photoId) {
+        item.users.forEach((user) => {
+          this.documentService.downloadFile(item.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        });
+      }
+    });
+  }
+
+  mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];
     myPatients.users.push({
@@ -138,9 +190,11 @@ export class MyPatientsComponent implements OnInit {
       img: "assets/imgs/user.png",
       type: "PATIENT",
     });
+    myPatients.photoId = patient.photoId;
     myPatients.isMarkAsSeen = true;
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;
+    myPatients.isArchived = archived;
     return myPatients;
   }
 
@@ -169,9 +223,10 @@ export class MyPatientsComponent implements OnInit {
       .prohibitePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
+          this.number--;
         }
       });
   }
@@ -193,6 +248,7 @@ export class MyPatientsComponent implements OnInit {
               this.filtredPatients = this.filtredPatients.filter(
                 (elm) => elm.users[0].id != item.users[0].id
               );
+              this.number--;
             });
         }
       });
@@ -202,10 +258,11 @@ export class MyPatientsComponent implements OnInit {
       .authorizePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
         }
+        this.number--;
       });
   }
 
@@ -214,16 +271,17 @@ export class MyPatientsComponent implements OnInit {
       .acceptPatientInvitation(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
+          this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => {
-              notif.senderId != item.users[0].accountId;
-            }
+            (notif) =>
+              notif.senderId != item.users[0].accountId
+
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
@@ -239,17 +297,44 @@ export class MyPatientsComponent implements OnInit {
       .declinePatientInvitation(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) => {
-            elm.users[0].id != item.users[0].id;
-          });
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
+          this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => {
-              notif.senderId != item.users[0].accountId;
-            }
+            (notif) =>
+              notif.senderId != item.users[0].accountId
+
           );
+        }
+      });
+  }
+
+  archivedAction(item) {
+    this.myPatientsService
+      .archivePatient(item.users[0].id)
+      .subscribe((resp) => {
+        if (resp == true) {
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
+          this.number--;
+        }
+      });
+  }
+
+  activatedAction(item) {
+    this.myPatientsService
+      .activatePatient(item.users[0].id)
+      .subscribe((resp) => {
+        if (resp == true) {
+          this.filtredPatients = this.filtredPatients.filter((elm) =>
+            elm.users[0].id != item.users[0].id
+          );
+          this.number--;
         }
       });
   }
@@ -263,6 +348,6 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/patient-detail/" + item.users[0].id]);
+    this.router.navigate(["/patient-detail/" + item.users[0].accountId]);
   }
 }

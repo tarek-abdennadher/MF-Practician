@@ -16,6 +16,8 @@ export class IntPhoneComponent implements OnInit {
   @Output("validPhones") validPhones = new EventEmitter<boolean>();
   /* List of exisiting phone numbers (patching the value)*/
   @Input("editList") phonesToEdit = new Subject<[]>();
+  /* Action to add a new phone*/
+  @Input("addnewPhone") addnewPhone = new Subject();
 
   public submitted = false;
 
@@ -43,6 +45,11 @@ export class IntPhoneComponent implements OnInit {
 
   ngOnInit(): void {
     this.validPhones.emit(true)
+    this.addnewPhone.subscribe(val => {
+      if (val) {
+        this.addPhone();
+      }
+    });
     this.phoneForm = this.formBuilder.group({
       phoneList: this.formBuilder.array([])
     });
@@ -56,6 +63,7 @@ export class IntPhoneComponent implements OnInit {
       }
       /* Initialize list when there is no exisiting elements */
       else {
+        this.updateCSS();
         this.phoneForm = this.formBuilder.group({
           phoneList: this.formBuilder.array([this.newPhone()])
         });

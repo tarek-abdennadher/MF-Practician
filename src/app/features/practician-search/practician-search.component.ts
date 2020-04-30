@@ -5,6 +5,7 @@ import { PracticianSearch } from "./practician-search.model";
 import { search } from "./search.model";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
 
 @Component({
   selector: "app-practician-search",
@@ -28,7 +29,8 @@ export class PracticianSearchComponent implements OnInit {
     private route: ActivatedRoute,
     private practicianSearchService: PracticianSearchService,
     private featureService: FeaturesService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private documentService: MyDocumentsService
   ) {
     this.texts = practicianSearchService.texts;
   }
@@ -55,6 +57,24 @@ export class PracticianSearchComponent implements OnInit {
           let practician = this.mappingPracticians(message);
           this.itemsList.push(practician);
         });
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          }
+        });
       });
     } else if (!text && city) {
       this.practicianSearchService
@@ -72,6 +92,24 @@ export class PracticianSearchComponent implements OnInit {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
           });
+          this.itemsList.forEach((item) => {
+            if (item.photoId) {
+              item.users.forEach((user) => {
+                this.documentService.downloadFile(item.photoId).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      user.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    user.img = "assets/imgs/user.png";
+                  }
+                );
+              });
+            }
+          });
         });
     } else {
       this.practicianSearchService
@@ -88,6 +126,24 @@ export class PracticianSearchComponent implements OnInit {
           list.forEach((message) => {
             let practician = this.mappingPracticians(message);
             this.itemsList.push(practician);
+          });
+          this.itemsList.forEach((item) => {
+            if (item.photoId) {
+              item.users.forEach((user) => {
+                this.documentService.downloadFile(item.photoId).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      user.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    user.img = "assets/imgs/user.png";
+                  }
+                );
+              });
+            }
           });
         });
     }
@@ -110,6 +166,7 @@ export class PracticianSearchComponent implements OnInit {
         type: "MEDICAL",
       },
     ];
+    practician.photoId = message.photoId;
     practician.object = {
       name: message.address,
       isImportant: false,

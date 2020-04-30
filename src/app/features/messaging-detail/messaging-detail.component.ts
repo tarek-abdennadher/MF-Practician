@@ -72,7 +72,7 @@ export class MessagingDetailComponent implements OnInit {
             this.hidefrom = true;
             this.isFromArchive = false;
             this.sentContext = true;
-            this.previousURL = "/messagerie-envoyes"
+            this.previousURL = "/messagerie-envoyes";
             break;
           }
           case "inbox": {
@@ -122,11 +122,15 @@ export class MessagingDetailComponent implements OnInit {
           this.messagingDetail = message;
           this.prohibited = message.prohibited;
           this.isFromInbox = true;
+
           this.links = {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
+          if(this.messagingDetail.sender.senderId == this.featureService.getUserId()){
+            this.isFromInbox=false;
+          }
           this.messagingDetail.toReceivers.forEach((receiver) => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
@@ -172,6 +176,22 @@ export class MessagingDetailComponent implements OnInit {
                 },
                 (error) => {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
+                }
+              );
+          }
+          if (this.messagingDetail.sender.senderForPhotoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.senderForPhotoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.forImg = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.forImg = "assets/imgs/user.png";
                 }
               );
           }
@@ -238,6 +258,22 @@ export class MessagingDetailComponent implements OnInit {
                 },
                 (error) => {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
+                }
+              );
+          }
+          if (this.messagingDetail.sender.senderForPhotoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.senderForPhotoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.forImg = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.forImg = "assets/imgs/user.png";
                 }
               );
           }
@@ -378,5 +414,8 @@ export class MessagingDetailComponent implements OnInit {
           });
       });
     }
+  }
+  displayPatientFile(idAccount) {
+    this.router.navigate(["/patient-detail/" + idAccount]);
   }
 }

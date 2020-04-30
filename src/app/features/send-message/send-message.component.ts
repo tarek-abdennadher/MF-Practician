@@ -13,6 +13,8 @@ import { FeaturesService } from "../features.service";
 import { Location } from "@angular/common";
 import { LocalStorageService } from "ngx-webstorage";
 import { NotifierService } from "angular-notifier";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: "app-send-message",
@@ -22,7 +24,7 @@ import { NotifierService } from "angular-notifier";
 export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
-  imageSource = "assets/imgs/user.png";
+  imageSource: any = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
@@ -48,10 +50,14 @@ export class SendMessageComponent implements OnInit {
     private nodeService: NodeeService,
     private router: Router,
     public route: ActivatedRoute,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    private documentService: MyDocumentsService,
+    private spinner: NgxSpinnerService
+
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
+      this.connectedUserType = "MEDICAL";
     }
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
@@ -60,7 +66,22 @@ export class SendMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.user?.photoId) {
+      this.documentService.downloadFile(this.user?.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            this.imageSource = myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          this.imageSource = "assets/imgs/user.png";
+        }
+      );
+    }
     if (this.localSt.retrieve("role") == "SECRETARY") {
+      this.connectedUserType = "SECRETARY";
       this.featureService.myPracticians.subscribe(
         (val) => (this.forList = val)
       );
@@ -71,7 +92,17 @@ export class SendMessageComponent implements OnInit {
   }
 
   getAllContactsPractician() {
-    return this.contactsService
+    if (this.selectedPracticianId) {
+      return this.contactsService
+      .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((contactsPractician: any) => {
+          this.parseContactsPractician(contactsPractician);
+        })
+      );
+    } else {
+      return this.contactsService
       .getAllContactsPractician()
       .pipe(takeUntil(this._destroyed$))
       .pipe(
@@ -79,6 +110,7 @@ export class SendMessageComponent implements OnInit {
           this.parseContactsPractician(contactsPractician);
         })
       );
+    }
   }
 
   parseContactsPractician(contactsPractician) {
@@ -107,6 +139,7 @@ export class SendMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
+    this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
     message.to.forEach((to) => {
@@ -149,6 +182,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
@@ -156,6 +190,7 @@ export class SendMessageComponent implements OnInit {
             });
           },
           (error) => {
+            this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
@@ -169,6 +204,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
                 status: "sentSuccess",
@@ -176,6 +212,7 @@ export class SendMessageComponent implements OnInit {
             });
           },
           (error) => {
+            this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
