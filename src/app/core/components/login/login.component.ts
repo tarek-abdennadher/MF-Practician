@@ -78,9 +78,4 @@ export class LoginComponent implements OnInit {
     this.successMessage = "";
     this.router.navigate(["/mot-de-passe-oublie"]);
   }
-  practicianConnexion() {
-    this.errorMessage = "";
-    this.successMessage = "";
-    this.router.navigate(["/demonstration"]);
-  }
 }
