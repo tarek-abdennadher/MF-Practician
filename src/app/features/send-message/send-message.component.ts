@@ -14,7 +14,7 @@ import { Location } from "@angular/common";
 import { LocalStorageService } from "ngx-webstorage";
 import { NotifierService } from "angular-notifier";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { NgxSpinnerService } from 'ngx-spinner';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-send-message",
@@ -25,6 +25,7 @@ export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
   imageSource: any = "assets/imgs/user.png";
+  imageDropdown = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
@@ -53,7 +54,6 @@ export class SendMessageComponent implements OnInit {
     notifierService: NotifierService,
     private documentService: MyDocumentsService,
     private spinner: NgxSpinnerService
-
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
@@ -94,22 +94,22 @@ export class SendMessageComponent implements OnInit {
   getAllContactsPractician() {
     if (this.selectedPracticianId) {
       return this.contactsService
-      .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((contactsPractician: any) => {
-          this.parseContactsPractician(contactsPractician);
-        })
-      );
+        .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
+        .pipe(takeUntil(this._destroyed$))
+        .pipe(
+          tap((contactsPractician: any) => {
+            this.parseContactsPractician(contactsPractician);
+          })
+        );
     } else {
       return this.contactsService
-      .getAllContactsPractician()
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((contactsPractician: any) => {
-          this.parseContactsPractician(contactsPractician);
-        })
-      );
+        .getAllContactsPractician()
+        .pipe(takeUntil(this._destroyed$))
+        .pipe(
+          tap((contactsPractician: any) => {
+            this.parseContactsPractician(contactsPractician);
+          })
+        );
     }
   }
 
@@ -123,6 +123,42 @@ export class SendMessageComponent implements OnInit {
         isSelected:
           this.selectedPracticianId == contactPractician.id ? true : false,
       });
+    });
+    this.toList.next(myList);
+
+    contactsPractician.forEach((contactPractician) => {
+      if (contactPractician.photoId && contactPractician.photoId != null) {
+        this.documentService.downloadFile(contactPractician.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              myList.push({
+                id: contactPractician.id,
+                fullName: contactPractician.fullName,
+                type: contactPractician.contactType,
+                isSelected:
+                  this.selectedPracticianId == contactPractician.id
+                    ? true
+                    : false,
+                img: myReader.result,
+              });
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: null,
+            });
+          }
+        );
+      }
     });
     this.toList.next(myList);
   }
