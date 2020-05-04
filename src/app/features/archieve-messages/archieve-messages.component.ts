@@ -24,6 +24,9 @@ export class ArchieveMessagesComponent implements OnInit {
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
+  pageNo=0;
+  scroll=false;
+  listLength= 0;
   constructor(
     public router: Router,
     private archivedService: ArchieveMessagesService,
@@ -34,11 +37,11 @@ export class ArchieveMessagesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getMyMessagesArchived();
+    this.getMyMessagesArchived(this.pageNo);
   }
 
-  getMyMessagesArchived() {
-    this.archivedService.getMyArchivedMessages().subscribe((messages) => {
+  getMyMessagesArchived(pageNo:number) {
+    this.archivedService.getMyArchivedMessages(pageNo).subscribe((messages) => {
       this.number = this.featureService.numberOfArchieve;
       this.bottomText = this.number > 1
       ? this.globalService.messagesDisplayScreen.newArchivedMessages
@@ -128,6 +131,14 @@ export class ArchieveMessagesComponent implements OnInit {
         return senderDetail.secretary.photoId;
       default:
         return null;
+    }
+  }
+
+  onScroll(){
+    if (this.listLength != this.itemsList.length) {
+      this.listLength = this.itemsList.length;
+      this.pageNo++;
+      this.getMyMessagesArchived(this.pageNo);
     }
   }
 }

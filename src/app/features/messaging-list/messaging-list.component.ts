@@ -42,6 +42,11 @@ export class MessagingListComponent implements OnInit {
   backButton = false;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
+
+  pageNo = 0;
+  listLength = 0;
+  scroll = false;
+  paramsId;
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -58,6 +63,11 @@ export class MessagingListComponent implements OnInit {
     this.number = this.featureService.numberOfInbox;
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
+      this.pageNo = 0;
+      this.listLength = 0;
+      this.itemsList = new Array();
+      this.filtredItemList = new Array();
+      this.messages = [];
       if (
         params["id"] ||
         (this.isPatientFile &&
@@ -116,7 +126,8 @@ export class MessagingListComponent implements OnInit {
               isImportant: false,
               isFilter: true,
             });
-        this.getMyInbox(this.featureService.selectedPracticianId);
+        this.paramsId = this.featureService.selectedPracticianId;
+        this.getMyInbox(this.featureService.selectedPracticianId, this.pageNo);
       } else {
         this.isPatientFile
           ? (this.links = {
@@ -140,7 +151,8 @@ export class MessagingListComponent implements OnInit {
           : (this.topText = "Boîte de réception");
         this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;
-        this.getMyInbox(this.featureService.getUserId());
+        this.paramsId = this.featureService.getUserId();
+        this.getMyInbox(this.featureService.getUserId(), this.pageNo);
       }
     });
 
@@ -219,11 +231,13 @@ export class MessagingListComponent implements OnInit {
               if (resp == true) {
                 let list: any[] = this.featureService.myPracticians.getValue();
                 if (list && list.length > 0) {
-                 this.featureService.updateNumberOfInboxForPractician(this.featureService.selectedPracticianId,0)
+                  this.featureService.updateNumberOfInboxForPractician(
+                    this.featureService.selectedPracticianId,
+                    0
+                  );
                 }
-                  this.number=0
-                  this.bottomText =this.globalService.messagesDisplayScreen.newMessage;
-
+                this.number = 0;
+                this.bottomText = this.globalService.messagesDisplayScreen.newMessage;
 
                 this.itemsList.forEach((item) => (item.isSeen = true));
                 this.filtredItemList.forEach((item) => (item.isSeen = true));
@@ -253,12 +267,17 @@ export class MessagingListComponent implements OnInit {
           listToArchive.forEach((message) => {
             if (!message.isSeen) {
               this.featureService.numberOfArchieve++;
-              this.featureService.setNumberOfInbox(this.featureService.numberOfInbox - 1);
+              this.featureService.setNumberOfInbox(
+                this.featureService.numberOfInbox - 1
+              );
               this.number--;
             }
-            this.featureService.listNotifications=this.featureService.listNotifications.filter(notification =>
-              !listToArchive.map(message =>message.id).includes(notification.messageId)
-            )
+            this.featureService.listNotifications = this.featureService.listNotifications.filter(
+              (notification) =>
+                !listToArchive
+                  .map((message) => message.id)
+                  .includes(notification.messageId)
+            );
           });
           this.itemsList = this.itemsList.filter(function (elm, ind) {
             return messagesId.indexOf(elm.id) == -1;
@@ -291,9 +310,9 @@ export class MessagingListComponent implements OnInit {
           );
   }
 
-  getMyInbox(accountId) {
+  getMyInbox(accountId, pageNo) {
     this.messagesServ
-      .getInboxByAccountId(accountId)
+      .getInboxByAccountId(accountId, pageNo)
       .subscribe((retrievedMess) => {
         this.messages = this.isPatientFile
           ? retrievedMess.filter(
@@ -320,31 +339,15 @@ export class MessagingListComponent implements OnInit {
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
         });
-        this.itemsList = this.messages.map((item) => this.parseMessage(item));
+        this.itemsList.push(
+          ...this.messages.map((item) => this.parseMessage(item))
+        );
         this.filtredItemList = this.itemsList;
-        this.itemsList.forEach((item) => {
-          if (item.photoId) {
-            item.users.forEach((user) => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          }
-        });
       });
   }
 
   parseMessage(message): any {
-    return {
+    let parsedMessage = {
       id: message.id,
       isSeen: message.seenAsReceiver,
       users: [
@@ -371,6 +374,23 @@ export class MessagingListComponent implements OnInit {
       isArchieve: this.isMyInbox,
       photoId: message.sender.photoId,
     };
+    if (parsedMessage.photoId) {
+      parsedMessage.users.forEach((user) => {
+        this.documentService.downloadFile(parsedMessage.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              user.img = myReader.result.toString();
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            user.img = "assets/imgs/user.png";
+          }
+        );
+      });
+    }
+    return parsedMessage;
   }
 
   markMessageAsSeen(event) {
@@ -378,9 +398,8 @@ export class MessagingListComponent implements OnInit {
     if (this.isMyInbox) {
       this.messagesServ.markMessageAsSeen(messageId).subscribe(
         (resp) => {
-
           if (resp == true) {
-            if(!event.isSeen){
+            if (!event.isSeen) {
               this.number--;
               this.bottomText =
                 this.number > 1
@@ -390,9 +409,9 @@ export class MessagingListComponent implements OnInit {
               this.featureService.listNotifications = this.featureService.listNotifications.filter(
                 (notif) => notif.messageId != event.id
               );
-                this.featureService.setNumberOfInbox(
-                  this.featureService.numberOfInbox - 1
-                );
+              this.featureService.setNumberOfInbox(
+                this.featureService.numberOfInbox - 1
+              );
             }
             let index = this.itemsList.findIndex(
               (item) => item.id == messageId
@@ -420,20 +439,24 @@ export class MessagingListComponent implements OnInit {
         )
         .subscribe(
           (resp) => {
-            if(!event.isSeen){
+            if (!event.isSeen) {
               let list: any[] = this.featureService.myPracticians.getValue();
               let selectedInboxNumber;
               if (list && list.length > 0) {
-               selectedInboxNumber =list.find((p) => p.id == this.featureService.selectedPracticianId).number;
-               this.featureService.updateNumberOfInboxForPractician(this.featureService.selectedPracticianId,selectedInboxNumber-1)
+                selectedInboxNumber = list.find(
+                  (p) => p.id == this.featureService.selectedPracticianId
+                ).number;
+                this.featureService.updateNumberOfInboxForPractician(
+                  this.featureService.selectedPracticianId,
+                  selectedInboxNumber - 1
+                );
               }
-                this.number--;
-                this.bottomText =
-                  this.number > 1
-                    ? this.globalService.messagesDisplayScreen.newMessages
-                    : this.globalService.messagesDisplayScreen.newMessage;
-
-              }
+              this.number--;
+              this.bottomText =
+                this.number > 1
+                  ? this.globalService.messagesDisplayScreen.newMessages
+                  : this.globalService.messagesDisplayScreen.newMessage;
+            }
             if (resp == true) {
               let index = this.itemsList.findIndex(
                 (item) => item.id == messageId
@@ -468,11 +491,13 @@ export class MessagingListComponent implements OnInit {
         });
         if (!event.isSeen) {
           this.featureService.numberOfArchieve++;
-          this.featureService.setNumberOfInbox(this.featureService.numberOfInbox-1);
+          this.featureService.setNumberOfInbox(
+            this.featureService.numberOfInbox - 1
+          );
           this.number--;
-          this.featureService.listNotifications=this.featureService.listNotifications.filter(notification =>
-            notification.messageId != event.id
-          )
+          this.featureService.listNotifications = this.featureService.listNotifications.filter(
+            (notification) => notification.messageId != event.id
+          );
         }
       },
       (error) => {
@@ -487,38 +512,47 @@ export class MessagingListComponent implements OnInit {
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe((notif) => {
       if (notif != "") {
-        if(this.isMyInbox){
-        let message = this.parseMessage(notif.message);
-        if (notif.message.sender.photoId) {
-          this.documentService
-            .downloadFile(notif.message.sender.photoId)
-            .subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
+        if (this.isMyInbox) {
+          let message = this.parseMessage(notif.message);
+          if (notif.message.sender.photoId) {
+            this.documentService
+              .downloadFile(notif.message.sender.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    message.users.forEach((user) => {
+                      user.img = myReader.result;
+                    });
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
                   message.users.forEach((user) => {
-                    user.img = myReader.result;
+                    user.img = "assets/imgs/user.png";
                   });
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                message.users.forEach((user) => {
-                  user.img = "assets/imgs/user.png";
-                });
-              }
-            );
+                }
+              );
+          }
+
+          this.itemsList.unshift(message);
+
+          this.number++;
+          this.bottomText =
+            this.number > 1
+              ? this.globalService.messagesDisplayScreen.newMessages
+              : this.globalService.messagesDisplayScreen.newMessage;
         }
-
-        this.itemsList.unshift(message);
-
-        this.number++;
-        this.bottomText =
-          this.number > 1
-            ? this.globalService.messagesDisplayScreen.newMessages
-            : this.globalService.messagesDisplayScreen.newMessage;
       }
-    }
     });
-}
+  }
+
+  onScroll() {
+    if (this.listLength != this.filtredItemList.length) {
+      this.listLength = this.filtredItemList.length;
+      this.pageNo++;
+
+      this.getMyInbox(this.paramsId, this.pageNo);
+    }
+  }
 }
