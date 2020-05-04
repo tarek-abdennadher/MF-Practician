@@ -179,10 +179,10 @@ export class MessagingListService {
     );
   }
 
-  public getInboxByAccountId(id): Observable<any> {
+  public getInboxByAccountId(id,pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + "inbox-by-account/" + id
+      this.globalService.url.messages + "inbox-by-account/" + id+"?pageNo="+pageNo
     );
   }
   public markMessageAsSeen(id: number): Observable<boolean> {
