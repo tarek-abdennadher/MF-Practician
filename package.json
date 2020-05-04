@@ -24,6 +24,7 @@
     "@fortawesome/fontawesome-pro": "^5.12.1",
     "@types/googlemaps": "^3.39.3",
     "angular-notifier": "^6.0.1",
+    "angular2-multiselect-dropdown": "^4.6.3",
     "bootstrap": "^4.4.1",
     "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",

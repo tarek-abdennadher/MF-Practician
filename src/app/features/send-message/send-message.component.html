@@ -12,6 +12,7 @@
   [toList]="toList"
   [forList]="forList"
   [objectsList]="objectsList"
+  [imagedropdown]="imageDropdown"
   (sendEmailAction)="sendMessage($event)"
   (addProContactAction)="addProContactAction()"
 ></lib-hls-send-message>
@@ -23,6 +24,6 @@
   </div>
 </ng-template>
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
-  <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'">
+  <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'" />
   <p class="loading">Envoi du message en cours...</p>
 </ngx-spinner>
