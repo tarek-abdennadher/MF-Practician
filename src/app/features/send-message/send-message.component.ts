@@ -28,6 +28,7 @@ export class SendMessageComponent implements OnInit {
   imageDropdown = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
+  role = this.localSt.retrieve("role");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList = [];
@@ -79,6 +80,12 @@ export class SendMessageComponent implements OnInit {
           this.imageSource = "assets/imgs/user.png";
         }
       );
+    } else {
+      if (this.role == "MEDICAL") {
+        this.imageSource = "assets/imgs/avatar_docteur.svg";
+      } else if (this.role == "SECRETARY") {
+        this.imageSource = "assets/imgs/avatar_secrétaire.svg";
+      }
     }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
@@ -116,17 +123,6 @@ export class SendMessageComponent implements OnInit {
   parseContactsPractician(contactsPractician) {
     let myList = [];
     contactsPractician.forEach((contactPractician) => {
-      myList.push({
-        id: contactPractician.id,
-        fullName: contactPractician.fullName,
-        type: contactPractician.contactType,
-        isSelected:
-          this.selectedPracticianId == contactPractician.id ? true : false,
-      });
-    });
-    this.toList.next(myList);
-
-    contactsPractician.forEach((contactPractician) => {
       if (contactPractician.photoId && contactPractician.photoId != null) {
         this.documentService.downloadFile(contactPractician.photoId).subscribe(
           (response) => {
@@ -158,6 +154,64 @@ export class SendMessageComponent implements OnInit {
             });
           }
         );
+      } else {
+        if (contactPractician.contactType == "MEDICAL") {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: "assets/imgs/avatar_docteur.svg",
+          });
+        } else if (
+          contactPractician.contactType == "SECRETARY" ||
+          contactPractician.contactType == "TELESECRETARYGROUP"
+        ) {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: "assets/imgs/avatar_secrétaire.svg",
+          });
+        } else if (contactPractician.contactType == "PATIENT") {
+          if (contactPractician.civility == "M") {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: "assets/imgs/avatar_homme.svg",
+            });
+          } else if (contactPractician.civility == "MME") {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: "assets/imgs/avatar_femme.svg",
+            });
+          } else if (contactPractician.civility == "CHILD") {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: "assets/imgs/avatar_enfant.svg",
+            });
+          }
+        }
       }
     });
     this.toList.next(myList);
