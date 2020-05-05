@@ -35,7 +35,7 @@
                   [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="civility">
                   <option value="null" disabled="true">{{ labels.civility }} (*)</option>
                   <option value="M">M</option>
-                  <option value="MME">MME</option>
+                  <option value="MME">Mme</option>
                 </select>
                 <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
                   <div *ngIf="ctr.civility.errors.required">
@@ -56,8 +56,8 @@
                 <select formControlName="title" class="civility custom-select"
                   [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="title">
                   <option value="null" disabled="true">{{ labels.title }} (*)</option>
-                  <option value="Dr">Dr</option>
-                  <option value="Pr">Pr</option>
+                  <option value="Docteur">Dr</option>
+                  <option value="Professeur">Pr</option>
                 </select>
                 <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
                   <div *ngIf="ctr.title.errors.required">
@@ -69,7 +69,7 @@
                 <select [attr.disabled]="isPatientFile" formControlName="civility" class="civility custom-select"
                   [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }">
                   <option value="M">M</option>
-                  <option value="MME">MME</option>
+                  <option value="MME">Mme</option>
                 </select>
               </div>
             </div>
