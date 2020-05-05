@@ -252,7 +252,7 @@ export class PersonalInformationsComponent implements OnInit {
         }
       });
     }
-    if (this.account.otherPhones) {
+    if (this.account?.otherPhones) {
       this.isLabelShow = true;
     }
   }
