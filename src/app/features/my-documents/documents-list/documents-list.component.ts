@@ -21,9 +21,6 @@ export class DocumentsListComponent implements OnInit {
   topText = this.globalService.messagesDisplayScreen.documents;
 
   backButton = true;
-  links = {
-    isMyDocuments: true,
-  };
   observables = [];
   attachementsList: any[];
   itemList = [];
@@ -33,6 +30,10 @@ export class DocumentsListComponent implements OnInit {
   destinations = new Set();
   account: any;
   linkedPatients: any;
+
+  pageNo = 0;
+  listLength = 0;
+  scroll = false;
   constructor(
     private globalService: GlobalService,
     private route: ActivatedRoute,
@@ -50,7 +51,7 @@ export class DocumentsListComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.idSenderReceiver = params["id"];
-      this.getAttachementById(this.idSenderReceiver);
+      this.getAttachementById(this.idSenderReceiver,this.pageNo);
     });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver)
@@ -91,13 +92,16 @@ export class DocumentsListComponent implements OnInit {
     })
   }
 
-  getAttachementById(id) {
-    this.itemList = [];
+  getAttachementById(id,pageNo) {
+    this.scroll=true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsBySenderOrReceiverId(id)
+      .getMyAttachementsBySenderOrReceiverId(id,pageNo)
       .subscribe((attachements) => {
+        if(attachements.length==0){
+          this.scroll=false;
+        }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
@@ -109,6 +113,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
+          this.scroll=false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -166,7 +171,6 @@ export class DocumentsListComponent implements OnInit {
   }
 
   getImageSwitchExtention(extension: string) {
-    console.log(extension)
     switch (extension.toLowerCase()) {
       case "doc":
         return "assets/files/doc.svg";
@@ -267,13 +271,16 @@ export class DocumentsListComponent implements OnInit {
     this._location.back();
   }
 
-  getAttachementByObject(id, object) {
-    this.itemList = [];
+  getAttachementByObject(id, object,pageNo) {
+    this.scroll=true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsByObject(id, object)
+      .getMyAttachementsByObject(id, object,pageNo)
       .subscribe((attachements) => {
+        if(attachements.length==0){
+          this.scroll=false;
+        }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
@@ -285,6 +292,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
+          this.scroll=false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -300,13 +308,16 @@ export class DocumentsListComponent implements OnInit {
         });
       });
   }
-  getAttachementBySenderFor(id, senderForId) {
-    this.itemList = [];
+  getAttachementBySenderFor(id, senderForId,pageNo) {
+    this.scroll=true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsBySenderForId(id, senderForId)
+      .getMyAttachementsBySenderForId(id, senderForId,pageNo)
       .subscribe((attachements) => {
+        if(attachements.length==0){
+          this.scroll=false;
+        }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
@@ -318,6 +329,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
+          this.scroll=false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -334,13 +346,16 @@ export class DocumentsListComponent implements OnInit {
       });
   }
 
-  getAttachementBySenderForAndObject(id, senderForId, object) {
-    this.itemList = [];
+  getAttachementBySenderForAndObject(id, senderForId, object,pageNo) {
+    this.scroll=true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsBySenderForIdAndObject(id, senderForId, object)
+      .getMyAttachementsBySenderForIdAndObject(id, senderForId, object,pageNo)
       .subscribe((attachements) => {
+        if(attachements.length==0){
+          this.scroll=false;
+        }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
@@ -352,6 +367,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
+          this.scroll=false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -360,7 +376,6 @@ export class DocumentsListComponent implements OnInit {
               const attachement = this.attachementsList.find(
                 (x) => x.nodeId == node.entry.id
               );
-
               this.itemList.push(this.parseMessage(attachement, node.entry));
             }
           });
@@ -368,6 +383,8 @@ export class DocumentsListComponent implements OnInit {
       });
   }
   filter() {
+    this.pageNo=0
+    this.itemList=[]
     if (
       this.filterDocumentsForm.value.destination != "" &&
       this.filterDocumentsForm.value.documentType != ""
@@ -375,7 +392,7 @@ export class DocumentsListComponent implements OnInit {
       this.getAttachementBySenderForAndObject(
         this.idSenderReceiver,
         this.filterDocumentsForm.value.destination,
-        this.filterDocumentsForm.value.documentType
+        this.filterDocumentsForm.value.documentType,this.pageNo
       );
     } else if (
       this.filterDocumentsForm.value.destination != "" &&
@@ -383,18 +400,49 @@ export class DocumentsListComponent implements OnInit {
     ) {
       this.getAttachementBySenderFor(
         this.idSenderReceiver,
-        this.filterDocumentsForm.value.destination
+        this.filterDocumentsForm.value.destination,this.pageNo
       );
     } else  if (this.filterDocumentsForm.value.destination == "" &&
     this.filterDocumentsForm.value.documentType != ""){
       this.getAttachementByObject(
         this.idSenderReceiver,
-        this.filterDocumentsForm.value.documentType
+        this.filterDocumentsForm.value.documentType,this.pageNo
       );
     } else {
-      this.getAttachementById(this.idSenderReceiver);
+      this.getAttachementById(this.idSenderReceiver,this.pageNo);
     }
   }
 
+  onScroll() {
+    if (this.listLength != this.itemList.length) {
+      this.listLength = this.itemList.length;
+      this.pageNo++;
+      if (
+        this.filterDocumentsForm.value.destination != "" &&
+        this.filterDocumentsForm.value.documentType != ""
+      ) {
+        this.getAttachementBySenderForAndObject(
+          this.idSenderReceiver,
+          this.filterDocumentsForm.value.destination,
+          this.filterDocumentsForm.value.documentType,this.pageNo
+        );
+      } else if (
+        this.filterDocumentsForm.value.destination != "" &&
+        this.filterDocumentsForm.value.documentType == ""
+      ) {
+        this.getAttachementBySenderFor(
+          this.idSenderReceiver,
+          this.filterDocumentsForm.value.destination,this.pageNo
+        );
+      } else  if (this.filterDocumentsForm.value.destination == "" &&
+      this.filterDocumentsForm.value.documentType != ""){
+        this.getAttachementByObject(
+          this.idSenderReceiver,
+          this.filterDocumentsForm.value.documentType,this.pageNo
+        );
+      } else {
+        this.getAttachementById(this.idSenderReceiver,this.pageNo);
+      }    }
+  }
 
 }

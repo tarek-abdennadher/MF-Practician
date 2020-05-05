@@ -6,7 +6,7 @@
   [person]="documentsService.person"
 >
 </lib-hlsLinks>
-<form *ngIf="links?.isMyDocuments" [formGroup]="filterDocumentsForm" class="d-flex p-2 flex-row-reverse bd-highlight">
+<form [formGroup]="filterDocumentsForm" class="d-flex p-2 flex-row-reverse bd-highlight">
   <select id="documentType" class="form-control col-md-2" formControlName="documentType" (change)="filter()">
     <option [value]="''"> Type</option>
     <option *ngFor="let item of documentTypes" [value]="item">{{ item }}</option>
@@ -22,4 +22,14 @@
   (downloadAction)="downloadFile($event)"
   (visualizeAction)="visualizeFile($event)"
 ></lib-hlsMessagingList>
+<div
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="50"
+      (scrolled)="onScroll()"
+></div>
+<mat-progress-spinner *ngIf="scroll" diameter="20"
+mode="indeterminate" value="100"> </mat-progress-spinner>
+
 
