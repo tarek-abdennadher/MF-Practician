@@ -55,6 +55,8 @@ export class PracticianDetailComponent implements OnInit {
               this.practician.img = "assets/imgs/user.png";
             }
           );
+        } else {
+          this.practician.img = "assets/imgs/avatar_docteur.svg";
         }
       });
   }

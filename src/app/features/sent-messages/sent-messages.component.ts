@@ -80,7 +80,7 @@ export class SentMessagesComponent implements OnInit {
                 }
               );
             } else {
-              if (user.type == "MEDICAL") {
+              if (user.type == "PRACTICIAN" || user.type == "MEDICAL") {
                 user.img = "assets/imgs/avatar_docteur.svg";
               } else if (user.type == "SECRETARY") {
                 user.img = "assets/imgs/avatar_secrétaire.svg";
