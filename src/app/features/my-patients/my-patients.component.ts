@@ -176,6 +176,16 @@ export class MyPatientsComponent implements OnInit {
             }
           );
         });
+      } else {
+        item.users.forEach((user) => {
+          if (user.civility == "M") {
+            user.img = "assets/imgs/avatar_homme.svg";
+          } else if (user.civility == "MME") {
+            user.img = "assets/imgs/avatar_femme.svg";
+          } else if (user.civility == "CHILD") {
+            user.img = "assets/imgs/avatar_enfant.svg";
+          }
+        });
       }
     });
   }
@@ -189,6 +199,7 @@ export class MyPatientsComponent implements OnInit {
       fullName: patient.fullName,
       img: "assets/imgs/user.png",
       type: "PATIENT",
+      civility: patient.civility,
     });
     myPatients.photoId = patient.photoId;
     myPatients.isMarkAsSeen = true;
@@ -223,8 +234,8 @@ export class MyPatientsComponent implements OnInit {
       .prohibitePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) =>
-            elm.users[0].id != item.users[0].id
+          this.filtredPatients = this.filtredPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
@@ -258,8 +269,8 @@ export class MyPatientsComponent implements OnInit {
       .authorizePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) =>
-            elm.users[0].id != item.users[0].id
+          this.filtredPatients = this.filtredPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
           );
         }
         this.number--;
@@ -271,17 +282,15 @@ export class MyPatientsComponent implements OnInit {
       .acceptPatientInvitation(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) =>
-            elm.users[0].id != item.users[0].id
+          this.filtredPatients = this.filtredPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) =>
-              notif.senderId != item.users[0].accountId
-
+            (notif) => notif.senderId != item.users[0].accountId
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
@@ -297,17 +306,15 @@ export class MyPatientsComponent implements OnInit {
       .declinePatientInvitation(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) =>
-            elm.users[0].id != item.users[0].id
+          this.filtredPatients = this.filtredPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) =>
-              notif.senderId != item.users[0].accountId
-
+            (notif) => notif.senderId != item.users[0].accountId
           );
         }
       });
@@ -318,8 +325,8 @@ export class MyPatientsComponent implements OnInit {
       .archivePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) =>
-            elm.users[0].id != item.users[0].id
+          this.filtredPatients = this.filtredPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
@@ -331,8 +338,8 @@ export class MyPatientsComponent implements OnInit {
       .activatePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter((elm) =>
-            elm.users[0].id != item.users[0].id
+          this.filtredPatients = this.filtredPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }

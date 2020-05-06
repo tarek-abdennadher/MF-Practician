@@ -356,6 +356,7 @@ export class MessagingListComponent implements OnInit {
           fullName: message.sender.fullName,
           img: "assets/imgs/user.png",
           title: message.sender.jobTitle,
+          civility: message.sender.civility,
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
@@ -388,6 +389,22 @@ export class MessagingListComponent implements OnInit {
             user.img = "assets/imgs/user.png";
           }
         );
+      });
+    } else {
+      parsedMessage.users.forEach((user) => {
+        if (user.type == "MEDICAL") {
+          user.img = "assets/imgs/avatar_docteur.svg";
+        } else if (user.type == "SECRETARY") {
+          user.img = "assets/imgs/avatar_secrétaire.svg";
+        } else if (user.type == "PATIENT") {
+          if (user.civility == "M") {
+            user.img = "assets/imgs/avatar_homme.svg";
+          } else if (user.civility == "MME") {
+            user.img = "assets/imgs/avatar_femme.svg";
+          } else if (user.civility == "CHILD") {
+            user.img = "assets/imgs/avatar_enfant.svg";
+          }
+        }
       });
     }
     return parsedMessage;
