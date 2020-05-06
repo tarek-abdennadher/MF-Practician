@@ -176,7 +176,7 @@ export class PersonalInformationsComponent implements OnInit {
         id: this.account.id ? this.account.id : null,
         email: this.account.email ? this.account.email : "",
         phone: this.account.phoneNumber
-          ? "+" + this.account.phoneNumber
+          ? this.account.phoneNumber
           : "+33",
         last_name: this.account.lastName ? this.account.lastName : "",
         first_name: this.account.firstName ? this.account.firstName : "",
