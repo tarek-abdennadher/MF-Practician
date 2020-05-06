@@ -43,11 +43,7 @@
                 labels.facility_name
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="name" class="form-control" id="facility_name"
-                  [ngClass]="{ 'is-invalid': submitted }" />
-                <div *ngIf="submitted && ctr.name.errors" class="invalid-feedback">
-                  <div *ngIf="ctr.name.errors.required">{{ labels.required }}</div>
-                </div>
+                <input type="text" formControlName="name" class="form-control" id="facility_name" />
               </div>
             </div>
 
@@ -147,8 +143,7 @@
                 labels.additional_address
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="additional_address" class="form-control" id="additional_address"
-                  [ngClass]="{ 'is-invalid': submitted }" />
+                <input type="text" formControlName="additional_address" class="form-control" id="additional_address" />
               </div>
             </div>
           </div>
@@ -162,9 +157,6 @@
                 <input type="text" formControlName="email" class="form-control" id="email"
                   [ngClass]="{ 'is-invalid': submitted }" />
                 <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
-                  <div *ngIf="ctr.email.errors.required">
-                    {{ labels.required }}
-                  </div>
                   <div *ngIf="ctr.email.errors.email">
                     {{ labels.email_invalid_format }}
                   </div>
