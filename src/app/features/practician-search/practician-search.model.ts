@@ -7,6 +7,7 @@ export class PracticianSearch {
       img: any;
       title: string;
       type: string;
+      civility: string;
     }
   ];
   object: {

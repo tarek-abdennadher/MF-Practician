@@ -1,16 +1,38 @@
 <br />
 <div class="card">
-  <a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
-    role="alert">
+  <a
+    *ngIf="showAlert"
+    id="alert"
+    (click)="close()"
+    class="alert alert-success alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.edit_info_success }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
-  <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
-    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+  <a
+    *ngIf="failureAlert"
+    id="FailureAlert"
+    (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.phone_error }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
@@ -18,8 +40,12 @@
   <div class="col-md-12">
     <div class="form-group title">
       <hr width="3%" color="#ff0063" align="left" />
-      <i class="far fa-user-cog"><span *ngIf="!isPatientFile">&nbsp;&nbsp;{{ messages.my_info }}</span>
-        <span *ngIf="isPatientFile">&nbsp;&nbsp;{{ messages.patient_info }}</span></i>
+      <i class="far fa-user-cog"
+        ><span *ngIf="!isPatientFile">&nbsp;&nbsp;{{ messages.my_info }}</span>
+        <span *ngIf="isPatientFile"
+          >&nbsp;&nbsp;{{ messages.patient_info }}</span
+        ></i
+      >
     </div>
   </div>
   <br />
@@ -29,15 +55,26 @@
         <div class="row" *ngIf="!isPractician">
           <div class="col-6">
             <div class="form-group row">
-              <label for="civility" class="col-sm-3 col-form-label">{{ labels.civility }}</label>
+              <label for="civility" class="col-sm-3 col-form-label">{{
+                labels.civility
+              }}</label>
               <div class="col-sm-9">
-                <select formControlName="civility" class="civility custom-select"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="civility">
-                  <option value="null" disabled="true">{{ labels.civility }}</option>
+                <select
+                  formControlName="civility"
+                  class="civility custom-select"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
+                  id="civility"
+                >
+                  <option value="null" disabled="true">{{
+                    labels.civility
+                  }}</option>
                   <option value="M">M</option>
                   <option value="MME">Mme</option>
                 </select>
-                <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && ctr.civility.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.civility.errors.required">
                     {{ labels.required }}
                   </div>
@@ -49,10 +86,19 @@
                 labels.last_name
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="last_name" class="form-control" id="last_name" [ngClass]="{
+                <input
+                  type="text"
+                  formControlName="last_name"
+                  class="form-control"
+                  id="last_name"
+                  [ngClass]="{
                     'is-invalid': submitted && ctr.last_name.errors
-                  }" />
-                <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.last_name.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.last_name.errors.required">
                     {{ labels.required }}
                   </div>
@@ -62,15 +108,25 @@
           </div>
           <div class="col" *ngIf="!isPatientFile">
             <div class="col-sm-2 col-md-2 image-container">
-              <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
-                [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
+              <img
+                [src]="image ? image : 'assets/imgs/user.png'"
+                alt="Profile"
+                [ngClass]="{ 'border-avatar': !hasImage }"
+                class="avatar image"
+              />
               <div class="middle">
-                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons">
+                <div
+                  class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons"
+                >
                   <div class="row">
                     <label for="file-upload">
                       <i class="far fa-cog fa-lg image-icon">&nbsp; </i>
                     </label>
-                    <input id="file-upload" type="file" (change)="selectFileToUpload($event)" />
+                    <input
+                      id="file-upload"
+                      type="file"
+                      (change)="selectFileToUpload($event)"
+                    />
                   </div>
                   <div class="row mt-1">
                     <a (click)="deletePicture()">
@@ -85,25 +141,47 @@
         <div class="row" *ngIf="isPractician">
           <div class="col">
             <div class="form-group row">
-              <label *ngIf="!this.isPatientFile" for="title" class="col-sm-3 col-form-label">{{ labels.title }}</label>
-              <label *ngIf="this.isPatientFile" for="title"
-                class="col-sm-3 col-form-label">{{ labels.civility }}</label>
+              <label
+                *ngIf="!this.isPatientFile"
+                for="title"
+                class="col-sm-3 col-form-label"
+                >{{ labels.title }}</label
+              >
+              <label
+                *ngIf="this.isPatientFile"
+                for="title"
+                class="col-sm-3 col-form-label"
+                >{{ labels.civility }}</label
+              >
               <div *ngIf="!isPatientFile" class="col-sm-9">
-                <select formControlName="title" class="civility custom-select"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="title">
-                  <option value="null" disabled="true">{{ labels.title }} (*)</option>
+                <select
+                  formControlName="title"
+                  class="civility custom-select"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }"
+                  id="title"
+                >
+                  <option value="null" disabled="true"
+                    >{{ labels.title }} (*)</option
+                  >
                   <option value="Docteur">Dr</option>
                   <option value="Professeur">Pr</option>
                 </select>
-                <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && ctr.title.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.title.errors.required">
                     {{ labels.required }}
                   </div>
                 </div>
               </div>
               <div *ngIf="isPatientFile" class="col-sm-9">
-                <select [attr.disabled]="isPatientFile" formControlName="civility" class="civility custom-select"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }">
+                <select
+                  [attr.disabled]="isPatientFile"
+                  formControlName="civility"
+                  class="civility custom-select"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
+                >
                   <option value="M">M</option>
                   <option value="MME">Mme</option>
                 </select>
@@ -114,15 +192,25 @@
                 labels.speciality
               }}</label>
               <div class="col-sm-9">
-                <select formControlName="speciality" class="civility custom-select" [ngClass]="{
+                <select
+                  formControlName="speciality"
+                  class="civility custom-select"
+                  [ngClass]="{
                     'is-invalid': submitted && ctr.speciality.errors
-                  }" id="speciality">
-                  <option value="null" disabled="true">{{ labels.speciality }} (*)</option>
+                  }"
+                  id="speciality"
+                >
+                  <option value="null" disabled="true"
+                    >{{ labels.speciality }} (*)</option
+                  >
                   <option *ngFor="let s of specialities" [value]="s.id">{{
                     s.name
                   }}</option>
                 </select>
-                <div *ngIf="submitted && ctr.speciality.errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && ctr.speciality.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.speciality.errors.required">
                     {{ labels.required }}
                   </div>
@@ -136,22 +224,44 @@
               }}</label>
               <div class="col-sm-9 input-icons">
                 <i class="fa fa-calendar icon"></i>
-                <input disabled type="text" formControlName="birthday" class="calender form-control input-field"
-                  placeholder="{{ messages.birth_date }}" bsDatepicker />
+                <input
+                  disabled
+                  type="text"
+                  formControlName="birthday"
+                  class="calender form-control input-field"
+                  placeholder="{{ messages.birth_date }}"
+                  bsDatepicker
+                />
               </div>
             </div>
           </div>
           <div class="col">
             <div class="col-sm-2 col-md-2 image-container">
-              <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
-                [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
+              <img
+                [src]="
+                  isPatientFile
+                    ? infoPatient?.img
+                    : image
+                    ? image
+                    : 'assets/imgs/user.png'
+                "
+                alt="Profile"
+                [ngClass]="{ 'border-avatar': !hasImage }"
+                class="avatar image"
+              />
               <div class="middle">
-                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons">
+                <div
+                  class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons"
+                >
                   <div class="row">
                     <label for="file-upload">
                       <i class="far fa-cog fa-lg image-icon">&nbsp; </i>
                     </label>
-                    <input id="file-upload" type="file" (change)="selectFileToUpload($event)" />
+                    <input
+                      id="file-upload"
+                      type="file"
+                      (change)="selectFileToUpload($event)"
+                    />
                   </div>
                   <div class="row mt-1">
                     <a (click)="deletePicture()">
@@ -170,10 +280,19 @@
                 labels.last_name
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="last_name" class="form-control" id="last_name" [ngClass]="{
+                <input
+                  type="text"
+                  formControlName="last_name"
+                  class="form-control"
+                  id="last_name"
+                  [ngClass]="{
                     'is-invalid': submitted && ctr.last_name.errors
-                  }" />
-                <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.last_name.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.last_name.errors.required">
                     {{ labels.required }}
                   </div>
@@ -185,24 +304,42 @@
                 labels.first_name
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="first_name" class="form-control" id="first_name" [ngClass]="{
+                <input
+                  type="text"
+                  formControlName="first_name"
+                  class="form-control"
+                  id="first_name"
+                  [ngClass]="{
                     'is-invalid': submitted && ctr.first_name.errors
-                  }" />
-                <div *ngIf="submitted && ctr.first_name.errors" class="invalid-feedback">
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.first_name.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.first_name.errors.required">
                     {{ labels.required }}
                   </div>
                 </div>
               </div>
             </div>
-            <div class="form-group row" *ngIf="!isPatientFile &&  !isPractician">
+            <div class="form-group row" *ngIf="!isPatientFile && !isPractician">
               <label for="email" class="col-sm-3 col-form-label">{{
                 labels.email_input
               }}</label>
               <div class="col-sm-9">
-                <input disabled type="text" formControlName="email" class="form-control" id="email"
-                  [ngClass]="{ 'is-invalid': submitted }" />
-                <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                <input
+                  disabled
+                  type="text"
+                  formControlName="email"
+                  class="form-control"
+                  id="email"
+                  [ngClass]="{ 'is-invalid': submitted }"
+                />
+                <div
+                  *ngIf="submitted && ctr.email.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.email.errors.required">
                     {{ labels.required }}
                   </div>
@@ -213,11 +350,21 @@
               </div>
             </div>
             <div *ngIf="isPractician" class="form-group row">
-              <label for="address" class="col-sm-3 col-form-label">{{ labels.address }} (*)</label>
+              <label for="address" class="col-sm-3 col-form-label"
+                >{{ labels.address }} (*)</label
+              >
               <div class="col-sm-9">
-                <input type="text" formControlName="address" class="form-control" id="address"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.address.errors }" />
-                <div *ngIf="submitted && ctr.address.errors" class="invalid-feedback">
+                <input
+                  type="text"
+                  formControlName="address"
+                  class="form-control"
+                  id="address"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.address.errors }"
+                />
+                <div
+                  *ngIf="submitted && ctr.address.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.address.errors.required">
                     {{ labels.required }}
                   </div>
@@ -229,20 +376,34 @@
                 labels.additional_address
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="additional_address" class="form-control" id="additional_address"
-                  [ngClass]="{ 'is-invalid': submitted }" />
+                <input
+                  type="text"
+                  formControlName="additional_address"
+                  class="form-control"
+                  id="additional_address"
+                  [ngClass]="{ 'is-invalid': submitted }"
+                />
               </div>
             </div>
           </div>
           <div class="col">
-            <div class="form-group row" *ngIf="isPatientFile ||  isPractician">
+            <div class="form-group row" *ngIf="isPatientFile || isPractician">
               <label for="email" class="col-sm-3 col-form-label">{{
                 labels.email_input
               }}</label>
               <div class="col-sm-9">
-                <input disabled type="text" formControlName="email" class="form-control" id="email"
-                  [ngClass]="{ 'is-invalid': submitted }" />
-                <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                <input
+                  disabled
+                  type="text"
+                  formControlName="email"
+                  class="form-control"
+                  id="email"
+                  [ngClass]="{ 'is-invalid': submitted }"
+                />
+                <div
+                  *ngIf="submitted && ctr.email.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.email.errors.required">
                     {{ labels.required }}
                   </div>
@@ -257,16 +418,28 @@
                 labels.phone
               }}</label>
               <div class="col-sm-8">
-                <international-phone-number class="form-control phone" id="phone" formControlName="phone"
-                  placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
-                  [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }">
+                <international-phone-number
+                  class="form-control phone"
+                  id="phone"
+                  formControlName="phone"
+                  placeholder="Téléphone"
+                  [maxlength]="20"
+                  [defaultCountry]=""
+                  [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }"
+                >
                 </international-phone-number>
-                <div *ngIf="submitted && ctr.phone.errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && ctr.phone.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.phone.errors.required">
                     {{ labels.required }}
                   </div>
                 </div>
-                <div *ngIf="ctr.phone.invalid && ctr.phone.touched" class="invalid-feedback">
+                <div
+                  *ngIf="ctr.phone.invalid && ctr.phone.touched"
+                  class="invalid-feedback"
+                >
                   {{ errors.invalid_phone }}
                 </div>
               </div>
@@ -276,13 +449,20 @@
                 </button>
               </div>
             </div>
-            <div class="form-group row">
-              <label *ngIf="isLabelShow" for="other_phone" class="col-sm-3 col-form-label">{{
-                labels.other_phone
-              }}</label>
+            <div *ngIf="!isPatientFile" class="form-group row">
+              <label
+                *ngIf="isLabelShow"
+                for="other_phone"
+                class="col-sm-3 col-form-label"
+                >{{ labels.other_phone }}</label
+              >
               <div id="otherPhone" class="col-sm-9">
-                <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" [addnewPhone]="addnewPhone"
-                  (validPhones)="submitPhones($event)">
+                <int-phone
+                  [editList]="otherPhones"
+                  (phones)="getPhoneList($event)"
+                  [addnewPhone]="addnewPhone"
+                  (validPhones)="submitPhones($event)"
+                >
                 </int-phone>
               </div>
             </div>
@@ -290,18 +470,24 @@
         </div>
       </div>
       <br />
-      <div class="row justify-content-center">
+      <div *ngIf="!isPatientFile" class="row justify-content-center">
         <button (click)="submit()" type="submit" class="btn btn-primary">
           {{ labels.validate }}
         </button>
       </div>
       <div class="row justify-content-center">
-        <div *ngIf="errorMessage && errorMessage != ''" class="center margin isa_error">
+        <div
+          *ngIf="errorMessage && errorMessage != ''"
+          class="center margin isa_error"
+        >
           <p class="w-100">
             <i class="fa fa-times-circle"></i> {{ errorMessage }}
           </p>
         </div>
-        <div *ngIf="successMessage && successMessage != ''" class="center margin isa_success">
+        <div
+          *ngIf="successMessage && successMessage != ''"
+          class="center margin isa_success"
+        >
           <p class="w-100">
             <i class="fa fa-check-circle"></i> {{ successMessage }}
           </p>
@@ -314,17 +500,39 @@
 <br />
 
 <div *ngIf="!isPatientFile" class="card">
-  <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
-    class="alert alert-success alert-dismissible fade show pointer" role="alert">
+  <a
+    *ngIf="showPasswordSuccess"
+    id="alertPasswordSuccess"
+    (click)="close()"
+    class="alert alert-success alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.edit_password_success }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
-  <a *ngIf="showPasswordFailure" id="alertPasswordFailure" (click)="close()"
-    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+  <a
+    *ngIf="showPasswordFailure"
+    id="alertPasswordFailure"
+    (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ passwordErrorMessage }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
@@ -333,7 +541,9 @@
   <div class="col-md-12">
     <div class="form-group title">
       <hr width="3%" color="#ff0063" align="left" />
-      <i class="far fa-lock-open"><span>&nbsp;&nbsp;{{ messages.reset_pwd }}</span></i>
+      <i class="far fa-lock-open"
+        ><span>&nbsp;&nbsp;{{ messages.reset_pwd }}</span></i
+      >
     </div>
   </div>
   <br />
@@ -341,7 +551,10 @@
   <div class="card-body">
     <div class="col-md-12">
       <div class="container">
-        <form [formGroup]="passwordForm" (ngSubmit)="isPasswordValid && resetPasswordSubmit()">
+        <form
+          [formGroup]="passwordForm"
+          (ngSubmit)="isPasswordValid && resetPasswordSubmit()"
+        >
           <div class="row">
             <div class="col">
               <div class="form-group row">
@@ -349,11 +562,20 @@
                   messages.new_pwd
                 }}</label>
                 <div class="col-sm-8">
-                  <input type="password" autocomplete="new-password" formControlName="new_password" class="form-control"
-                    id="pass" [ngClass]="{
+                  <input
+                    type="password"
+                    autocomplete="new-password"
+                    formControlName="new_password"
+                    class="form-control"
+                    id="pass"
+                    [ngClass]="{
                       'is-invalid': passwordSubmitted && f2.new_password.errors
-                    }" />
-                  <div *ngIf="passwordSubmitted && f2.new_password.errors" class="invalid-feedback">
+                    }"
+                  />
+                  <div
+                    *ngIf="passwordSubmitted && f2.new_password.errors"
+                    class="invalid-feedback"
+                  >
                     <div *ngIf="f2.new_password.errors.required">
                       {{ errors.required }}
                     </div>
@@ -370,12 +592,21 @@
                   messages.confirm_pwd
                 }}</label>
                 <div class="col-sm-8">
-                  <input type="password" autocomplete="new-password" class="form-control"
-                    formControlName="confirm_password" id="confirmpass" [ngClass]="{
+                  <input
+                    type="password"
+                    autocomplete="new-password"
+                    class="form-control"
+                    formControlName="confirm_password"
+                    id="confirmpass"
+                    [ngClass]="{
                       'is-invalid':
                         passwordSubmitted && f2.confirm_password.errors
-                    }" />
-                  <div *ngIf="passwordSubmitted && f2.confirm_password.errors" class="invalid-feedback">
+                    }"
+                  />
+                  <div
+                    *ngIf="passwordSubmitted && f2.confirm_password.errors"
+                    class="invalid-feedback"
+                  >
                     <div *ngIf="f2.confirm_password.errors.required">
                       {{ errors.required }}
                     </div>
@@ -388,8 +619,12 @@
             </div>
           </div>
           <div class="row justify-content-center">
-            <lib-hls-password-strength *ngIf="!isPatientFile" id="checkstrength"
-              [passwordToCheck]="passwordForm.value.new_password" (passwordStrength)="passwordValid($event)">
+            <lib-hls-password-strength
+              *ngIf="!isPatientFile"
+              id="checkstrength"
+              [passwordToCheck]="passwordForm.value.new_password"
+              (passwordStrength)="passwordValid($event)"
+            >
             </lib-hls-password-strength>
           </div>
           <br />

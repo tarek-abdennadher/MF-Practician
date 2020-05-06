@@ -4,7 +4,7 @@ import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
 import { GlobalService } from "@app/core/services/global.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { PracticianSearch } from '../practician-search/practician-search.model';
+import { PracticianSearch } from "../practician-search/practician-search.model";
 
 @Component({
   selector: "app-my-documents",
@@ -12,7 +12,6 @@ import { PracticianSearch } from '../practician-search/practician-search.model';
   styleUrls: ["./my-documents.component.scss"],
 })
 export class MyDocumentsComponent implements OnInit {
-
   attachements = [];
   page = this.globalService.messagesDisplayScreen.documents;
   topText = this.globalService.messagesDisplayScreen.documents;
@@ -31,39 +30,55 @@ export class MyDocumentsComponent implements OnInit {
     private _location: Location,
     public router: Router,
     private documentService: MyDocumentsService
-
-
   ) {}
 
   ngOnInit(): void {
     this.getMySendersAndReceivers();
   }
 
-  getMySendersAndReceivers(){
-    this.mydocumentsService.getMySendersAndeceiversDetails().subscribe(sendersAndReceivers => {
-      sendersAndReceivers.forEach((element) => {
-        let senderAndReceiver = this.mappingSendersAndReceivers(element);
-        this.itemsList.push(senderAndReceiver);
-      });
-      this.itemsList.forEach((item) => {
-        if (item.photoId) {
-          item.users.forEach((user) => {
-            this.documentService.downloadFile(item.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                user.img = "assets/imgs/user.png";
+  getMySendersAndReceivers() {
+    this.mydocumentsService
+      .getMySendersAndeceiversDetails()
+      .subscribe((sendersAndReceivers) => {
+        sendersAndReceivers.forEach((element) => {
+          let senderAndReceiver = this.mappingSendersAndReceivers(element);
+          this.itemsList.push(senderAndReceiver);
+        });
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          } else {
+            item.users.forEach((user) => {
+              if (user.type == "MEDICAL") {
+                user.img = "assets/imgs/avatar_docteur.svg";
+              } else if (user.type == "SECRETARY") {
+                user.img = "assets/imgs/avatar_secrétaire.svg";
+              } else if (user.type == "PATIENT") {
+                if (user.civility == "M") {
+                  user.img = "assets/imgs/avatar_homme.svg";
+                } else if (user.civility == "MME") {
+                  user.img = "assets/imgs/avatar_femme.svg";
+                } else if (user.civility == "CHILD") {
+                  user.img = "assets/imgs/avatar_enfant.svg";
+                }
               }
-            );
-          });
-        }
+            });
+          }
+        });
       });
-    })
   }
   getDetailSwitchRole(senderDetail) {
     switch (senderDetail.role) {
@@ -79,7 +94,7 @@ export class MyDocumentsComponent implements OnInit {
   }
   mappingSendersAndReceivers(senderAndReceiver) {
     const practician = new PracticianSearch();
-    const detail = this.getDetailSwitchRole(senderAndReceiver)
+    const detail = this.getDetailSwitchRole(senderAndReceiver);
     practician.id = senderAndReceiver.id;
     practician.isSeen = true;
     practician.users = [
@@ -87,15 +102,17 @@ export class MyDocumentsComponent implements OnInit {
         fullName: detail.fullName,
         img: "assets/imgs/user.png",
         title: detail.title,
-        type: senderAndReceiver.role == "PRACTICIAN"
-        ? "MEDICAL"
-        :senderAndReceiver.role,
+        type:
+          senderAndReceiver.role == "PRACTICIAN"
+            ? "MEDICAL"
+            : senderAndReceiver.role,
+        civility: senderAndReceiver.role ? detail.civility : null,
       },
     ];
     practician.object = {
       name: detail.address,
       isImportant: false,
-      isLocalisation: detail.address?true:false,
+      isLocalisation: detail.address ? true : false,
     };
     practician.time = null;
     practician.isImportant = false;
@@ -106,7 +123,6 @@ export class MyDocumentsComponent implements OnInit {
     return practician;
   }
 
-
   goBack() {
     this._location.back();
   }
@@ -115,12 +131,13 @@ export class MyDocumentsComponent implements OnInit {
     this.router.navigate(["/mes-documents/list/" + item.id]);
   }
 
-  searchAction(search){
-    if(this.filtredItemsList.length<this.itemsList.length){
-      this.filtredItemsList=this.itemsList;
+  searchAction(search) {
+    if (this.filtredItemsList.length < this.itemsList.length) {
+      this.filtredItemsList = this.itemsList;
     }
-    this.itemsList=this.filtredItemsList;
-    this.itemsList=this.itemsList.filter(item =>
-      item.users[0].fullName.toLowerCase().includes(search));
+    this.itemsList = this.filtredItemsList;
+    this.itemsList = this.itemsList.filter((item) =>
+      item.users[0].fullName.toLowerCase().includes(search)
+    );
   }
 }
