@@ -170,13 +170,12 @@ export class PersonalInformationsComponent implements OnInit {
       this.otherPhones.next(this.account.otherPhones);
       if (this.account.photoId) {
         this.hasImage = true;
-        this.getPictureProfile(this.account.photoId);
       }
       this.infoForm.patchValue({
         id: this.account.id ? this.account.id : null,
         email: this.account.email ? this.account.email : "",
         phone: this.account.phoneNumber
-          ? "+" + this.account.phoneNumber
+          ? this.account.phoneNumber
           : "+33",
         last_name: this.account.lastName ? this.account.lastName : "",
         first_name: this.account.firstName ? this.account.firstName : "",
@@ -199,6 +198,8 @@ export class PersonalInformationsComponent implements OnInit {
           if (this.account.photoId) {
             this.hasImage = true;
             this.getPictureProfile(this.account.photoId);
+          } else {
+            this.image = "assets/imgs/avatar_docteur.svg";
           }
           this.infoForm.patchValue({
             id: account.practician.id ? account.practician.id : null,
@@ -233,6 +234,8 @@ export class PersonalInformationsComponent implements OnInit {
           if (this.account.photoId) {
             this.hasImage = true;
             this.getPictureProfile(this.account.photoId);
+          } else {
+            this.image = "assets/imgs/avatar_secrétaire.svg";
           }
           this.infoForm.patchValue({
             id: account.secretary.id ? account.secretary.id : null,
@@ -252,7 +255,7 @@ export class PersonalInformationsComponent implements OnInit {
         }
       });
     }
-    if (this.account.otherPhones) {
+    if (this.account?.otherPhones) {
       this.isLabelShow = true;
     }
   }
@@ -280,8 +283,8 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                (s) => s.id == this.infoForm.value.speciality
-              )
+                  (s) => s.id == this.infoForm.value.speciality
+                )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
@@ -327,8 +330,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.phones = event.value;
     if (this.phones.length > 0) {
       this.isLabelShow = true;
-    }
-    else {
+    } else {
       this.isLabelShow = false;
     }
   }

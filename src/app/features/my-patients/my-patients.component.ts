@@ -52,9 +52,7 @@ export class MyPatientsComponent implements OnInit {
           case "accepted": {
             this.section = "accepted";
             this.isInvitation = false;
-            for (let i = 0; i < 10; i++) {
               this.getPatientsOfCurrentParactician(this.pageNo);
-            }
             break;
           }
           case "pending": {
@@ -169,6 +167,7 @@ export class MyPatientsComponent implements OnInit {
       fullName: patient.fullName,
       img: "assets/imgs/user.png",
       type: "PATIENT",
+      civility: patient.civility,
     });
     myPatients.photoId = patient.photoId;
     myPatients.isMarkAsSeen = true;
@@ -189,6 +188,16 @@ export class MyPatientsComponent implements OnInit {
             user.img = "assets/imgs/user.png";
           }
         );
+      });
+    } else {
+      myPatients.users.forEach((user) => {
+        if (user.civility == "M") {
+          user.img = "assets/imgs/avatar_homme.svg";
+        } else if (user.civility == "MME") {
+          user.img = "assets/imgs/avatar_femme.svg";
+        } else if (user.civility == "CHILD") {
+          user.img = "assets/imgs/avatar_enfant.svg";
+        }
       });
     }
     return myPatients;
