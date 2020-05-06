@@ -56,14 +56,12 @@ export class ContactDetailComponent implements OnInit {
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       type: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
+      name: new FormControl(null),
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
-      email: new FormControl(null, {
-        validators: [Validators.required, emailValidator],
-      }),
-      title: new FormControl(null),
-      speciality: new FormControl(null),
+      email: new FormControl(null, emailValidator),
+      title: new FormControl(null, Validators.required),
+      speciality: new FormControl(null, Validators.required),
       address: new FormControl(null),
       additional_address: new FormControl(null),
       phone: new FormControl("+33"),
