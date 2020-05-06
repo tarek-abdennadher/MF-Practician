@@ -73,6 +73,14 @@ export class PracticianSearchComponent implements OnInit {
                 }
               );
             });
+          } else {
+            item.users.forEach((user) => {
+              if (user.type == "MEDICAL") {
+                user.img = "assets/imgs/avatar_docteur.svg";
+              } else if (user.type == "SECRETARY") {
+                user.img = "assets/imgs/avatar_secrétaire.svg";
+              }
+            });
           }
         });
       });
@@ -164,6 +172,7 @@ export class PracticianSearchComponent implements OnInit {
         img: "assets/imgs/user.png",
         title: message.title,
         type: "MEDICAL",
+        civility: null,
       },
     ];
     practician.photoId = message.photoId;
