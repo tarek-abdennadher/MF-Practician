@@ -128,8 +128,11 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
-          if(this.messagingDetail.sender.senderId == this.featureService.getUserId()){
-            this.isFromInbox=false;
+          if (
+            this.messagingDetail.sender.senderId ==
+            this.featureService.getUserId()
+          ) {
+            this.isFromInbox = false;
           }
           this.messagingDetail.toReceivers.forEach((receiver) => {
             if (receiver.photoId) {
@@ -145,6 +148,20 @@ export class MessagingDetailComponent implements OnInit {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
+            } else {
+              if (receiver.role == "MEDICAL") {
+                receiver.img = "assets/imgs/avatar_docteur.svg";
+              } else if (receiver.role == "SECRETARY") {
+                receiver.img = "assets/imgs/avatar_secrétaire.svg";
+              } else if (receiver.role == "PATIENT") {
+                if (receiver.civility == "M") {
+                  receiver.img = "assets/imgs/avatar_homme.svg";
+                } else if (receiver.civility == "MME") {
+                  receiver.img = "assets/imgs/avatar_femme.svg";
+                } else if (receiver.civility == "CHILD") {
+                  receiver.img = "assets/imgs/avatar_enfant.svg";
+                }
+              }
             }
           });
           this.messagingDetail.ccReceivers.forEach((receiver) => {
@@ -161,6 +178,20 @@ export class MessagingDetailComponent implements OnInit {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
+            } else {
+              if (receiver.role == "MEDICAL") {
+                receiver.img = "assets/imgs/avatar_docteur.svg";
+              } else if (receiver.role == "SECRETARY") {
+                receiver.img = "assets/imgs/avatar_secrétaire.svg";
+              } else if (receiver.role == "PATIENT") {
+                if (receiver.civility == "M") {
+                  receiver.img = "assets/imgs/avatar_homme.svg";
+                } else if (receiver.civility == "MME") {
+                  receiver.img = "assets/imgs/avatar_femme.svg";
+                } else if (receiver.civility == "CHILD") {
+                  receiver.img = "assets/imgs/avatar_enfant.svg";
+                }
+              }
             }
           });
           if (this.messagingDetail.sender.photoId) {
@@ -178,6 +209,25 @@ export class MessagingDetailComponent implements OnInit {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
                 }
               );
+          } else {
+            if (this.messagingDetail.sender.role == "MEDICAL") {
+              this.messagingDetail.sender.img =
+                "assets/imgs/avatar_docteur.svg";
+            } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.img =
+                "assets/imgs/avatar_secrétaire.svg";
+            } else if (this.messagingDetail.sender.role == "PATIENT") {
+              if (this.messagingDetail.sender.civility == "M") {
+                this.messagingDetail.sender.img =
+                  "assets/imgs/avatar_homme.svg";
+              } else if (this.messagingDetail.sender.civility == "MME") {
+                this.messagingDetail.sender.img =
+                  "assets/imgs/avatar_femme.svg";
+              } else if (this.messagingDetail.sender.civility == "CHILD") {
+                this.messagingDetail.sender.img =
+                  "assets/imgs/avatar_enfant.svg";
+              }
+            }
           }
           if (this.messagingDetail.sender.senderForPhotoId) {
             this.documentService
@@ -194,6 +244,25 @@ export class MessagingDetailComponent implements OnInit {
                   this.messagingDetail.sender.forImg = "assets/imgs/user.png";
                 }
               );
+          } else {
+            if (this.messagingDetail.sender.role == "MEDICAL") {
+              this.messagingDetail.sender.forImg =
+                "assets/imgs/avatar_docteur.svg";
+            } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.forImg =
+                "assets/imgs/avatar_secrétaire.svg";
+            } else if (this.messagingDetail.sender.role == "PATIENT") {
+              if (this.messagingDetail.sender.civility == "M") {
+                this.messagingDetail.sender.forImg =
+                  "assets/imgs/avatar_homme.svg";
+              } else if (this.messagingDetail.sender.civility == "MME") {
+                this.messagingDetail.sender.forImg =
+                  "assets/imgs/avatar_femme.svg";
+              } else if (this.messagingDetail.sender.civility == "CHILD") {
+                this.messagingDetail.sender.forImg =
+                  "assets/imgs/avatar_enfant.svg";
+              }
+            }
           }
         });
     } else {
@@ -227,6 +296,20 @@ export class MessagingDetailComponent implements OnInit {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
+            } else {
+              if (receiver.role == "MEDICAL") {
+                receiver.img = "assets/imgs/avatar_docteur.svg";
+              } else if (receiver.role == "SECRETARY") {
+                receiver.img = "assets/imgs/avatar_secrétaire.svg";
+              } else if (receiver.role == "PATIENT") {
+                if (receiver.civility == "M") {
+                  receiver.img = "assets/imgs/avatar_homme.svg";
+                } else if (receiver.civility == "MME") {
+                  receiver.img = "assets/imgs/avatar_femme.svg";
+                } else if (receiver.civility == "CHILD") {
+                  receiver.img = "assets/imgs/avatar_enfant.svg";
+                }
+              }
             }
           });
           this.messagingDetail.ccReceivers.forEach((receiver) => {
@@ -243,6 +326,20 @@ export class MessagingDetailComponent implements OnInit {
                   receiver.img = "assets/imgs/user.png";
                 }
               );
+            } else {
+              if (receiver.role == "MEDICAL") {
+                receiver.img = "assets/imgs/avatar_docteur.svg";
+              } else if (receiver.role == "SECRETARY") {
+                receiver.img = "assets/imgs/avatar_secrétaire.svg";
+              } else if (receiver.role == "PATIENT") {
+                if (receiver.civility == "M") {
+                  receiver.img = "assets/imgs/avatar_homme.svg";
+                } else if (receiver.civility == "MME") {
+                  receiver.img = "assets/imgs/avatar_femme.svg";
+                } else if (receiver.civility == "CHILD") {
+                  receiver.img = "assets/imgs/avatar_enfant.svg";
+                }
+              }
             }
           });
           if (this.messagingDetail.sender.photoId) {
@@ -260,6 +357,25 @@ export class MessagingDetailComponent implements OnInit {
                   this.messagingDetail.sender.img = "assets/imgs/user.png";
                 }
               );
+          } else {
+            if (this.messagingDetail.sender.role == "MEDICAL") {
+              this.messagingDetail.sender.img =
+                "assets/imgs/avatar_docteur.svg";
+            } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.img =
+                "assets/imgs/avatar_secrétaire.svg";
+            } else if (this.messagingDetail.sender.role == "PATIENT") {
+              if (this.messagingDetail.sender.civility == "M") {
+                this.messagingDetail.sender.img =
+                  "assets/imgs/avatar_homme.svg";
+              } else if (this.messagingDetail.sender.civility == "MME") {
+                this.messagingDetail.sender.img =
+                  "assets/imgs/avatar_femme.svg";
+              } else if (this.messagingDetail.sender.civility == "CHILD") {
+                this.messagingDetail.sender.img =
+                  "assets/imgs/avatar_enfant.svg";
+              }
+            }
           }
           if (this.messagingDetail.sender.senderForPhotoId) {
             this.documentService
@@ -276,6 +392,25 @@ export class MessagingDetailComponent implements OnInit {
                   this.messagingDetail.sender.forImg = "assets/imgs/user.png";
                 }
               );
+          } else {
+            if (this.messagingDetail.sender.role == "MEDICAL") {
+              this.messagingDetail.sender.forImg =
+                "assets/imgs/avatar_docteur.svg";
+            } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.forImg =
+                "assets/imgs/avatar_secrétaire.svg";
+            } else if (this.messagingDetail.sender.role == "PATIENT") {
+              if (this.messagingDetail.sender.civility == "M") {
+                this.messagingDetail.sender.forImg =
+                  "assets/imgs/avatar_homme.svg";
+              } else if (this.messagingDetail.sender.civility == "MME") {
+                this.messagingDetail.sender.forImg =
+                  "assets/imgs/avatar_femme.svg";
+              } else if (this.messagingDetail.sender.civility == "CHILD") {
+                this.messagingDetail.sender.forImg =
+                  "assets/imgs/avatar_enfant.svg";
+              }
+            }
           }
         });
     }

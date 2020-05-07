@@ -9,10 +9,10 @@ import { Observable } from "rxjs";
 export class ArchieveMessagesService {
   constructor(private globalService: GlobalService) {}
 
-  getMyArchivedMessages(): Observable<any> {
+  getMyArchivedMessages(pageNo:number): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.archived_messages + "my"
+      this.globalService.url.archived_messages + "my?pageNo="+ pageNo
     );
   }
 

@@ -7,7 +7,8 @@ import { HlsDocumentsModule } from "hls-documents";
 import { HlsMessagingListModule } from "hls-messaging-list";
 import { DocumentsListComponent } from "./documents-list/documents-list.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [MyDocumentsComponent, DocumentsListComponent],
   imports: [
@@ -17,7 +18,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HlsDocumentsModule,
     HlsMessagingListModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    InfiniteScrollModule,
+    MatProgressSpinnerModule
   ],
 })
 export class MyDocumentsModule {}

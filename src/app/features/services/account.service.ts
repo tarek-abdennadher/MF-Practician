@@ -5,7 +5,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) {}
+  constructor(public router: Router, public globalService: GlobalService) { }
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -14,8 +14,11 @@ export class AccountService {
     my_info: "Mes informations personnelles",
     patient_info: "informations personnelles",
     civilite: "Civilité (*)",
+    civility: "Civilité",
     nom: "Nom (*)",
     prenom: "Prénom (*)",
+    first_name: "Prénom",
+    last_name: "Nom ",
     nom_jeune_fille: "Nom de jeune fille ",
     address: "Adresse (*)",
     _address: "Adresse ",
@@ -92,8 +95,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-        "/" +
-        encodeURIComponent(pass)
+      "/" +
+      encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {
@@ -150,10 +153,10 @@ export class AccountService {
       ids
     );
   }
-  getAccountDetails(id:number){
+  getAccountDetails(id: number) {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.account + "/detail/"+id
+      this.globalService.url.account + "/detail/" + id
     );
   }
 }

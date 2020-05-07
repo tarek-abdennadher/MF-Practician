@@ -11,36 +11,36 @@ export class MyDocumentsService {
   public person:any;
   constructor(private globalService: GlobalService, private http: HttpClient) {}
 
-  getMyAttachements(): Observable<any[]> {
+  getMyAttachements(pageNo:number): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.attachements + "/my"
     );
   }
 
-  getMyAttachementsBySenderOrReceiverId(id:number): Observable<any[]> {
+  getMyAttachementsBySenderOrReceiverId(id:number,pageNo): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id
+      this.globalService.url.attachements + "/my/"+id+"?pageNo="+pageNo
     );
   }
-  getMyAttachementsByObject(id:number,object:string): Observable<any[]> {
+  getMyAttachementsByObject(id:number,object:string,pageNo): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"/object/"+object
+      this.globalService.url.attachements + "/my/"+id+"/object/"+object+"?pageNo="+pageNo
     );
   }
-  getMyAttachementsBySenderForId(id:number,senderForId:string): Observable<any[]> {
+  getMyAttachementsBySenderForId(id:number,senderForId:string,pageNo): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"/senderFor/"+senderForId
+      this.globalService.url.attachements + "/my/"+id+"/senderFor/"+senderForId+"?pageNo="+pageNo
     );
   }
 
-  getMyAttachementsBySenderForIdAndObject(id:number,senderForId:string,object:string): Observable<any[]> {
+  getMyAttachementsBySenderForIdAndObject(id:number,senderForId:string,object:string,pageNo): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"/object/"+object+"/senderFor/"+senderForId
+      this.globalService.url.attachements + "/my/"+id+"/object/"+object+"/senderFor/"+senderForId+"?pageNo="+pageNo
     );
   }
 

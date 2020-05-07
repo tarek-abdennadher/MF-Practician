@@ -14,7 +14,7 @@ import { Location } from "@angular/common";
 import { LocalStorageService } from "ngx-webstorage";
 import { NotifierService } from "angular-notifier";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { NgxSpinnerService } from 'ngx-spinner';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-send-message",
@@ -25,8 +25,10 @@ export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
   imageSource: any = "assets/imgs/user.png";
+  imageDropdown = "assets/imgs/user.png";
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
+  role = this.localSt.retrieve("role");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList = [];
@@ -53,7 +55,6 @@ export class SendMessageComponent implements OnInit {
     notifierService: NotifierService,
     private documentService: MyDocumentsService,
     private spinner: NgxSpinnerService
-
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
@@ -79,6 +80,12 @@ export class SendMessageComponent implements OnInit {
           this.imageSource = "assets/imgs/user.png";
         }
       );
+    } else {
+      if (this.role == "MEDICAL") {
+        this.imageSource = "assets/imgs/avatar_docteur.svg";
+      } else if (this.role == "SECRETARY") {
+        this.imageSource = "assets/imgs/avatar_secrétaire.svg";
+      }
     }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
@@ -94,35 +101,118 @@ export class SendMessageComponent implements OnInit {
   getAllContactsPractician() {
     if (this.selectedPracticianId) {
       return this.contactsService
-      .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((contactsPractician: any) => {
-          this.parseContactsPractician(contactsPractician);
-        })
-      );
+        .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
+        .pipe(takeUntil(this._destroyed$))
+        .pipe(
+          tap((contactsPractician: any) => {
+            this.parseContactsPractician(contactsPractician);
+          })
+        );
     } else {
       return this.contactsService
-      .getAllContactsPractician()
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((contactsPractician: any) => {
-          this.parseContactsPractician(contactsPractician);
-        })
-      );
+        .getAllContactsPractician()
+        .pipe(takeUntil(this._destroyed$))
+        .pipe(
+          tap((contactsPractician: any) => {
+            this.parseContactsPractician(contactsPractician);
+          })
+        );
     }
   }
 
   parseContactsPractician(contactsPractician) {
     let myList = [];
     contactsPractician.forEach((contactPractician) => {
-      myList.push({
-        id: contactPractician.id,
-        fullName: contactPractician.fullName,
-        type: contactPractician.contactType,
-        isSelected:
-          this.selectedPracticianId == contactPractician.id ? true : false,
-      });
+      if (contactPractician.photoId && contactPractician.photoId != null) {
+        this.documentService.downloadFile(contactPractician.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              myList.push({
+                id: contactPractician.id,
+                fullName: contactPractician.fullName,
+                type: contactPractician.contactType,
+                isSelected:
+                  this.selectedPracticianId == contactPractician.id
+                    ? true
+                    : false,
+                img: myReader.result,
+              });
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: null,
+            });
+          }
+        );
+      } else {
+        if (contactPractician.contactType == "MEDICAL") {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: "assets/imgs/avatar_docteur.svg",
+          });
+        } else if (
+          contactPractician.contactType == "SECRETARY" ||
+          contactPractician.contactType == "TELESECRETARYGROUP"
+        ) {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: "assets/imgs/avatar_secrétaire.svg",
+          });
+        } else if (contactPractician.contactType == "PATIENT") {
+          if (contactPractician.civility == "M") {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: "assets/imgs/avatar_homme.svg",
+            });
+          } else if (contactPractician.civility == "MME") {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: "assets/imgs/avatar_femme.svg",
+            });
+          } else if (contactPractician.civility == "CHILD") {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: "assets/imgs/avatar_enfant.svg",
+            });
+          }
+        }
+      }
     });
     this.toList.next(myList);
   }

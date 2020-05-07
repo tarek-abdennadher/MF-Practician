@@ -56,14 +56,12 @@ export class ContactDetailComponent implements OnInit {
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       type: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
+      name: new FormControl(null),
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
-      email: new FormControl(null, {
-        validators: [Validators.required, emailValidator],
-      }),
-      title: new FormControl(null),
-      speciality: new FormControl(null),
+      email: new FormControl(null, emailValidator),
+      title: new FormControl(null, Validators.required),
+      speciality: new FormControl(null, Validators.required),
       address: new FormControl(null),
       additional_address: new FormControl(null),
       phone: new FormControl("+33"),
@@ -91,7 +89,7 @@ export class ContactDetailComponent implements OnInit {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId
       });
-      this.bottomText = contact.lastName + " " + contact.firstName;
+      this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
         this.isLabelShow = true;
       }
@@ -160,6 +158,9 @@ export class ContactDetailComponent implements OnInit {
         $(this).css("background", "#F1F1F1");
         $(this).css("border-color", "#F1F1F1");
         $(this).css("padding", "8px");
+      });
+      $(".arrow-down").each(function () {
+        $(this).css("border-bottom", "#F1F1F1");
       });
     });
   }

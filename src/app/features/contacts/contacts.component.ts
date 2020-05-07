@@ -35,7 +35,7 @@ export class ContactsComponent implements OnInit {
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService
-  ) { }
+  ) {}
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.itemsList = new Array();
@@ -95,6 +95,14 @@ export class ContactsComponent implements OnInit {
                 }
               );
             });
+          } else {
+            item.users.forEach((user) => {
+              if (user.type == "MEDICAL") {
+                user.img = "assets/imgs/avatar_docteur.svg";
+              } else if (user.type == "SECRETARY") {
+                user.img = "assets/imgs/avatar_secrétaire.svg";
+              }
+            });
           }
         });
       },
@@ -149,6 +157,14 @@ export class ContactsComponent implements OnInit {
                   user.img = "assets/imgs/user.png";
                 }
               );
+            });
+          } else {
+            item.users.forEach((user) => {
+              if (user.type == "MEDICAL") {
+                user.img = "assets/imgs/avatar_docteur.svg";
+              } else if (user.type == "SECRETARY") {
+                user.img = "assets/imgs/avatar_secrétaire.svg";
+              }
             });
           }
         });

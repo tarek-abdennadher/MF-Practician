@@ -25,7 +25,7 @@ export class LoginService {
     card_title: "Accès praticien",
     connexion: " Se connecter",
     new_account: "Vous n'avez pas de compte Helssy ?",
-    register: "S'inscrire",
+    register: "Demander une démo",
     new_patient_registration: "Vous êtes un patient ?"
   };
   authenticate(body) {

@@ -73,6 +73,14 @@ export class PatientDetailComponent implements OnInit {
               this.patient.img = "assets/imgs/user.png";
             }
           );
+        } else {
+          if (this.patient.civility == "M") {
+            this.patient.img = "assets/imgs/avatar_homme.svg";
+          } else if (this.patient.civility == "MME") {
+            this.patient.img = "assets/imgs/avatar_femme.svg";
+          } else if (this.patient.civility == "CHILD") {
+            this.patient.img = "assets/imgs/avatar_enfant.svg";
+          }
         }
       });
   }
@@ -94,9 +102,18 @@ export class PatientDetailComponent implements OnInit {
         patient.users = [
           {
             fullName: element.fullName,
-            img: element.photoId ? image : "assets/imgs/user.png",
+            img: element.photoId
+              ? image
+              : element.civility == "M"
+              ? "assets/imgs/avatar_homme.svg"
+              : element.civility == "MME"
+              ? "assets/imgs/avatar_femme.svg"
+              : element.civility == "CHILD"
+              ? "assets/imgs/avatar_enfant.svg"
+              : "assets/imgs/user.png",
             title: "",
             type: "PATIENT",
+            civility: element.civility,
           },
         ];
         patient.isViewDetail = true;
@@ -106,6 +123,7 @@ export class PatientDetailComponent implements OnInit {
       };
       let ok = myReader.readAsDataURL(response.body);
     });
+
     let patient = new PracticianSearch();
   }
 

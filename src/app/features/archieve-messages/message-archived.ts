@@ -4,10 +4,11 @@ export class MessageArchived {
   users: [
     {
       fullName: string;
-      img: string |ArrayBuffer;
+      img: string | ArrayBuffer;
       title: string;
       type: string;
       photoId: string;
+      civility: string;
     }
   ];
   object: {

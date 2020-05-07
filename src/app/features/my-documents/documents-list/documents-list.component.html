@@ -6,14 +6,32 @@
   [person]="documentsService.person"
 >
 </lib-hlsLinks>
-<form *ngIf="links?.isMyDocuments" [formGroup]="filterDocumentsForm" class="d-flex p-2 flex-row-reverse bd-highlight">
-  <select id="documentType" class="form-control col-md-2" formControlName="documentType" (change)="filter()">
+<form
+  [formGroup]="filterDocumentsForm"
+  class="d-flex p-2 flex-row-reverse bd-highlight"
+>
+  <select
+    id="documentType"
+    class="form-control col-md-2"
+    formControlName="documentType"
+    (change)="filter()"
+  >
     <option [value]="''"> Type</option>
-    <option *ngFor="let item of documentTypes" [value]="item">{{ item }}</option>
+    <option *ngFor="let item of documentTypes" [value]="item">{{
+      item
+    }}</option>
   </select>
-  <select *ngIf="destinations?.size >0" id="destination" class="form-control col-md-2" formControlName="destination" (change)="filter()">
+  <select
+    *ngIf="destinations?.size > 0"
+    id="destination"
+    class="form-control col-md-2"
+    formControlName="destination"
+    (change)="filter()"
+  >
     <option [value]="''">Moi même </option>
-    <option *ngFor="let item of destinations" [value]="item.id">{{ item.firstName }} {{item.lastName}}</option>
+    <option *ngFor="let item of destinations" [value]="item.id"
+      >{{ item.firstName }} {{ item.lastName }}</option
+    >
   </select>
 </form>
 <lib-hlsMessagingList
@@ -22,4 +40,17 @@
   (downloadAction)="downloadFile($event)"
   (visualizeAction)="visualizeFile($event)"
 ></lib-hlsMessagingList>
-
+<div
+  class="search-results"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()"
+></div>
+<mat-progress-spinner
+  *ngIf="scroll"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
+</mat-progress-spinner>

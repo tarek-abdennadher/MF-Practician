@@ -6,8 +6,8 @@ import { takeUntil } from "rxjs/operators";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { NotifierService } from 'angular-notifier';
-import { GlobalService } from '@app/core/services/global.service';
+import { NotifierService } from "angular-notifier";
+import { GlobalService } from "@app/core/services/global.service";
 
 @Component({
   selector: "app-sent-messages",
@@ -50,7 +50,7 @@ export class SentMessagesComponent implements OnInit {
         this.notifier.show({
           message: this.globalService.toastrMessages.archived_message_success,
           type: "info",
-          template: this.customNotificationTmpl
+          template: this.customNotificationTmpl,
         });
       }
     });
@@ -79,6 +79,20 @@ export class SentMessagesComponent implements OnInit {
                   user.img = "assets/imgs/user.png";
                 }
               );
+            } else {
+              if (user.type == "PRACTICIAN" || user.type == "MEDICAL") {
+                user.img = "assets/imgs/avatar_docteur.svg";
+              } else if (user.type == "SECRETARY") {
+                user.img = "assets/imgs/avatar_secrétaire.svg";
+              } else if (user.type == "PATIENT") {
+                if (user.civility == "M") {
+                  user.img = "assets/imgs/avatar_homme.svg";
+                } else if (user.civility == "MME") {
+                  user.img = "assets/imgs/avatar_femme.svg";
+                } else if (user.civility == "CHILD") {
+                  user.img = "assets/imgs/avatar_enfant.svg";
+                }
+              }
             }
           });
           this.itemsList.push(messageSent);
@@ -98,6 +112,7 @@ export class SentMessagesComponent implements OnInit {
         title: r.jobTitle,
         type: r.role,
         photoId: r.photoId,
+        civility: r.civility,
       });
     });
     messageSent.object = {
@@ -191,7 +206,11 @@ export class SentMessagesComponent implements OnInit {
         : this.itemsList.filter(
             (item) =>
               item.users[0].type.toLowerCase() ==
-              (event == "doctor" ? "medical" : event == "secretary" ? "telesecretarygroup" || "secretary" : event)
+              (event == "doctor"
+                ? "medical"
+                : event == "secretary"
+                ? "telesecretarygroup" || "secretary"
+                : event)
           );
   }
   selectItem(event) {
