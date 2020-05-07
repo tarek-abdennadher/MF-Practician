@@ -89,7 +89,7 @@ export class ContactDetailComponent implements OnInit {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId
       });
-      this.bottomText = contact.lastName + " " + contact.firstName;
+      this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
         this.isLabelShow = true;
       }
@@ -158,6 +158,9 @@ export class ContactDetailComponent implements OnInit {
         $(this).css("background", "#F1F1F1");
         $(this).css("border-color", "#F1F1F1");
         $(this).css("padding", "8px");
+      });
+      $(".arrow-down").each(function () {
+        $(this).css("border-bottom", "#F1F1F1");
       });
     });
   }
