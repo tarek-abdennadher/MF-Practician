@@ -300,7 +300,7 @@
       <br />
       <div *ngIf="!isPatientFile" class="row justify-content-center">
         <button (click)="submit()" type="submit" class="btn btn-primary">
-          {{ labels.validate }}
+          <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
         </button>
       </div>
       <div class="row justify-content-center">
@@ -403,7 +403,7 @@
           <br />
           <div class="row justify-content-center">
             <button type="submit" class="btn btn-primary">
-              {{ labels.validate }}
+              <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
             </button>
           </div>
         </form>

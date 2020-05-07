@@ -71,13 +71,18 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   border-color: white;
 }
 .btn {
-  border: 0px;
-  border-radius: 0.4rem;
+  background: #41BDDF 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
   color: white;
+  border-color :#41bddf ;
+  font-family: "Segoe UI" !important;
 }
 .btn-primary {
   background-color: #41bddf !important;
   text-align: center !important;
+  font-family: "Segoe UI" !important;
+  box-shadow: none;
 }
 .btn-success {
   background-color: #74c720;

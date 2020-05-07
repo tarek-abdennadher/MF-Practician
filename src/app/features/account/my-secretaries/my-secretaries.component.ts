@@ -150,7 +150,6 @@ export class MySecretariesComponent implements OnInit {
     this.router.navigate(["/messagerie"]);
   }
   getMySecretaries() {
-    this.updateCSS();
     this.accountService.getMySecretaries().subscribe(
       (contacts) => {
         this.users = contacts;
@@ -215,7 +214,6 @@ export class MySecretariesComponent implements OnInit {
     );
   }
   cardClicked(item) {
-    this.updateCSS();
     this.accountService.getAccountById(item.id).subscribe((value) => {
       this.selectedSecretary = value;
       if (value.secretary.photoId) {
@@ -239,6 +237,7 @@ export class MySecretariesComponent implements OnInit {
         picture: value.secretary ? value.secretary.photoId : null,
         otherPhones: value.secretary.otherPhones ? this.phoneList : []
       });
+      this.updateCSS();
       this.infoForm.disable();
       this.isEdit = true;
       this.isList = false;
