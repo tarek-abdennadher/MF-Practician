@@ -4,6 +4,7 @@ import {
   FormBuilder,
   FormControl,
   Validators,
+  FormArray,
 } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
@@ -32,12 +33,10 @@ export class MySecretariesComponent implements OnInit {
   showAlert = false;
   hasImage = false;
   public infoForm: FormGroup;
+  public phoneForm: FormGroup;
   itemsList: Array<any> = [];
-  otherPhones = new Subject<any[]>();
   isLabelShow: boolean;
-  public phones = new Array();
-  public isPhonesValid = false;
-  addnewPhone = new Subject<boolean>();
+  public otherPhones = FormArray;
   image: string | ArrayBuffer;
   imageSource = "assets/imgs/avatar_secrétaire.svg";
   constructor(
@@ -46,6 +45,7 @@ export class MySecretariesComponent implements OnInit {
     private contactsService: ContactsService,
     private dialogService: DialogService,
     private documentService: MyDocumentsService,
+    private formBuilder: FormBuilder
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -53,10 +53,17 @@ export class MySecretariesComponent implements OnInit {
     this.isLabelShow = false;
   }
 
+  get ctr() {
+    return this.infoForm.controls;
+  }
+  get phoneList() {
+    return <FormArray>this.infoForm.get("otherPhones");
+  }
   ngOnInit(): void {
     this.initInfoForm();
     this.getMySecretaries();
   }
+
   initInfoForm() {
     this.updateCSS();
     this.infoForm = new FormGroup({
@@ -69,11 +76,17 @@ export class MySecretariesComponent implements OnInit {
       }),
       civility: new FormControl(null, Validators.required),
       phone: new FormControl(null, Validators.required),
-      picture: new FormControl(null)
+      picture: new FormControl(null),
+      otherPhones: this.formBuilder.array([])
     });
   }
-  get ctr() {
-    return this.infoForm.controls;
+  updatePhone(p): FormGroup {
+    this.updateCSS();
+    return this.formBuilder.group({
+      id: [p.id ? p.id : null],
+      phoneNumber: [p.phoneNumber ? p.phoneNumber : ""],
+      note: [p.note ? p.note : null]
+    });
   }
   close() {
     this.showAlert = false;
@@ -205,13 +218,15 @@ export class MySecretariesComponent implements OnInit {
     this.updateCSS();
     this.accountService.getAccountById(item.id).subscribe((value) => {
       this.selectedSecretary = value;
-      if (this.selectedSecretary?.otherPhones) {
-        this.isLabelShow = true;
-      }
-      this.otherPhones.next(this.selectedSecretary?.otherPhones);
       if (value.secretary.photoId) {
         this.hasImage = true;
         this.getPictureProfile(value.secretary.photoId);
+      }
+      if (this.selectedSecretary?.otherPhones && this.selectedSecretary?.otherPhones.length != 0) {
+        this.updateCSS();
+        this.isLabelShow = true;
+        this.selectedSecretary.otherPhones.forEach(p =>
+          this.phoneList.push(this.updatePhone(p)));
       }
       this.infoForm.patchValue({
         id: value.id,
@@ -222,7 +237,7 @@ export class MySecretariesComponent implements OnInit {
         civility: value.secretary ? value.secretary.civility : null,
         phone: value.phoneNumber,
         picture: value.secretary ? value.secretary.photoId : null,
-        otherPhones: value.otherPhones ? value.otherPhones : []
+        otherPhones: value.secretary.otherPhones ? this.phoneList : []
       });
       this.infoForm.disable();
       this.isEdit = true;
@@ -256,25 +271,19 @@ export class MySecretariesComponent implements OnInit {
       $(".form-control").each(function () {
         $(this).css("background", "#F1F1F1");
         $(this).css("border-color", "#F1F1F1");
+        $(this).css("pointer-events", "none");
       });
       $(".dropbtn.btn").each(function () {
         $(this).attr("disabled", true);
         $(this).css("background", "#F1F1F1");
         $(this).css("border-color", "#F1F1F1");
         $(this).css("padding", "8px");
+        $(this).css("pointer-events", "none");
+      });
+      $(".arrow-down").each(function () {
+        $(this).css("background", "#F1F1F1");
+        $(this).css("border", "0px");
       });
     });
-  }
-  getPhoneList(event) {
-    this.phones = event.value;
-    if (this.phones.length > 0) {
-      this.isLabelShow = true;
-    }
-    else {
-      this.isLabelShow = false;
-    }
-  }
-  submitPhones(event) {
-    this.isPhonesValid = event;
   }
 }

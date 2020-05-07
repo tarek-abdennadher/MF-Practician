@@ -283,8 +283,8 @@ export class PersonalInformationsComponent implements OnInit {
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                  (s) => s.id == this.infoForm.value.speciality
-                )
+                (s) => s.id == this.infoForm.value.speciality
+              )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
@@ -441,6 +441,9 @@ export class PersonalInformationsComponent implements OnInit {
           $(this).css("border-color", "#F1F1F1");
           $(this).css("padding", "8px");
         });
+        $(".arrow-down").each(function () {
+          $(this).css("border-bottom", "#F1F1F1");
+        });
       });
     } else {
       $(document).ready(function () {
@@ -454,6 +457,10 @@ export class PersonalInformationsComponent implements OnInit {
           $(this).css("border-color", "#F1F1F1");
           $(this).css("padding", "8px");
           $(this).css("pointer-events", "none");
+        });
+        $(".arrow-down").each(function () {
+          $(this).css("background", "#F1F1F1");
+          $(this).css("border", "0px");
         });
       });
     }
