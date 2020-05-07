@@ -159,6 +159,9 @@ export class ContactDetailComponent implements OnInit {
         $(this).css("border-color", "#F1F1F1");
         $(this).css("padding", "8px");
       });
+      $(".arrow-down").each(function () {
+        $(this).css("border-bottom", "#F1F1F1");
+      });
     });
   }
   // Other phones list 
