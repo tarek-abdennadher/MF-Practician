@@ -27,7 +27,7 @@ export class ContactsService {
     last_name: "Nom (*)",
     additional_address: "Complément d'adresse",
     other_phone: "Autre tél",
-    validate: "Valider",
+    validate: "Enregistrer",
     title: "Titre (*)",
     speciality: "Spécialité (*)",
     civility: "Civilité (*)",
