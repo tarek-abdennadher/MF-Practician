@@ -34,3 +34,13 @@
   (activatedAction)="activatedAction($event)"
   (cardAction)="cardClicked($event)"
 ></lib-hlsMessagingList>
+
+<div
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="50"
+      (scrolled)="onScroll()"
+></div>
+<mat-progress-spinner *ngIf="scroll" diameter="20"
+mode="indeterminate" value="100"> </mat-progress-spinner>
