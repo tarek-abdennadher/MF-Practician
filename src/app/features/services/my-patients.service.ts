@@ -9,31 +9,31 @@ import { Observable } from "rxjs";
 export class MyPatientsService {
   constructor(private globalService: GlobalService) {}
 
-  getPatientsOfCurrentParactician(): Observable<any> {
+  getPatientsOfCurrentParactician(pageNo:number): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient"
+      this.globalService.url.favorite + "myPatient?pageNo="+pageNo
     );
   }
 
-  getPatientsProhibitedOfCurrentParactician(): Observable<any> {
+  getPatientsProhibitedOfCurrentParactician(pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited"
+      this.globalService.url.favorite + "myPatient/prohibited?pageNo="+pageNo
     );
   }
 
-  getPatientsPendingOfCurrentParactician(): Observable<any> {
+  getPatientsPendingOfCurrentParactician(pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/pending"
+      this.globalService.url.favorite + "myPatient/pending?pageNo="+pageNo
     );
   }
 
-  getPatientsArchivedOfCurrentParactician(): Observable<any> {
+  getPatientsArchivedOfCurrentParactician(pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/archived"
+      this.globalService.url.favorite + "myPatient/archived?pageNo="+pageNo
     );
   }
 
