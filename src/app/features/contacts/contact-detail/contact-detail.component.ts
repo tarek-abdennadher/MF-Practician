@@ -89,7 +89,7 @@ export class ContactDetailComponent implements OnInit {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId
       });
-      this.bottomText = contact.lastName + " " + contact.firstName;
+      this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
         this.isLabelShow = true;
       }
