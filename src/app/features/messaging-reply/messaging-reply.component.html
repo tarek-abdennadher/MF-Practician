@@ -24,6 +24,9 @@
   </div>
 </ng-template>
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
-  <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'">
-  <p class="loading">Envoi du message en cours...</p>
+  <div class="card" id="card-gif">
+    <div class="card-body">
+      <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'">
+      <p class="loading">Envoi du message en cours...</p>    </div>
+  </div>
 </ngx-spinner>
