@@ -404,23 +404,6 @@ export class MyPatientsComponent implements OnInit {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
               user.img = myReader.result;
-
-              let atcObj: AutoComplete = new AutoComplete({
-                dataSource: myPatients,
-                fields: { value: "fullName" },
-                itemTemplate:
-                  "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
-                  '<span class="country"> ${fullName} </span>',
-                placeholder: "Nom, prénom",
-                popupHeight: "450px",
-                highlight: true,
-                suggestionCount: 5,
-                enabled: myPatients.length != 0 ? true : false,
-                noRecordsTemplate: "Aucune données trouvé",
-                sortOrder: "Ascending",
-              });
-              atcObj.appendTo("#patients");
-              atcObj.showSpinner();
             };
             let ok = myReader.readAsDataURL(response.body);
           },
@@ -430,5 +413,21 @@ export class MyPatientsComponent implements OnInit {
         );
       }
     });
+    let atcObj: AutoComplete = new AutoComplete({
+      dataSource: myPatients,
+      fields: { value: "fullName" },
+      itemTemplate:
+        "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
+        '<span class="country"> ${fullName} </span>',
+      placeholder: "Nom, prénom",
+      popupHeight: "450px",
+      highlight: true,
+      suggestionCount: 5,
+      enabled: myPatients.length != 0 ? true : false,
+      noRecordsTemplate: "Aucune données trouvé",
+      sortOrder: "Ascending",
+    });
+    atcObj.appendTo("#patients");
+    atcObj.showSpinner();
   }
 }
