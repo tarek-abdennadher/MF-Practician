@@ -10,4 +10,5 @@ export class MyPatients {
 export class PatientSerch {
   fullName: string;
   img: string;
+  photoId: string;
 }

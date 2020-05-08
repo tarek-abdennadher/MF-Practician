@@ -394,23 +394,41 @@ export class MyPatientsComponent implements OnInit {
       const patient = new PatientSerch();
       patient.fullName = p.users[0].fullName;
       patient.img = p.users[0].img;
+      patient.photoId = p.photoId;
       myPatients.push(patient);
     });
-    let atcObj: AutoComplete = new AutoComplete({
-      dataSource: myPatients,
-      fields: { value: "fullName" },
-      itemTemplate:
-        "<div><img src=${img} style='height:2rem'></img>" +
-        '<span class="country"> ${fullName} </span>',
-      placeholder: "Nom, prénom",
-      popupHeight: "450px",
-      highlight: true,
-      suggestionCount: 5,
-      enabled: myPatients.length != 0 ? true : false,
-      noRecordsTemplate: "Aucune données trouvé",
-      sortOrder: "Ascending",
+    myPatients.forEach((user) => {
+      if (user.photoId) {
+        this.documentService.downloadFile(user.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              user.img = myReader.result;
+
+              let atcObj: AutoComplete = new AutoComplete({
+                dataSource: myPatients,
+                fields: { value: "fullName" },
+                itemTemplate:
+                  "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
+                  '<span class="country"> ${fullName} </span>',
+                placeholder: "Nom, prénom",
+                popupHeight: "450px",
+                highlight: true,
+                suggestionCount: 5,
+                enabled: myPatients.length != 0 ? true : false,
+                noRecordsTemplate: "Aucune données trouvé",
+                sortOrder: "Ascending",
+              });
+              atcObj.appendTo("#patients");
+              atcObj.showSpinner();
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            user.img = "assets/imgs/user.png";
+          }
+        );
+      }
     });
-    atcObj.appendTo("#patients");
-    atcObj.showSpinner();
   }
 }
