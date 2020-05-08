@@ -22,20 +22,21 @@
 }
 
 .fa-search {
-  background: #ffffff no-repeat scroll 7px 7px;
-  margin-left: -33px;
   cursor: pointer;
-  text-align: left;
+  margin-left: -55px;
   font-weight: normal;
   letter-spacing: -0.75px;
   color: #acb6c3;
   opacity: 1;
+  text-align: left;
 }
-
 ::placeholder {
   text-align: left;
   font-style: Italic;
   letter-spacing: -0.53px;
   color: #acb6c3;
   opacity: 1;
+}
+::ng-deep .e-input-focus {
+  padding-right: 22px;
 }

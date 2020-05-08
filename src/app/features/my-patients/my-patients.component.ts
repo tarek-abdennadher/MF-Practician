@@ -1,12 +1,18 @@
 import { Component, OnInit } from "@angular/core";
 import { MyPatientsService } from "../services/my-patients.service";
-import { MyPatients } from "./my-patients";
+import { MyPatients, PatientSerch } from "./my-patients";
 import { Router, ActivatedRoute } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+/**
+ * AutoComplete Default Sample
+ */
+import { enableRipple } from "@syncfusion/ej2-base";
+enableRipple(true);
 
+import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -52,7 +58,7 @@ export class MyPatientsComponent implements OnInit {
           case "accepted": {
             this.section = "accepted";
             this.isInvitation = false;
-              this.getPatientsOfCurrentParactician(this.pageNo);
+            this.getPatientsOfCurrentParactician(this.pageNo);
             break;
           }
           case "pending": {
@@ -100,6 +106,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -118,6 +125,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -136,6 +144,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -154,6 +163,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -377,5 +387,30 @@ export class MyPatientsComponent implements OnInit {
         }
       }
     }
+  }
+  searchAutoComplete() {
+    const myPatients = [];
+    this.myPatients.forEach((p) => {
+      const patient = new PatientSerch();
+      patient.fullName = p.users[0].fullName;
+      patient.img = p.users[0].img;
+      myPatients.push(patient);
+    });
+    let atcObj: AutoComplete = new AutoComplete({
+      dataSource: myPatients,
+      fields: { value: "fullName" },
+      itemTemplate:
+        "<div><img src=${img} style='height:2rem'></img>" +
+        '<span class="country"> ${fullName} </span>',
+      placeholder: "Nom, prénom",
+      popupHeight: "450px",
+      highlight: true,
+      suggestionCount: 5,
+      enabled: myPatients.length != 0 ? true : false,
+      noRecordsTemplate: "Aucune données trouvé",
+      sortOrder: "Ascending",
+    });
+    atcObj.appendTo("#patients");
+    atcObj.showSpinner();
   }
 }

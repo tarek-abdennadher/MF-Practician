@@ -6,3 +6,8 @@ export class MyPatients {
   isArchived: boolean;
   photoId: string;
 }
+
+export class PatientSerch {
+  fullName: string;
+  img: string;
+}
