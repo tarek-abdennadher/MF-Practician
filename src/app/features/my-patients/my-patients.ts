@@ -12,3 +12,6 @@ export class PatientSerch {
   img: string;
   photoId: string;
 }
+export class CitySerch {
+  name: string;
+}
