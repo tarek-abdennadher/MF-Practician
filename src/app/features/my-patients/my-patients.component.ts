@@ -437,6 +437,5 @@ export class MyPatientsComponent implements OnInit {
     });
     this.atcObj.appendTo("#patients");
     this.atcObj.showSpinner();
-    this.atcObj.focusIn();
   }
 }
