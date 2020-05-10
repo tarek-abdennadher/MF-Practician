@@ -13,6 +13,7 @@ import { enableRipple } from "@syncfusion/ej2-base";
 enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
+import { FormGroup, FormBuilder } from "@angular/forms";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -33,11 +34,12 @@ export class MyPatientsComponent implements OnInit {
     this.number > 1
       ? this.globalService.messagesDisplayScreen.patients
       : this.globalService.messagesDisplayScreen.patient;
-  search: string;
 
   pageNo = 0;
   listLength = 0;
   scroll = false;
+  public searchForm: FormGroup;
+  atcObj: AutoComplete = new AutoComplete();
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
@@ -45,8 +47,13 @@ export class MyPatientsComponent implements OnInit {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private featureService: FeaturesService,
-    private documentService: MyDocumentsService
-  ) {}
+    private documentService: MyDocumentsService,
+    private formBuilder: FormBuilder
+  ) {
+    this.searchForm = this.formBuilder.group({
+      search: [""],
+    });
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -221,8 +228,9 @@ export class MyPatientsComponent implements OnInit {
     );
   }
 
-  searchAction(search) {
-    const filterBy = search;
+  searchActionClicked() {
+    const filterBy = (<HTMLInputElement>document.getElementById("patients"))
+      .value;
     this.filtredPatients =
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }
@@ -413,7 +421,7 @@ export class MyPatientsComponent implements OnInit {
         );
       }
     });
-    let atcObj: AutoComplete = new AutoComplete({
+    this.atcObj = new AutoComplete({
       dataSource: myPatients,
       fields: { value: "fullName" },
       itemTemplate:
@@ -427,7 +435,7 @@ export class MyPatientsComponent implements OnInit {
       noRecordsTemplate: "Aucune données trouvé",
       sortOrder: "Ascending",
     });
-    atcObj.appendTo("#patients");
-    atcObj.showSpinner();
+    this.atcObj.appendTo("#patients");
+    this.atcObj.showSpinner();
   }
 }
