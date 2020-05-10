@@ -7,23 +7,22 @@
     [number]="number"
   ></lib-hlsLinks>
   <div class="col-md-6 form-inline">
-    <div class="form-inline col-md-12">
+    <form [formGroup]="searchForm" class="form-inline col-md-12">
       <div class="col-md-11">
         <input
           tabindex="1"
           id="patients"
-          [(ngModel)]="search"
           placeholder="Nom, prénom"
+          formControlName="search"
           type="text"
           class="form-control"
-          (change)="searchAction($event)"
         />
       </div>
 
       <div class="col-md-1">
-        <i (click)="searchAction($event)" class="fa fa-search"></i>
+        <i (click)="searchActionClicked()" class="fa fa-search"></i>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 <br />
