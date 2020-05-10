@@ -16,12 +16,12 @@
           placeholder="Nom, prénom"
           type="text"
           class="form-control"
-          (change)="searchAction(search)"
+          (change)="searchAction($event)"
         />
       </div>
 
       <div class="col-md-1">
-        <i (click)="searchAction(search)" class="fa fa-search"></i>
+        <i (click)="searchAction($event)" class="fa fa-search"></i>
       </div>
     </div>
   </div>

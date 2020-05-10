@@ -221,8 +221,8 @@ export class MyPatientsComponent implements OnInit {
     );
   }
 
-  searchAction(search) {
-    const filterBy = search;
+  searchAction(event) {
+    const filterBy = event.target.value;
     this.filtredPatients =
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }

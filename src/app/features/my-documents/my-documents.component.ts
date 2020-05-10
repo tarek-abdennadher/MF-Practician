@@ -147,13 +147,13 @@ export class MyDocumentsComponent implements OnInit {
     this.router.navigate(["/mes-documents/list/" + item.id]);
   }
 
-  searchAction(search) {
+  searchAction(event) {
     if (this.filtredItemsList.length < this.itemsList.length) {
       this.filtredItemsList = this.itemsList;
     }
     this.itemsList = this.filtredItemsList;
     this.itemsList = this.itemsList.filter((item) =>
-      item.users[0].fullName.toLowerCase().includes(search)
+      item.users[0].fullName.toLowerCase().includes(event.target.value)
     );
   }
 
