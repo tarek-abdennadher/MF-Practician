@@ -247,9 +247,9 @@ export class SendMessageComponent implements OnInit {
       sendedForId: message.for && message.for.id ? message.for.id : null,
     };
     message.object != "" &&
-    message.object.name.toLowerCase() !=
+    message.object[0].name.toLowerCase() !=
       this.globalService.messagesDisplayScreen.other
-      ? (newMessage.object = message.object.name)
+      ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
     if (message.file !== undefined) {
