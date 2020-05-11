@@ -186,7 +186,6 @@ export class MyDocumentsComponent implements OnInit {
       popupHeight: "450px",
       highlight: true,
       suggestionCount: 5,
-      enabled: myPatients.length != 0 ? true : false,
       noRecordsTemplate: "Aucune données trouvé",
       sortOrder: "Ascending",
     });

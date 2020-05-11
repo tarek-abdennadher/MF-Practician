@@ -48,7 +48,8 @@ export class MyPatientsComponent implements OnInit {
     private dialogService: DialogService,
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private featuresService: FeaturesService
   ) {
     this.searchForm = this.formBuilder.group({
       search: [""],
@@ -397,45 +398,48 @@ export class MyPatientsComponent implements OnInit {
     }
   }
   searchAutoComplete() {
-    const myPatients = [];
-    this.myPatients.forEach((p) => {
-      const patient = new PatientSerch();
-      patient.fullName = p.users[0].fullName;
-      patient.img = p.users[0].img;
-      patient.photoId = p.photoId;
-      myPatients.push(patient);
-    });
-    myPatients.forEach((user) => {
-      if (user.photoId) {
-        this.documentService.downloadFile(user.photoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              user.img = myReader.result;
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            user.img = "assets/imgs/user.png";
-          }
-        );
-      }
-    });
-    this.atcObj = new AutoComplete({
-      dataSource: myPatients,
-      fields: { value: "fullName" },
-      itemTemplate:
-        "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
-        '<span class="country"> ${fullName} </span>',
-      placeholder: "Nom, prénom",
-      popupHeight: "450px",
-      highlight: true,
-      suggestionCount: 5,
-      enabled: myPatients.length != 0 ? true : false,
-      noRecordsTemplate: "Aucune données trouvé",
-      sortOrder: "Ascending",
-    });
-    this.atcObj.appendTo("#patients");
-    this.atcObj.showSpinner();
+    if (!this.featuresService.initialSearch) {
+      this.featuresService.initialSearch = true;
+      this.atcObj = null;
+      const myPatients = [];
+      this.myPatients.forEach((p) => {
+        const patient = new PatientSerch();
+        patient.fullName = p.users[0].fullName;
+        patient.img = p.users[0].img;
+        patient.photoId = p.photoId;
+        myPatients.push(patient);
+      });
+      myPatients.forEach((user) => {
+        if (user.photoId) {
+          this.documentService.downloadFile(user.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        }
+      });
+      this.atcObj = new AutoComplete({
+        dataSource: myPatients,
+        fields: { value: "fullName" },
+        itemTemplate:
+          "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
+          '<span class="country"> ${fullName} </span>',
+        placeholder: "Nom, prénom",
+        popupHeight: "450px",
+        highlight: true,
+        suggestionCount: 5,
+        noRecordsTemplate: "Aucune données trouvé",
+        sortOrder: "Ascending",
+      });
+      this.atcObj.appendTo("#patients");
+      this.atcObj.showSpinner();
+    }
   }
 }
