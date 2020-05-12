@@ -319,8 +319,7 @@ export class MessagingListComponent implements OnInit {
               (message) => message.sender.senderId == this.idAccount
             )
           : retrievedMess;
-        this.number = this.featureService.numberOfInbox;
-        if (!this.isMyInbox && !this.isPatientFile) {
+        /* if (!this.isMyInbox && !this.isPatientFile) {
           this.number = this.messages.filter(
             (m) => m.seenAsReceiver == false
           ).length;
@@ -332,7 +331,7 @@ export class MessagingListComponent implements OnInit {
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.newMessages
-            : this.globalService.messagesDisplayScreen.newMessage;
+            : this.globalService.messagesDisplayScreen.newMessage; */
 
         this.messages.sort(function (m1, m2) {
           return (
