@@ -33,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
     this.errorMessage = "";
     this.successMessage = "";
     this.loginService.getRoleByEmail(model.email).subscribe(res => {
-      if (res && res == "PRACTICIAN") {
+      if (res && (res == "PRACTICIAN" || res == "SECRETARY")) {
         this.loginService.resetPassword(model.email).subscribe(res => {
           if (res) {
             this.successMessage = this.loginService.messages.reset_password_success;
