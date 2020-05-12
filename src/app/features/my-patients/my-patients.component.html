@@ -6,13 +6,24 @@
     [bottomText]="bottomText"
     [number]="number"
   ></lib-hlsLinks>
-  <div class="col-md-5">
-    <input
-      [(ngModel)]="search"
-      placeholder="Nom, prénom"
-      type="text"
-      class="form-control"
-    /><i (click)="searchAction(search)" class="fa fa-search"></i>
+  <div class="col-md-6 form-inline">
+    <form [formGroup]="searchForm" class="form-inline col-md-12">
+      <div class="col-md-11">
+        <input
+          tabindex="1"
+          id="patients"
+          placeholder="Nom, prénom"
+          formControlName="search"
+          type="text"
+          class="form-control"
+          (change)="searchActionClicked()"
+        />
+      </div>
+
+      <div class="col-md-1">
+        <i (click)="searchActionClicked()" class="fa fa-search"></i>
+      </div>
+    </form>
   </div>
 </div>
 <br />
@@ -36,11 +47,16 @@
 ></lib-hlsMessagingList>
 
 <div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()"
+  class="search-results"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()"
 ></div>
-<mat-progress-spinner *ngIf="scroll" diameter="20"
-mode="indeterminate" value="100"> </mat-progress-spinner>
+<mat-progress-spinner
+  *ngIf="scroll"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
+</mat-progress-spinner>

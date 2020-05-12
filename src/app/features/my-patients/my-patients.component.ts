@@ -1,12 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { MyPatientsService } from "../services/my-patients.service";
-import { MyPatients } from "./my-patients";
+import { MyPatients, PatientSerch } from "./my-patients";
 import { Router, ActivatedRoute } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+/**
+ * AutoComplete Default Sample
+ */
+import { enableRipple } from "@syncfusion/ej2-base";
+enableRipple(true);
 
+import { AutoComplete } from "@syncfusion/ej2-dropdowns";
+import { FormGroup, FormBuilder } from "@angular/forms";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -27,11 +34,12 @@ export class MyPatientsComponent implements OnInit {
     this.number > 1
       ? this.globalService.messagesDisplayScreen.patients
       : this.globalService.messagesDisplayScreen.patient;
-  search: string;
 
   pageNo = 0;
   listLength = 0;
   scroll = false;
+  public searchForm: FormGroup;
+  atcObj: AutoComplete = new AutoComplete();
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
@@ -39,8 +47,14 @@ export class MyPatientsComponent implements OnInit {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private featureService: FeaturesService,
-    private documentService: MyDocumentsService
-  ) {}
+    private documentService: MyDocumentsService,
+    private formBuilder: FormBuilder,
+    private featuresService: FeaturesService
+  ) {
+    this.searchForm = this.formBuilder.group({
+      search: [""],
+    });
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -52,7 +66,7 @@ export class MyPatientsComponent implements OnInit {
           case "accepted": {
             this.section = "accepted";
             this.isInvitation = false;
-              this.getPatientsOfCurrentParactician(this.pageNo);
+            this.getPatientsOfCurrentParactician(this.pageNo);
             break;
           }
           case "pending": {
@@ -100,6 +114,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -118,6 +133,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -136,6 +152,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -154,6 +171,7 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
           );
         });
+        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -211,8 +229,9 @@ export class MyPatientsComponent implements OnInit {
     );
   }
 
-  searchAction(search) {
-    const filterBy = search;
+  searchActionClicked() {
+    const filterBy = (<HTMLInputElement>document.getElementById("patients"))
+      .value;
     this.filtredPatients =
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }
@@ -376,6 +395,51 @@ export class MyPatientsComponent implements OnInit {
           }
         }
       }
+    }
+  }
+  searchAutoComplete() {
+    if (!this.featuresService.initialSearch) {
+      this.featuresService.initialSearch = true;
+      this.atcObj = null;
+      const myPatients = [];
+      this.myPatients.forEach((p) => {
+        const patient = new PatientSerch();
+        patient.fullName = p.users[0].fullName;
+        patient.img = p.users[0].img;
+        patient.photoId = p.photoId;
+        myPatients.push(patient);
+      });
+      myPatients.forEach((user) => {
+        if (user.photoId) {
+          this.documentService.downloadFile(user.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        }
+      });
+      this.atcObj = new AutoComplete({
+        dataSource: myPatients,
+        fields: { value: "fullName" },
+        itemTemplate:
+          "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
+          '<span class="country"> ${fullName} </span>',
+        placeholder: "Nom, prénom",
+        popupHeight: "450px",
+        highlight: true,
+        suggestionCount: 5,
+        noRecordsTemplate: "Aucune données trouvé",
+        sortOrder: "Ascending",
+      });
+      this.atcObj.appendTo("#patients");
+      this.atcObj.showSpinner();
     }
   }
 }

@@ -10,11 +10,13 @@ import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
-import { forkJoin } from 'rxjs';
+import { forkJoin } from "rxjs";
+import { PracticianSearch } from "./practician-search/practician-search.model";
+import { PatientSerch, CitySerch } from "./my-patients/my-patients";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
-  styleUrls: ["./features.component.scss"]
+  styleUrls: ["./features.component.scss"],
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
@@ -23,6 +25,8 @@ export class FeaturesComponent implements OnInit {
   text: string = "";
   city: string = "";
   numberOfPending = 0;
+  itemsList: any[];
+  cityList: any[];
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -31,7 +35,8 @@ export class FeaturesComponent implements OnInit {
     private globalService: GlobalService,
     private messageListService: MessagingListService,
     private documentService: MyDocumentsService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private practicianSearchService: PracticianSearchService
   ) {
     this.initializeWebSocketConnection();
   }
@@ -45,13 +50,13 @@ export class FeaturesComponent implements OnInit {
   links = {
     isArchieve: true,
     isImportant: true,
-    isFilter: true
+    isFilter: true,
   };
   private stompClient;
 
   ngOnInit(): void {
     if (this.userRole && this.userRole == "SECRETARY") {
-      this.featuresService.getSecretaryPracticians().subscribe(value => {
+      this.featuresService.getSecretaryPracticians().subscribe((value) => {
         this.featuresService.myPracticians.next(value);
         this.myPracticians = this.featuresService.myPracticians.getValue();
       });
@@ -66,28 +71,102 @@ export class FeaturesComponent implements OnInit {
     this.getPersonalInfo();
     this.countMyPatientPending();
     this.setNumberOfPending();
+    this.getPracticians();
   }
+  getPracticians() {
+    this.practicianSearchService.getAllPracticians().subscribe((list) => {
+      if (this.localSt.retrieve("role") == "PRACTICIAN") {
+        list = list.filter(
+          (a) => a.accountId != this.featuresService.getUserId()
+        );
+      }
+      this.itemsList = [];
+      this.cityList = [];
+
+      list.forEach((message) => {
+        let practician = this.mappingPracticians(message);
+        let speciality = this.mappingSpeciality(message);
+        let city = this.mappingCity(message);
+        this.itemsList.push(speciality);
+        this.itemsList.push(practician);
+        this.cityList.push(city);
+      });
+      this.itemsList.forEach((item) => {
+        if (item.photoId && item.photoId != "none") {
+          this.documentService.downloadFile(item.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                item.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              item.img = "assets/imgs/user.png";
+            }
+          );
+        } else {
+          item.img =
+            item.photoId != "none"
+              ? "assets/imgs/avatar_docteur.svg"
+              : "assets/imgs/user.png";
+        }
+      });
+    });
+  }
+
+  mappingPracticians(message) {
+    const practician = new PatientSerch();
+    practician.fullName = message.fullName;
+    practician.img = "assets/imgs/user.png";
+    practician.photoId = message.photoId;
+
+    return practician;
+  }
+  mappingSpeciality(message) {
+    const practician = new PatientSerch();
+    practician.fullName = message.speciality.name;
+    practician.img = "assets/imgs/user.png";
+    practician.photoId = "none";
+
+    return practician;
+  }
+  mappingCity(message) {
+    const city = new CitySerch();
+    city.name = message.address;
+
+    return city;
+  }
+
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
     this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function(frame) {
+    this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
-        message => {
+        (message) => {
           if (message.body) {
             let notification = JSON.parse(message.body);
             if (notification.type == "MESSAGE") {
               that.messageListService.setNotificationObs(notification);
             } else if (notification.type == "MESSAGE_IN_PROGRESS") {
-              that.messageListService.setNotificationMessageStateObs(notification);
+              that.messageListService.setNotificationMessageStateObs(
+                notification
+              );
             } else if (notification.type == "MESSAGE_TREATED") {
-              that.messageListService.setNotificationMessageStateObs(notification);
+              that.messageListService.setNotificationMessageStateObs(
+                notification
+              );
             } else if (notification.type == "INVITATION") {
-              that.messageListService.setInvitationNotificationObs(notification);
+              that.messageListService.setInvitationNotificationObs(
+                notification
+              );
             } else if (notification.type == "REMOVED") {
-              that.messageListService.removeInvitationNotificationObs(notification);
+              that.messageListService.removeInvitationNotificationObs(
+                notification
+              );
             }
           }
         }
@@ -99,8 +178,8 @@ export class FeaturesComponent implements OnInit {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .subscribe(notifications => {
-        notifications.forEach(notif => {
+      .subscribe((notifications) => {
+        notifications.forEach((notif) => {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.senderFullName,
@@ -120,14 +199,14 @@ export class FeaturesComponent implements OnInit {
         photoIds.forEach((id) => {
           arrayOfObservables.push(this.documentService.downloadFile(id));
         });
-        forkJoin(arrayOfObservables).subscribe((result:any[]) => {
+        forkJoin(arrayOfObservables).subscribe((result: any[]) => {
           for (let i = 0; i < photoIds.size; i++) {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
               photosMap.set(Array.from(photoIds)[i], myReader.result);
-              if(photosMap.size == photoIds.size){
+              if (photosMap.size == photoIds.size) {
                 notificationsFormated.forEach((notif) => {
-                  if(notif.photoId && photosMap.has(notif.photoId)){
+                  if (notif.photoId && photosMap.has(notif.photoId)) {
                     notif.picture = photosMap.get(notif.photoId);
                   }
                 });
@@ -135,8 +214,6 @@ export class FeaturesComponent implements OnInit {
             };
             let ok = myReader.readAsDataURL(result[i].body);
           }
-
-
         });
 
         this.featuresService.listNotifications = notificationsFormated;
@@ -144,27 +221,27 @@ export class FeaturesComponent implements OnInit {
   }
 
   countMyInboxNotSeen() {
-    this.messageListService.countMyInboxNotSeen().subscribe(num => {
+    this.messageListService.countMyInboxNotSeen().subscribe((num) => {
       this.featuresService.setNumberOfInbox(num);
-    })
+    });
   }
 
   countMyArchive() {
-    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
+    this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
       this.featuresService.numberOfArchieve = resp;
     });
   }
 
   countMyPatientPending() {
-    this.featuresService.getCountOfMyPatientPending().subscribe(num => {
+    this.featuresService.getCountOfMyPatientPending().subscribe((num) => {
       this.featuresService.setNumberOfPending(num);
-    })
+    });
   }
 
   setNumberOfPending() {
-    this.featuresService.getNumberOfPendingObs().subscribe(num => {
+    this.featuresService.getNumberOfPendingObs().subscribe((num) => {
       this.numberOfPending = num;
-    })
+    });
   }
 
   openAccountInterface() {
@@ -240,10 +317,11 @@ export class FeaturesComponent implements OnInit {
   }
   closeNotification() {
     console.log("notifications not seen");
-    this.featuresService.markReceivedNotifAsSeen().subscribe(resp => {
-      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(notif =>
-        notif.messageId != null)
-    })
+    this.featuresService.markReceivedNotifAsSeen().subscribe((resp) => {
+      this.featuresService.listNotifications = this.featuresService.listNotifications.filter(
+        (notif) => notif.messageId != null
+      );
+    });
   }
 
   searchActionClicked(event) {
@@ -257,46 +335,42 @@ export class FeaturesComponent implements OnInit {
   selectNotification(notification) {
     if (notification.type == "MESSAGE") {
       this.featuresService
-      .markMessageAsSeenByNotification(notification.messageId)
-      .subscribe(() => {
-        this.getMyNotificationsNotSeen();
-        this.router.navigate(
-          ["/messagerie-lire/" + notification.messageId],
-          {
+        .markMessageAsSeenByNotification(notification.messageId)
+        .subscribe(() => {
+          this.getMyNotificationsNotSeen();
+          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
             queryParams: {
-              context: "inbox"
-            }
-          }
-        );
-        this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox-1)
-      });
-    } else if (notification.type == "MESSAGE_IN_PROGRESS" || notification.type == "MESSAGE_TREATED") {
-      this.featuresService
-        .markNotificationAsSeen(notification.id)
-        .subscribe((resp) => {
-      this.getMyNotificationsNotSeen();
-      this.router.navigate(
-        ["/messagerie-lire/" + notification.messageId],
-        {
-          queryParams: {
-            context: "sent"
-          }
-        }
-      );
-    });
-    }
-    else if (notification.type == "INVITATION") {
+              context: "inbox",
+            },
+          });
+          this.featuresService.setNumberOfInbox(
+            this.featuresService.numberOfInbox - 1
+          );
+        });
+    } else if (
+      notification.type == "MESSAGE_IN_PROGRESS" ||
+      notification.type == "MESSAGE_TREATED"
+    ) {
       this.featuresService
         .markNotificationAsSeen(notification.id)
         .subscribe((resp) => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/mes-patients"],
-          {
+          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
             queryParams: {
-              section: "pending"
-            }
-          }
-          );
+              context: "sent",
+            },
+          });
+        });
+    } else if (notification.type == "INVITATION") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+        .subscribe((resp) => {
+          this.getMyNotificationsNotSeen();
+          this.router.navigate(["/mes-patients"], {
+            queryParams: {
+              section: "pending",
+            },
+          });
         });
     }
   }
@@ -305,7 +379,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe(account => {
+    this.accountService.getCurrentAccount().subscribe((account) => {
       if (account && account.practician) {
         this.account = account.practician;
         if (this.account.photoId) {

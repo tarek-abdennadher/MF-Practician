@@ -8,14 +8,17 @@
   >
   </lib-hlsLinks>
   <div class="col-md-3 input-icons">
-    <i class="fa fa-search"></i>
     <input
-      (keyup)="searchAction(search)"
+      tabindex="1"
+      id="patients"
       [(ngModel)]="search"
       placeholder="Nom, prénom"
       type="text"
-      class="form-control input-field"
+      class="form-control"
+      (change)="searchAction()"
     />
+
+    <i (click)="searchAction()" class="fa fa-search"></i>
   </div>
 </div>
 <lib-hlsMessagingList

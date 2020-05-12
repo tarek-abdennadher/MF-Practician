@@ -22,7 +22,7 @@ export class FeaturesService {
   public imageSource: string | ArrayBuffer = "assets/imgs/user.png";
   private searchSource = new BehaviorSubject(new search());
   currentSearch = this.searchSource.asObservable();
-
+  initialSearch = false;
   getNumberOfPendingObs() {
     return this._numberOfPending.asObservable();
   }

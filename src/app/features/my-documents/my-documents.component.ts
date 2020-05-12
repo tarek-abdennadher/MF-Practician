@@ -1,11 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { MyDocumentsService } from "./my-documents.service";
-import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
 import { GlobalService } from "@app/core/services/global.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { PracticianSearch } from "../practician-search/practician-search.model";
+/**
+ * AutoComplete Default Sample
+ */
+import { enableRipple } from "@syncfusion/ej2-base";
+enableRipple(true);
 
+import { AutoComplete } from "@syncfusion/ej2-dropdowns";
+import { PatientSerch } from "../my-patients/my-patients";
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
@@ -44,6 +50,7 @@ export class MyDocumentsComponent implements OnInit {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
+
         this.itemsList.forEach((item) => {
           if (item.photoId) {
             item.users.forEach((user) => {
@@ -78,6 +85,14 @@ export class MyDocumentsComponent implements OnInit {
             });
           }
         });
+        const myPatients = [];
+        this.itemsList.forEach((p) => {
+          const patient = new PatientSerch();
+          patient.fullName = p.users[0].fullName;
+          patient.photoId = p.photoId;
+          myPatients.push(patient);
+        });
+        this.searchAutoComplete(myPatients);
       });
   }
   getDetailSwitchRole(senderDetail) {
@@ -120,6 +135,7 @@ export class MyDocumentsComponent implements OnInit {
     practician.isViewDetail = true;
     practician.isChecked = false;
     practician.photoId = detail.photoId;
+
     return practician;
   }
 
@@ -131,13 +147,49 @@ export class MyDocumentsComponent implements OnInit {
     this.router.navigate(["/mes-documents/list/" + item.id]);
   }
 
-  searchAction(search) {
+  searchAction() {
     if (this.filtredItemsList.length < this.itemsList.length) {
       this.filtredItemsList = this.itemsList;
     }
     this.itemsList = this.filtredItemsList;
     this.itemsList = this.itemsList.filter((item) =>
-      item.users[0].fullName.toLowerCase().includes(search)
+      item.users[0].fullName
+        .toLowerCase()
+        .includes((<HTMLInputElement>document.getElementById("patients")).value)
     );
+  }
+
+  searchAutoComplete(myPatients) {
+    myPatients.forEach((user) => {
+      if (user.photoId) {
+        this.documentService.downloadFile(user.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              user.img = myReader.result;
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            user.img = "assets/imgs/user.png";
+          }
+        );
+      }
+    });
+    let atcObj: AutoComplete = new AutoComplete({
+      dataSource: myPatients,
+      fields: { value: "fullName" },
+      itemTemplate:
+        "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
+        '<span class="country"> ${fullName} </span>',
+      placeholder: "Nom, prénom",
+      popupHeight: "450px",
+      highlight: true,
+      suggestionCount: 5,
+      noRecordsTemplate: "Aucune données trouvé",
+      sortOrder: "Ascending",
+    });
+    atcObj.appendTo("#patients");
+    atcObj.showSpinner();
   }
 }

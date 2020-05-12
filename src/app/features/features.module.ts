@@ -38,8 +38,8 @@ import { SharedModule } from "@app/shared/shared.module";
 import { PersonalInformationsComponent } from "./account/personal-informations/personal-informations.component";
 import { HlsPasswordStrengthModule } from "hls-password-strength";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -122,7 +122,7 @@ const notifierOptions: NotifierOptions = {
     HlsPasswordStrengthModule,
     InternationalPhoneNumberModule,
     InfiniteScrollModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
 
   providers: [MessageService, ContactsService],

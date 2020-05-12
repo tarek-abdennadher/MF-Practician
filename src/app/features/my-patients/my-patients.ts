@@ -6,3 +6,12 @@ export class MyPatients {
   isArchived: boolean;
   photoId: string;
 }
+
+export class PatientSerch {
+  fullName: string;
+  img: string;
+  photoId: string;
+}
+export class CitySerch {
+  name: string;
+}
