@@ -32,11 +32,18 @@ export class ResetPasswordComponent implements OnInit {
   submit(model) {
     this.errorMessage = "";
     this.successMessage = "";
-    this.loginService.resetPassword(model.email).subscribe(res => {
-      if (res) {
-        this.successMessage = this.loginService.messages.reset_password_success;
-      } else {
-        this.errorMessage = this.loginService.messages.reset_password_failure;
+    this.loginService.getRoleByEmail(model.email).subscribe(res => {
+      if (res && res == "PRACTICIAN") {
+        this.loginService.resetPassword(model.email).subscribe(res => {
+          if (res) {
+            this.successMessage = this.loginService.messages.reset_password_success;
+          } else {
+            this.errorMessage = this.loginService.messages.reset_password_failure;
+          }
+        });
+      }
+      else {
+        this.errorMessage = this.loginService.messages.acces_denied;
       }
     });
   }

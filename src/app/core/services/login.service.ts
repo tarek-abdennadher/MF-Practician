@@ -26,7 +26,8 @@ export class LoginService {
     connexion: " Se connecter",
     new_account: "Vous n'avez pas de compte Helssy ?",
     register: "Demander une démo",
-    new_patient_registration: "Vous êtes un patient ?"
+    new_patient_registration: "Vous êtes un patient ?",
+    acces_denied: "Le compte utilisé n'est pas autorisé à accéder au site praticien"
   };
   authenticate(body) {
     return this.globalService.call(
@@ -58,6 +59,12 @@ export class LoginService {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.url.password_change, body
+    );
+  }
+  getRoleByEmail(email: string) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.accountRole + email
     );
   }
 }
