@@ -319,19 +319,6 @@ export class MessagingListComponent implements OnInit {
               (message) => message.sender.senderId == this.idAccount
             )
           : retrievedMess;
-        /* if (!this.isMyInbox && !this.isPatientFile) {
-          this.number = this.messages.filter(
-            (m) => m.seenAsReceiver == false
-          ).length;
-          this.featureService.updateNumberOfInboxForPractician(
-            accountId,
-            this.number
-          );
-        }
-        this.bottomText =
-          this.number > 1
-            ? this.globalService.messagesDisplayScreen.newMessages
-            : this.globalService.messagesDisplayScreen.newMessage; */
 
         this.messages.sort(function (m1, m2) {
           return (
