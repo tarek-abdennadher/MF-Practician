@@ -137,7 +137,7 @@ export class DocumentsListComponent implements OnInit {
       users: [
         {
           id: attachement.senderId,
-          fullName: node.name,
+          fullName: node.name.length < 30?node.name:node.name.substring(0,30)+'...',
           img: this.getImageSwitchExtention(
             node.name.substring(dotIndex + 1, node.name.length)
           ),
