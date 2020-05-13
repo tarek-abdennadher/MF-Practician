@@ -385,12 +385,17 @@ export class FeaturesComponent implements OnInit {
         if (this.account.photoId) {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
+        } else {
+          this.featuresService.imageSource = "assets/imgs/avatar_docteur.svg";
         }
       } else if (account && account.secretary) {
         this.account = account.secretary;
         if (this.account.photoId) {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
+        } else {
+          this.featuresService.imageSource =
+            "assets/imgs/avatar_secrétaire.svg";
         }
       }
     });
