@@ -1,4 +1,4 @@
-$color-helssy-grey: #6e819b;
+$color-helssy-grey: #6e819bd4;
 $helsey_blue: #1a56a7;
 $input-color: #f1f1f1;
 .title {
@@ -145,14 +145,14 @@ input[type="file"] {
   line-height: 24px;
   height: 50px;
 }
-    // buttons add phone CSS
-    .btn-icon {
-      max-width: 40px;
-      color: white;
-      cursor: pointer;
-      font-weight: lighter;
-      background: #41BDDF 0% 0% no-repeat padding-box;
-      border-radius: 5px;
-      opacity: 1;
-      height: 50px;
-        }
+// buttons add phone CSS
+.btn-icon {
+  max-width: 40px;
+  color: white;
+  cursor: pointer;
+  font-weight: lighter;
+  background: #41bddf 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  height: 50px;
+}
