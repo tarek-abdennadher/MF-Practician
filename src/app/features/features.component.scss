@@ -30,3 +30,9 @@
     margin-left: 0px !important;
   }
 }
+::ng-deep .non-clickable {
+  font-weight: normal !important;
+}
+::ng-deep .list-group-item {
+  font-weight: normal !important;
+}
