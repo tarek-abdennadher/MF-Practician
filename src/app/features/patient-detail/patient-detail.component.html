@@ -12,7 +12,7 @@
   [isPatientFile]="true"
   [infoPatient]="patient"
 ></app-personal-informations>
-<div class="col-md-12">
+<div class="col-md-12" *ngIf="itemsList">
   <div class="form-group title">
     <hr width="3%" color="#ff0063" align="left" />
     <i class="far fa-user-plus"
