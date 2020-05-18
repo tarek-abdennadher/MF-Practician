@@ -138,6 +138,7 @@ export class SendMessageComponent implements OnInit {
                     : false,
                 img: myReader.result,
               });
+              this.toList.next(myList);
             };
             let ok = myReader.readAsDataURL(response.body);
           },
@@ -152,6 +153,7 @@ export class SendMessageComponent implements OnInit {
                   : false,
               img: null,
             });
+            this.toList.next(myList);
           }
         );
       } else {
@@ -164,6 +166,7 @@ export class SendMessageComponent implements OnInit {
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: "assets/imgs/avatar_docteur.svg",
           });
+          this.toList.next(myList);
         } else if (
           contactPractician.contactType == "SECRETARY" ||
           contactPractician.contactType == "TELESECRETARYGROUP"
@@ -176,6 +179,7 @@ export class SendMessageComponent implements OnInit {
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: "assets/imgs/avatar_secrétaire.svg",
           });
+          this.toList.next(myList);
         } else if (contactPractician.contactType == "PATIENT") {
           if (contactPractician.civility == "M") {
             myList.push({
@@ -188,6 +192,7 @@ export class SendMessageComponent implements OnInit {
                   : false,
               img: "assets/imgs/avatar_homme.svg",
             });
+            this.toList.next(myList);
           } else if (contactPractician.civility == "MME") {
             myList.push({
               id: contactPractician.id,
@@ -199,6 +204,7 @@ export class SendMessageComponent implements OnInit {
                   : false,
               img: "assets/imgs/avatar_femme.svg",
             });
+            this.toList.next(myList);
           } else if (contactPractician.civility == "CHILD") {
             myList.push({
               id: contactPractician.id,
@@ -210,6 +216,7 @@ export class SendMessageComponent implements OnInit {
                   : false,
               img: "assets/imgs/avatar_enfant.svg",
             });
+            this.toList.next(myList);
           }
         }
       }
