@@ -127,22 +127,17 @@ export class SendMessageComponent implements OnInit {
         this.documentService.downloadFile(contactPractician.photoId).subscribe(
           (response) => {
             let myReader: FileReader = new FileReader();
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: "assets/imgs/user.png",
-            });
             myReader.onloadend = (e) => {
-              myList.find(
-                (e) => e.id == contactPractician.id
-              ).img = myReader.result
-                ? myReader.result
-                : "assets/imgs/user.png";
+              myList.push({
+                id: contactPractician.id,
+                fullName: contactPractician.fullName,
+                type: contactPractician.contactType,
+                isSelected:
+                  this.selectedPracticianId == contactPractician.id
+                    ? true
+                    : false,
+                img: myReader.result,
+              });
             };
             let ok = myReader.readAsDataURL(response.body);
           },
@@ -155,7 +150,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: "assets/imgs/user.png",
+              img: null,
             });
           }
         );
