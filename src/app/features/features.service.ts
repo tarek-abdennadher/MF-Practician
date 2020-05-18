@@ -12,7 +12,7 @@ import { search } from "./practician-search/search.model";
 export class FeaturesService {
   public listNotifications = [];
   public selectedPracticianId = 0;
-  private _numberOfInbox: number = 0;
+  private _numberOfInbox = new BehaviorSubject<number>(0);
   numberOfArchieve: number = 0;
   numberOfAccepted: number = 0;
   private _numberOfPending = new BehaviorSubject<number>(0);
@@ -35,12 +35,16 @@ export class FeaturesService {
     this._numberOfPending.next(numberOfPending);
   }
 
-  get numberOfInbox() {
-    return this._numberOfInbox;
+  getNumberOfInboxValue() {
+    return this._numberOfInbox.getValue();
+  }
+
+  getNumberOfInbox() {
+    return this._numberOfInbox.asObservable();
   }
 
   setNumberOfInbox(number) {
-    this._numberOfInbox = number;
+    this._numberOfInbox.next(number);
   }
 
   constructor(
