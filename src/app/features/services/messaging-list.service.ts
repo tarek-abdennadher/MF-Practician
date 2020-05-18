@@ -64,7 +64,7 @@ export class MessagingListService {
             });
           }
 
-      this.featuresService.setNumberOfInbox(this.featuresService.numberOfInbox + 1);
+      this.featuresService.setNumberOfInbox(this.featuresService.getNumberOfInboxValue() + 1);
     }
   }
 
