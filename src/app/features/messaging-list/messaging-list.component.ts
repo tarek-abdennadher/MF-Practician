@@ -60,7 +60,9 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.number = this.featureService.numberOfInbox;
+    this.featureService.getNumberOfInbox().subscribe(val => {
+      this.number = val;
+    });
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       this.pageNo = 0;
@@ -207,7 +209,6 @@ export class MessagingListComponent implements OnInit {
         this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
           (resp) => {
             if (resp == true) {
-              this.itemsList.forEach((item) => (item.isSeen = true));
               this.filtredItemList.forEach((item) => (item.isSeen = true));
               this.featureService.listNotifications = this.featureService.listNotifications.filter(
                 (notification) => notification.type != "MESSAGE"
@@ -268,9 +269,8 @@ export class MessagingListComponent implements OnInit {
             if (!message.isSeen) {
               this.featureService.numberOfArchieve++;
               this.featureService.setNumberOfInbox(
-                this.featureService.numberOfInbox - 1
+                this.number - 1
               );
-              this.number--;
             }
             this.featureService.listNotifications = this.featureService.listNotifications.filter(
               (notification) =>
@@ -403,7 +403,6 @@ export class MessagingListComponent implements OnInit {
         (resp) => {
           if (resp == true) {
             if (!event.isSeen) {
-              this.number--;
               this.bottomText =
                 this.number > 1
                   ? this.globalService.messagesDisplayScreen.newMessages
@@ -413,19 +412,14 @@ export class MessagingListComponent implements OnInit {
                 (notif) => notif.messageId != event.id
               );
               this.featureService.setNumberOfInbox(
-                this.featureService.numberOfInbox - 1
+                this.featureService.getNumberOfInboxValue() - 1
               );
             }
-            let index = this.itemsList.findIndex(
-              (item) => item.id == messageId
-            );
-            if (index != -1) {
-              this.itemsList[index].isSeen = true;
-            }
+
             let filtredIndex = this.filtredItemList.findIndex(
               (item) => item.id == messageId
             );
-            if (index != -1) {
+            if (filtredIndex != -1) {
               this.filtredItemList[filtredIndex].isSeen = true;
             }
           }
@@ -454,7 +448,6 @@ export class MessagingListComponent implements OnInit {
                   selectedInboxNumber - 1
                 );
               }
-              this.number--;
               this.bottomText =
                 this.number > 1
                   ? this.globalService.messagesDisplayScreen.newMessages
@@ -495,9 +488,8 @@ export class MessagingListComponent implements OnInit {
         if (!event.isSeen) {
           this.featureService.numberOfArchieve++;
           this.featureService.setNumberOfInbox(
-            this.featureService.numberOfInbox - 1
+            this.featureService.getNumberOfInboxValue() - 1
           );
-          this.number--;
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
             (notification) => notification.messageId != event.id
           );
@@ -538,9 +530,8 @@ export class MessagingListComponent implements OnInit {
               );
           }
 
-          this.itemsList.unshift(message);
+          this.filtredItemList.unshift(message);
 
-          this.number++;
           this.bottomText =
             this.number > 1
               ? this.globalService.messagesDisplayScreen.newMessages
