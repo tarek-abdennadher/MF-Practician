@@ -11,4 +11,5 @@ export class MessageSent {
   hasFiles: boolean;
   hasViewDetail: boolean;
   isArchieve: boolean;
+  progress: any;
 }
