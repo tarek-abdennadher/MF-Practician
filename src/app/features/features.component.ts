@@ -27,6 +27,7 @@ export class FeaturesComponent implements OnInit {
   numberOfPending = 0;
   itemsList: any[];
   cityList: any[];
+  inboxNumber: any;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -55,6 +56,9 @@ export class FeaturesComponent implements OnInit {
   private stompClient;
 
   ngOnInit(): void {
+    this.featuresService.getNumberOfInbox().subscribe(val => {
+      this.inboxNumber = val;
+    })
     if (this.userRole && this.userRole == "SECRETARY") {
       this.featuresService.getSecretaryPracticians().subscribe((value) => {
         this.featuresService.myPracticians.next(value);
@@ -344,7 +348,7 @@ export class FeaturesComponent implements OnInit {
             },
           });
           this.featuresService.setNumberOfInbox(
-            this.featuresService.numberOfInbox - 1
+            this.featuresService.getNumberOfInboxValue() - 1
           );
         });
     } else if (
@@ -385,12 +389,17 @@ export class FeaturesComponent implements OnInit {
         if (this.account.photoId) {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
+        } else {
+          this.featuresService.imageSource = "assets/imgs/avatar_docteur.svg";
         }
       } else if (account && account.secretary) {
         this.account = account.secretary;
         if (this.account.photoId) {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
+        } else {
+          this.featuresService.imageSource =
+            "assets/imgs/avatar_secrétaire.svg";
         }
       }
     });

@@ -22,6 +22,7 @@ export class GlobalService {
     showcase_site: this.SHOWCASE_SITE,
     authenticatePractician: this.BASE_URL + "/api/authPractician",
     accountlogin: this.BASE_URL_CA + "/account/light/",
+    accountRole: this.BASE_URL_CA + "/account/role/",
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",
     produce: this.BASE_URL_MA + "/messages/produce",
