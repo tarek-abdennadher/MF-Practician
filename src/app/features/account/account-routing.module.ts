@@ -6,6 +6,8 @@ import { MySecretariesComponent } from './my-secretaries/my-secretaries.componen
 import { TeleSecretariesComponent } from './tele-secretaries/tele-secretaries.component';
 import { FacturesComponent } from './factures/factures.component';
 import { StatsComponent } from './stats/stats.component';
+import { CategoryComponent } from './category/category.component';
+import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
 
 const routes: Routes = [
   {
@@ -32,6 +34,14 @@ const routes: Routes = [
       {
         path: "mes-stats",
         component: StatsComponent
+      },
+      {
+        path: "mes-categories",
+        component: CategoryComponent
+      },
+      {
+        path: "mes-categories/:id",
+        component: CategoryDetailComponent
       }
     ]
   }

@@ -551,6 +551,11 @@ export class MessagingDetailComponent implements OnInit {
     }
   }
   displayPatientFile(idAccount) {
-    this.router.navigate(["/patient-detail/" + idAccount]);
+    if(this.localSt.retrieve("role") == "PRACTICIAN"){
+      this.router.navigate(["/patient-detail/" + idAccount]);
+    }
+    else{
+      this.router.navigate(["/patient-detail/" + idAccount+ "/" +this.featureService.selectedPracticianId]);
+    }
   }
 }

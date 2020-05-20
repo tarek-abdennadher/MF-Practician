@@ -133,15 +133,21 @@ export class ContactDetailComponent implements OnInit {
     if (this.param == "add") {
       this.contactsService
         .addContact(contact)
-        .subscribe((res) => (successResult = res));
+        .subscribe((res) => {
+          successResult = res;
+          this.router
+      .navigate(["/mes-contacts-pro"])
+        });
     } else {
       this.contactsService
         .updateContact(contact)
-        .subscribe((res) => (successResult = res));
-    }
-    this.router
+        .subscribe((res) => {
+          successResult = res;
+          this.router
       .navigate(["/mes-contacts-pro"])
-      .then(() => window.location.reload());
+        });
+    }
+
   }
 
   BackButton() {
@@ -164,7 +170,7 @@ export class ContactDetailComponent implements OnInit {
       });
     });
   }
-  // Other phones list 
+  // Other phones list
   getPhoneList(event) {
     this.phones = event.value;
     if (this.phones.length > 0) {

@@ -14,6 +14,13 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
+  <a *ngIf="updateAlert" id="FailureAlert" (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+    {{ messages.update_error }}
+    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </a>
   <br />
   <div class="col-md-12">
     <div class="form-group title">
@@ -141,7 +148,7 @@
               <div class="col-sm-9 input-icons">
                 <i class="fa fa-calendar icon"></i>
                 <input disabled type="text" formControlName="birthday" class="calender form-control input-field"
-                  placeholder="{{ messages.birth_date }}" bsDatepicker />
+                  placeholder="{{ messages.birth_date}}" [bsConfig]="{dateInputFormat: 'DD/MM/YYYY'}" bsDatepicker />
               </div>
             </div>
           </div>
@@ -285,6 +292,34 @@
                 </button>
               </div>
             </div>
+            <div class="form-group row" *ngIf="isPatientFile">
+              <label for="category" class="col-sm-3 col-form-label">Catégorie</label>
+              <div class="col-sm-9">
+                <select formControlName="category" class="civility custom-select"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="category">
+                  <option value="null" disabled="true"></option>
+                  <option *ngFor="let cat of mesCategories" [ngValue]="cat.id">{{cat.name}}</option>
+                </select>
+                <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
+                  <div *ngIf="ctr.civility.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
+            </div>
+           <div class="form-group row" *ngIf="isPatientFile">
+              <label for="note" class="col-sm-3 col-form-label">Note</label>
+              <div class="col-sm-9">
+                <textarea formControlName="note" class="civility"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="note">
+                </textarea>
+                <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
+                  <div *ngIf="ctr.civility.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div *ngIf="!isPatientFile" class="form-group row">
               <label *ngIf="isLabelShow" for="other_phone"
                 class="col-sm-3 col-form-label">{{ labels.other_phone }}</label>
@@ -314,6 +349,11 @@
             <i class="fa fa-check-circle"></i> {{ successMessage }}
           </p>
         </div>
+      </div>
+      <div class="row justify-content-center" *ngIf="isPatientFile">
+        <button type="button" class="btn btn-primary" (click)="updatePatientFile()">
+          <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
+        </button>
       </div>
     </form>
   </div>
