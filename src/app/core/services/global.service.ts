@@ -63,11 +63,14 @@ export class GlobalService {
     account: this.BASE_URL_CA + "/account",
     account_update_secretary: this.BASE_URL_CA + "/account/update-secretary",
     favorite: this.BASE_URL_CA + "/favorite/",
+    patientFile: this.BASE_URL_CA + "/patientFile/",
     RefuseTypes: this.BASE_URL_MA + "/refuseType",
     contact_pro_all: this.BASE_URL_CA + "/contact/contacts-practician-all",
     contact_pro_all_secretary:
       this.BASE_URL_CA + "/contact/contacts-secretary-all",
     practician_invitation: this.BASE_URL_CA + "/account/invitePractician",
+    category: this.BASE_URL_CA + "/category",
+
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
