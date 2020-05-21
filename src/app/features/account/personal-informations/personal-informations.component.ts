@@ -16,6 +16,8 @@ import { MyDocumentsService } from "@app/features/my-documents/my-documents.serv
 import { HttpResponse } from "@angular/common/http";
 import { FeaturesService } from "@app/features/features.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
+import { CategoryService } from '@app/features/services/category.service';
+import { MyPatientsService } from '@app/features/services/my-patients.service';
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -25,6 +27,8 @@ declare var $: any;
 export class PersonalInformationsComponent implements OnInit {
   @Input("isPatientFile") isPatientFile = false;
   @Input("infoPatient") infoPatient: any;
+  @Input("practicianId") practicianId;
+
   specialities: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
@@ -53,6 +57,8 @@ export class PersonalInformationsComponent implements OnInit {
   image: string | ArrayBuffer;
   hasImage = false;
   nodeId: any;
+  mesCategories:any = [];
+  updateAlert=false;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -60,7 +66,9 @@ export class PersonalInformationsComponent implements OnInit {
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private categoryService: CategoryService,
+    private patientService: MyPatientsService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -81,6 +89,10 @@ export class PersonalInformationsComponent implements OnInit {
     this.initPasswordForm();
     this.getPersonalInfo();
     this.getAttachementFolderId();
+    if(this.isPatientFile){
+      this.getMyCategories();
+    }else {
+    }
   }
   initInfoForm() {
     if (!this.isPatientFile) {
@@ -126,6 +138,8 @@ export class PersonalInformationsComponent implements OnInit {
         additional_address: new FormControl(null),
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
+        category: new FormControl(null),
+        note: new FormControl(null),
       });
     }
     this.updateCSS();
@@ -189,6 +203,8 @@ export class PersonalInformationsComponent implements OnInit {
           : "",
         otherPhones: this.account.otherPhones ? this.account.otherPhones : [],
         picture: this.account.photoId ? this.account.photoId : null,
+        category:this.infoPatient.category?this.infoPatient.category.id:null,
+        note:this.infoPatient.note?this.infoPatient.note:null
       });
     } else {
       this.accountService.getCurrentAccount().subscribe((account) => {
@@ -469,4 +485,37 @@ export class PersonalInformationsComponent implements OnInit {
     this.addnewPhone.next(true);
     this.isLabelShow = true;
   }
+
+  updatePatientFile(){
+    this.submitted = true;
+    const patientFile = {
+      patientId: this.infoPatient.id,
+      category: this.mesCategories.find(cat => cat.id == this.infoForm.value.category),
+      noteOnPatient: this.infoForm.value.note,
+      }
+    this.patientService.updatePatientFile(patientFile).subscribe(result => {
+      this.showAlert = true;
+      $(".alert").alert();
+      this.submitted = false;
+    },error => {
+      this.updateAlert = true;
+      $("#FailureAlert").alert();
+      return;
+    });
+   }
+
+  getMyCategories() {
+    if(this.practicianId){
+      this.categoryService.getCategoriesByPractician(this.practicianId).subscribe((categories) => {
+        this.mesCategories=categories;
+      });
+    }else{
+      this.categoryService.getMyCategories().subscribe((categories) => {
+        this.mesCategories=categories;
+      });
+    }
+
+  }
+
+
 }

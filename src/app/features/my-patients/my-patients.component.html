@@ -1,12 +1,13 @@
 <div class="form-inline col-md-12">
   <lib-hlsLinks
-    class="col-md-6 padd-right"
+    class="col-md-5 "
     [page]="page"
     [topText]="topText"
     [bottomText]="bottomText"
     [number]="number"
   ></lib-hlsLinks>
-  <div class="col-md-6 form-inline">
+
+  <div class="col-md-5 form-inline">
     <form [formGroup]="searchForm" class="form-inline col-md-12">
       <div class="col-md-11">
         <input
@@ -25,6 +26,21 @@
       </div>
     </form>
   </div>
+  <form *ngIf="section =='accepted' " class="col-md-2"
+  [formGroup]="filterPatientsForm"
+>
+  <select
+    id="documentType"
+    class="form-control"
+    formControlName="category"
+    (change)="filter()"
+  >
+    <option [value]="''"> Catégories</option>
+    <option *ngFor="let item of mesCategories" [value]="item.id">{{
+      item.name
+    }}</option>
+  </select>
+</form>
 </div>
 <br />
 <lib-hlsMessagingList

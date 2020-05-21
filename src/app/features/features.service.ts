@@ -59,6 +59,7 @@ export class FeaturesService {
     }
     this.myPracticians.next(list);
   }
+
   getMyNotificationsByMessagesNotSeen(seen: boolean): Observable<[any]> {
     return this.globalService.call(
       RequestType.GET,

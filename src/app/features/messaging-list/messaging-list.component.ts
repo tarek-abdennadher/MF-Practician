@@ -60,9 +60,6 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.featureService.getNumberOfInbox().subscribe(val => {
-      this.number = val;
-    });
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       this.pageNo = 0;
@@ -85,6 +82,7 @@ export class MessagingListComponent implements OnInit {
           ? params["id"]
           : this.featureService.selectedPracticianId;
         this.myPracticians = this.featureService.myPracticians.getValue();
+
         if (this.myPracticians && this.myPracticians.length > 0) {
           this.person = {
             fullName: this.myPracticians.find(
@@ -92,6 +90,8 @@ export class MessagingListComponent implements OnInit {
             ).fullName,
             picture: this.imageSource,
           };
+
+
           let photoId = this.myPracticians.find(
             (p) => p.id == this.featureService.selectedPracticianId
           ).photo;
@@ -131,6 +131,13 @@ export class MessagingListComponent implements OnInit {
         this.paramsId = this.featureService.selectedPracticianId;
         this.getMyInbox(this.featureService.selectedPracticianId, this.pageNo);
       } else {
+        this.featureService.getNumberOfInbox().subscribe(val => {
+          this.number = val;
+          this.bottomText =
+            this.number > 1
+              ? this.globalService.messagesDisplayScreen.newMessages
+              : this.globalService.messagesDisplayScreen.newMessage;
+        });
         this.isPatientFile
           ? (this.links = {
               isAllSelect: true,
@@ -214,7 +221,6 @@ export class MessagingListComponent implements OnInit {
                 (notification) => notification.type != "MESSAGE"
               );
               this.featureService.setNumberOfInbox(0);
-              this.number = 0;
             }
           },
           (error) => {
@@ -237,7 +243,6 @@ export class MessagingListComponent implements OnInit {
                     0
                   );
                 }
-                this.number = 0;
                 this.bottomText = this.globalService.messagesDisplayScreen.newMessage;
 
                 this.itemsList.forEach((item) => (item.isSeen = true));
@@ -314,6 +319,15 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ
       .getInboxByAccountId(accountId, pageNo)
       .subscribe((retrievedMess) => {
+        this.featureService.myPracticians.asObservable().subscribe(list => {
+          this.number = list.find(
+            (p) => p.id == this.featureService.selectedPracticianId
+          ).number
+          this.bottomText =
+            this.number > 1
+              ? this.globalService.messagesDisplayScreen.newMessages
+              : this.globalService.messagesDisplayScreen.newMessage;
+        })
         this.messages = this.isPatientFile
           ? retrievedMess.filter(
               (message) => message.sender.senderId == this.idAccount

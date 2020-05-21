@@ -1,0 +1,20 @@
+<br />
+<div class="card" id="card">
+  <br />
+  <div class="row">
+    <div class=" col-md-10 form-group title">
+      <hr width="3%" color="#ff0063" align="left" />
+      <i class="far fa-cog my-tab-icon"><span>&nbsp;&nbsp;{{ messages.categories_tab }}</span></i>
+    </div>
+    <a (click)="addAction()" class="inline col-md-1">
+      <i class="far fa-plus"></i><br /><span>Ajouter</span>
+    </a>
+  </div>
+  <br />
+  <div>
+    <lib-hlsMessagingList [list]="itemsList" [isMyPatients]="false" (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)" (archieveAction)="deleteCategory($event)" [isCheckbox]="true"
+      [imageSource]="imageSource">
+    </lib-hlsMessagingList>
+    <br />
+  </div>

@@ -71,6 +71,10 @@ const routes: Routes = [
         component: PatientDetailComponent,
       },
       {
+        path: "patient-detail/:idAccount/:idPractician",
+        component: PatientDetailComponent,
+      },
+      {
         path: "messagerie-archives",
         component: ArchieveMessagesComponent,
       },

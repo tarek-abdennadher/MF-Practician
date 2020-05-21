@@ -8,9 +8,10 @@
   (backButtonAction)="BackButton()"
 ></lib-hlsLinks>
 <app-personal-informations
-  *ngIf="patient"
+  *ngIf="patient && patient.category != undefined"
   [isPatientFile]="true"
   [infoPatient]="patient"
+  [practicianId]="idPractician"
 ></app-personal-informations>
 <div class="col-md-12" *ngIf="itemsList">
   <div class="form-group title">

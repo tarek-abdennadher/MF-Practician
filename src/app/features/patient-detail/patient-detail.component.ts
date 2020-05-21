@@ -27,6 +27,7 @@ export class PatientDetailComponent implements OnInit {
   idAccount: number;
   itemsList: any;
   message: any;
+  idPractician: number;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -43,6 +44,7 @@ export class PatientDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.idAccount = params["idAccount"];
+      this.idPractician = params["idPractician"];
       this.getPatientWithPeopleAttached(this.idAccount);
     });
   }
@@ -52,6 +54,7 @@ export class PatientDetailComponent implements OnInit {
       .subscribe((response) => {
         this.bottomText = response.fullName;
         this.patient = response;
+        this.getSelectedPatientCategoryAndNote(this.patient.id);
         if (this.patient.linkedPatients.length != 0) {
           this.patient.linkedPatients.forEach((patient) => {
             patient.correspondence = this.enumCorespondencePipe.transform(
@@ -136,5 +139,34 @@ export class PatientDetailComponent implements OnInit {
   }
   BackButton() {
     this._location.back();
+  }
+  getSelectedPatientCategoryAndNote(patientId) {
+    if (this.idPractician) {
+      this.myPatientService
+        .getPatientCategoryByPractician(patientId,this.idPractician)
+        .subscribe((result) => {
+          if(result){
+            this.patient.category = result.category;
+            this.patient.note = result.noteOnPatient;
+          }
+          else{
+            this.patient.category = "";
+            this.patient.note = "";
+          }
+        });
+    } else {
+      this.myPatientService
+        .getMyPatientCategory(patientId)
+        .subscribe((result) => {
+          if(result){
+            this.patient.category = result.category;
+            this.patient.note = result.noteOnPatient;
+          }
+          else{
+            this.patient.category = "";
+            this.patient.note = "";
+          }
+        });
+    }
   }
 }

@@ -9,31 +9,37 @@ import { Observable } from "rxjs";
 export class MyPatientsService {
   constructor(private globalService: GlobalService) {}
 
-  getPatientsOfCurrentParactician(pageNo:number): Observable<any> {
+  getPatientsOfCurrentParactician(pageNo: number): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient?pageNo="+pageNo
+      this.globalService.url.patientFile + "my?pageNo=" + pageNo
+    );
+  }
+  getPatientsOfCurrentParacticianByCategory(pageNo: number,categoryId:number): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "my/byCategory/"+categoryId+"?pageNo=" + pageNo
     );
   }
 
   getPatientsProhibitedOfCurrentParactician(pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited?pageNo="+pageNo
+      this.globalService.url.favorite + "myPatient/prohibited?pageNo=" + pageNo
     );
   }
 
   getPatientsPendingOfCurrentParactician(pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/pending?pageNo="+pageNo
+      this.globalService.url.favorite + "myPatient/pending?pageNo=" + pageNo
     );
   }
 
   getPatientsArchivedOfCurrentParactician(pageNo): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/archived?pageNo="+pageNo
+      this.globalService.url.favorite + "myPatient/archived?pageNo=" + pageNo
     );
   }
 
@@ -97,6 +103,32 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patient + id + "/withLinkedPatients"
+    );
+  }
+
+  getMyPatientCategory(patientId) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "my/category/" + patientId
+    );
+  }
+
+  getPatientCategoryByPractician(patientId, practicianId) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile +
+        "my/category/" +
+        patientId +
+        "/" +
+        practicianId
+    );
+  }
+
+  updatePatientFile(patientFile) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.patientFile,
+      patientFile
     );
   }
 }
