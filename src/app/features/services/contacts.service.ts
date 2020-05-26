@@ -38,6 +38,7 @@ export class ContactsService {
     delete_sec_title: "Supprimer une secrétaire",
     birth_date: "Date de naissance (*)",
     phone_error: "      Veuillez vérifier les téléphones saisis",
+    note:" Note"
   };
   constructor(private globalService: GlobalService) {}
 

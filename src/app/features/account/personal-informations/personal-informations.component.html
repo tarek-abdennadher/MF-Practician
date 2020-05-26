@@ -307,19 +307,6 @@
                 </div>
               </div>
             </div>
-           <div class="form-group row" *ngIf="isPatientFile">
-              <label for="note" class="col-sm-3 col-form-label">Note</label>
-              <div class="col-sm-9">
-                <textarea formControlName="note" class="civility"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="note">
-                </textarea>
-                <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
-                  <div *ngIf="ctr.civility.errors.required">
-                    {{ labels.required }}
-                  </div>
-                </div>
-              </div>
-            </div>
             <div *ngIf="!isPatientFile" class="form-group row">
               <label *ngIf="isLabelShow" for="other_phone"
                 class="col-sm-3 col-form-label">{{ labels.other_phone }}</label>

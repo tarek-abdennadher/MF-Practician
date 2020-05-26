@@ -139,7 +139,6 @@ export class PersonalInformationsComponent implements OnInit {
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
         category: new FormControl(null),
-        note: new FormControl(null),
       });
     }
     this.updateCSS();
@@ -204,7 +203,6 @@ export class PersonalInformationsComponent implements OnInit {
         otherPhones: this.account.otherPhones ? this.account.otherPhones : [],
         picture: this.account.photoId ? this.account.photoId : null,
         category:this.infoPatient.category?this.infoPatient.category.id:null,
-        note:this.infoPatient.note?this.infoPatient.note:null
       });
     } else {
       this.accountService.getCurrentAccount().subscribe((account) => {
@@ -488,11 +486,20 @@ export class PersonalInformationsComponent implements OnInit {
 
   updatePatientFile(){
     this.submitted = true;
-    const patientFile = {
-      patientId: this.infoPatient.id,
-      category: this.mesCategories.find(cat => cat.id == this.infoForm.value.category),
-      noteOnPatient: this.infoForm.value.note,
-      }
+    let patientFile;
+    if(this.isPractician){
+       patientFile = {
+        patientId: this.infoPatient.id,
+        category: this.mesCategories.find(cat => cat.id == this.infoForm.value.category),
+        }
+    } else {
+       patientFile = {
+        patientId: this.infoPatient.id,
+        practicianId: this.practicianId,
+        category: this.mesCategories.find(cat => cat.id == this.infoForm.value.category),
+        }
+    }
+
     this.patientService.updatePatientFile(patientFile).subscribe(result => {
       this.showAlert = true;
       $(".alert").alert();

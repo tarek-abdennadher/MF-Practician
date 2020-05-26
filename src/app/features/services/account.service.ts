@@ -59,6 +59,8 @@ export class AccountService {
     phone_error: "      Veuillez vérifier les téléphones saisis",
     update_error: "      Une erreur s'est produite",
     title_delete_account: "supprimer un compte",
+    notes:"Mes notes",
+    date: "Date (*)"
   };
   public errors = {
     required: "Champs obligatoire",
