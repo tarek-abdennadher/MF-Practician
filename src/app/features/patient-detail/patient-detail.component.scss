@@ -6,3 +6,21 @@ span {
   color: $color-helssy-grey;
   font-family: "Segoe UI Medium" !important;
 }
+.inline {
+  font-family: "Segoe UI";
+  text-align: center;
+  display: inline-block;
+  margin-right: 50px;
+  color: $color-helssy-grey !important;
+  text-decoration: none;
+  font-size: 10px;
+  line-height: 14px;
+  cursor: pointer;
+  padding-top: 26px;
+}
+.fa,
+  .far,
+  .fal {
+    font-size: 17px;
+    line-height: 20px;
+  }

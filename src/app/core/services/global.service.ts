@@ -70,6 +70,7 @@ export class GlobalService {
       this.BASE_URL_CA + "/contact/contacts-secretary-all",
     practician_invitation: this.BASE_URL_CA + "/account/invitePractician",
     category: this.BASE_URL_CA + "/category",
+    note: this.BASE_URL_CA + "/note",
 
   };
   public toastrMessages = {
@@ -101,6 +102,7 @@ export class GlobalService {
     newArchivedMessage: "message non lu",
     newArchivedMessages: "messages non lus",
     attachedPersonnes: "Personnes Rattachées au patient",
+    notes: "Mes notes",
   };
   public call(
     method: RequestType,
