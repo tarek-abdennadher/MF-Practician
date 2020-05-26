@@ -1,0 +1,64 @@
+<lib-hlsLinks [page]="page" [topText]="topText" [backButton]="backButton" (backButtonAction)="BackButton()">
+</lib-hlsLinks>
+<a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
+  role="alert">
+  {{ messages.edit_info_success }}
+  <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</a>
+<br />
+<div class="card">
+  <br />
+
+  <div class="card-body">
+    <form [formGroup]="infoForm" (ngSubmit)="submit()" #f="ngForm">
+      <div class="container">
+        <div class="row">
+          <div class="col-8">
+            <div class="form-group row">
+              <label for="note" class="col-sm-3 col-form-label">{{
+                  labels.note
+                }}</label>
+              <div class="col-sm-9">
+                <textarea type="text" formControlName="value" class="form-control" id="note" [ngClass]="{
+                      'is-invalid': submitted && ctr.value.errors
+                    }">
+                  </textarea>
+                <div *ngIf="submitted && ctr.value.errors" class="invalid-feedback">
+                  <div *ngIf="ctr.value.errors.required">
+                    {{ labels.required }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="birth" class="col-sm-3 col-form-label">{{
+                  messages.date
+                }}</label>
+              <div class="col-sm-9 input-icons">
+                <i class="fa fa-calendar icon"></i>
+                <input type="text" formControlName="date" class="calender form-control"
+                  placeholder="DD/MM/YYYY" bsDatepicker
+                  [bsConfig]="{ containerClass: 'theme-dark-blue',dateInputFormat: 'DD/MM/YYYY' }" [ngClass]="{
+                    'is-invalid': submitted && ctr.date.errors
+                  }" />
+                <div *ngIf="submitted && ctr.date.errors" class="text-danger">
+                  <div *ngIf="ctr.date.errors.dateVaidator">
+                    date invalide
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <button type="submit" class="btn btn-primary">
+          <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
+        </button>
+      </div>
+    </form>
+  </div>
+

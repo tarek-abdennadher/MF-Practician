@@ -48,6 +48,7 @@ export class AccountService {
     tele_secretariat_tab: "Mon télésecrétariat",
     factures_tab: "Mes factures",
     stats_tab: "Mes stats",
+    categories_tab: "Mes catégories",
     add_secretary: "Ajouter secrétaire",
     add_secretary_success: "Secrétaire ajoutée avec succès",
     my_secretaries: "Mes Secrétaires",
@@ -56,7 +57,10 @@ export class AccountService {
     delete_account_confirm: "Êtes-vous sûr de vouloir supprimer votre compte ?",
     delete: "Supprimer",
     phone_error: "      Veuillez vérifier les téléphones saisis",
+    update_error: "      Une erreur s'est produite",
     title_delete_account: "supprimer un compte",
+    notes:"Mes notes",
+    date: "Date (*)"
   };
   public errors = {
     required: "Champs obligatoire",

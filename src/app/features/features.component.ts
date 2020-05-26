@@ -27,6 +27,7 @@ export class FeaturesComponent implements OnInit {
   numberOfPending = 0;
   itemsList: any[];
   cityList: any[];
+  inboxNumber: any;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -55,6 +56,9 @@ export class FeaturesComponent implements OnInit {
   private stompClient;
 
   ngOnInit(): void {
+    this.featuresService.getNumberOfInbox().subscribe(val => {
+      this.inboxNumber = val;
+    })
     if (this.userRole && this.userRole == "SECRETARY") {
       this.featuresService.getSecretaryPracticians().subscribe((value) => {
         this.featuresService.myPracticians.next(value);
@@ -344,7 +348,7 @@ export class FeaturesComponent implements OnInit {
             },
           });
           this.featuresService.setNumberOfInbox(
-            this.featuresService.numberOfInbox - 1
+            this.featuresService.getNumberOfInboxValue() - 1
           );
         });
     } else if (

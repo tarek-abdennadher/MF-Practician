@@ -62,7 +62,7 @@ export class ContactsComponent implements OnInit {
                 id: elm.id,
                 fullName: elm.fullName,
                 img: "assets/imgs/user.png",
-                title: elm.title,
+                title: elm.speciality.name,
                 type: "MEDICAL",
                 speciality: elm.speciality ? elm.speciality : "Tout",
                 canEdit: elm.contactType == "CONTACT" ? true : false,

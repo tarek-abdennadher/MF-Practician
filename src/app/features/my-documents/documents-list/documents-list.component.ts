@@ -40,7 +40,7 @@ export class DocumentsListComponent implements OnInit {
     public documentsService: MyDocumentsService,
     private _location: Location,
     private formBuilder: FormBuilder,
-    private accountService: AccountService,
+    private accountService: AccountService
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
@@ -51,10 +51,10 @@ export class DocumentsListComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.idSenderReceiver = params["id"];
-      this.getAttachementById(this.idSenderReceiver,this.pageNo);
+      this.getAttachementById(this.idSenderReceiver, this.pageNo);
     });
     this.getPersonalInfo();
-    this.getAccountDetails(this.idSenderReceiver)
+    this.getAccountDetails(this.idSenderReceiver);
   }
   getPersonalInfo() {
     this.accountService.getCurrentAccount().subscribe((account) => {
@@ -68,39 +68,70 @@ export class DocumentsListComponent implements OnInit {
     });
   }
 
-  getAccountDetails(id){
-    this.accountService.getAccountDetails(id).subscribe(account => {
-      let details = this.getDetailSwitchRole(account)
-      this.documentsService.downloadFile(details.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            this.documentsService.person={
-              fullName:details.fullName,
-              picture: myReader.result
-            }
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          this.documentsService.person={
-            fullName:details.fullName,
-            picture: "assets/imgs/user.png"
+  getAccountDetails(id) {
+    this.accountService.getAccountDetails(id).subscribe((account) => {
+      let details = this.getDetailSwitchRole(account);
+      if (details.photoId) {
+        this.documentsService.downloadFile(details.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              this.documentsService.person = {
+                fullName: details.fullName,
+                picture: myReader.result,
+              };
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            this.documentsService.person = {
+              fullName: details.fullName,
+              picture: "assets/imgs/user.png",
+            };
           }
+        );
+      } else {
+        if (account.role == "PATIENT") {
+          if (details.civility == "M") {
+            this.documentsService.person = {
+              fullName: details.fullName,
+              picture: "assets/imgs/avatar_homme.svg",
+            };
+          } else if (details.civility == "MME") {
+            this.documentsService.person = {
+              fullName: details.fullName,
+              picture: "assets/imgs/avatar_femme.svg",
+            };
+          } else if (details.civility == "CHILD") {
+            this.documentsService.person = {
+              fullName: details.fullName,
+              picture: "assets/imgs/avatar_enfant.svg",
+            };
+          }
+        } else if (account.role == "PRACTICIAN") {
+          this.documentsService.person = {
+            fullName: details.fullName,
+            picture: "assets/imgs/avatar_docteur.svg",
+          };
+        } else if (account.role == "SECRETARY") {
+          this.documentsService.person = {
+            fullName: details.fullName,
+            picture: "assets/imgs/avatar_secrétaire.svg",
+          };
         }
-      );
-    })
+      }
+    });
   }
 
-  getAttachementById(id,pageNo) {
-    this.scroll=true;
+  getAttachementById(id, pageNo) {
+    this.scroll = true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsBySenderOrReceiverId(id,pageNo)
+      .getMyAttachementsBySenderOrReceiverId(id, pageNo)
       .subscribe((attachements) => {
-        if(attachements.length==0){
-          this.scroll=false;
+        if (attachements.length == 0) {
+          this.scroll = false;
         }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
@@ -113,7 +144,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
-          this.scroll=false;
+          this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -137,7 +168,10 @@ export class DocumentsListComponent implements OnInit {
       users: [
         {
           id: attachement.senderId,
-          fullName: node.name.length < 30?node.name:node.name.substring(0,30)+'...',
+          fullName:
+            node.name.length < 30
+              ? node.name
+              : node.name.substring(0, 30) + "...",
           img: this.getImageSwitchExtention(
             node.name.substring(dotIndex + 1, node.name.length)
           ),
@@ -271,15 +305,15 @@ export class DocumentsListComponent implements OnInit {
     this._location.back();
   }
 
-  getAttachementByObject(id, object,pageNo) {
-    this.scroll=true;
+  getAttachementByObject(id, object, pageNo) {
+    this.scroll = true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsByObject(id, object,pageNo)
+      .getMyAttachementsByObject(id, object, pageNo)
       .subscribe((attachements) => {
-        if(attachements.length==0){
-          this.scroll=false;
+        if (attachements.length == 0) {
+          this.scroll = false;
         }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
@@ -292,7 +326,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
-          this.scroll=false;
+          this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -308,15 +342,15 @@ export class DocumentsListComponent implements OnInit {
         });
       });
   }
-  getAttachementBySenderFor(id, senderForId,pageNo) {
-    this.scroll=true;
+  getAttachementBySenderFor(id, senderForId, pageNo) {
+    this.scroll = true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsBySenderForId(id, senderForId,pageNo)
+      .getMyAttachementsBySenderForId(id, senderForId, pageNo)
       .subscribe((attachements) => {
-        if(attachements.length==0){
-          this.scroll=false;
+        if (attachements.length == 0) {
+          this.scroll = false;
         }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
@@ -329,7 +363,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
-          this.scroll=false;
+          this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -346,15 +380,15 @@ export class DocumentsListComponent implements OnInit {
       });
   }
 
-  getAttachementBySenderForAndObject(id, senderForId, object,pageNo) {
-    this.scroll=true;
+  getAttachementBySenderForAndObject(id, senderForId, object, pageNo) {
+    this.scroll = true;
     this.attachementsList = [];
     this.observables = [];
     this.documentsService
-      .getMyAttachementsBySenderForIdAndObject(id, senderForId, object,pageNo)
+      .getMyAttachementsBySenderForIdAndObject(id, senderForId, object, pageNo)
       .subscribe((attachements) => {
-        if(attachements.length==0){
-          this.scroll=false;
+        if (attachements.length == 0) {
+          this.scroll = false;
         }
         this.attachementsList = attachements;
         attachements.forEach((attachement) => {
@@ -367,7 +401,7 @@ export class DocumentsListComponent implements OnInit {
         });
 
         forkJoin(this.observables).subscribe((nodes) => {
-          this.scroll=false;
+          this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
               const splitName = node.entry.name.split(".");
@@ -383,8 +417,8 @@ export class DocumentsListComponent implements OnInit {
       });
   }
   filter() {
-    this.pageNo=0
-    this.itemList=[]
+    this.pageNo = 0;
+    this.itemList = [];
     if (
       this.filterDocumentsForm.value.destination != "" &&
       this.filterDocumentsForm.value.documentType != ""
@@ -392,7 +426,8 @@ export class DocumentsListComponent implements OnInit {
       this.getAttachementBySenderForAndObject(
         this.idSenderReceiver,
         this.filterDocumentsForm.value.destination,
-        this.filterDocumentsForm.value.documentType,this.pageNo
+        this.filterDocumentsForm.value.documentType,
+        this.pageNo
       );
     } else if (
       this.filterDocumentsForm.value.destination != "" &&
@@ -400,16 +435,20 @@ export class DocumentsListComponent implements OnInit {
     ) {
       this.getAttachementBySenderFor(
         this.idSenderReceiver,
-        this.filterDocumentsForm.value.destination,this.pageNo
+        this.filterDocumentsForm.value.destination,
+        this.pageNo
       );
-    } else  if (this.filterDocumentsForm.value.destination == "" &&
-    this.filterDocumentsForm.value.documentType != ""){
+    } else if (
+      this.filterDocumentsForm.value.destination == "" &&
+      this.filterDocumentsForm.value.documentType != ""
+    ) {
       this.getAttachementByObject(
         this.idSenderReceiver,
-        this.filterDocumentsForm.value.documentType,this.pageNo
+        this.filterDocumentsForm.value.documentType,
+        this.pageNo
       );
     } else {
-      this.getAttachementById(this.idSenderReceiver,this.pageNo);
+      this.getAttachementById(this.idSenderReceiver, this.pageNo);
     }
   }
 
@@ -424,7 +463,8 @@ export class DocumentsListComponent implements OnInit {
         this.getAttachementBySenderForAndObject(
           this.idSenderReceiver,
           this.filterDocumentsForm.value.destination,
-          this.filterDocumentsForm.value.documentType,this.pageNo
+          this.filterDocumentsForm.value.documentType,
+          this.pageNo
         );
       } else if (
         this.filterDocumentsForm.value.destination != "" &&
@@ -432,17 +472,21 @@ export class DocumentsListComponent implements OnInit {
       ) {
         this.getAttachementBySenderFor(
           this.idSenderReceiver,
-          this.filterDocumentsForm.value.destination,this.pageNo
+          this.filterDocumentsForm.value.destination,
+          this.pageNo
         );
-      } else  if (this.filterDocumentsForm.value.destination == "" &&
-      this.filterDocumentsForm.value.documentType != ""){
+      } else if (
+        this.filterDocumentsForm.value.destination == "" &&
+        this.filterDocumentsForm.value.documentType != ""
+      ) {
         this.getAttachementByObject(
           this.idSenderReceiver,
-          this.filterDocumentsForm.value.documentType,this.pageNo
+          this.filterDocumentsForm.value.documentType,
+          this.pageNo
         );
       } else {
-        this.getAttachementById(this.idSenderReceiver,this.pageNo);
-      }    }
+        this.getAttachementById(this.idSenderReceiver, this.pageNo);
+      }
+    }
   }
-
 }

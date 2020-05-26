@@ -14,6 +14,7 @@ enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
+import { CategoryService } from '../services/category.service';
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -40,6 +41,9 @@ export class MyPatientsComponent implements OnInit {
   scroll = false;
   public searchForm: FormGroup;
   atcObj: AutoComplete = new AutoComplete();
+  mesCategories= [];
+  public filterPatientsForm: FormGroup;
+
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
@@ -49,10 +53,15 @@ export class MyPatientsComponent implements OnInit {
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
-    private featuresService: FeaturesService
+    private featuresService: FeaturesService,
+    private categoryService: CategoryService
   ) {
     this.searchForm = this.formBuilder.group({
       search: [""],
+    });
+
+    this.filterPatientsForm = this.formBuilder.group({
+      category: [""],
     });
   }
 
@@ -61,6 +70,7 @@ export class MyPatientsComponent implements OnInit {
       this.pageNo = 0;
       this.myPatients = [];
       this.filtredPatients = [];
+      this.getMyCategories();
       if (params["section"]) {
         switch (params["section"]) {
           case "accepted": {
@@ -103,6 +113,25 @@ export class MyPatientsComponent implements OnInit {
   getPatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        this.number = myPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+        myPatients.forEach((elm) => {
+          this.myPatients.push(
+            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+          );
+        });
+        this.searchAutoComplete();
+        this.filtredPatients = this.myPatients;
+      });
+  }
+
+  getPatientsOfCurrentParacticianByCategory(pageNo,categoryId) {
+    this.myPatientsService
+      .getPatientsOfCurrentParacticianByCategory(pageNo,categoryId)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -440,6 +469,24 @@ export class MyPatientsComponent implements OnInit {
       });
       this.atcObj.appendTo("#patients");
       this.atcObj.showSpinner();
+    }
+  }
+  getMyCategories() {
+    this.categoryService.getMyCategories().subscribe((categories) => {
+      this.mesCategories = categories;
+    });
+  }
+
+  filter() {
+    this.pageNo=0
+    this.filtredPatients=[]
+    this.myPatients=[]
+    console.log(this.filterPatientsForm.value.category)
+    if(this.filterPatientsForm.value.category != ""){
+      this.getPatientsOfCurrentParacticianByCategory(this.pageNo,this.filterPatientsForm.value.category);
+    }
+    else {
+      this.getPatientsOfCurrentParactician(this.pageNo)
     }
   }
 }

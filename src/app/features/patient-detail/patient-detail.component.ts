@@ -7,6 +7,7 @@ import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { PracticianSearch } from "../practician-search/practician-search.model";
 import { GlobalService } from "@app/core/services/global.service";
+import { NoteService } from "../services/note.service";
 
 @Component({
   selector: "app-patient-detail",
@@ -27,6 +28,8 @@ export class PatientDetailComponent implements OnInit {
   idAccount: number;
   itemsList: any;
   message: any;
+  idPractician: number;
+  noteList = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -35,7 +38,8 @@ export class PatientDetailComponent implements OnInit {
     private _location: Location,
     private enumCorespondencePipe: EnumCorrespondencePipe,
     private documentService: MyDocumentsService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private notesService: NoteService
   ) {
     this.message = this.globalService.messagesDisplayScreen;
   }
@@ -43,7 +47,9 @@ export class PatientDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.idAccount = params["idAccount"];
+      this.idPractician = params["idPractician"];
       this.getPatientWithPeopleAttached(this.idAccount);
+      this.getMyNotes(this.idAccount);
     });
   }
   getPatientWithPeopleAttached(id) {
@@ -52,6 +58,7 @@ export class PatientDetailComponent implements OnInit {
       .subscribe((response) => {
         this.bottomText = response.fullName;
         this.patient = response;
+        this.getSelectedPatientCategoryAndNote(this.patient.id);
         if (this.patient.linkedPatients.length != 0) {
           this.patient.linkedPatients.forEach((patient) => {
             patient.correspondence = this.enumCorespondencePipe.transform(
@@ -127,6 +134,50 @@ export class PatientDetailComponent implements OnInit {
     let patient = new PracticianSearch();
   }
 
+  getMyNotes(patientId) {
+    if(this.idPractician){
+      this.notesService.getPracticianNotes(patientId,this.idPractician).subscribe((notes) => {
+        notes.forEach((note) => {
+          this.noteList.push({
+            id: note.id,
+            users: [
+              {
+                fullName:
+                  note.value.length < 60
+                    ? note.value
+                    : note.value.substring(0, 60) + "...",
+              },
+            ],
+            time: note.noteDate,
+            isViewDetail: true,
+            isArchieve: true,
+            isSeen: true,
+          });
+        });
+      });
+    }else {
+      this.notesService.getMyNotes(patientId).subscribe((notes) => {
+        notes.forEach((note) => {
+          this.noteList.push({
+            id: note.id,
+            users: [
+              {
+                fullName:
+                  note.value.length < 60
+                    ? note.value
+                    : note.value.substring(0, 60) + "...",
+              },
+            ],
+            time: note.noteDate,
+            isViewDetail: true,
+            isArchieve: true,
+            isSeen: true,
+          });
+        });
+      });
+    }
+
+  }
   sendMessageClicked(item) {
     this.router.navigate(["/messagerie-ecrire"], {
       queryParams: {
@@ -136,5 +187,43 @@ export class PatientDetailComponent implements OnInit {
   }
   BackButton() {
     this._location.back();
+  }
+  getSelectedPatientCategoryAndNote(patientId) {
+    if (this.idPractician) {
+      this.myPatientService
+        .getPatientCategoryByPractician(patientId, this.idPractician)
+        .subscribe((result) => {
+          if (result) {
+            this.patient.category = result.category;
+            this.patient.note = result.noteOnPatient;
+          } else {
+            this.patient.category = "";
+            this.patient.note = "";
+          }
+        });
+    } else {
+      this.myPatientService
+        .getMyPatientCategory(patientId)
+        .subscribe((result) => {
+          if (result) {
+            this.patient.category = result.category;
+            this.patient.note = result.noteOnPatient;
+          } else {
+            this.patient.category = "";
+            this.patient.note = "";
+          }
+        });
+    }
+  }
+  cardClicked(note) {
+    this.router.navigate(["note/" + note.id], { relativeTo: this.route });
+  }
+  addNoteAction() {
+    this.router.navigate(["note/add"], { relativeTo: this.route });
+  }
+  archieveNote(note) {
+    this.notesService.deleteNote(note.id).subscribe((result) => {
+      this.noteList = this.noteList.filter((n) => n.id != note.id);
+    });
   }
 }
