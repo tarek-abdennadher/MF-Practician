@@ -14,7 +14,7 @@ enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { CategoryService } from '../services/category.service';
+import { CategoryService } from "../services/category.service";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -41,7 +41,7 @@ export class MyPatientsComponent implements OnInit {
   scroll = false;
   public searchForm: FormGroup;
   atcObj: AutoComplete = new AutoComplete();
-  mesCategories= [];
+  mesCategories = [];
   public filterPatientsForm: FormGroup;
 
   constructor(
@@ -129,9 +129,9 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
-  getPatientsOfCurrentParacticianByCategory(pageNo,categoryId) {
+  getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
     this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(pageNo,categoryId)
+      .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -251,10 +251,10 @@ export class MyPatientsComponent implements OnInit {
   }
 
   performFilter(filterBy) {
-    filterBy = filterBy.toLocaleLowerCase();
+    filterBy = filterBy.toLowerCase();
     return this.myPatients.filter(
       (patient) =>
-        patient.users[0].fullName.toLocaleLowerCase().indexOf(filterBy) !== -1
+        patient.users[0].fullName.toLowerCase().indexOf(filterBy) !== -1
     );
   }
 
@@ -478,15 +478,17 @@ export class MyPatientsComponent implements OnInit {
   }
 
   filter() {
-    this.pageNo=0
-    this.filtredPatients=[]
-    this.myPatients=[]
-    console.log(this.filterPatientsForm.value.category)
-    if(this.filterPatientsForm.value.category != ""){
-      this.getPatientsOfCurrentParacticianByCategory(this.pageNo,this.filterPatientsForm.value.category);
-    }
-    else {
-      this.getPatientsOfCurrentParactician(this.pageNo)
+    this.pageNo = 0;
+    this.filtredPatients = [];
+    this.myPatients = [];
+    console.log(this.filterPatientsForm.value.category);
+    if (this.filterPatientsForm.value.category != "") {
+      this.getPatientsOfCurrentParacticianByCategory(
+        this.pageNo,
+        this.filterPatientsForm.value.category
+      );
+    } else {
+      this.getPatientsOfCurrentParactician(this.pageNo);
     }
   }
 }
