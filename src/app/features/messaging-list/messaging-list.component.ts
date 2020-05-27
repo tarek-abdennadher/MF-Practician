@@ -320,9 +320,12 @@ export class MessagingListComponent implements OnInit {
       .getInboxByAccountId(accountId, pageNo)
       .subscribe((retrievedMess) => {
         this.featureService.myPracticians.asObservable().subscribe(list => {
-          this.number = list.find(
-            (p) => p.id == this.featureService.selectedPracticianId
-          ).number
+          if(this.featureService.selectedPracticianId !==0){
+            this.number = list.find(
+              (p) => p.id == this.featureService.selectedPracticianId
+            ).number
+          }
+
           this.bottomText =
             this.number > 1
               ? this.globalService.messagesDisplayScreen.newMessages

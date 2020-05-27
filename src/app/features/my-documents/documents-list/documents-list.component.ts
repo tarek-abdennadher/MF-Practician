@@ -188,6 +188,7 @@ export class DocumentsListComponent implements OnInit {
       time: attachement.updatedAt,
       download: true,
       visualize: true,
+      realName: node.name
     };
   }
 
@@ -230,7 +231,7 @@ export class DocumentsListComponent implements OnInit {
       .downloadFile(attachement.nodeId)
       .subscribe((response) => {
         const blob = new Blob([response.body]);
-        const filename = attachement.users[0].fullName;
+        const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
@@ -263,7 +264,7 @@ export class DocumentsListComponent implements OnInit {
     this.documentsService
       .downloadFile(attachement.nodeId)
       .subscribe((response) => {
-        const filename = attachement.users[0].fullName;
+        const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
