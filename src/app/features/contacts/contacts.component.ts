@@ -40,7 +40,9 @@ export class ContactsComponent implements OnInit {
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService
-  ) {}
+  ) {
+    this.notifier = notifierService;
+  }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
