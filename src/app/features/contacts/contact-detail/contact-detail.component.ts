@@ -110,9 +110,19 @@ export class ContactDetailComponent implements OnInit {
     if (!this.isPhonesValid) {
       this.failureAlert = true;
       $("#FailureAlert").alert();
+      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+        this.infoForm.patchValue({
+          phone: "+33",
+        });
+      }
       return;
     }
     if (this.infoForm.invalid) {
+      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+        this.infoForm.patchValue({
+          phone: "+33",
+        });
+      }
       return;
     }
     const value = this.infoForm.value;
