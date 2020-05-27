@@ -129,6 +129,21 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
+  getNextPagePatientsOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
     this.myPatientsService
       .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId)
@@ -167,6 +182,21 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
+  getNextPatientsProhibitedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsProhibitedOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
   getPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsPendingOfCurrentParactician(pageNo)
@@ -186,6 +216,21 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
+  getNextPatientsPendingOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsPendingOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
   getPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsArchivedOfCurrentParactician(pageNo)
@@ -202,6 +247,21 @@ export class MyPatientsComponent implements OnInit {
         });
         this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
+      });
+  }
+
+  getNextPatientsArchivedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsArchivedOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
       });
   }
 
@@ -390,7 +450,7 @@ export class MyPatientsComponent implements OnInit {
 
   getPendingListRealTime(pageNo) {
     this.featureService.getNumberOfPendingObs().subscribe((resp) => {
-      if (this.featureService.getNumberOfPendingValue() != this.number) {
+      if (this.featureService.getNumberOfPendingValue() != this.myPatients.length) {
         this.getPatientsPendingOfCurrentParactician(pageNo);
       }
     });
@@ -407,19 +467,19 @@ export class MyPatientsComponent implements OnInit {
       if (this.section) {
         switch (this.section) {
           case "accepted": {
-            this.getPatientsOfCurrentParactician(this.pageNo);
+            this.getNextPagePatientsOfCurrentParactician(this.pageNo);
             break;
           }
           case "pending": {
-            this.getPendingListRealTime(this.pageNo);
+            this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
             break;
           }
           case "prohibit": {
-            this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+            this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
             break;
           }
           case "archived": {
-            this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+            this.getNextPatientsArchivedOfCurrentParactician(this.pageNo);
             break;
           }
         }
