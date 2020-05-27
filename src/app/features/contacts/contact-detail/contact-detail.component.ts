@@ -5,7 +5,7 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
-import { Subject } from 'rxjs';
+import { Subject } from "rxjs";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -21,7 +21,7 @@ export class ContactDetailComponent implements OnInit {
   submitted = false;
   topText = "Fiche contact Pro";
   page = "MY_PRACTICIANS";
-  bottomText = ""
+  bottomText = "";
   backButton = true;
   param;
   failureAlert = false;
@@ -87,14 +87,13 @@ export class ContactDetailComponent implements OnInit {
         additional_address: contact.additionalAddress,
         phone: contact.phoneNumber ? contact.phoneNumber : "+33",
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
-        picture: contact.photoId
+        picture: contact.photoId,
       });
       this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
         this.isLabelShow = true;
       }
     });
-
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
@@ -103,6 +102,11 @@ export class ContactDetailComponent implements OnInit {
   }
   submit() {
     this.submitted = true;
+    if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+      this.infoForm.patchValue({
+        phone: null,
+      });
+    }
     if (!this.isPhonesValid) {
       this.failureAlert = true;
       $("#FailureAlert").alert();
@@ -127,27 +131,20 @@ export class ContactDetailComponent implements OnInit {
       otherPhones: this.phones,
       email: value.email,
       address: value.address,
-      additionalAddress: value.additional_address
+      additionalAddress: value.additional_address,
     };
     let successResult = false;
     if (this.param == "add") {
-      this.contactsService
-        .addContact(contact)
-        .subscribe((res) => {
-          successResult = res;
-          this.router
-      .navigate(["/mes-contacts-pro"])
-        });
+      this.contactsService.addContact(contact).subscribe((res) => {
+        successResult = res;
+        this.router.navigate(["/mes-contacts-pro"]);
+      });
     } else {
-      this.contactsService
-        .updateContact(contact)
-        .subscribe((res) => {
-          successResult = res;
-          this.router
-      .navigate(["/mes-contacts-pro"])
-        });
+      this.contactsService.updateContact(contact).subscribe((res) => {
+        successResult = res;
+        this.router.navigate(["/mes-contacts-pro"]);
+      });
     }
-
   }
 
   BackButton() {
@@ -175,8 +172,7 @@ export class ContactDetailComponent implements OnInit {
     this.phones = event.value;
     if (this.phones.length > 0) {
       this.isLabelShow = true;
-    }
-    else {
+    } else {
       this.isLabelShow = false;
     }
   }
