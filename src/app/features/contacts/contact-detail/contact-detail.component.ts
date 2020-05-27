@@ -137,12 +137,20 @@ export class ContactDetailComponent implements OnInit {
     if (this.param == "add") {
       this.contactsService.addContact(contact).subscribe((res) => {
         successResult = res;
-        this.router.navigate(["/mes-contacts-pro"]);
+        this.router.navigate(["/mes-contacts-pro"], {
+          queryParams: {
+            status: "add",
+          },
+        });
       });
     } else {
       this.contactsService.updateContact(contact).subscribe((res) => {
         successResult = res;
-        this.router.navigate(["/mes-contacts-pro"]);
+        this.router.navigate(["/mes-contacts-pro"], {
+          queryParams: {
+            status: "edit",
+          },
+        });
       });
     }
   }
