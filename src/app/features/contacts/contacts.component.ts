@@ -1,11 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ContactsService } from "../services/contacts.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { AccountService } from "../services/account.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { NotifierService } from "angular-notifier";
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
@@ -28,9 +29,13 @@ export class ContactsComponent implements OnInit {
   topText = "Mes contacts PRO";
   page = "MY_PRACTICIANS";
   backButton = true;
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private readonly notifier: NotifierService;
   constructor(
     public accountService: AccountService,
     private _location: Location,
+    private route: ActivatedRoute,
+    notifierService: NotifierService,
     private router: Router,
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
@@ -38,6 +43,26 @@ export class ContactsComponent implements OnInit {
   ) {}
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params["status"]) {
+        let notifMessage = "";
+        switch (params["status"]) {
+          case "add": {
+            notifMessage = "Contact pro ajouté avec succès";
+            break;
+          }
+          case "edit": {
+            notifMessage = "Contact pro modifié avec succès";
+            break;
+          }
+        }
+        this.notifier.show({
+          message: notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
+    });
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
     this.types = new Array();
