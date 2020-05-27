@@ -125,7 +125,7 @@ export class MyDocumentsComponent implements OnInit {
       },
     ];
     practician.object = {
-      name: detail.address,
+      name: detail.address?detail.address:"",
       isImportant: false,
       isLocalisation: detail.address ? true : false,
     };
