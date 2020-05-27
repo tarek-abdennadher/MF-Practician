@@ -57,8 +57,8 @@ export class PersonalInformationsComponent implements OnInit {
   image: string | ArrayBuffer;
   hasImage = false;
   nodeId: any;
-  mesCategories:any = [];
-  updateAlert=false;
+  mesCategories: any = [];
+  updateAlert = false;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -89,9 +89,9 @@ export class PersonalInformationsComponent implements OnInit {
     this.initPasswordForm();
     this.getPersonalInfo();
     this.getAttachementFolderId();
-    if(this.isPatientFile){
+    if (this.isPatientFile) {
       this.getMyCategories();
-    }else {
+    } else {
     }
   }
   initInfoForm() {
@@ -110,6 +110,7 @@ export class PersonalInformationsComponent implements OnInit {
           additional_address: new FormControl(null),
           phone: new FormControl(null, Validators.required),
           picture: new FormControl(null),
+          civility: new FormControl(null, Validators.required)
         });
       } else {
         this.infoForm = new FormGroup({
@@ -202,7 +203,7 @@ export class PersonalInformationsComponent implements OnInit {
           : "",
         otherPhones: this.account.otherPhones ? this.account.otherPhones : [],
         picture: this.account.photoId ? this.account.photoId : null,
-        category:this.infoPatient.category?this.infoPatient.category.id:null,
+        category: this.infoPatient.category ? this.infoPatient.category.id : null,
       });
     } else {
       this.accountService.getCurrentAccount().subscribe((account) => {
@@ -227,6 +228,9 @@ export class PersonalInformationsComponent implements OnInit {
               : "",
             title: account.practician.jobTitle
               ? account.practician.jobTitle
+              : null,
+            civility: account.practician.civility
+              ? account.practician.civility
               : null,
             speciality: account.practician.speciality
               ? account.practician.speciality.id
@@ -291,6 +295,7 @@ export class PersonalInformationsComponent implements OnInit {
         otherPhones: this.phones,
         practician: {
           id: this.infoForm.value.id,
+          civility: this.infoForm.value.civility,
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           jobTitle: this.infoForm.value.title,
@@ -484,41 +489,41 @@ export class PersonalInformationsComponent implements OnInit {
     this.isLabelShow = true;
   }
 
-  updatePatientFile(){
+  updatePatientFile() {
     this.submitted = true;
     let patientFile;
-    if(this.isPractician){
-       patientFile = {
+    if (this.isPractician) {
+      patientFile = {
         patientId: this.infoPatient.id,
         category: this.mesCategories.find(cat => cat.id == this.infoForm.value.category),
-        }
+      }
     } else {
-       patientFile = {
+      patientFile = {
         patientId: this.infoPatient.id,
         practicianId: this.practicianId,
         category: this.mesCategories.find(cat => cat.id == this.infoForm.value.category),
-        }
+      }
     }
 
     this.patientService.updatePatientFile(patientFile).subscribe(result => {
       this.showAlert = true;
       $(".alert").alert();
       this.submitted = false;
-    },error => {
+    }, error => {
       this.updateAlert = true;
       $("#FailureAlert").alert();
       return;
     });
-   }
+  }
 
   getMyCategories() {
-    if(this.practicianId){
+    if (this.practicianId) {
       this.categoryService.getCategoriesByPractician(this.practicianId).subscribe((categories) => {
-        this.mesCategories=categories;
+        this.mesCategories = categories;
       });
-    }else{
+    } else {
       this.categoryService.getMyCategories().subscribe((categories) => {
-        this.mesCategories=categories;
+        this.mesCategories = categories;
       });
     }
 
