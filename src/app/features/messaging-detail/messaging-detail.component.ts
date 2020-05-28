@@ -551,11 +551,11 @@ export class MessagingDetailComponent implements OnInit {
     }
   }
   displayPatientFile(idAccount) {
-    if(this.localSt.retrieve("role") == "PRACTICIAN"){
-      this.router.navigate(["/patient-detail/" + idAccount]);
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      this.router.navigate(["/fiche-patient/" + idAccount]);
     }
-    else{
-      this.router.navigate(["/patient-detail/" + idAccount+ "/" +this.featureService.selectedPracticianId]);
+    else {
+      this.router.navigate(["/fiche-patient/" + idAccount + "/" + this.featureService.selectedPracticianId]);
     }
   }
 }

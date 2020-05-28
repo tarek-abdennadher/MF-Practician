@@ -7,7 +7,13 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class MyPatientsService {
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService) { }
+  public errors = {
+    failed_update: "Erreur survenue lors de la modification de la fiche patient"
+  };
+  public messages = {
+    edit_info_success: "Informations personnelles modifiées avec succès"
+  }
 
   getPatientsOfCurrentParactician(pageNo: number): Observable<any> {
     return this.globalService.call(
@@ -15,10 +21,10 @@ export class MyPatientsService {
       this.globalService.url.patientFile + "my?pageNo=" + pageNo
     );
   }
-  getPatientsOfCurrentParacticianByCategory(pageNo: number,categoryId:number): Observable<any> {
+  getPatientsOfCurrentParacticianByCategory(pageNo: number, categoryId: number): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my/byCategory/"+categoryId+"?pageNo=" + pageNo
+      this.globalService.url.patientFile + "my/byCategory/" + categoryId + "?pageNo=" + pageNo
     );
   }
 
@@ -117,13 +123,24 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patientFile +
-        "my/category/" +
-        patientId +
-        "/" +
-        practicianId
+      "my/category/" +
+      patientId +
+      "/" +
+      practicianId
     );
   }
-
+  getPatientFileByPracticianId(patientId: number, practicianId: number) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + patientId + "/" + practicianId
+    );
+  }
+  getPatientsByParentId(patientId: number) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patient + patientId + "/parent"
+    );
+  }
   updatePatientFile(patientFile) {
     return this.globalService.call(
       RequestType.PUT,

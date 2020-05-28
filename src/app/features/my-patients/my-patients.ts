@@ -4,7 +4,9 @@ export class MyPatients {
   isSeen: boolean;
   isProhibited: boolean;
   isArchived: boolean;
+  isViewDetail: boolean;
   photoId: string;
+  fullInfo: any;
 }
 
 export class PatientSerch {

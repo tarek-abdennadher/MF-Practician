@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class CategoryService {
-  constructor(public router: Router, public globalService: GlobalService) {}
+  constructor(public router: Router, public globalService: GlobalService) { }
 
   addCategory(category): Observable<any> {
     return this.globalService.call(
@@ -40,10 +40,10 @@ export class CategoryService {
     );
   }
 
-  getCategoriesByPractician(id): Observable<any> {
+  getCategoriesByPractician(id: number) {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.category + "/practician/"+id
+      this.globalService.url.category + "/practician/" + id
     );
   }
 

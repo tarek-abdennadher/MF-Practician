@@ -344,7 +344,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   editAction(item) {
-    console.log("edit");
+    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
   }
   deleteAction(item) {
     this.dialogService
@@ -457,7 +457,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/patient-detail/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
   }
 
   onScroll() {
