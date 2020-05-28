@@ -11,6 +11,8 @@ import { MyDocumentsService } from '../my-documents/my-documents.service';
 })
 export class MessagingListService {
   private notificationObs = new BehaviorSubject<Object>("");
+  private practicianNotifObs = new BehaviorSubject<any>("");
+  public practicianNotifPreviousValue = "";
 
   constructor(
     private globalService: GlobalService,
@@ -162,6 +164,16 @@ export class MessagingListService {
         notif.id != notification.id
       )
       this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()-1)
+    }
+  }
+
+  getPracticianNotifObs(): Observable<any> {
+    return this.practicianNotifObs.asObservable();
+  }
+
+  setPracticianNotifObs(notification) {
+    if (notification.id != this.practicianNotifObs.getValue().id) {
+      this.practicianNotifObs.next(notification);
     }
   }
 

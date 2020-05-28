@@ -166,6 +166,7 @@ export class MessagingListComponent implements OnInit {
     });
 
     this.getRealTimeMessage();
+    this.getPracticianRealTimeMessage();
     this.route.queryParams.subscribe((params) => {
       if (params["status"]) {
         let notifMessage = "";
@@ -319,18 +320,17 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ
       .getInboxByAccountId(accountId, pageNo)
       .subscribe((retrievedMess) => {
-        this.featureService.myPracticians.asObservable().subscribe(list => {
-          if(this.featureService.selectedPracticianId !==0){
+        if (!this.isMyInbox) {
+          this.featureService.myPracticians.asObservable().subscribe(list => {
             this.number = list.find(
               (p) => p.id == this.featureService.selectedPracticianId
             ).number
-          }
-
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
-        })
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
+          })
+        }
         this.messages = this.isPatientFile
           ? retrievedMess.filter(
               (message) => message.sender.senderId == this.idAccount
@@ -525,6 +525,51 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ.getNotificationObs().subscribe((notif) => {
       if (notif != "") {
         if (this.isMyInbox) {
+          let message = this.parseMessage(notif.message);
+          if (notif.message.sender.photoId) {
+            this.documentService
+              .downloadFile(notif.message.sender.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    message.users.forEach((user) => {
+                      user.img = myReader.result;
+                    });
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  message.users.forEach((user) => {
+                    user.img = "assets/imgs/user.png";
+                  });
+                }
+              );
+          }
+
+          this.filtredItemList.unshift(message);
+
+          this.bottomText =
+            this.number > 1
+              ? this.globalService.messagesDisplayScreen.newMessages
+              : this.globalService.messagesDisplayScreen.newMessage;
+        }
+      }
+    });
+  }
+
+  getPracticianRealTimeMessage() {
+    this.messagesServ.getPracticianNotifObs().subscribe((notif) => {
+      if (notif != "" && this.messagesServ.practicianNotifPreviousValue != notif.id) {
+        let num = this.featureService.myPracticians.getValue().find(elm => elm.id == notif.receiverId).number;
+        this.featureService.updateNumberOfInboxForPractician(
+          notif.receiverId,
+          num + 1
+        );
+        this.messagesServ.practicianNotifPreviousValue = notif.id;
+        console.log(this.messagesServ.practicianNotifPreviousValue)
+        console.log(notif.id)
+        if (!this.isMyInbox && this.featureService.selectedPracticianId == notif.receiverId) {
           let message = this.parseMessage(notif.message);
           if (notif.message.sender.photoId) {
             this.documentService

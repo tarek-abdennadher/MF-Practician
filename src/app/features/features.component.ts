@@ -40,6 +40,7 @@ export class FeaturesComponent implements OnInit {
     private practicianSearchService: PracticianSearchService
   ) {
     this.initializeWebSocketConnection();
+    this.getPracticiansRealTimeMessage();
   }
   public myPracticians = [];
 
@@ -176,6 +177,28 @@ export class FeaturesComponent implements OnInit {
         }
       );
     });
+  }
+
+  getPracticiansRealTimeMessage() {
+    this.featuresService.getSecretaryPracticiansId().subscribe(ids => {
+      ids.forEach(id => {
+        const that = this;
+        this.stompClient.connect({}, function (frame) {
+          that.stompClient.subscribe(
+            "/topic/notification/" + id,
+            (message) => {
+              if (message.body) {
+                let notification = JSON.parse(message.body);
+                if (notification.type == "MESSAGE" || notification.type == "MESSAGE_IN_PROGRESS" ||
+                    notification.type == "MESSAGE_TREATED") {
+                  that.messageListService.setPracticianNotifObs(notification);
+                }
+              }
+            }
+          );
+        });
+      })
+    })
   }
 
   getMyNotificationsNotSeen() {

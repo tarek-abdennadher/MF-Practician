@@ -119,6 +119,12 @@ export class FeaturesService {
       this.globalService.url.secretary + "/my-practicians"
     );
   }
+  getSecretaryPracticiansId() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.secretary + "/my-practicians-id"
+    );
+  }
   changeSearch(search: search) {
     this.searchSource.next(search);
   }
