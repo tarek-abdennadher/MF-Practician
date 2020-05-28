@@ -8,6 +8,7 @@ import { observable, forkJoin, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
+import { CivilityPipe } from '@app/shared/pipes/civility.pipe';
 
 @Component({
   selector: "app-documents-list",
@@ -40,7 +41,8 @@ export class DocumentsListComponent implements OnInit {
     public documentsService: MyDocumentsService,
     private _location: Location,
     private formBuilder: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private civilityPipe: CivilityPipe
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
@@ -77,7 +79,7 @@ export class DocumentsListComponent implements OnInit {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
               this.documentsService.person = {
-                fullName: details.fullName,
+                fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
                 picture: myReader.result,
               };
             };
@@ -85,7 +87,7 @@ export class DocumentsListComponent implements OnInit {
           },
           (error) => {
             this.documentsService.person = {
-              fullName: details.fullName,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
               picture: "assets/imgs/user.png",
             };
           }
@@ -94,28 +96,28 @@ export class DocumentsListComponent implements OnInit {
         if (account.role == "PATIENT") {
           if (details.civility == "M") {
             this.documentsService.person = {
-              fullName: details.fullName,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
               picture: "assets/imgs/avatar_homme.svg",
             };
           } else if (details.civility == "MME") {
             this.documentsService.person = {
-              fullName: details.fullName,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
               picture: "assets/imgs/avatar_femme.svg",
             };
           } else if (details.civility == "CHILD") {
             this.documentsService.person = {
-              fullName: details.fullName,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
               picture: "assets/imgs/avatar_enfant.svg",
             };
           }
         } else if (account.role == "PRACTICIAN") {
           this.documentsService.person = {
-            fullName: details.fullName,
+            fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
             picture: "assets/imgs/avatar_docteur.svg",
           };
         } else if (account.role == "SECRETARY") {
           this.documentsService.person = {
-            fullName: details.fullName,
+            fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
             picture: "assets/imgs/avatar_secrétaire.svg",
           };
         }
