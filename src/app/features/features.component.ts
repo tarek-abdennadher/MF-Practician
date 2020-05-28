@@ -55,6 +55,7 @@ export class FeaturesComponent implements OnInit {
     isFilter: true,
   };
   private stompClient;
+  private stompClientList = [];
 
   ngOnInit(): void {
     this.featuresService.getNumberOfInbox().subscribe(val => {
@@ -181,10 +182,14 @@ export class FeaturesComponent implements OnInit {
 
   getPracticiansRealTimeMessage() {
     this.featuresService.getSecretaryPracticiansId().subscribe(ids => {
-      ids.forEach(id => {
+      for (var i = 0; i < ids.length; i++) {
+        let id = ids[i];
+        const ws = new SockJS(this.globalService.BASE_URL + "/socket");
+        this.stompClientList[i] = Stomp.over(ws);
+        this.stompClientList[i].debug = () => {};
         const that = this;
-        this.stompClient.connect({}, function (frame) {
-          that.stompClient.subscribe(
+        this.stompClientList[i].connect({}, function (frame) {
+          this.subscribe(
             "/topic/notification/" + id,
             (message) => {
               if (message.body) {
@@ -197,7 +202,7 @@ export class FeaturesComponent implements OnInit {
             }
           );
         });
-      })
+      };
     })
   }
 
