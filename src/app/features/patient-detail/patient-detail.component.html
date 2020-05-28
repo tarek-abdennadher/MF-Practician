@@ -1,53 +1,15 @@
-<lib-hlsLinks
-  [links]="links"
-  [page]="page"
-  [topText]="topText"
-  [bottomText]="bottomText"
-  [number]="number"
-  [backButton]="backButton"
-  (backButtonAction)="BackButton()"
-></lib-hlsLinks>
-<app-personal-informations
-  *ngIf="patient && patient.category !== undefined"
-  [isPatientFile]="true"
-  [infoPatient]="patient"
-  [practicianId]="idPractician"
-></app-personal-informations>
-<div class="col-md-12" *ngIf="itemsList">
-  <div class="form-group title">
-    <hr width="3%" color="#ff0063" align="left" />
-    <i class="far fa-user-plus"
-      ><span>&nbsp;&nbsp;{{ message.attachedPersonnes }}</span></i
-    >
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+  [backButton]="backButton" (backButtonAction)="goBack()"></lib-hlsLinks>
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
   </div>
-</div>
-<lib-hlsMessagingList
-  *ngIf="itemsList"
-  [isCheckbox]="false"
-  [list]="itemsList"
-  [imageSource]="imageSource"
->
-</lib-hlsMessagingList>
-<div class="row">
-  <div class="form-group col-md-10 title">
-    <hr width="3%" color="#ff0063" align="left" />
-    <i class="far fa-user-plus"
-      ><span>&nbsp;&nbsp;{{ message.notes }}</span></i
-    >
-  </div>
-  <a (click)="addNoteAction()" class="inline col-md-1">
-    <i class="far fa-plus"></i><br /><span>Ajouter</span>
-  </a>
-</div>
-<lib-hlsMessagingList
-  *ngIf="noteList"
-  [isCheckbox]="false"
-  [list]="noteList"
-  [imageSource]="imageSource"
-  (cardAction)="cardClicked($event)"
-  (archieveAction)="archieveNote($event)">
-</lib-hlsMessagingList>
-<app-messaging-list
-  [isPatientFile]="true"
-  [idAccount]="idAccount"
-></app-messaging-list>
+</ng-template>
+<lib-hls-patient-file [imageSource]="imageSource" [noteimageSource]="noteimageSource" [patient]="patientFile"
+  [categoryList]="categoryList" [linkedPatients]="linkedPatients" (submitAction)="submit($event)"
+  (archieveNoteAction)="archieveNote($event)" (submitNoteAction)="submitNote($event)">
+</lib-hls-patient-file>
+
+<app-messaging-list [isPatientFile]="true" [idAccount]="patientId"></app-messaging-list>

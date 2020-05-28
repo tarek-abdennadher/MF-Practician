@@ -40,7 +40,6 @@ import { HlsPasswordStrengthModule } from "hls-password-strength";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { NoteDetailComponent } from './patient-detail/note-detail/note-detail.component';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -99,8 +98,7 @@ const notifierOptions: NotifierOptions = {
     PracticianInvitationComponent,
     PatientDetailComponent,
     EnumCorrespondencePipe,
-    PersonalInformationsComponent,
-    NoteDetailComponent,
+    PersonalInformationsComponent
   ],
   imports: [
     FormsModule,
@@ -130,4 +128,4 @@ const notifierOptions: NotifierOptions = {
 
   providers: [MessageService, ContactsService],
 })
-export class FeaturesModule {}
+export class FeaturesModule { }
