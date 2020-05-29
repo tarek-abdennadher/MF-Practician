@@ -19,7 +19,7 @@ import { DialogService } from "../services/dialog.service";
 export class MessagingDetailComponent implements OnInit {
   private _destroyed$ = new Subject();
   previousURL = "";
-  role: string = "MEDICAL";
+  role: string = "PRACTICIAN";
   imageSource: string = "assets/imgs/user.png";
   isFromInbox: boolean;
   IsinboxContext: boolean = false;
@@ -149,7 +149,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
             } else {
-              if (receiver.role == "MEDICAL") {
+              if (receiver.role == "PRACTICIAN") {
                 receiver.img = "assets/imgs/avatar_docteur.svg";
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = "assets/imgs/avatar_secrétaire.svg";
@@ -179,7 +179,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
             } else {
-              if (receiver.role == "MEDICAL") {
+              if (receiver.role == "PRACTICIAN") {
                 receiver.img = "assets/imgs/avatar_docteur.svg";
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = "assets/imgs/avatar_secrétaire.svg";
@@ -210,7 +210,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-            if (this.messagingDetail.sender.role == "MEDICAL") {
+            if (this.messagingDetail.sender.role == "PRACTICIAN") {
               this.messagingDetail.sender.img =
                 "assets/imgs/avatar_docteur.svg";
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
@@ -245,7 +245,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-            if (this.messagingDetail.sender.role == "MEDICAL") {
+            if (this.messagingDetail.sender.role == "PRACTICIAN") {
               this.messagingDetail.sender.forImg =
                 "assets/imgs/avatar_docteur.svg";
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
@@ -282,6 +282,12 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
+          this.messagingDetail.toReceivers=this.messagingDetail.toReceivers.filter(to =>
+            to.receiverId != this.featureService.getUserId()
+          )
+          if(this.messagingDetail.toReceivers.length>0){
+            this.hideTo=false;
+          }
           this.messagingDetail.toReceivers.forEach((receiver) => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
@@ -297,7 +303,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
             } else {
-              if (receiver.role == "MEDICAL") {
+              if (receiver.role == "PRACTICIAN") {
                 receiver.img = "assets/imgs/avatar_docteur.svg";
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = "assets/imgs/avatar_secrétaire.svg";
@@ -327,7 +333,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
             } else {
-              if (receiver.role == "MEDICAL") {
+              if (receiver.role == "PRACTICIAN") {
                 receiver.img = "assets/imgs/avatar_docteur.svg";
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = "assets/imgs/avatar_secrétaire.svg";
@@ -358,7 +364,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-            if (this.messagingDetail.sender.role == "MEDICAL") {
+            if (this.messagingDetail.sender.role == "PRACTICIAN") {
               this.messagingDetail.sender.img =
                 "assets/imgs/avatar_docteur.svg";
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
@@ -393,7 +399,7 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-            if (this.messagingDetail.sender.role == "MEDICAL") {
+            if (this.messagingDetail.sender.role == "PRACTICIAN") {
               this.messagingDetail.sender.forImg =
                 "assets/imgs/avatar_docteur.svg";
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
