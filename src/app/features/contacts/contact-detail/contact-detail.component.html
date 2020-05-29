@@ -62,8 +62,8 @@
                   <option value="null" disabled="true">{{
                     labels.title
                   }}</option>
-                  <option value="Docteur">Dr</option>
-                  <option value="Professeur">Pr</option>
+                  <option *ngFor="let item of jobTitlesList" value="{{ item }}">{{ item | JobTitle }}
+                  </option>
                 </select>
                 <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
                   <div *ngIf="ctr.title.errors.required">

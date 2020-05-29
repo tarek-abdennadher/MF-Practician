@@ -53,17 +53,14 @@ export class IntPhoneComponent implements OnInit {
     this.phoneForm = this.formBuilder.group({
       phoneList: this.formBuilder.array([])
     });
-    this.updateCSS();
     /* Patch list if contains elements */
     this.phonesToEdit.subscribe(list => {
       if (list) {
-        this.updateCSS();
         list.forEach(p =>
           this.phoneList.push(this.updatePhone(p)));
       }
       /* Initialize list when there is no exisiting elements */
       else {
-        this.updateCSS();
         this.phoneForm = this.formBuilder.group({
           phoneList: this.formBuilder.array([this.newPhone()])
         });
@@ -82,13 +79,11 @@ export class IntPhoneComponent implements OnInit {
     if (this.phoneList.length > 2) {
       return;
     }
-    this.updateCSS();
     this.phoneList.push(this.newPhone());
   }
   /* Method to remove an exisiting phone number */
   removePhone(index) {
     if (this.phoneList.length == 1) {
-      this.updateCSS();
       this.phoneList.removeAt(index);
       this.phoneForm = this.formBuilder.group({
         phoneList: this.formBuilder.array([this.newPhone()])
@@ -107,24 +102,6 @@ export class IntPhoneComponent implements OnInit {
     this.phoneForm.valueChanges.subscribe(val => {
       this.phones.emit(this.phoneList)
     });
-  }
-  /* Method to override CSS of the phone component */
-  updateCSS() {
-    $(document).ready(function () {
-      $('.form-control').each(function () {
-        $(this).css("background", "#F1F1F1")
-        $(this).css("border-color", "#F1F1F1")
-        $(this).css("padding", " 6px 6px 6px 6px")
-      });
-      $('.dropbtn.btn').each(function () {
-        $(this).css("background", "#F1F1F1")
-        $(this).css("border-color", "#F1F1F1")
-        $(this).css("padding", "8px")
-      });
-      $(".arrow-down").each(function () {
-        $(this).css("border-bottom", "#F1F1F1");
-      });
-    })
   }
   /* Method to emit changes constantly to main component */
   onValueChange(): void {

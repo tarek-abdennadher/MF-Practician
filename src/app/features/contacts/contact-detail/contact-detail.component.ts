@@ -6,6 +6,7 @@ import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from "rxjs";
+import { AccountService } from '@app/features/services/account.service';
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -30,11 +31,13 @@ export class ContactDetailComponent implements OnInit {
   otherPhones = new Subject<any[]>();
   addnewPhone = new Subject<boolean>();
   isLabelShow: boolean;
+  jobTitlesList = [];
   constructor(
     private _location: Location,
     private route: ActivatedRoute,
     private router: Router,
-    private contactsService: ContactsService
+    private contactsService: ContactsService,
+    public accountService: AccountService
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
@@ -43,6 +46,7 @@ export class ContactDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getjobTitles();
     this.route.params.subscribe((params) => {
       this.param = params["id"];
       if (this.param != "add") {
@@ -52,7 +56,6 @@ export class ContactDetailComponent implements OnInit {
     });
   }
   initForm() {
-    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       type: new FormControl(null, Validators.required),
@@ -98,6 +101,11 @@ export class ContactDetailComponent implements OnInit {
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
       this.specialities = specialitiesList;
+    });
+  }
+  getjobTitles() {
+    this.accountService.getJobTiles().subscribe((resp) => {
+      this.jobTitlesList = resp;
     });
   }
   submit() {
@@ -168,23 +176,7 @@ export class ContactDetailComponent implements OnInit {
   BackButton() {
     this._location.back();
   }
-  // Phone component CSS
-  updateCSS() {
-    $(document).ready(function () {
-      $(".form-control").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-      });
-      $(".dropbtn.btn").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("padding", "8px");
-      });
-      $(".arrow-down").each(function () {
-        $(this).css("border-bottom", "#F1F1F1");
-      });
-    });
-  }
+
   // Other phones list
   getPhoneList(event) {
     this.phones = event.value;
