@@ -65,7 +65,6 @@ export class MySecretariesComponent implements OnInit {
   }
 
   initInfoForm() {
-    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       sec_id: new FormControl(null),
@@ -81,7 +80,6 @@ export class MySecretariesComponent implements OnInit {
     });
   }
   updatePhone(p): FormGroup {
-    this.updateCSS();
     return this.formBuilder.group({
       id: [p.id ? p.id : null],
       phoneNumber: [p.phoneNumber ? p.phoneNumber : ""],
@@ -221,7 +219,6 @@ export class MySecretariesComponent implements OnInit {
         this.getPictureProfile(value.secretary.photoId);
       }
       if (this.selectedSecretary?.otherPhones && this.selectedSecretary?.otherPhones.length != 0) {
-        this.updateCSS();
         this.isLabelShow = true;
         this.selectedSecretary.otherPhones.forEach(p =>
           this.phoneList.push(this.updatePhone(p)));
@@ -237,7 +234,6 @@ export class MySecretariesComponent implements OnInit {
         picture: value.secretary ? value.secretary.photoId : null,
         otherPhones: value.secretary.otherPhones ? this.phoneList : []
       });
-      this.updateCSS();
       this.infoForm.disable();
       this.isEdit = true;
       this.isList = false;
@@ -263,26 +259,5 @@ export class MySecretariesComponent implements OnInit {
             });
         }
       });
-  }
-  updateCSS() {
-    $(document).ready(function () {
-      $("input").prop("disabled", true);
-      $(".form-control").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("pointer-events", "none");
-      });
-      $(".dropbtn.btn").each(function () {
-        $(this).attr("disabled", true);
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("padding", "8px");
-        $(this).css("pointer-events", "none");
-      });
-      $(".arrow-down").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border", "0px");
-      });
-    });
   }
 }
