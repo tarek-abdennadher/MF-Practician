@@ -90,7 +90,27 @@ export class SendMessageComponent implements OnInit {
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.myPracticians.subscribe(
-        (val) => (this.forList = val)
+        (val) => {
+          this.forList = val;
+          this.forList.forEach((item) => {
+            if (item.photo) {
+              this.documentService.downloadFile(item.photo).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    item.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  item.img = "assets/imgs/avatar_docteur.svg";
+                }
+              );
+            } else {
+              item.img = "assets/imgs/avatar_docteur.svg";
+            }
+          });
+        }
       );
     }
     forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
