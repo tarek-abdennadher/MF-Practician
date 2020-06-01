@@ -23,6 +23,8 @@ export class FeaturesService {
   private searchSource = new BehaviorSubject(new search());
   currentSearch = this.searchSource.asObservable();
   initialSearch = false;
+  public fullName :string;
+
   getNumberOfPendingObs() {
     return this._numberOfPending.asObservable();
   }

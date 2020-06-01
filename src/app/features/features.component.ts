@@ -46,7 +46,6 @@ export class FeaturesComponent implements OnInit {
 
   user = this.localSt.retrieve("user");
   userRole = this.localSt.retrieve("role");
-  fullName = this.user?.firstName + " " + this.user?.lastName;
   role: string =
     this.localSt.retrieve("role") == "SECRETARY" ? "secretary" : "medical";
   links = {
@@ -58,6 +57,7 @@ export class FeaturesComponent implements OnInit {
   private stompClientList = [];
 
   ngOnInit(): void {
+    this.featuresService.fullName = this.user?.firstName + " " + this.user?.lastName;
     this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     })
