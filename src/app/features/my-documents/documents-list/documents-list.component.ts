@@ -78,18 +78,49 @@ export class DocumentsListComponent implements OnInit {
           (response) => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
-              this.documentsService.person = {
-                fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                picture: myReader.result,
-              };
+              if (account.role == "PRACTICIAN") {
+                this.documentsService.person = {
+                  fullName: `${details.jobTitle} ${details.fullName}`,
+                  picture: myReader.result,
+                };
+              } else {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: myReader.result,
+                };
+              }
             };
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            this.documentsService.person = {
-              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: "assets/imgs/user.png",
-            };
+            if (account.role == "PATIENT") {
+              if (details.civility == "M") {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: "assets/imgs/avatar_homme.svg",
+                };
+              } else if (details.civility == "MME") {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: "assets/imgs/avatar_femme.svg",
+                };
+              } else if (details.civility == "CHILD") {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: "assets/imgs/avatar_enfant.svg",
+                };
+              }
+            } else if (account.role == "PRACTICIAN") {
+              this.documentsService.person = {
+                fullName: `${details.jobTitle} ${details.fullName}`,
+                picture: "assets/imgs/avatar_docteur.svg",
+              };
+            } else if (account.role == "SECRETARY") {
+              this.documentsService.person = {
+                fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                picture: "assets/imgs/avatar_secrétaire.svg",
+              };
+            }
           }
         );
       } else {
@@ -112,7 +143,7 @@ export class DocumentsListComponent implements OnInit {
           }
         } else if (account.role == "PRACTICIAN") {
           this.documentsService.person = {
-            fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+            fullName: `${details.jobTitle} ${details.fullName}`,
             picture: "assets/imgs/avatar_docteur.svg",
           };
         } else if (account.role == "SECRETARY") {
@@ -299,8 +330,8 @@ export class DocumentsListComponent implements OnInit {
       var win = window.open();
       win.document.write(
         '<iframe src="' +
-          fileURL +
-          '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+        fileURL +
+        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
       );
     }
   }
