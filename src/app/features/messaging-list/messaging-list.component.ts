@@ -19,6 +19,7 @@ export class MessagingListComponent implements OnInit {
   isMyInbox = true;
   inboxName = "";
   imageSource = "assets/imgs/user.png";
+  practicianImage="assets/imgs/avatar_docteur.svg"
   messages: Array<any>;
   itemsList: Array<any>;
   filtredItemList: Array<any> = new Array();
@@ -88,7 +89,7 @@ export class MessagingListComponent implements OnInit {
             fullName: this.myPracticians.find(
               (p) => p.id == this.featureService.selectedPracticianId
             ).fullName,
-            picture: this.imageSource,
+            picture: this.practicianImage,
           };
 
 
@@ -105,7 +106,7 @@ export class MessagingListComponent implements OnInit {
                 let ok = myReader.readAsDataURL(response.body);
               },
               (error) => {
-                this.person.picture = this.imageSource;
+                this.person.picture = this.practicianImage;
               }
             );
           }
