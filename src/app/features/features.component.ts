@@ -220,6 +220,8 @@ export class FeaturesComponent implements OnInit {
             messageId: notif.messageId,
             type: notif.type,
             photoId: notif.senderPhotoId,
+            role:notif.role,
+            civility:notif.civility
           });
         });
         let photoIds: Set<string> = new Set();
@@ -240,6 +242,20 @@ export class FeaturesComponent implements OnInit {
                 notificationsFormated.forEach((notif) => {
                   if (notif.photoId && photosMap.has(notif.photoId)) {
                     notif.picture = photosMap.get(notif.photoId);
+                  }else {
+                    if (notif.role == "PRACTICIAN") {
+                      notif.picture = "assets/imgs/avatar_docteur.svg";
+                    } else if (notif.role == "SECRETARY") {
+                      notif.picture = "assets/imgs/avatar_secrétaire.svg";
+                    } else if (notif.role == "PATIENT") {
+                      if (notif.civility == "M") {
+                        notif.picture = "assets/imgs/avatar_homme.svg";
+                      } else if (notif.civility == "MME") {
+                        notif.picture = "assets/imgs/avatar_femme.svg";
+                      } else if (notif.civility == "CHILD") {
+                        notif.picture = "assets/imgs/avatar_enfant.svg";
+                      }
+                    }
                   }
                 });
               }
