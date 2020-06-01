@@ -14,6 +14,7 @@ import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { MyPatients } from '../my-patients/my-patients';
 import { CategoryService } from '../services/category.service';
 import { FeaturesService } from '../features.service';
+import { LocalStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: "app-patient-detail",
@@ -52,6 +53,7 @@ export class PatientDetailComponent implements OnInit {
     private _location: Location,
     private documentService: MyDocumentsService,
     private noteService: NoteService,
+    private localStorage: LocalStorageService,
     notifierService: NotifierService,
     @Inject(LOCALE_ID) public locale: string
   ) {
@@ -62,7 +64,12 @@ export class PatientDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.practicianId = this.featureService.getUserId();
+    if (this.localStorage.retrieve("role") == "PRACTICIAN") {
+      this.practicianId = this.featureService.getUserId();
+    }
+    else {
+      this.practicianId = this.featureService.selectedPracticianId;
+    }
     this.route.params.subscribe((params) => {
       this.patientId = params["idAccount"];
     });
