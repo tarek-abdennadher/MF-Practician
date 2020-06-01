@@ -283,7 +283,15 @@ export class PersonalInformationsComponent implements OnInit {
       if (this.image) {
         this.featureService.imageSource = this.image;
       } else {
-        this.featureService.imageSource = "assets/imgs/user.png";
+        if (this.isPractician) {
+          this.featureService.imageSource = "assets/imgs/avatar_docteur.svg";
+        } else {
+          this.featureService.imageSource = "assets/imgs/avatar_secrétaire.svg";
+      }}
+      if(this.isPractician){
+        this.featureService.fullName=`${model.practician.firstName} ${model.practician.lastName}`
+      }else{
+        this.featureService.fullName=`${model.secretary.firstName} ${model.secretary.lastName}`
       }
     });
   }
@@ -367,7 +375,11 @@ export class PersonalInformationsComponent implements OnInit {
   }
 
   deletePicture() {
-    this.image = null;
+    if(this.isPractician){
+      this.image = "assets/imgs/avatar_docteur.svg";
+    }else {
+      this.image = "assets/imgs/avatar_secrétaire.svg";;
+    }
     this.account.photoId = null;
     this.hasImage = false;
   }
