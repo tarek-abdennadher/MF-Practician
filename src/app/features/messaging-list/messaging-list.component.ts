@@ -312,7 +312,7 @@ export class MessagingListComponent implements OnInit {
               (event == "doctor"
                 ? "medical"
                 : event == "secretary"
-                ? "telesecretarygroup" || "secretary"
+                ? "telesecretarygroup" && "secretary"
                 : event)
           );
   }
@@ -347,6 +347,32 @@ export class MessagingListComponent implements OnInit {
           ...this.messages.map((item) => this.parseMessage(item))
         );
         this.filtredItemList = this.itemsList;
+      });
+  }
+
+  getMyInboxNextPage(accountId, pageNo) {
+    this.messagesServ
+      .getInboxByAccountId(accountId, pageNo)
+      .subscribe((retrievedMess) => {
+        if (retrievedMess.length > 0) {
+          this.messages = this.isPatientFile
+            ? retrievedMess.filter(
+                (message) => message.sender.senderId == this.idAccount
+              )
+            : retrievedMess;
+
+          this.messages.sort(function (m1, m2) {
+            return (
+              new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+            );
+          });
+          this.filtredItemList.push(
+            ...this.messages.map((item) => this.parseMessage(item))
+          );
+          this.itemsList.push(
+            ...this.messages.map((item) => this.parseMessage(item))
+          );
+        }
       });
   }
 
@@ -568,8 +594,6 @@ export class MessagingListComponent implements OnInit {
           num + 1
         );
         this.messagesServ.practicianNotifPreviousValue = notif.id;
-        console.log(this.messagesServ.practicianNotifPreviousValue)
-        console.log(notif.id)
         if (!this.isMyInbox && this.featureService.selectedPracticianId == notif.receiverId) {
           let message = this.parseMessage(notif.message);
           if (notif.message.sender.photoId) {
@@ -609,7 +633,7 @@ export class MessagingListComponent implements OnInit {
       this.listLength = this.filtredItemList.length;
       this.pageNo++;
 
-      this.getMyInbox(this.paramsId, this.pageNo);
+      this.getMyInboxNextPage(this.paramsId, this.pageNo);
     }
   }
 }
