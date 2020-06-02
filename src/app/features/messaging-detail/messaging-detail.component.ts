@@ -282,11 +282,12 @@ export class MessagingDetailComponent implements OnInit {
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
-          this.messagingDetail.toReceivers=this.messagingDetail.toReceivers.filter(to =>
-            to.receiverId != this.featureService.getUserId()
-          )
-          if(this.messagingDetail.toReceivers.length>0){
-            this.hideTo=false;
+          const filtredReceivers = this.messagingDetail.toReceivers.filter(
+            (to) => to.receiverId != this.featureService.getUserId()
+          );
+          if (filtredReceivers.length > 0) {
+            this.hideTo = false;
+            this.messagingDetail.toReceivers = filtredReceivers;
           }
           this.messagingDetail.toReceivers.forEach((receiver) => {
             if (receiver.photoId) {
@@ -559,9 +560,13 @@ export class MessagingDetailComponent implements OnInit {
   displayPatientFile(idAccount) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.router.navigate(["/fiche-patient/" + idAccount]);
-    }
-    else {
-      this.router.navigate(["/fiche-patient/" + idAccount + "/" + this.featureService.selectedPracticianId]);
+    } else {
+      this.router.navigate([
+        "/fiche-patient/" +
+          idAccount +
+          "/" +
+          this.featureService.selectedPracticianId,
+      ]);
     }
   }
 }
