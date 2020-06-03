@@ -25,7 +25,7 @@ export class DocumentsListComponent implements OnInit {
   observables = [];
   attachementsList: any[];
   itemList = [];
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   public filterDocumentsForm: FormGroup;
   documentTypes = new Set();
   destinations = new Set();
@@ -35,6 +35,7 @@ export class DocumentsListComponent implements OnInit {
   pageNo = 0;
   listLength = 0;
   scroll = false;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private globalService: GlobalService,
     private route: ActivatedRoute,
@@ -48,6 +49,9 @@ export class DocumentsListComponent implements OnInit {
       documentType: [""],
       destination: [""],
     });
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -97,28 +101,28 @@ export class DocumentsListComponent implements OnInit {
               if (details.civility == "M") {
                 this.documentsService.person = {
                   fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: "assets/imgs/avatar_homme.svg",
+                  picture: this.avatars.man,
                 };
               } else if (details.civility == "MME") {
                 this.documentsService.person = {
                   fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: "assets/imgs/avatar_femme.svg",
+                  picture: this.avatars.women,
                 };
               } else if (details.civility == "CHILD") {
                 this.documentsService.person = {
                   fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: "assets/imgs/avatar_enfant.svg",
+                  picture: this.avatars.child,
                 };
               }
             } else if (account.role == "PRACTICIAN") {
               this.documentsService.person = {
                 fullName: `${details.jobTitle} ${details.fullName}`,
-                picture: "assets/imgs/avatar_docteur.svg",
+                picture: this.avatars.doctor,
               };
             } else if (account.role == "SECRETARY") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                picture: "assets/imgs/avatar_secrétaire.svg",
+                picture: this.avatars.secretary,
               };
             }
           }
@@ -128,28 +132,28 @@ export class DocumentsListComponent implements OnInit {
           if (details.civility == "M") {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: "assets/imgs/avatar_homme.svg",
+              picture: this.avatars.man,
             };
           } else if (details.civility == "MME") {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: "assets/imgs/avatar_femme.svg",
+              picture: this.avatars.women,
             };
           } else if (details.civility == "CHILD") {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: "assets/imgs/avatar_enfant.svg",
+              picture: this.avatars.child,
             };
           }
         } else if (account.role == "PRACTICIAN") {
           this.documentsService.person = {
             fullName: `${details.jobTitle} ${details.fullName}`,
-            picture: "assets/imgs/avatar_docteur.svg",
+            picture: this.avatars.doctor,
           };
         } else if (account.role == "SECRETARY") {
           this.documentsService.person = {
             fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-            picture: "assets/imgs/avatar_secrétaire.svg",
+            picture: this.avatars.secretary,
           };
         }
       }

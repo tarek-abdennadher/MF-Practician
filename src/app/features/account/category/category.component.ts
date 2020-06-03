@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { CategoryService } from "@app/features/services/category.service";
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: "app-category",
@@ -11,15 +12,19 @@ import { CategoryService } from "@app/features/services/category.service";
 export class CategoryComponent implements OnInit {
   public messages: any;
   itemsList = [];
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
 
   constructor(
     public accountService: AccountService,
     public router: Router,
     private route: ActivatedRoute,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private globalService: GlobalService
   ) {
     this.messages = this.accountService.messages;
+    this.avatars = globalService.avatars;
+    this.imageSource = this.avatars.user;
   }
 
   ngOnInit(): void {

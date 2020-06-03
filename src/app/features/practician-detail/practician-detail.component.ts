@@ -5,6 +5,7 @@ import * as jwt_decode from "jwt-decode";
 import { LocalStorageService } from "ngx-webstorage";
 import { Location } from "@angular/common";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { GlobalService } from '@app/core/services/global.service';
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -12,7 +13,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 })
 export class PracticianDetailComponent implements OnInit {
   practician: any;
-  imageSource: string = "assets/imgs/user.png";
+  imageSource: string;
   public isFavorite: boolean = false;
   page = "MY_PRACTICIANS";
   number = null;
@@ -21,14 +22,20 @@ export class PracticianDetailComponent implements OnInit {
   backButton = true;
   isPractician = true;
   links = {};
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private practicianDetailService: PracticianDetailService,
     private localSt: LocalStorageService,
     private _location: Location,
-    private documentService: MyDocumentsService
-  ) {}
+    private documentService: MyDocumentsService,
+    private globalService: GlobalService
+  ) {
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -52,11 +59,11 @@ export class PracticianDetailComponent implements OnInit {
               let ok = myReader.readAsDataURL(response.body);
             },
             (error) => {
-              this.practician.img = "assets/imgs/user.png";
+              this.practician.img = this.avatars.user;
             }
           );
         } else {
-          this.practician.img = "assets/imgs/avatar_docteur.svg";
+          this.practician.img = this.avatars.doctor;
         }
       });
   }
