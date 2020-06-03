@@ -113,6 +113,11 @@ export class ContactDetailComponent implements OnInit {
     if (!this.isPhonesValid) {
       this.failureAlert = true;
       $("#FailureAlert").alert();
+      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+        this.infoForm.patchValue({
+          phone: "+33",
+        });
+      }
       return;
     }
     if (this.infoForm.invalid) {
@@ -121,7 +126,7 @@ export class ContactDetailComponent implements OnInit {
           phone: "+33",
         });
       }
-      else return;
+      return;
     }
     const value = this.infoForm.value;
     const contact = {
@@ -135,7 +140,7 @@ export class ContactDetailComponent implements OnInit {
           : null,
       firstName: value.first_name,
       lastName: value.last_name,
-      phoneNumber: this.infoForm.controls["phone"].errors?.phoneEmptyError ? value.phone : null,
+      phoneNumber: value.phone,
       otherPhones: this.phones,
       email: value.email,
       address: value.address,
