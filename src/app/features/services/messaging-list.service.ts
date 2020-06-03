@@ -56,14 +56,55 @@ export class MessagingListService {
               });
             }
           );}else {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
-              messageId: notification.messageId,
-              type: notification.type,
-            });
+            if (notification.message.sender.role == "PRACTICIAN") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/avatar_docteur.svg",
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.message.sender.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/avatar_secrétaire.svg",
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.message.sender.role == "PATIENT") {
+              if (notification.message.sender.civility == "M") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_homme.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.message.sender.civility == "MME") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_femme.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.message.sender.civility == "CHILD") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_enfant.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              }
+            }
+
           }
 
       this.featuresService.setNumberOfInbox(this.featuresService.getNumberOfInboxValue() + 1);
@@ -101,13 +142,54 @@ export class MessagingListService {
             }
           );}
           else {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
-              type: notification.type,
-            });
+            if (notification.role == "PRACTICIAN") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/avatar_docteur.svg",
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/avatar_secrétaire.svg",
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "PATIENT") {
+              if (notification.civility == "M") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_homme.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "MME") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_femme.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "CHILD") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_enfant.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              }
+            }
           }
 
       this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
@@ -146,14 +228,54 @@ export class MessagingListService {
               });
             }
           );}else {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
-              messageId: notification.messageId,
-              type: notification.type,
-            });
+            if (notification.role == "PRACTICIAN") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/avatar_docteur.svg",
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: "assets/imgs/avatar_secrétaire.svg",
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "PATIENT") {
+              if (notification.message.sender.civility == "M") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_homme.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "MME") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_femme.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "CHILD") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: "assets/imgs/avatar_enfant.svg",
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              }
+            }
           }
     }
   }
