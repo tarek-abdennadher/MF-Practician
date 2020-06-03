@@ -121,9 +121,7 @@ export class ContactDetailComponent implements OnInit {
           phone: "+33",
         });
       }
-      else {
-        return;
-      }
+      else return;
     }
     const value = this.infoForm.value;
     const contact = {
