@@ -110,11 +110,6 @@ export class ContactDetailComponent implements OnInit {
   }
   submit() {
     this.submitted = true;
-    if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
-      this.infoForm.patchValue({
-        phone: "+33",
-      });
-    }
     if (!this.isPhonesValid) {
       this.failureAlert = true;
       $("#FailureAlert").alert();
@@ -145,7 +140,7 @@ export class ContactDetailComponent implements OnInit {
           : null,
       firstName: value.first_name,
       lastName: value.last_name,
-      phoneNumber: this.infoForm.controls["phone"].errors?.phoneEmptyError ? value.phone : null,
+      phoneNumber: value.phone,
       otherPhones: this.phones,
       email: value.email,
       address: value.address,
