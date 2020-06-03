@@ -161,3 +161,18 @@ a {
 .btn-space {
   margin-right: 15px;
 }
+::ng-deep {
+  international-phone-number .form-control {
+        height: 30px !important;
+        border-color: #f1f1f1;
+        background-color:#f1f1f1;
+      }
+      international-phone-number .dropdown button.dropbtn.btn,  button.dropbtn.btn:hover{
+          border-color: #f1f1f1;
+          background-color:#f1f1f1;
+          padding: 4px !important;
+          height: 30px !important;
+      }
+      international-phone-number .dropdown button.dropbtn.btn .arrow-down {
+        border-bottom:#f1f1f1;}
+      }
