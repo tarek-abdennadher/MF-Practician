@@ -18,8 +18,8 @@ export class MessagingListComponent implements OnInit {
   showAcceptRefuse = true;
   isMyInbox = true;
   inboxName = "";
-  imageSource = "assets/imgs/user.png";
-  practicianImage="assets/imgs/avatar_docteur.svg"
+  imageSource :string;
+  practicianImage:string;
   messages: Array<any>;
   itemsList: Array<any>;
   filtredItemList: Array<any> = new Array();
@@ -48,6 +48,7 @@ export class MessagingListComponent implements OnInit {
   listLength = 0;
   scroll = false;
   paramsId;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -58,6 +59,11 @@ export class MessagingListComponent implements OnInit {
     private documentService: MyDocumentsService
   ) {
     this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.practicianImage=this.avatars.doctor;
+    this.imageSource = this.avatars.user;
+
+
   }
 
   ngOnInit(): void {
@@ -384,7 +390,7 @@ export class MessagingListComponent implements OnInit {
         {
           id: message.sender.id,
           fullName: message.sender.fullName,
-          img: "assets/imgs/user.png",
+          img: this.avatars.user,
           title: message.sender.jobTitle,
           civility: message.sender.civility,
           type:
@@ -416,23 +422,23 @@ export class MessagingListComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/user.png";
+            user.img = this.avatars.user;
           }
         );
       });
     } else {
       parsedMessage.users.forEach((user) => {
         if (user.type == "MEDICAL") {
-          user.img = "assets/imgs/avatar_docteur.svg";
+          user.img = this.avatars.doctor;
         } else if (user.type == "SECRETARY") {
-          user.img = "assets/imgs/avatar_secrétaire.svg";
+          user.img = this.avatars.secretary;
         } else if (user.type == "PATIENT") {
           if (user.civility == "M") {
-            user.img = "assets/imgs/avatar_homme.svg";
+            user.img = this.avatars.man;
           } else if (user.civility == "MME") {
-            user.img = "assets/imgs/avatar_femme.svg";
+            user.img = this.avatars.women;
           } else if (user.civility == "CHILD") {
-            user.img = "assets/imgs/avatar_enfant.svg";
+            user.img = this.avatars.child;
           }
         }
       });
@@ -568,7 +574,7 @@ export class MessagingListComponent implements OnInit {
                 },
                 (error) => {
                   message.users.forEach((user) => {
-                    user.img = "assets/imgs/user.png";
+                    user.img = this.avatars.user;
                   });
                 }
               );
@@ -611,7 +617,7 @@ export class MessagingListComponent implements OnInit {
                 },
                 (error) => {
                   message.users.forEach((user) => {
-                    user.img = "assets/imgs/user.png";
+                    user.img = this.avatars.user;
                   });
                 }
               );

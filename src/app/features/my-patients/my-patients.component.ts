@@ -21,7 +21,7 @@ import { CategoryService } from "../services/category.service";
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   myPatients = [];
   filtredPatients = [];
   isMyPatients = true;
@@ -43,6 +43,7 @@ export class MyPatientsComponent implements OnInit {
   atcObj: AutoComplete = new AutoComplete();
   mesCategories = [];
   public filterPatientsForm: FormGroup;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
 
   constructor(
     private globalService: GlobalService,
@@ -63,6 +64,9 @@ export class MyPatientsComponent implements OnInit {
     this.filterPatientsForm = this.formBuilder.group({
       category: [""],
     });
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -272,7 +276,7 @@ export class MyPatientsComponent implements OnInit {
       id: patient.patientId,
       accountId: patient.id,
       fullName: patient.fullName,
-      img: "assets/imgs/user.png",
+      img: this.avatars.user,
       type: "PATIENT",
       civility: patient.civility,
     });
@@ -292,18 +296,18 @@ export class MyPatientsComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/user.png";
+            user.img = this.avatars.user;
           }
         );
       });
     } else {
       myPatients.users.forEach((user) => {
         if (user.civility == "M") {
-          user.img = "assets/imgs/avatar_homme.svg";
+          user.img = this.avatars.man;
         } else if (user.civility == "MME") {
-          user.img = "assets/imgs/avatar_femme.svg";
+          user.img = this.avatars.women;
         } else if (user.civility == "CHILD") {
-          user.img = "assets/imgs/avatar_enfant.svg";
+          user.img = this.avatars.child;
         }
       });
     }
@@ -509,7 +513,7 @@ export class MyPatientsComponent implements OnInit {
               let ok = myReader.readAsDataURL(response.body);
             },
             (error) => {
-              user.img = "assets/imgs/user.png";
+              user.img = this.avatars.user;
             }
           );
         }

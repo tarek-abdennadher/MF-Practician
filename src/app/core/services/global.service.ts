@@ -104,6 +104,15 @@ export class GlobalService {
     attachedPersonnes: "Personnes Rattachées au patient",
     notes: "Mes notes",
   };
+
+  public avatars = {
+    doctor:"assets/imgs/avatar_docteur.svg",
+    child:"assets/imgs/avatar_enfant.svg",
+    women:"assets/imgs/avatar_femme.svg",
+    man:"assets/imgs/avatar_homme.svg",
+    secretary:"assets/imgs/avatar_secrétaire.svg",
+    user:"assets/imgs/user.png"
+  }
   public call(
     method: RequestType,
     url: string,

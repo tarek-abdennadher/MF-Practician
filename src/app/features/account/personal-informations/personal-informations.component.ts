@@ -19,6 +19,7 @@ import { emailValidator } from "@app/core/Validators/email.validator";
 import { CategoryService } from '@app/features/services/category.service';
 import { MyPatientsService } from '@app/features/services/my-patients.service';
 import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
+import { GlobalService } from '@app/core/services/global.service';
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -49,7 +50,7 @@ export class PersonalInformationsComponent implements OnInit {
   public passwordForm: FormGroup;
   public today = new Date().toISOString().substr(0, 10);
   account: any;
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   password = "";
   public phones = new Array();
   public isPhonesValid = false;
@@ -60,6 +61,7 @@ export class PersonalInformationsComponent implements OnInit {
   mesCategories: any = [];
   updateAlert = false;
   jobTitlesList = [];
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -69,7 +71,8 @@ export class PersonalInformationsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
     private categoryService: CategoryService,
-    private patientService: MyPatientsService
+    private patientService: MyPatientsService,
+    private globalService: GlobalService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -80,6 +83,8 @@ export class PersonalInformationsComponent implements OnInit {
     this.showPasswordFailure = false;
     this.failureAlert = false;
     this.isLabelShow = false;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
@@ -168,7 +173,7 @@ export class PersonalInformationsComponent implements OnInit {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
         } else {
-          this.image = "assets/imgs/avatar_docteur.svg";
+          this.image = this.avatars.doctor;
         }
         this.infoForm.patchValue({
           id: account.practician.id ? account.practician.id : null,
@@ -207,7 +212,7 @@ export class PersonalInformationsComponent implements OnInit {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
         } else {
-          this.image = "assets/imgs/avatar_secrétaire.svg";
+          this.image = this.avatars.secretary;
         }
         this.infoForm.patchValue({
           id: account.secretary.id ? account.secretary.id : null,
@@ -284,9 +289,9 @@ export class PersonalInformationsComponent implements OnInit {
         this.featureService.imageSource = this.image;
       } else {
         if (this.isPractician) {
-          this.featureService.imageSource = "assets/imgs/avatar_docteur.svg";
+          this.featureService.imageSource = this.avatars.doctor;
         } else {
-          this.featureService.imageSource = "assets/imgs/avatar_secrétaire.svg";
+          this.featureService.imageSource = this.avatars.secretary;
       }}
       if(this.isPractician){
         this.featureService.fullName=`${model.practician.firstName} ${model.practician.lastName}`
@@ -327,7 +332,7 @@ export class PersonalInformationsComponent implements OnInit {
         let ok = myReader.readAsDataURL(response.body);
       },
       (error) => {
-        this.image = "assets/imgs/user.png";
+        this.image = this.avatars.user;
       }
     );
   }
@@ -376,9 +381,9 @@ export class PersonalInformationsComponent implements OnInit {
 
   deletePicture() {
     if(this.isPractician){
-      this.image = "assets/imgs/avatar_docteur.svg";
+      this.image = this.avatars.doctor;
     }else {
-      this.image = "assets/imgs/avatar_secrétaire.svg";;
+      this.image = this.avatars.secretary;;
     }
     this.account.photoId = null;
     this.hasImage = false;

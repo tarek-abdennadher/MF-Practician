@@ -17,7 +17,7 @@ import { GlobalService } from "@app/core/services/global.service";
 export class SentMessagesComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   links = {
     isAllSelect: true,
     isFilter: true,
@@ -32,6 +32,7 @@ export class SentMessagesComponent implements OnInit {
   selectedObjects: Array<any>;
   filtredItemList: Array<any> = new Array();
   private readonly notifier: NotifierService;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     notifierService: NotifierService,
     private route: ActivatedRoute,
@@ -42,6 +43,8 @@ export class SentMessagesComponent implements OnInit {
     private documentService: MyDocumentsService
   ) {
     this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
   }
 
   ngOnInit(): void {
@@ -76,21 +79,21 @@ export class SentMessagesComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  user.img = "assets/imgs/user.png";
+                  user.img = this.avatars.user;
                 }
               );
             } else {
               if (user.type == "PRACTICIAN" || user.type == "MEDICAL") {
-                user.img = "assets/imgs/avatar_docteur.svg";
+                user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
-                user.img = "assets/imgs/avatar_secrétaire.svg";
+                user.img = this.avatars.secretary;
               } else if (user.type == "PATIENT") {
                 if (user.civility == "M") {
-                  user.img = "assets/imgs/avatar_homme.svg";
+                  user.img = this.avatars.man;
                 } else if (user.civility == "MME") {
-                  user.img = "assets/imgs/avatar_femme.svg";
+                  user.img = this.avatars.women;
                 } else if (user.civility == "CHILD") {
-                  user.img = "assets/imgs/avatar_enfant.svg";
+                  user.img = this.avatars.child;
                 }
               }
             }

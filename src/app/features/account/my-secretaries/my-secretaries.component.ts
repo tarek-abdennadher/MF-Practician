@@ -13,6 +13,7 @@ import { DialogService } from "@app/features/services/dialog.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from 'rxjs';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
+import { GlobalService } from '@app/core/services/global.service';
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -38,19 +39,24 @@ export class MySecretariesComponent implements OnInit {
   isLabelShow: boolean;
   public otherPhones = FormArray;
   image: string | ArrayBuffer;
-  imageSource = "assets/imgs/avatar_secrétaire.svg";
+  imageSource ;string;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     public router: Router,
     public accountService: AccountService,
     private contactsService: ContactsService,
     private dialogService: DialogService,
     private documentService: MyDocumentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private globalService:GlobalService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
     this.errors = this.accountService.errors;
     this.isLabelShow = false;
+    this.avatars= this.globalService.avatars;
+    this.imageSource = this.avatars.secretary;
+
   }
 
   get ctr() {
@@ -166,7 +172,7 @@ export class MySecretariesComponent implements OnInit {
         {
           id: sec.id,
           fullName: sec.fullName,
-          img: "assets/imgs/avatar_secrétaire.svg",
+          img: this.avatars.secretary,
           type: "SECRETARY",
         },
       ],
@@ -189,7 +195,7 @@ export class MySecretariesComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/avatar_secrétaire.svg";
+            user.img = this.avatars.secretary;
           }
         );
       });
@@ -207,7 +213,7 @@ export class MySecretariesComponent implements OnInit {
         let ok = myReader.readAsDataURL(response.body);
       },
       (error) => {
-        this.image = "assets/imgs/avatar_secrétaire.svg";
+        this.image = this.avatars.secretary;
       }
     );
   }

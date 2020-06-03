@@ -6,6 +6,7 @@ import { search } from "./search.model";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: "app-practician-search",
@@ -13,7 +14,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
   styleUrls: ["./practician-search.component.scss"],
 })
 export class PracticianSearchComponent implements OnInit {
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   itemsList = [];
   page = "SEARCH";
   number = 0;
@@ -24,15 +25,20 @@ export class PracticianSearchComponent implements OnInit {
   city: string;
   links = {};
   texts: any;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     public router: Router,
     private route: ActivatedRoute,
     private practicianSearchService: PracticianSearchService,
     private featureService: FeaturesService,
     private localSt: LocalStorageService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private globalService: GlobalService
   ) {
     this.texts = practicianSearchService.texts;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -69,16 +75,16 @@ export class PracticianSearchComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  user.img = "assets/imgs/user.png";
+                  user.img = this.avatars.user;
                 }
               );
             });
           } else {
             item.users.forEach((user) => {
               if (user.type == "MEDICAL") {
-                user.img = "assets/imgs/avatar_docteur.svg";
+                user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
-                user.img = "assets/imgs/avatar_secrétaire.svg";
+                user.img = this.avatars.secretary;
               }
             });
           }
@@ -112,7 +118,7 @@ export class PracticianSearchComponent implements OnInit {
                     let ok = myReader.readAsDataURL(response.body);
                   },
                   (error) => {
-                    user.img = "assets/imgs/user.png";
+                    user.img = this.avatars.user;
                   }
                 );
               });
@@ -147,7 +153,7 @@ export class PracticianSearchComponent implements OnInit {
                     let ok = myReader.readAsDataURL(response.body);
                   },
                   (error) => {
-                    user.img = "assets/imgs/user.png";
+                    user.img = this.avatars.user;
                   }
                 );
               });
@@ -169,7 +175,7 @@ export class PracticianSearchComponent implements OnInit {
     practician.users = [
       {
         fullName: message.fullName,
-        img: "assets/imgs/user.png",
+        img: this.avatars.user,
         title: message.title,
         type: "MEDICAL",
         civility: null,

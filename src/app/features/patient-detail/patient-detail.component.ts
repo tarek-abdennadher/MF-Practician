@@ -15,6 +15,7 @@ import { MyPatients } from '../my-patients/my-patients';
 import { CategoryService } from '../services/category.service';
 import { FeaturesService } from '../features.service';
 import { LocalStorageService } from 'ngx-webstorage';
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: "app-patient-detail",
@@ -24,7 +25,7 @@ import { LocalStorageService } from 'ngx-webstorage';
 export class PatientDetailComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
-  noteimageSource = "assets/imgs/user.png";
+  noteimageSource : string;
   page = "MY_PRACTICIANS";
   notifMessage = "";
   links = {};
@@ -37,12 +38,13 @@ export class PatientDetailComponent implements OnInit {
   patientId: number;
   patientFile = new Subject<PatientFile>();
   errors;
-  imageSource: string | ArrayBuffer = "assets/imgs/avatar_homme.svg";
+  imageSource: string | ArrayBuffer ;
   submitted = false;
   categoryList = new Subject<[]>();
   linkedPatients = new Subject();
   linkedPatientList = [];
   private readonly notifier: NotifierService;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private route: ActivatedRoute,
     private featureService: FeaturesService,
@@ -55,12 +57,17 @@ export class PatientDetailComponent implements OnInit {
     private noteService: NoteService,
     private localStorage: LocalStorageService,
     notifierService: NotifierService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    private globalService: GlobalService
   ) {
     defineLocale(this.locale, frLocale);
     this.localeService.use(this.locale);
     this.errors = this.accountService.errors;
     this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.man;
+    this.noteimageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -92,10 +99,10 @@ export class PatientDetailComponent implements OnInit {
             },
             (error) => {
               if (patientFile?.civility == "MME") {
-                this.imageSource = "assets/imgs/avatar_femme.svg"
+                this.imageSource = this.avatars.women
               }
               else {
-                this.imageSource = "assets/imgs/avatar_homme.svg"
+                this.imageSource = this.avatars.man
               }
 
             }
@@ -103,10 +110,10 @@ export class PatientDetailComponent implements OnInit {
         }
         else {
           if (patientFile?.civility == "MME") {
-            this.imageSource = "assets/imgs/avatar_femme.svg"
+            this.imageSource = this.avatars.women
           }
           else {
-            this.imageSource = "assets/imgs/avatar_homme.svg"
+            this.imageSource = this.avatars.man
           }
         }
       }));
@@ -130,7 +137,7 @@ export class PatientDetailComponent implements OnInit {
     linkedPatients.users.push({
       id: patient.id,
       fullName: patient.firstName + " " + patient.lastName,
-      img: "assets/imgs/avatar_homme.svg",
+      img: this.avatars.man,
       type: "PATIENT",
       civility: patient.civility
     });
@@ -149,11 +156,11 @@ export class PatientDetailComponent implements OnInit {
           },
           (error) => {
             if (user.civility == "M") {
-              user.img = "assets/imgs/avatar_homme.svg";
+              user.img = this.avatars.man;
             } else if (user.civility == "MME") {
-              user.img = "assets/imgs/avatar_femme.svg";
+              user.img = this.avatars.women;
             } else if (user.civility == "CHILD") {
-              user.img = "assets/imgs/avatar_enfant.svg";
+              user.img = this.avatars.child;
             }
           }
         );
@@ -161,11 +168,11 @@ export class PatientDetailComponent implements OnInit {
     } else {
       linkedPatients.users.forEach((user) => {
         if (user.civility == "M") {
-          user.img = "assets/imgs/avatar_homme.svg";
+          user.img = this.avatars.man;
         } else if (user.civility == "MME") {
-          user.img = "assets/imgs/avatar_femme.svg";
+          user.img = this.avatars.women;
         } else if (user.civility == "CHILD") {
-          user.img = "assets/imgs/avatar_enfant.svg";
+          user.img = this.avatars.child;
         }
       });
     }

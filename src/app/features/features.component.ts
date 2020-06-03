@@ -28,6 +28,7 @@ export class FeaturesComponent implements OnInit {
   itemsList: any[];
   cityList: any[];
   inboxNumber: any;
+  avatars:any
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -41,6 +42,7 @@ export class FeaturesComponent implements OnInit {
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
+    this.avatars = this.globalService.avatars;
   }
   public myPracticians = [];
 
@@ -108,14 +110,14 @@ export class FeaturesComponent implements OnInit {
               let ok = myReader.readAsDataURL(response.body);
             },
             (error) => {
-              item.img = "assets/imgs/user.png";
+              item.img = this.avatars.user;
             }
           );
         } else {
           item.img =
             item.photoId != "none"
-              ? "assets/imgs/avatar_docteur.svg"
-              : "assets/imgs/user.png";
+              ? this.avatars.doctor
+              : this.avatars.user;
         }
       });
     });
@@ -124,7 +126,7 @@ export class FeaturesComponent implements OnInit {
   mappingPracticians(message) {
     const practician = new PatientSerch();
     practician.fullName = message.fullName;
-    practician.img = "assets/imgs/user.png";
+    practician.img = this.avatars.user;
     practician.photoId = message.photoId;
 
     return practician;
@@ -132,7 +134,7 @@ export class FeaturesComponent implements OnInit {
   mappingSpeciality(message) {
     const practician = new PatientSerch();
     practician.fullName = message.speciality.name;
-    practician.img = "assets/imgs/user.png";
+    practician.img = this.avatars.user;
     practician.photoId = "none";
 
     return practician;
@@ -216,7 +218,7 @@ export class FeaturesComponent implements OnInit {
             id: notif.id,
             sender: notif.senderFullName,
             senderId: notif.senderId,
-            picture: "assets/imgs/user.png",
+            picture: this.avatars.user,
             messageId: notif.messageId,
             type: notif.type,
             photoId: notif.senderPhotoId,
@@ -244,16 +246,16 @@ export class FeaturesComponent implements OnInit {
                     notif.picture = photosMap.get(notif.photoId);
                   }else {
                     if (notif.role == "PRACTICIAN") {
-                      notif.picture = "assets/imgs/avatar_docteur.svg";
+                      notif.picture = this.avatars.doctor;
                     } else if (notif.role == "SECRETARY") {
-                      notif.picture = "assets/imgs/avatar_secrétaire.svg";
+                      notif.picture = this.avatars.secretary;
                     } else if (notif.role == "PATIENT") {
                       if (notif.civility == "M") {
-                        notif.picture = "assets/imgs/avatar_homme.svg";
+                        notif.picture = this.avatars.man;
                       } else if (notif.civility == "MME") {
-                        notif.picture = "assets/imgs/avatar_femme.svg";
+                        notif.picture =this.avatars.women;
                       } else if (notif.civility == "CHILD") {
-                        notif.picture = "assets/imgs/avatar_enfant.svg";
+                        notif.picture = this.avatars.child;
                       }
                     }
                   }
@@ -434,7 +436,7 @@ export class FeaturesComponent implements OnInit {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
         } else {
-          this.featuresService.imageSource = "assets/imgs/avatar_docteur.svg";
+          this.featuresService.imageSource = this.avatars.doctor;
         }
       } else if (account && account.secretary) {
         this.account = account.secretary;
@@ -443,7 +445,7 @@ export class FeaturesComponent implements OnInit {
           this.getPictureProfile(this.account.photoId);
         } else {
           this.featuresService.imageSource =
-            "assets/imgs/avatar_secrétaire.svg";
+            this.avatars.secretary;
         }
       }
     });
@@ -459,7 +461,7 @@ export class FeaturesComponent implements OnInit {
         let ok = myReader.readAsDataURL(response.body);
       },
       (error) => {
-        this.featuresService.imageSource = "assets/imgs/user.png";
+        this.featuresService.imageSource = this.avatars.user;
       }
     );
   }

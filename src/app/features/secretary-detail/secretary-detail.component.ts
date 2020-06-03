@@ -5,6 +5,7 @@ import { ContactsService } from "../services/contacts.service";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { GlobalService } from '@app/core/services/global.service';
 @Component({
   selector: "app-secretary-detail",
   templateUrl: "./secretary-detail.component.html",
@@ -25,17 +26,20 @@ export class SecretaryDetailComponent implements OnInit {
   image: string | ArrayBuffer;
   hasImage = false;
   isLabelShow: boolean;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private accountService: AccountService,
     private contactsService: ContactsService,
     private route: ActivatedRoute,
     private _location: Location,
     private documentService: MyDocumentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private globalService:GlobalService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
     this.isLabelShow = false;
+    this.avatars = this.globalService.avatars;
   }
   get phoneList() {
     return <FormArray>this.infoForm.get("otherPhones");
@@ -109,7 +113,7 @@ export class SecretaryDetailComponent implements OnInit {
         let ok = myReader.readAsDataURL(response.body);
       },
       (error) => {
-        this.image = "assets/imgs/avatar_secrétaire.svg";
+        this.image = this.avatars.secretary;
       }
     );
   }
