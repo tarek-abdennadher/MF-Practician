@@ -120,13 +120,25 @@ export class ContactDetailComponent implements OnInit {
       }
       return;
     }
-    if (this.infoForm.invalid) {
-      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
-        this.infoForm.patchValue({
-          phone: "+33",
-        });
+    if (this.param == "add") {
+      if (this.infoForm.invalid) {
+        if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+          this.infoForm.patchValue({
+            phone: "+33",
+          });
+        }
+        return;
       }
-      return;
+    }
+    else {
+      if (this.infoForm.invalid) {
+        if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+          this.infoForm.patchValue({
+            phone: "+33",
+          });
+        }
+        else return;
+      }
     }
     const value = this.infoForm.value;
     const contact = {
