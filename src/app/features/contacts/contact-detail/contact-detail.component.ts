@@ -110,6 +110,12 @@ export class ContactDetailComponent implements OnInit {
   }
   submit() {
     this.submitted = true;
+    if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+      this.infoForm.patchValue({
+        phone: "+33",
+      });
+      this.infoForm.controls["phone"].setErrors(null);
+    }
     if (!this.isPhonesValid) {
       this.failureAlert = true;
       $("#FailureAlert").alert();
@@ -122,12 +128,6 @@ export class ContactDetailComponent implements OnInit {
       return;
     }
     if (this.infoForm.invalid) {
-      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
-        this.infoForm.patchValue({
-          phone: "+33",
-        });
-        this.infoForm.controls["phone"].setErrors(null);
-      }
       return;
     }
     const value = this.infoForm.value;
