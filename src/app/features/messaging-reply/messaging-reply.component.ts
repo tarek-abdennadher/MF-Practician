@@ -113,6 +113,8 @@ export class MessagingReplyComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
+              }else if (receiver.role == "TELESECRETARYGROUP") {
+                receiver.img = this.avatars.secretary;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -144,6 +146,8 @@ export class MessagingReplyComponent implements OnInit {
             if (receiver.role == "PRACTICIAN") {
               receiver.img = this.avatars.doctor;
             } else if (receiver.role == "SECRETARY") {
+              receiver.img = this.avatars.secretary;
+            }else if (receiver.role == "TELESECRETARYGROUP") {
               receiver.img = this.avatars.secretary;
             } else if (receiver.role == "PATIENT") {
               if (receiver.civility == "M") {

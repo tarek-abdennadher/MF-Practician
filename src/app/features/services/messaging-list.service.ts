@@ -77,6 +77,15 @@ export class MessagingListService {
                 messageId: notification.messageId,
                 type: notification.type,
               });
+            }else if (notification.message.sender.role == "TELESECRETARYGROUP") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.secretary,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
             } else if (notification.message.sender.role == "PATIENT") {
               if (notification.message.sender.civility == "M") {
                 this.featuresService.listNotifications.unshift({
@@ -163,7 +172,16 @@ export class MessagingListService {
                 messageId: notification.messageId,
                 type: notification.type,
               });
-            } else if (notification.role == "PATIENT") {
+            }else if (notification.role == "TELESECRETARYGROUP") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.secretary,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            }  else if (notification.role == "PATIENT") {
               if (notification.civility == "M") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
@@ -241,6 +259,15 @@ export class MessagingListService {
                 type: notification.type,
               });
             } else if (notification.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.secretary,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "TELESECRETARYGROUP") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
                 sender: notification.senderFullName,

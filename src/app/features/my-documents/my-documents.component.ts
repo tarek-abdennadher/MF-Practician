@@ -78,6 +78,8 @@ export class MyDocumentsComponent implements OnInit {
                 user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
                 user.img = this.avatars.secretary;
+              }else if (user.type == "TELESECRETARYGROUP") {
+                user.img = this.avatars.secretary;
               } else if (user.type == "PATIENT") {
                 if (user.civility == "M") {
                   user.img = this.avatars.man;

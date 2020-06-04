@@ -156,6 +156,8 @@ export class MessagingDetailComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
+              }else if (receiver.role == "TELESECRETARYGROUP") {
+                receiver.img = this.avatars.secretary;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -185,6 +187,8 @@ export class MessagingDetailComponent implements OnInit {
               if (receiver.role == "PRACTICIAN") {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
+                receiver.img = this.avatars.secretary;
+              }else if (receiver.role == "TELESECRETARYGROUP") {
                 receiver.img = this.avatars.secretary;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
@@ -219,6 +223,8 @@ export class MessagingDetailComponent implements OnInit {
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
               this.messagingDetail.sender.img =
                 this.avatars.secretary;
+            }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
+              this.messagingDetail.sender.img = this.avatars.secretary;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
                 this.messagingDetail.sender.img =
@@ -252,6 +258,9 @@ export class MessagingDetailComponent implements OnInit {
               this.messagingDetail.sender.forImg =
                 this.avatars.doctor;
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.secretary;
+            }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.forImg =
                 this.avatars.secretary;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
@@ -311,6 +320,8 @@ export class MessagingDetailComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
+              }else if (receiver.role == "TELESECRETARYGROUP") {
+                receiver.img = this.avatars.secretary;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -340,6 +351,8 @@ export class MessagingDetailComponent implements OnInit {
               if (receiver.role == "PRACTICIAN") {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
+                receiver.img = this.avatars.secretary;
+              }else if (receiver.role == "TELESECRETARYGROUP") {
                 receiver.img = this.avatars.secretary;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
@@ -372,6 +385,9 @@ export class MessagingDetailComponent implements OnInit {
               this.messagingDetail.sender.img =
                 this.avatars.doctor;
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.img =
+                this.avatars.secretary;
+            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.img =
                 this.avatars.secretary;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
@@ -407,6 +423,9 @@ export class MessagingDetailComponent implements OnInit {
               this.messagingDetail.sender.forImg =
                 this.avatars.doctor;
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.secretary;
+            }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.forImg =
                 this.avatars.secretary;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
