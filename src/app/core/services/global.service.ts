@@ -111,7 +111,8 @@ export class GlobalService {
     women:"assets/imgs/avatar_femme.svg",
     man:"assets/imgs/avatar_homme.svg",
     secretary:"assets/imgs/avatar_secrétaire.svg",
-    user:"assets/imgs/user.png"
+    user:"assets/imgs/user.png",
+    telesecretary: "assets/imgs/etablissement.svg"
   }
   public call(
     method: RequestType,
