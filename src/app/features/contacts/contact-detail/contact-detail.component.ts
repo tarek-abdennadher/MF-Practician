@@ -62,7 +62,7 @@ export class ContactDetailComponent implements OnInit {
       name: new FormControl(null),
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
-      email: new FormControl(null, emailValidator),
+      email: new FormControl(null),
       title: new FormControl(null, Validators.required),
       speciality: new FormControl(null, Validators.required),
       address: new FormControl(null),
@@ -112,8 +112,9 @@ export class ContactDetailComponent implements OnInit {
     this.submitted = true;
     if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
       this.infoForm.patchValue({
-        phone: null,
+        phone: "+33",
       });
+      this.infoForm.controls["phone"].setErrors(null);
     }
     if (!this.isPhonesValid) {
       this.failureAlert = true;
@@ -122,15 +123,11 @@ export class ContactDetailComponent implements OnInit {
         this.infoForm.patchValue({
           phone: "+33",
         });
+        this.infoForm.controls["phone"].setErrors(null);
       }
       return;
     }
     if (this.infoForm.invalid) {
-      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
-        this.infoForm.patchValue({
-          phone: "+33",
-        });
-      }
       return;
     }
     const value = this.infoForm.value;

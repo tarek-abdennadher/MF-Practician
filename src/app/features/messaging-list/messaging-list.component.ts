@@ -372,12 +372,13 @@ export class MessagingListComponent implements OnInit {
               new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
             );
           });
-          this.filtredItemList.push(
-            ...this.messages.map((item) => this.parseMessage(item))
-          );
           this.itemsList.push(
             ...this.messages.map((item) => this.parseMessage(item))
           );
+          if(this.filtredItemList.length != this.itemsList.length) {
+            this.filtredItemList = this.itemsList.filter(item => item.users[0].type.toLowerCase() == this.filtredItemList[0].users[0].type.toLowerCase());
+          }
+
         }
       });
   }
