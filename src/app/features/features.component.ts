@@ -249,7 +249,9 @@ export class FeaturesComponent implements OnInit {
                       notif.picture = this.avatars.doctor;
                     } else if (notif.role == "SECRETARY") {
                       notif.picture = this.avatars.secretary;
-                    } else if (notif.role == "PATIENT") {
+                    } else if (notif.role == "TELESECRETARYGROUP") {
+                      notif.picture = this.avatars.secretary;
+                    }else if (notif.role == "PATIENT") {
                       if (notif.civility == "M") {
                         notif.picture = this.avatars.man;
                       } else if (notif.civility == "MME") {

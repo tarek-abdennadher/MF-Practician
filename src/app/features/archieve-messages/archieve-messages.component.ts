@@ -73,6 +73,8 @@ export class ArchieveMessagesComponent implements OnInit {
               user.img =this.avatars.doctor;
             } else if (user.type == "SECRETARY") {
               user.img = this.avatars.secretary;
+            }else if (user.type == "TELESECRETARYGROUP") {
+              user.img = this.avatars.secretary;
             } else if (user.type == "PATIENT") {
               if (user.civility == "M") {
                 user.img = this.avatars.man;
@@ -152,6 +154,8 @@ export class ArchieveMessagesComponent implements OnInit {
       case "PRACTICIAN":
         return senderDetail.practician.photoId;
       case "SECRETARY":
+        return senderDetail.secretary.photoId;
+      case "TELESECRETARYGROUP":
         return senderDetail.secretary.photoId;
       default:
         return null;
