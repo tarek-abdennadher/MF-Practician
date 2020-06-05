@@ -42,7 +42,7 @@ export class MessagingReplyComponent implements OnInit {
   private readonly notifier: NotifierService;
   refuseResponse = false;
   objectsList = [];
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
     private _location: Location,
     private featureService: FeaturesService,
@@ -114,7 +114,7 @@ export class MessagingReplyComponent implements OnInit {
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
               }else if (receiver.role == "TELESECRETARYGROUP") {
-                receiver.img = this.avatars.secretary;
+                receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -148,7 +148,7 @@ export class MessagingReplyComponent implements OnInit {
             } else if (receiver.role == "SECRETARY") {
               receiver.img = this.avatars.secretary;
             }else if (receiver.role == "TELESECRETARYGROUP") {
-              receiver.img = this.avatars.secretary;
+              receiver.img = this.avatars.tls;
             } else if (receiver.role == "PATIENT") {
               if (receiver.civility == "M") {
                 receiver.img = this.avatars.man;
@@ -223,6 +223,7 @@ export class MessagingReplyComponent implements OnInit {
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
+    parent.messageStatus = "TREATED";
     delete message.sender.img
     parent.sender = message.sender;
     replyMessage.parent = parent;

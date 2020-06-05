@@ -13,7 +13,7 @@ export class MessagingListService {
   private notificationObs = new BehaviorSubject<Object>("");
   private practicianNotifObs = new BehaviorSubject<any>("");
   public practicianNotifPreviousValue = "";
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
 
   constructor(
     private globalService: GlobalService,
@@ -82,7 +82,7 @@ export class MessagingListService {
                 id: notification.id,
                 sender: notification.senderFullName,
                 senderId: notification.senderId,
-                picture: this.avatars.secretary,
+                picture: this.avatars.tls,
                 messageId: notification.messageId,
                 type: notification.type,
               });
@@ -177,7 +177,7 @@ export class MessagingListService {
                 id: notification.id,
                 sender: notification.senderFullName,
                 senderId: notification.senderId,
-                picture: this.avatars.secretary,
+                picture: this.avatars.tls,
                 messageId: notification.messageId,
                 type: notification.type,
               });
@@ -272,7 +272,7 @@ export class MessagingListService {
                 id: notification.id,
                 sender: notification.senderFullName,
                 senderId: notification.senderId,
-                picture: this.avatars.secretary,
+                picture: this.avatars.tls,
                 messageId: notification.messageId,
                 type: notification.type,
               });

@@ -111,6 +111,7 @@ export class GlobalService {
     women:"assets/imgs/avatar_femme.svg",
     man:"assets/imgs/avatar_homme.svg",
     secretary:"assets/imgs/avatar_secrétaire.svg",
+    tls:"assets/imgs/avatar_tls.svg",
     user:"assets/imgs/user.png",
     telesecretary: "assets/imgs/etablissement.svg"
   }
