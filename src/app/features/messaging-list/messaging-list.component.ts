@@ -48,7 +48,7 @@ export class MessagingListComponent implements OnInit {
   listLength = 0;
   scroll = false;
   paramsId;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -434,7 +434,7 @@ export class MessagingListComponent implements OnInit {
         } else if (user.type == "SECRETARY") {
           user.img = this.avatars.secretary;
         } else if (user.type == "TELESECRETARYGROUP") {
-          user.img = this.avatars.secretary;
+          user.img = this.avatars.tls;
         } else if (user.type == "PATIENT") {
           if (user.civility == "M") {
             user.img = this.avatars.man;

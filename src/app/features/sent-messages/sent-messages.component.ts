@@ -32,7 +32,7 @@ export class SentMessagesComponent implements OnInit {
   selectedObjects: Array<any>;
   filtredItemList: Array<any> = new Array();
   private readonly notifier: NotifierService;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string;tls: string; };
   constructor(
     notifierService: NotifierService,
     private route: ActivatedRoute,
@@ -88,7 +88,7 @@ export class SentMessagesComponent implements OnInit {
               } else if (user.type == "SECRETARY") {
                 user.img = this.avatars.secretary;
               }else if (user.type == "TELESECRETARYGROUP") {
-                user.img = this.avatars.secretary;
+                user.img = this.avatars.tls;
               } else if (user.type == "PATIENT") {
                 if (user.civility == "M") {
                   user.img = this.avatars.man;

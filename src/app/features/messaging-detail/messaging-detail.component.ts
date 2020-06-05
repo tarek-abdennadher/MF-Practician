@@ -48,7 +48,7 @@ export class MessagingDetailComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   sentContext = false;
   attachements: string[] = [];
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
     private _location: Location,
     private router: Router,
@@ -157,7 +157,7 @@ export class MessagingDetailComponent implements OnInit {
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
               }else if (receiver.role == "TELESECRETARYGROUP") {
-                receiver.img = this.avatars.secretary;
+                receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -189,7 +189,7 @@ export class MessagingDetailComponent implements OnInit {
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
               }else if (receiver.role == "TELESECRETARYGROUP") {
-                receiver.img = this.avatars.secretary;
+                receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -224,7 +224,7 @@ export class MessagingDetailComponent implements OnInit {
               this.messagingDetail.sender.img =
                 this.avatars.secretary;
             }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
-              this.messagingDetail.sender.img = this.avatars.secretary;
+              this.messagingDetail.sender.img = this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
                 this.messagingDetail.sender.img =
@@ -262,7 +262,7 @@ export class MessagingDetailComponent implements OnInit {
                 this.avatars.secretary;
             }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.forImg =
-                this.avatars.secretary;
+                this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
                 this.messagingDetail.sender.forImg =
@@ -321,7 +321,7 @@ export class MessagingDetailComponent implements OnInit {
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
               }else if (receiver.role == "TELESECRETARYGROUP") {
-                receiver.img = this.avatars.secretary;
+                receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -353,7 +353,7 @@ export class MessagingDetailComponent implements OnInit {
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
               }else if (receiver.role == "TELESECRETARYGROUP") {
-                receiver.img = this.avatars.secretary;
+                receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
                   receiver.img = this.avatars.man;
@@ -389,7 +389,7 @@ export class MessagingDetailComponent implements OnInit {
                 this.avatars.secretary;
             } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.img =
-                this.avatars.secretary;
+                this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
                 this.messagingDetail.sender.img =
@@ -427,7 +427,7 @@ export class MessagingDetailComponent implements OnInit {
                 this.avatars.secretary;
             }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.forImg =
-                this.avatars.secretary;
+                this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
                 this.messagingDetail.sender.forImg =

@@ -250,7 +250,7 @@ export class FeaturesComponent implements OnInit {
                     } else if (notif.role == "SECRETARY") {
                       notif.picture = this.avatars.secretary;
                     } else if (notif.role == "TELESECRETARYGROUP") {
-                      notif.picture = this.avatars.secretary;
+                      notif.picture = this.avatars.tls;
                     }else if (notif.role == "PATIENT") {
                       if (notif.civility == "M") {
                         notif.picture = this.avatars.man;
