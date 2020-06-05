@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, AfterViewInit } from '@angular/core';
 import { AccountService } from '@app/features/services/account.service';
+import { GlobalService } from '@app/core/services/global.service';
+import { ContactsService } from '@app/features/services/contacts.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 
 @Component({
   selector: 'app-tele-secretaries',
@@ -8,12 +12,82 @@ import { AccountService } from '@app/features/services/account.service';
 })
 export class TeleSecretariesComponent implements OnInit {
   public messages: any;
-  constructor(public accountService: AccountService) {
-
+  public tls: any;
+  public errors : any;
+  public avatars: any;
+  public imageSource: any;
+  public image: string | ArrayBuffer;
+  public submitted = false;
+  public labels: any;
+  public infoForm: FormGroup;
+  public hasImage = false;
+  constructor(public accountService: AccountService, private globalService: GlobalService, private contactsService: ContactsService, private documentService: MyDocumentsService) {
     this.messages = this.accountService.messages;
+    this.labels = this.contactsService.messages;
+    this.errors = this.accountService.errors;
+    this.avatars= this.globalService.avatars;
+    this.imageSource = this.avatars.secretary;
   }
 
   ngOnInit(): void {
+    this.initInfoForm();
+    this.getTls();
+  }
+
+  getTls() {
+    this.accountService.getPracticianTelesecretary().subscribe(practician => {
+      this.tls = practician.group;
+      this.infoForm.patchValue({
+        id: this.tls.id,
+        accountId: this.tls.accountId,
+        title: this.tls.title,
+        address: this.tls.address,
+        postalCodeOrTown: this.tls.postalCodeOrTown,
+        email: this.tls.email,
+        phoneNumber: this.tls.phoneNumber,
+        website: this.tls.website,
+        photoId: this.tls.photoId
+      })
+      if (this.tls.photoId) {
+        this.hasImage = true;
+        this.getPictureProfile(this.tls.photoId);
+      }
+    })
+
+    this.infoForm.disable();
+  }
+
+  get ctr() {
+    return this.infoForm.controls;
+  }
+
+  initInfoForm() {
+    this.infoForm = new FormGroup({
+      id: new FormControl(null),
+      accountId: new FormControl(null),
+      title: new FormControl(null),
+      address: new FormControl(null),
+      postalCodeOrTown: new FormControl(null),
+      email: new FormControl(null),
+      phoneNumber: new FormControl(null),
+      website: new FormControl(null),
+      photoId: new FormControl(null)
+    });
+  }
+
+  getPictureProfile(nodeId) {
+    this.documentService.downloadFile(nodeId).subscribe(
+      (response) => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = (e) => {
+          this.image = myReader.result;
+        };
+        let ok = myReader.readAsDataURL(response.body);
+      },
+      (error) => {
+        this.image = this.avatars.telesecretary;
+      }
+    );
   }
 
 }

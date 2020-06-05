@@ -112,7 +112,8 @@ export class GlobalService {
     man:"assets/imgs/avatar_homme.svg",
     secretary:"assets/imgs/avatar_secrétaire.svg",
     tls:"assets/imgs/avatar_tls.svg",
-    user:"assets/imgs/user.png"
+    user:"assets/imgs/user.png",
+    telesecretary: "assets/imgs/etablissement.svg"
   }
   public call(
     method: RequestType,
