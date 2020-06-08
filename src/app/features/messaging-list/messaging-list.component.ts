@@ -378,6 +378,9 @@ export class MessagingListComponent implements OnInit {
           if(this.filtredItemList.length != this.itemsList.length) {
             this.filtredItemList = this.itemsList.filter(item => item.users[0].type.toLowerCase() == this.filtredItemList[0].users[0].type.toLowerCase());
           }
+          if (this.isPatientFile) {
+            this.filtredItemList = this.itemsList;
+          }
 
         }
       });
