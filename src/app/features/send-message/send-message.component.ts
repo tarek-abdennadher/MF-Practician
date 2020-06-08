@@ -85,7 +85,7 @@ export class SendMessageComponent implements OnInit {
         }
       );
     } else {
-      if (this.role == "MEDICAL") {
+      if (this.role == "PRACTICIAN") {
         this.imageSource = this.avatars.doctor;
       } else if (this.role == "SECRETARY") {
         this.imageSource = this.avatars.secretary;
