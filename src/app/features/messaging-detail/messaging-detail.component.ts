@@ -574,9 +574,7 @@ export class MessagingDetailComponent implements OnInit {
           .getNodeDetailsFromAlfresco(id)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((node) => {
-            this.attachements.push(node.entry.name.length < 25
-              ? node.entry.name
-              : node.entry.name.substring(0, 25) + "...",);
+            this.attachements.push(node.entry.name);
           });
       });
     }
