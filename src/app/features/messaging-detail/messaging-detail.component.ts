@@ -510,8 +510,6 @@ export class MessagingDetailComponent implements OnInit {
   archieveActionClicked() {
     let ids = [];
     ids.push(this.idMessage);
-    this.featureService.numberOfArchieve =
-      this.featureService.numberOfArchieve + 1;
     this.messagingDetailService.markMessageAsArchived(ids).subscribe(
       (resp) => {
         this.router.navigate([this.previousURL], {
