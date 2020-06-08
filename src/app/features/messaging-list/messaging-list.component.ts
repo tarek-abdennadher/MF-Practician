@@ -45,7 +45,7 @@ export class MessagingListComponent implements OnInit {
   private readonly notifier: NotifierService;
 
   pageNo = 0;
-  listLength = 0;
+  listLength = 10;
   scroll = false;
   paramsId;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
@@ -70,7 +70,7 @@ export class MessagingListComponent implements OnInit {
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       this.pageNo = 0;
-      this.listLength = 0;
+      this.listLength = 10;
       this.itemsList = new Array();
       this.filtredItemList = new Array();
       this.messages = [];
@@ -360,6 +360,7 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ
       .getInboxByAccountId(accountId, pageNo)
       .subscribe((retrievedMess) => {
+        this.listLength = retrievedMess.length
         if (retrievedMess.length > 0) {
           this.messages = this.isPatientFile
             ? retrievedMess.filter(
@@ -641,10 +642,8 @@ export class MessagingListComponent implements OnInit {
   }
 
   onScroll() {
-    if (this.listLength != this.filtredItemList.length) {
-      this.listLength = this.filtredItemList.length;
+    if (this.listLength > 9 ) {
       this.pageNo++;
-
       this.getMyInboxNextPage(this.paramsId, this.pageNo);
     }
   }
