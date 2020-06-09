@@ -5,7 +5,8 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
-import { Subject } from 'rxjs';
+import { Subject } from "rxjs";
+import { AccountService } from '@app/features/services/account.service';
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -21,7 +22,7 @@ export class ContactDetailComponent implements OnInit {
   submitted = false;
   topText = "Fiche contact Pro";
   page = "MY_PRACTICIANS";
-  bottomText = ""
+  bottomText = "";
   backButton = true;
   param;
   failureAlert = false;
@@ -30,11 +31,13 @@ export class ContactDetailComponent implements OnInit {
   otherPhones = new Subject<any[]>();
   addnewPhone = new Subject<boolean>();
   isLabelShow: boolean;
+  jobTitlesList = [];
   constructor(
     private _location: Location,
     private route: ActivatedRoute,
     private router: Router,
-    private contactsService: ContactsService
+    private contactsService: ContactsService,
+    public accountService: AccountService
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
@@ -43,6 +46,7 @@ export class ContactDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getjobTitles();
     this.route.params.subscribe((params) => {
       this.param = params["id"];
       if (this.param != "add") {
@@ -52,14 +56,13 @@ export class ContactDetailComponent implements OnInit {
     });
   }
   initForm() {
-    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       type: new FormControl(null, Validators.required),
       name: new FormControl(null),
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
-      email: new FormControl(null, emailValidator),
+      email: new FormControl(null),
       title: new FormControl(null, Validators.required),
       speciality: new FormControl(null, Validators.required),
       address: new FormControl(null),
@@ -87,25 +90,41 @@ export class ContactDetailComponent implements OnInit {
         additional_address: contact.additionalAddress,
         phone: contact.phoneNumber ? contact.phoneNumber : "+33",
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
-        picture: contact.photoId
+        picture: contact.photoId,
       });
       this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
         this.isLabelShow = true;
       }
     });
-
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
       this.specialities = specialitiesList;
     });
   }
+  getjobTitles() {
+    this.accountService.getJobTiles().subscribe((resp) => {
+      this.jobTitlesList = resp;
+    });
+  }
   submit() {
     this.submitted = true;
+    if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+      this.infoForm.patchValue({
+        phone: "+33",
+      });
+      this.infoForm.controls["phone"].setErrors(null);
+    }
     if (!this.isPhonesValid) {
       this.failureAlert = true;
       $("#FailureAlert").alert();
+      if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
+        this.infoForm.patchValue({
+          phone: "+33",
+        });
+        this.infoForm.controls["phone"].setErrors(null);
+      }
       return;
     }
     if (this.infoForm.invalid) {
@@ -127,56 +146,40 @@ export class ContactDetailComponent implements OnInit {
       otherPhones: this.phones,
       email: value.email,
       address: value.address,
-      additionalAddress: value.additional_address
+      additionalAddress: value.additional_address,
     };
     let successResult = false;
     if (this.param == "add") {
-      this.contactsService
-        .addContact(contact)
-        .subscribe((res) => {
-          successResult = res;
-          this.router
-      .navigate(["/mes-contacts-pro"])
+      this.contactsService.addContact(contact).subscribe((res) => {
+        successResult = res;
+        this.router.navigate(["/mes-contacts-pro"], {
+          queryParams: {
+            status: "add",
+          },
         });
+      });
     } else {
-      this.contactsService
-        .updateContact(contact)
-        .subscribe((res) => {
-          successResult = res;
-          this.router
-      .navigate(["/mes-contacts-pro"])
+      this.contactsService.updateContact(contact).subscribe((res) => {
+        successResult = res;
+        this.router.navigate(["/mes-contacts-pro"], {
+          queryParams: {
+            status: "edit",
+          },
         });
+      });
     }
-
   }
 
   BackButton() {
     this._location.back();
   }
-  // Phone component CSS
-  updateCSS() {
-    $(document).ready(function () {
-      $(".form-control").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-      });
-      $(".dropbtn.btn").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("padding", "8px");
-      });
-      $(".arrow-down").each(function () {
-        $(this).css("border-bottom", "#F1F1F1");
-      });
-    });
-  }
+
   // Other phones list
   getPhoneList(event) {
     this.phones = event.value;
     if (this.phones.length > 0) {
       this.isLabelShow = true;
-    }
-    else {
+    } else {
       this.isLabelShow = false;
     }
   }

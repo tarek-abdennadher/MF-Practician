@@ -62,8 +62,8 @@
                   <option value="null" disabled="true">{{
                     labels.title
                   }}</option>
-                  <option value="Docteur">Dr</option>
-                  <option value="Professeur">Pr</option>
+                  <option *ngFor="let item of jobTitlesList" value="{{ item }}">{{ item | JobTitle }}
+                  </option>
                 </select>
                 <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
                   <div *ngIf="ctr.title.errors.required">
@@ -154,13 +154,7 @@
                 labels.email_input
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="email" class="form-control" id="email"
-                  [ngClass]="{ 'is-invalid': submitted }" />
-                <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
-                  <div *ngIf="ctr.email.errors.email">
-                    {{ labels.email_invalid_format }}
-                  </div>
-                </div>
+                <input type="text" formControlName="email" class="form-control" id="email" />
               </div>
             </div>
 

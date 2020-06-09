@@ -5,6 +5,7 @@ import { ContactsService } from "../services/contacts.service";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { GlobalService } from '@app/core/services/global.service';
 @Component({
   selector: "app-secretary-detail",
   templateUrl: "./secretary-detail.component.html",
@@ -25,17 +26,20 @@ export class SecretaryDetailComponent implements OnInit {
   image: string | ArrayBuffer;
   hasImage = false;
   isLabelShow: boolean;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private accountService: AccountService,
     private contactsService: ContactsService,
     private route: ActivatedRoute,
     private _location: Location,
     private documentService: MyDocumentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private globalService:GlobalService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
     this.isLabelShow = false;
+    this.avatars = this.globalService.avatars;
   }
   get phoneList() {
     return <FormArray>this.infoForm.get("otherPhones");
@@ -47,7 +51,6 @@ export class SecretaryDetailComponent implements OnInit {
     });
   }
   initInfoForm() {
-    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       sec_id: new FormControl(null),
@@ -61,7 +64,6 @@ export class SecretaryDetailComponent implements OnInit {
     });
   }
   updatePhone(p): FormGroup {
-    this.updateCSS();
     return this.formBuilder.group({
       id: [p.id ? p.id : null],
       phoneNumber: [p.phoneNumber ? p.phoneNumber : ""],
@@ -78,7 +80,6 @@ export class SecretaryDetailComponent implements OnInit {
         this.getPictureProfile(value.secretary.photoId);
       }
       if (this.selectedSecretary?.otherPhones && this.selectedSecretary?.otherPhones.length != 0) {
-        this.updateCSS();
         this.isLabelShow = true;
         this.selectedSecretary.otherPhones.forEach(p =>
           this.phoneList.push(this.updatePhone(p)));
@@ -112,29 +113,8 @@ export class SecretaryDetailComponent implements OnInit {
         let ok = myReader.readAsDataURL(response.body);
       },
       (error) => {
-        this.image = "assets/imgs/avatar_secrétaire.svg";
+        this.image = this.avatars.secretary;
       }
     );
   }
-  updateCSS() {
-    $(document).ready(function () {
-      $("input").prop("disabled", true);
-      $(".form-control").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("pointer-events", "none");
-      });
-      $(".dropbtn.btn").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("padding", "8px");
-        $(this).css("pointer-events", "none");
-      });
-      $(".arrow-down").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border", "0px");
-      });
-    });
-  }
-
 }

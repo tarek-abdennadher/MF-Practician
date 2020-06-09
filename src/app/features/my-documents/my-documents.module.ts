@@ -9,6 +9,7 @@ import { DocumentsListComponent } from "./documents-list/documents-list.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CivilityPipe } from '@app/shared/pipes/civility.pipe';
 @NgModule({
   declarations: [MyDocumentsComponent, DocumentsListComponent],
   imports: [
@@ -22,5 +23,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     InfiniteScrollModule,
     MatProgressSpinnerModule
   ],
+  providers:[
+    CivilityPipe
+  ]
 })
 export class MyDocumentsModule {}

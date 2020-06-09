@@ -15,7 +15,6 @@ import { SendMessageComponent } from "./send-message/send-message.component";
 import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
-import { NoteDetailComponent } from './patient-detail/note-detail/note-detail.component';
 
 const routes: Routes = [
   {
@@ -68,24 +67,12 @@ const routes: Routes = [
         component: PracticianDetailComponent,
       },
       {
-        path: "patient-detail/:idAccount",
+        path: "fiche-patient/:idAccount",
         component: PatientDetailComponent,
       },
       {
-        path: "patient-detail/:idAccount/:idPractician",
+        path: "fiche-patient/:idAccount/:idPractician",
         component: PatientDetailComponent,
-      },
-      {
-        path: "patient-detail/:idAccount/note/:idNote",
-        component: NoteDetailComponent,
-      },
-      {
-        path: "patient-detail/:idAccount/:idPractician/note/:idNote",
-        component: NoteDetailComponent,
-      },
-      {
-        path: "patient-detail/:idAccount/:idPractician/note",
-        component: NoteDetailComponent,
       },
       {
         path: "messagerie-archives",
@@ -123,4 +110,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class FeaturesRoutingModule {}
+export class FeaturesRoutingModule { }

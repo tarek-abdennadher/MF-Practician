@@ -11,12 +11,17 @@ import { MyDocumentsService } from '../my-documents/my-documents.service';
 })
 export class MessagingListService {
   private notificationObs = new BehaviorSubject<Object>("");
+  private practicianNotifObs = new BehaviorSubject<any>("");
+  public practicianNotifPreviousValue = "";
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
 
   constructor(
     private globalService: GlobalService,
     private featuresService: FeaturesService,
     private documentService: MyDocumentsService
-  ) {}
+  ) {
+    this.avatars = this.globalService.avatars;
+  }
 
   getNotificationObs(): Observable<any> {
     return this.notificationObs.asObservable();
@@ -48,20 +53,70 @@ export class MessagingListService {
                 id: notification.id,
               sender: notification.senderFullName,
               senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
+              picture: this.avatars.user,
               messageId: notification.messageId,
               type: notification.type,
               });
             }
           );}else {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
-              messageId: notification.messageId,
-              type: notification.type,
-            });
+            if (notification.message.sender.role == "PRACTICIAN") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.doctor,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.message.sender.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.secretary,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            }else if (notification.message.sender.role == "TELESECRETARYGROUP") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.tls,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.message.sender.role == "PATIENT") {
+              if (notification.message.sender.civility == "M") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.man,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.message.sender.civility == "MME") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.women,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.message.sender.civility == "CHILD") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.child,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              }
+            }
+
           }
 
       this.featuresService.setNumberOfInbox(this.featuresService.getNumberOfInboxValue() + 1);
@@ -93,19 +148,69 @@ export class MessagingListService {
                 id: notification.id,
                 sender: notification.senderFullName,
                 senderId: notification.senderId,
-                picture: "assets/imgs/user.png",
+                picture: this.avatars.user,
                 type: notification.type,
               });
             }
           );}
           else {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
-              type: notification.type,
-            });
+            if (notification.role == "PRACTICIAN") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.doctor,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.secretary,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            }else if (notification.role == "TELESECRETARYGROUP") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.tls,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            }  else if (notification.role == "PATIENT") {
+              if (notification.civility == "M") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.man,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "MME") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.women,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "CHILD") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.child,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              }
+            }
           }
 
       this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()+1)
@@ -138,20 +243,69 @@ export class MessagingListService {
                 id: notification.id,
               sender: notification.senderFullName,
               senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
+              picture: this.avatars.user,
               messageId: notification.messageId,
               type: notification.type,
               });
             }
           );}else {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: "assets/imgs/user.png",
-              messageId: notification.messageId,
-              type: notification.type,
-            });
+            if (notification.role == "PRACTICIAN") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.doctor,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "SECRETARY") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.secretary,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "TELESECRETARYGROUP") {
+              this.featuresService.listNotifications.unshift({
+                id: notification.id,
+                sender: notification.senderFullName,
+                senderId: notification.senderId,
+                picture: this.avatars.tls,
+                messageId: notification.messageId,
+                type: notification.type,
+              });
+            } else if (notification.role == "PATIENT") {
+              if (notification.message.sender.civility == "M") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.man,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "MME") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.women,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              } else if (notification.civility == "CHILD") {
+                this.featuresService.listNotifications.unshift({
+                  id: notification.id,
+                  sender: notification.senderFullName,
+                  senderId: notification.senderId,
+                  picture: this.avatars.child,
+                  messageId: notification.messageId,
+                  type: notification.type,
+                });
+              }
+            }
           }
     }
   }
@@ -162,6 +316,16 @@ export class MessagingListService {
         notif.id != notification.id
       )
       this.featuresService.setNumberOfPending(this.featuresService.getNumberOfPendingValue()-1)
+    }
+  }
+
+  getPracticianNotifObs(): Observable<any> {
+    return this.practicianNotifObs.asObservable();
+  }
+
+  setPracticianNotifObs(notification) {
+    if (notification.id != this.practicianNotifObs.getValue().id) {
+      this.practicianNotifObs.next(notification);
     }
   }
 

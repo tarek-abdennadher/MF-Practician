@@ -31,7 +31,6 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
-import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
@@ -40,7 +39,7 @@ import { HlsPasswordStrengthModule } from "hls-password-strength";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { NoteDetailComponent } from './patient-detail/note-detail/note-detail.component';
+import { PipesModule } from '@app/shared/pipes/pipes.module';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -98,9 +97,7 @@ const notifierOptions: NotifierOptions = {
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
     PatientDetailComponent,
-    EnumCorrespondencePipe,
-    PersonalInformationsComponent,
-    NoteDetailComponent,
+    PersonalInformationsComponent
   ],
   imports: [
     FormsModule,
@@ -126,8 +123,9 @@ const notifierOptions: NotifierOptions = {
     InternationalPhoneNumberModule,
     InfiniteScrollModule,
     MatProgressSpinnerModule,
+    PipesModule
   ],
 
   providers: [MessageService, ContactsService],
 })
-export class FeaturesModule {}
+export class FeaturesModule { }

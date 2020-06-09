@@ -27,8 +27,9 @@ export class MyDocumentsComponent implements OnInit {
   isCheckbox: boolean = false;
   itemsList = [];
   filtredItemsList = [];
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   search: string;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
 
   constructor(
     private mydocumentsService: MyDocumentsService,
@@ -36,7 +37,11 @@ export class MyDocumentsComponent implements OnInit {
     private _location: Location,
     public router: Router,
     private documentService: MyDocumentsService
-  ) {}
+  ) {
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
+  }
 
   ngOnInit(): void {
     this.getMySendersAndReceivers();
@@ -63,23 +68,25 @@ export class MyDocumentsComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  user.img = "assets/imgs/user.png";
+                  user.img = this.avatars.user;
                 }
               );
             });
           } else {
             item.users.forEach((user) => {
               if (user.type == "MEDICAL") {
-                user.img = "assets/imgs/avatar_docteur.svg";
+                user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
-                user.img = "assets/imgs/avatar_secrétaire.svg";
+                user.img = this.avatars.secretary;
+              }else if (user.type == "TELESECRETARYGROUP") {
+                user.img = this.avatars.tls;
               } else if (user.type == "PATIENT") {
                 if (user.civility == "M") {
-                  user.img = "assets/imgs/avatar_homme.svg";
+                  user.img = this.avatars.man;
                 } else if (user.civility == "MME") {
-                  user.img = "assets/imgs/avatar_femme.svg";
+                  user.img = this.avatars.women;
                 } else if (user.civility == "CHILD") {
-                  user.img = "assets/imgs/avatar_enfant.svg";
+                  user.img = this.avatars.child;
                 }
               }
             });
@@ -115,7 +122,7 @@ export class MyDocumentsComponent implements OnInit {
     practician.users = [
       {
         fullName: detail.fullName,
-        img: "assets/imgs/user.png",
+        img: this.avatars.user,
         title: detail.title,
         type:
           senderAndReceiver.role == "PRACTICIAN"
@@ -125,7 +132,7 @@ export class MyDocumentsComponent implements OnInit {
       },
     ];
     practician.object = {
-      name: detail.address,
+      name: detail.address?detail.address:"",
       isImportant: false,
       isLocalisation: detail.address ? true : false,
     };
@@ -171,7 +178,7 @@ export class MyDocumentsComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/user.png";
+            user.img = this.avatars.user;
           }
         );
       }

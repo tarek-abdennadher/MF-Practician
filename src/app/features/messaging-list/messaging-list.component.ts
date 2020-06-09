@@ -18,7 +18,8 @@ export class MessagingListComponent implements OnInit {
   showAcceptRefuse = true;
   isMyInbox = true;
   inboxName = "";
-  imageSource = "assets/imgs/user.png";
+  imageSource :string;
+  practicianImage:string;
   messages: Array<any>;
   itemsList: Array<any>;
   filtredItemList: Array<any> = new Array();
@@ -44,9 +45,10 @@ export class MessagingListComponent implements OnInit {
   private readonly notifier: NotifierService;
 
   pageNo = 0;
-  listLength = 0;
+  listLength = 10;
   scroll = false;
   paramsId;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -57,13 +59,18 @@ export class MessagingListComponent implements OnInit {
     private documentService: MyDocumentsService
   ) {
     this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.practicianImage=this.avatars.doctor;
+    this.imageSource = this.avatars.user;
+
+
   }
 
   ngOnInit(): void {
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       this.pageNo = 0;
-      this.listLength = 0;
+      this.listLength = 10;
       this.itemsList = new Array();
       this.filtredItemList = new Array();
       this.messages = [];
@@ -88,7 +95,7 @@ export class MessagingListComponent implements OnInit {
             fullName: this.myPracticians.find(
               (p) => p.id == this.featureService.selectedPracticianId
             ).fullName,
-            picture: this.imageSource,
+            picture: this.practicianImage,
           };
 
 
@@ -105,7 +112,7 @@ export class MessagingListComponent implements OnInit {
                 let ok = myReader.readAsDataURL(response.body);
               },
               (error) => {
-                this.person.picture = this.imageSource;
+                this.person.picture = this.practicianImage;
               }
             );
           }
@@ -166,6 +173,7 @@ export class MessagingListComponent implements OnInit {
     });
 
     this.getRealTimeMessage();
+    this.getPracticianRealTimeMessage();
     this.route.queryParams.subscribe((params) => {
       if (params["status"]) {
         let notifMessage = "";
@@ -310,7 +318,7 @@ export class MessagingListComponent implements OnInit {
               (event == "doctor"
                 ? "medical"
                 : event == "secretary"
-                ? "telesecretarygroup" || "secretary"
+                ? "telesecretarygroup" && "secretary"
                 : event)
           );
   }
@@ -319,15 +327,17 @@ export class MessagingListComponent implements OnInit {
     this.messagesServ
       .getInboxByAccountId(accountId, pageNo)
       .subscribe((retrievedMess) => {
-        this.featureService.myPracticians.asObservable().subscribe(list => {
-          this.number = list.find(
-            (p) => p.id == this.featureService.selectedPracticianId
-          ).number
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
-        })
+        if (!this.isMyInbox) {
+          this.featureService.myPracticians.asObservable().subscribe(list => {
+            this.number = list.find(
+              (p) => p.id == this.featureService.selectedPracticianId
+            ).number
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
+          })
+        }
         this.messages = this.isPatientFile
           ? retrievedMess.filter(
               (message) => message.sender.senderId == this.idAccount
@@ -346,6 +356,37 @@ export class MessagingListComponent implements OnInit {
       });
   }
 
+  getMyInboxNextPage(accountId, pageNo) {
+    this.messagesServ
+      .getInboxByAccountId(accountId, pageNo)
+      .subscribe((retrievedMess) => {
+        this.listLength = retrievedMess.length
+        if (retrievedMess.length > 0) {
+          this.messages = this.isPatientFile
+            ? retrievedMess.filter(
+                (message) => message.sender.senderId == this.idAccount
+              )
+            : retrievedMess;
+
+          this.messages.sort(function (m1, m2) {
+            return (
+              new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+            );
+          });
+          this.itemsList.push(
+            ...this.messages.map((item) => this.parseMessage(item))
+          );
+          if(this.filtredItemList.length != this.itemsList.length) {
+            this.filtredItemList = this.itemsList.filter(item => item.users[0].type.toLowerCase() == this.filtredItemList[0].users[0].type.toLowerCase());
+          }
+          if (this.isPatientFile) {
+            this.filtredItemList = this.itemsList;
+          }
+
+        }
+      });
+  }
+
   parseMessage(message): any {
     let parsedMessage = {
       id: message.id,
@@ -354,7 +395,7 @@ export class MessagingListComponent implements OnInit {
         {
           id: message.sender.id,
           fullName: message.sender.fullName,
-          img: "assets/imgs/user.png",
+          img: this.avatars.user,
           title: message.sender.jobTitle,
           civility: message.sender.civility,
           type:
@@ -386,23 +427,25 @@ export class MessagingListComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/user.png";
+            user.img = this.avatars.user;
           }
         );
       });
     } else {
       parsedMessage.users.forEach((user) => {
         if (user.type == "MEDICAL") {
-          user.img = "assets/imgs/avatar_docteur.svg";
+          user.img = this.avatars.doctor;
         } else if (user.type == "SECRETARY") {
-          user.img = "assets/imgs/avatar_secrétaire.svg";
+          user.img = this.avatars.secretary;
+        } else if (user.type == "TELESECRETARYGROUP") {
+          user.img = this.avatars.tls;
         } else if (user.type == "PATIENT") {
           if (user.civility == "M") {
-            user.img = "assets/imgs/avatar_homme.svg";
+            user.img = this.avatars.man;
           } else if (user.civility == "MME") {
-            user.img = "assets/imgs/avatar_femme.svg";
+            user.img = this.avatars.women;
           } else if (user.civility == "CHILD") {
-            user.img = "assets/imgs/avatar_enfant.svg";
+            user.img = this.avatars.child;
           }
         }
       });
@@ -538,7 +581,50 @@ export class MessagingListComponent implements OnInit {
                 },
                 (error) => {
                   message.users.forEach((user) => {
-                    user.img = "assets/imgs/user.png";
+                    user.img = this.avatars.user;
+                  });
+                }
+              );
+          }
+
+          this.filtredItemList.unshift(message);
+
+          this.bottomText =
+            this.number > 1
+              ? this.globalService.messagesDisplayScreen.newMessages
+              : this.globalService.messagesDisplayScreen.newMessage;
+        }
+      }
+    });
+  }
+
+  getPracticianRealTimeMessage() {
+    this.messagesServ.getPracticianNotifObs().subscribe((notif) => {
+      if (notif != "" && this.messagesServ.practicianNotifPreviousValue != notif.id) {
+        let num = this.featureService.myPracticians.getValue().find(elm => elm.id == notif.receiverId).number;
+        this.featureService.updateNumberOfInboxForPractician(
+          notif.receiverId,
+          num + 1
+        );
+        this.messagesServ.practicianNotifPreviousValue = notif.id;
+        if (!this.isMyInbox && this.featureService.selectedPracticianId == notif.receiverId) {
+          let message = this.parseMessage(notif.message);
+          if (notif.message.sender.photoId) {
+            this.documentService
+              .downloadFile(notif.message.sender.photoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    message.users.forEach((user) => {
+                      user.img = myReader.result;
+                    });
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  message.users.forEach((user) => {
+                    user.img = this.avatars.user;
                   });
                 }
               );
@@ -556,11 +642,9 @@ export class MessagingListComponent implements OnInit {
   }
 
   onScroll() {
-    if (this.listLength != this.filtredItemList.length) {
-      this.listLength = this.filtredItemList.length;
+    if (this.listLength > 9 ) {
       this.pageNo++;
-
-      this.getMyInbox(this.paramsId, this.pageNo);
+      this.getMyInboxNextPage(this.paramsId, this.pageNo);
     }
   }
 }

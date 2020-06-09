@@ -23,7 +23,7 @@ export class MessagingReplyComponent implements OnInit {
   isMyMessage = false;
   private _destroyed$ = new Subject();
   role: string = "MEDICAL";
-  imageSource: string = "assets/imgs/user.png";
+  imageSource: string;
   isFromInbox = true;
   senderRolePatient = true;
   messagingDetail: any;
@@ -42,6 +42,7 @@ export class MessagingReplyComponent implements OnInit {
   private readonly notifier: NotifierService;
   refuseResponse = false;
   objectsList = [];
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
     private _location: Location,
     private featureService: FeaturesService,
@@ -58,6 +59,9 @@ export class MessagingReplyComponent implements OnInit {
 
   ) {
     this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -101,9 +105,25 @@ export class MessagingReplyComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  receiver.img = "assets/imgs/user.png";
+                  receiver.img = this.avatars.user;
                 }
               );
+          }else{
+              if (receiver.role == "PRACTICIAN") {
+                receiver.img = this.avatars.doctor;
+              } else if (receiver.role == "SECRETARY") {
+                receiver.img = this.avatars.secretary;
+              }else if (receiver.role == "TELESECRETARYGROUP") {
+                receiver.img = this.avatars.tls;
+              } else if (receiver.role == "PATIENT") {
+                if (receiver.civility == "M") {
+                  receiver.img = this.avatars.man;
+                } else if (receiver.civility == "MME") {
+                  receiver.img = this.avatars.women;
+                } else if (receiver.civility == "CHILD") {
+                  receiver.img = this.avatars.child;
+                }
+              }
           }
         });
         this.messagingDetail.ccReceivers.forEach((receiver) => {
@@ -119,10 +139,26 @@ export class MessagingReplyComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  receiver.img = "assets/imgs/user.png";
+                  receiver.img = this.avatars.user;
                 }
               );
-          }
+          }else{
+            if (receiver.role == "PRACTICIAN") {
+              receiver.img = this.avatars.doctor;
+            } else if (receiver.role == "SECRETARY") {
+              receiver.img = this.avatars.secretary;
+            }else if (receiver.role == "TELESECRETARYGROUP") {
+              receiver.img = this.avatars.tls;
+            } else if (receiver.role == "PATIENT") {
+              if (receiver.civility == "M") {
+                receiver.img = this.avatars.man;
+              } else if (receiver.civility == "MME") {
+                receiver.img = this.avatars.women;
+              } else if (receiver.civility == "CHILD") {
+                receiver.img = this.avatars.child;
+              }
+            }
+        }
         });
         if (this.messagingDetail.sender.photoId) {
           this.documentService
@@ -136,7 +172,7 @@ export class MessagingReplyComponent implements OnInit {
                 let ok = myReader.readAsDataURL(response.body);
               },
               (error) => {
-                this.messagingDetail.sender.img = "assets/imgs/user.png";
+                this.messagingDetail.sender.img = this.avatars.user;
               }
             );
         }
@@ -147,15 +183,29 @@ export class MessagingReplyComponent implements OnInit {
               (response) => {
                 let myReader: FileReader = new FileReader();
                 myReader.onloadend = (e) => {
-                  this.messagingDetail.sender.forImg = myReader.result;
+                  this.messagingDetail.sender.img = myReader.result;
                 };
                 let ok = myReader.readAsDataURL(response.body);
               },
               (error) => {
-                this.messagingDetail.sender.forImg = "assets/imgs/user.png";
+                this.messagingDetail.sender.img = this.avatars.user;
               }
             );
-        }
+        }else{
+          if (this.messagingDetail.sender.role == "PRACTICIAN") {
+            this.messagingDetail.sender.img = this.avatars.doctor;
+          } else if (this.messagingDetail.sender.role == "SECRETARY") {
+            this.messagingDetail.sender.img = this.avatars.secretary;
+          } else if (this.messagingDetail.sender.role == "PATIENT") {
+            if (this.messagingDetail.sender.civility == "M") {
+              this.messagingDetail.sender.img = this.avatars.man;
+            } else if (this.messagingDetail.sender.civility == "MME") {
+              this.messagingDetail.sender.img = this.avatars.women;
+            } else if (this.messagingDetail.sender.civility == "CHILD") {
+              this.messagingDetail.sender.img = this.avatars.child;
+            }
+          }
+      }
       });
   }
 
@@ -173,6 +223,7 @@ export class MessagingReplyComponent implements OnInit {
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
+    parent.messageStatus = "TREATED";
     delete message.sender.img
     parent.sender = message.sender;
     replyMessage.parent = parent;

@@ -14,14 +14,14 @@ enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { CategoryService } from '../services/category.service';
+import { CategoryService } from "../services/category.service";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   myPatients = [];
   filtredPatients = [];
   isMyPatients = true;
@@ -41,8 +41,9 @@ export class MyPatientsComponent implements OnInit {
   scroll = false;
   public searchForm: FormGroup;
   atcObj: AutoComplete = new AutoComplete();
-  mesCategories= [];
+  mesCategories = [];
   public filterPatientsForm: FormGroup;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
 
   constructor(
     private globalService: GlobalService,
@@ -63,6 +64,9 @@ export class MyPatientsComponent implements OnInit {
     this.filterPatientsForm = this.formBuilder.group({
       category: [""],
     });
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -129,9 +133,24 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
-  getPatientsOfCurrentParacticianByCategory(pageNo,categoryId) {
+  getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(pageNo,categoryId)
+      .getPatientsOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
+  getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
+    this.myPatientsService
+      .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -167,6 +186,21 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
+  getNextPatientsProhibitedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsProhibitedOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
   getPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsPendingOfCurrentParactician(pageNo)
@@ -183,6 +217,21 @@ export class MyPatientsComponent implements OnInit {
         });
         this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
+      });
+  }
+
+  getNextPatientsPendingOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsPendingOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
       });
   }
 
@@ -205,6 +254,21 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
+  getNextPatientsArchivedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsArchivedOfCurrentParactician(pageNo)
+      .subscribe((myPatients) => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
   mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];
@@ -212,7 +276,7 @@ export class MyPatientsComponent implements OnInit {
       id: patient.patientId,
       accountId: patient.id,
       fullName: patient.fullName,
-      img: "assets/imgs/user.png",
+      img: this.avatars.user,
       type: "PATIENT",
       civility: patient.civility,
     });
@@ -232,18 +296,18 @@ export class MyPatientsComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/user.png";
+            user.img = this.avatars.user;
           }
         );
       });
     } else {
       myPatients.users.forEach((user) => {
         if (user.civility == "M") {
-          user.img = "assets/imgs/avatar_homme.svg";
+          user.img = this.avatars.man;
         } else if (user.civility == "MME") {
-          user.img = "assets/imgs/avatar_femme.svg";
+          user.img = this.avatars.women;
         } else if (user.civility == "CHILD") {
-          user.img = "assets/imgs/avatar_enfant.svg";
+          user.img = this.avatars.child;
         }
       });
     }
@@ -251,10 +315,10 @@ export class MyPatientsComponent implements OnInit {
   }
 
   performFilter(filterBy) {
-    filterBy = filterBy.toLocaleLowerCase();
+    filterBy = filterBy.toLowerCase();
     return this.myPatients.filter(
       (patient) =>
-        patient.users[0].fullName.toLocaleLowerCase().indexOf(filterBy) !== -1
+        patient.users[0].fullName.toLowerCase().indexOf(filterBy) !== -1
     );
   }
 
@@ -284,7 +348,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   editAction(item) {
-    console.log("edit");
+    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
   }
   deleteAction(item) {
     this.dialogService
@@ -390,14 +454,14 @@ export class MyPatientsComponent implements OnInit {
 
   getPendingListRealTime(pageNo) {
     this.featureService.getNumberOfPendingObs().subscribe((resp) => {
-      if (this.featureService.getNumberOfPendingValue() != this.number) {
+      if (this.featureService.getNumberOfPendingValue() != this.myPatients.length) {
         this.getPatientsPendingOfCurrentParactician(pageNo);
       }
     });
   }
 
   cardClicked(item) {
-    this.router.navigate(["/patient-detail/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
   }
 
   onScroll() {
@@ -407,19 +471,19 @@ export class MyPatientsComponent implements OnInit {
       if (this.section) {
         switch (this.section) {
           case "accepted": {
-            this.getPatientsOfCurrentParactician(this.pageNo);
+            this.getNextPagePatientsOfCurrentParactician(this.pageNo);
             break;
           }
           case "pending": {
-            this.getPendingListRealTime(this.pageNo);
+            this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
             break;
           }
           case "prohibit": {
-            this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+            this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
             break;
           }
           case "archived": {
-            this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+            this.getNextPatientsArchivedOfCurrentParactician(this.pageNo);
             break;
           }
         }
@@ -449,7 +513,7 @@ export class MyPatientsComponent implements OnInit {
               let ok = myReader.readAsDataURL(response.body);
             },
             (error) => {
-              user.img = "assets/imgs/user.png";
+              user.img = this.avatars.user;
             }
           );
         }
@@ -478,15 +542,17 @@ export class MyPatientsComponent implements OnInit {
   }
 
   filter() {
-    this.pageNo=0
-    this.filtredPatients=[]
-    this.myPatients=[]
-    console.log(this.filterPatientsForm.value.category)
-    if(this.filterPatientsForm.value.category != ""){
-      this.getPatientsOfCurrentParacticianByCategory(this.pageNo,this.filterPatientsForm.value.category);
-    }
-    else {
-      this.getPatientsOfCurrentParactician(this.pageNo)
+    this.pageNo = 0;
+    this.filtredPatients = [];
+    this.myPatients = [];
+    console.log(this.filterPatientsForm.value.category);
+    if (this.filterPatientsForm.value.category != "") {
+      this.getPatientsOfCurrentParacticianByCategory(
+        this.pageNo,
+        this.filterPatientsForm.value.category
+      );
+    } else {
+      this.getPatientsOfCurrentParactician(this.pageNo);
     }
   }
 }

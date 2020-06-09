@@ -16,6 +16,7 @@ import { SharedModule } from "@app/shared/shared.module";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
+import { PipesModule } from '@app/shared/pipes/pipes.module';
 @NgModule({
   declarations: [
     MyAccountComponent,
@@ -37,7 +38,8 @@ import { CategoryDetailComponent } from './category/category-detail/category-det
     HlsPasswordStrengthModule,
     SharedModule,
     InternationalPhoneNumberModule,
+    PipesModule
   ],
   providers: [AccountService],
 })
-export class AccountModule {}
+export class AccountModule { }

@@ -59,8 +59,9 @@ export class AccountService {
     phone_error: "      Veuillez vérifier les téléphones saisis",
     update_error: "      Une erreur s'est produite",
     title_delete_account: "supprimer un compte",
-    notes:"Mes notes",
-    date: "Date (*)"
+    notes: "Mes notes",
+    date: "Date (*)",
+    website: "Site web"
   };
   public errors = {
     required: "Champs obligatoire",
@@ -162,5 +163,18 @@ export class AccountService {
       RequestType.GET,
       this.globalService.url.account + "/detail/" + id
     );
+  }
+
+  getJobTiles() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.practician + "jobTitles"
+    );
+  }
+
+  getPracticianTelesecretary() {
+    return this.globalService.call(RequestType.GET,
+      this.globalService.url.practician + "tls"
+      );
   }
 }

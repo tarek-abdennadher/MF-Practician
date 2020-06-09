@@ -19,10 +19,21 @@ export class FeaturesService {
   numberOfProhibited: number = 0;
   numberOfArchivedPatient: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  public imageSource: string | ArrayBuffer = "assets/imgs/user.png";
+  public imageSource: string | ArrayBuffer;
   private searchSource = new BehaviorSubject(new search());
   currentSearch = this.searchSource.asObservable();
   initialSearch = false;
+  public fullName :string;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+
+  constructor(
+    private globalService: GlobalService,
+    private localSt: LocalStorageService
+  ) {
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
+  }
   getNumberOfPendingObs() {
     return this._numberOfPending.asObservable();
   }
@@ -46,11 +57,6 @@ export class FeaturesService {
   setNumberOfInbox(number) {
     this._numberOfInbox.next(number);
   }
-
-  constructor(
-    private globalService: GlobalService,
-    private localSt: LocalStorageService
-  ) {}
 
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
@@ -117,6 +123,12 @@ export class FeaturesService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.secretary + "/my-practicians"
+    );
+  }
+  getSecretaryPracticiansId() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.secretary + "/my-practicians-id"
     );
   }
   changeSearch(search: search) {

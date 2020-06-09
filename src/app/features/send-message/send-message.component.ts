@@ -24,8 +24,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
-  imageSource: any = "assets/imgs/user.png";
-  imageDropdown = "assets/imgs/user.png";
+  imageSource: any ;
+  imageDropdown : string;
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   role = this.localSt.retrieve("role");
@@ -41,6 +41,7 @@ export class SendMessageComponent implements OnInit {
   selectedPracticianId: number;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService,
@@ -64,6 +65,9 @@ export class SendMessageComponent implements OnInit {
       this.selectedPracticianId = params["id"] || null;
     });
     this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+    this.imageDropdown = this.avatars.user;
   }
 
   ngOnInit(): void {
@@ -77,20 +81,40 @@ export class SendMessageComponent implements OnInit {
           let ok = myReader.readAsDataURL(response.body);
         },
         (error) => {
-          this.imageSource = "assets/imgs/user.png";
+          this.imageSource = this.avatars.user;
         }
       );
     } else {
-      if (this.role == "MEDICAL") {
-        this.imageSource = "assets/imgs/avatar_docteur.svg";
+      if (this.role == "PRACTICIAN") {
+        this.imageSource = this.avatars.doctor;
       } else if (this.role == "SECRETARY") {
-        this.imageSource = "assets/imgs/avatar_secrétaire.svg";
+        this.imageSource = this.avatars.secretary;
       }
     }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.myPracticians.subscribe(
-        (val) => (this.forList = val)
+        (val) => {
+          this.forList = val;
+          this.forList.forEach((item) => {
+            if (item.photo) {
+              this.documentService.downloadFile(item.photo).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    item.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  item.img = this.avatars.doctor;
+                }
+              );
+            } else {
+              item.img = this.avatars.doctor;
+            }
+          });
+        }
       );
     }
     forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
@@ -164,7 +188,7 @@ export class SendMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: "assets/imgs/avatar_docteur.svg",
+            img: this.avatars.doctor,
           });
           this.toList.next(myList);
         } else if (
@@ -177,7 +201,7 @@ export class SendMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: "assets/imgs/avatar_secrétaire.svg",
+            img: this.avatars.secretary,
           });
           this.toList.next(myList);
         } else if (contactPractician.contactType == "PATIENT") {
@@ -190,7 +214,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: "assets/imgs/avatar_homme.svg",
+              img: this.avatars.man,
             });
             this.toList.next(myList);
           } else if (contactPractician.civility == "MME") {
@@ -202,7 +226,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: "assets/imgs/avatar_femme.svg",
+              img: this.avatars.women,
             });
             this.toList.next(myList);
           } else if (contactPractician.civility == "CHILD") {
@@ -214,7 +238,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: "assets/imgs/avatar_enfant.svg",
+              img: this.avatars.child,
             });
             this.toList.next(myList);
           }

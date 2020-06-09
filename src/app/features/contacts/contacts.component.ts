@@ -1,11 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ContactsService } from "../services/contacts.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { AccountService } from "../services/account.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { NotifierService } from "angular-notifier";
+import { GlobalService } from '@app/core/services/global.service';
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
@@ -17,7 +19,7 @@ export class ContactsComponent implements OnInit {
   itemsList: Array<any> = new Array<any>();
   filtredItemsList: Array<any> = new Array<any>();
   types: Array<string> = [];
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   links = {
     isAllSelect: this.localSt.retrieve("role") == "PRACTICIAN",
     isDelete: this.localSt.retrieve("role") == "PRACTICIAN",
@@ -28,16 +30,46 @@ export class ContactsComponent implements OnInit {
   topText = "Mes contacts PRO";
   page = "MY_PRACTICIANS";
   backButton = true;
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private readonly notifier: NotifierService;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     public accountService: AccountService,
     private _location: Location,
+    private route: ActivatedRoute,
+    notifierService: NotifierService,
     private router: Router,
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
-    private documentService: MyDocumentsService
-  ) {}
+    private documentService: MyDocumentsService,
+    private globalService: GlobalService
+  ) {
+    this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+  }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params["status"]) {
+        let notifMessage = "";
+        switch (params["status"]) {
+          case "add": {
+            notifMessage = "Contact pro ajouté avec succès";
+            break;
+          }
+          case "edit": {
+            notifMessage = "Contact pro modifié avec succès";
+            break;
+          }
+        }
+        this.notifier.show({
+          message: notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
+    });
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
     this.types = new Array();
@@ -61,8 +93,8 @@ export class ContactsComponent implements OnInit {
               {
                 id: elm.id,
                 fullName: elm.fullName,
-                img: "assets/imgs/user.png",
-                title: elm.speciality.name,
+                img: this.avatars.user,
+                title: elm.speciality ? elm.speciality : elm.title,
                 type: "MEDICAL",
                 speciality: elm.speciality ? elm.speciality : "Tout",
                 canEdit: elm.contactType == "CONTACT" ? true : false,
@@ -91,16 +123,16 @@ export class ContactsComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  user.img = "assets/imgs/user.png";
+                  user.img = this.avatars.user;
                 }
               );
             });
           } else {
             item.users.forEach((user) => {
               if (user.type == "MEDICAL") {
-                user.img = "assets/imgs/avatar_docteur.svg";
+                user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
-                user.img = "assets/imgs/avatar_secrétaire.svg";
+                user.img = this.avatars.secretary;
               }
             });
           }
@@ -124,8 +156,8 @@ export class ContactsComponent implements OnInit {
               {
                 id: elm.id,
                 fullName: elm.fullName,
-                img: "assets/imgs/user.png",
-                title: elm.title,
+                img: this.avatars.user,
+                title: elm.speciality ? elm.speciality : elm.title,
                 type: "MEDICAL",
                 speciality: elm.speciality ? elm.speciality : "Tout",
                 canEdit: elm.contactType == "CONTACT" ? true : false,
@@ -154,16 +186,16 @@ export class ContactsComponent implements OnInit {
                   let ok = myReader.readAsDataURL(response.body);
                 },
                 (error) => {
-                  user.img = "assets/imgs/user.png";
+                  user.img = this.avatars.user;
                 }
               );
             });
           } else {
             item.users.forEach((user) => {
               if (user.type == "MEDICAL") {
-                user.img = "assets/imgs/avatar_docteur.svg";
+                user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
-                user.img = "assets/imgs/avatar_secrétaire.svg";
+                user.img = this.avatars.secretary;
               }
             });
           }

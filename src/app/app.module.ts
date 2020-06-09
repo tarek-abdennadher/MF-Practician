@@ -36,11 +36,11 @@ registerLocaleData(localeFr, "fr");
       useClass: TokenInterceptor,
       multi: true
     },
-    { provide: LOCALE_ID, useValue: "fr-Fr" },
+    { provide: LOCALE_ID, useValue: "fr" },
     LoginService,
     GlobalService,
     AuthGuard
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

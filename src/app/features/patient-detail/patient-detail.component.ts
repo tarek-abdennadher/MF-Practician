@@ -1,13 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { LocalStorageService } from "ngx-webstorage";
+import { Component, OnInit, Inject, LOCALE_ID, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BsLocaleService } from "ngx-bootstrap/datepicker";
+import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
+import { Subject, forkJoin } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
+import { PatientFile } from '@app/shared/models/patient-file';
 import { Location } from "@angular/common";
-import { MyPatientsService } from "../services/my-patients.service";
-import { EnumCorrespondencePipe } from "@app/shared/pipes/enumCorrespondencePipe";
-import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { PracticianSearch } from "../practician-search/practician-search.model";
-import { GlobalService } from "@app/core/services/global.service";
-import { NoteService } from "../services/note.service";
+import { NoteService } from '@app/features/services/note.service';
+import { NotifierService } from 'angular-notifier';
+import { MyPatientsService } from '../services/my-patients.service';
+import { AccountService } from '../services/account.service';
+import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { MyPatients } from '../my-patients/my-patients';
+import { CategoryService } from '../services/category.service';
+import { FeaturesService } from '../features.service';
+import { LocalStorageService } from 'ngx-webstorage';
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: "app-patient-detail",
@@ -15,215 +23,272 @@ import { NoteService } from "../services/note.service";
   styleUrls: ["./patient-detail.component.scss"],
 })
 export class PatientDetailComponent implements OnInit {
-  patient: any;
-  imageSource: string = "assets/imgs/user.png";
-  public isFavorite: boolean = false;
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private _destroyed$ = new Subject();
+  noteimageSource : string;
   page = "MY_PRACTICIANS";
+  notifMessage = "";
+  links = {};
   number = null;
   topText = "Fiche Patient";
   bottomText = "";
   backButton = true;
-  isPatient = true;
-  links = {};
-  idAccount: number;
-  itemsList: any;
-  message: any;
-  idPractician: number;
-  noteList = [];
+  placement = "right";
+  practicianId: number;
+  patientId: number;
+  patientFile = new Subject<PatientFile>();
+  errors;
+  imageSource: string | ArrayBuffer ;
+  submitted = false;
+  categoryList = new Subject<[]>();
+  linkedPatients = new Subject();
+  linkedPatientList = [];
+  private readonly notifier: NotifierService;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private myPatientService: MyPatientsService,
-    private localSt: LocalStorageService,
+    private featureService: FeaturesService,
+    private accountService: AccountService,
+    private localeService: BsLocaleService,
+    private patientService: MyPatientsService,
+    private categoryService: CategoryService,
     private _location: Location,
-    private enumCorespondencePipe: EnumCorrespondencePipe,
     private documentService: MyDocumentsService,
-    private globalService: GlobalService,
-    private notesService: NoteService
+    private noteService: NoteService,
+    private localStorage: LocalStorageService,
+    notifierService: NotifierService,
+    @Inject(LOCALE_ID) public locale: string,
+    private globalService: GlobalService
   ) {
-    this.message = this.globalService.messagesDisplayScreen;
+    defineLocale(this.locale, frLocale);
+    this.localeService.use(this.locale);
+    this.errors = this.accountService.errors;
+    this.notifier = notifierService;
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.man;
+    this.noteimageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
+    if (this.localStorage.retrieve("role") == "PRACTICIAN") {
+      this.practicianId = this.featureService.getUserId();
+    }
+    else {
+      this.practicianId = this.featureService.selectedPracticianId;
+    }
     this.route.params.subscribe((params) => {
-      this.idAccount = params["idAccount"];
-      this.idPractician = params["idPractician"];
-      this.getPatientWithPeopleAttached(this.idAccount);
-      this.getMyNotes(this.idAccount);
+      this.patientId = params["idAccount"];
     });
+    forkJoin(this.getPatientFile(), this.getCategories(), this.getLinkedPatients()).subscribe((res) => { });
   }
-  getPatientWithPeopleAttached(id) {
-    this.myPatientService
-      .getPatientWithPeopleAttached(id)
-      .subscribe((response) => {
-        this.bottomText = response.fullName;
-        this.patient = response;
-        this.getSelectedPatientCategoryAndNote(this.patient.id);
-        if (this.patient.linkedPatients.length != 0) {
-          this.patient.linkedPatients.forEach((patient) => {
-            patient.correspondence = this.enumCorespondencePipe.transform(
-              patient.correspondence
-            );
-          });
-          this.mappingToItemsList(this.patient.linkedPatients);
-        }
-        if (this.patient.photoId) {
-          this.documentService.downloadFile(this.patient.photoId).subscribe(
+
+  getPatientFile() {
+    return this.patientService.getPatientFileByPracticianId(this.patientId, this.practicianId)
+      .pipe(takeUntil(this._destroyed$)).pipe(tap(patientFile => {
+        this.patientFile.next(patientFile);
+        this.bottomText = patientFile?.firstName + " " + patientFile?.lastName
+        if (patientFile?.photoId) {
+          this.documentService.downloadFile(patientFile.photoId).subscribe(
             (response) => {
               let myReader: FileReader = new FileReader();
               myReader.onloadend = (e) => {
-                this.patient.img = myReader.result;
+                this.imageSource = myReader.result;
               };
               let ok = myReader.readAsDataURL(response.body);
             },
             (error) => {
-              this.patient.img = "assets/imgs/user.png";
+              if (patientFile?.civility == "MME") {
+                this.imageSource = this.avatars.women
+              }
+              else {
+                this.imageSource = this.avatars.man
+              }
+
             }
           );
-        } else {
-          if (this.patient.civility == "M") {
-            this.patient.img = "assets/imgs/avatar_homme.svg";
-          } else if (this.patient.civility == "MME") {
-            this.patient.img = "assets/imgs/avatar_femme.svg";
-          } else if (this.patient.civility == "CHILD") {
-            this.patient.img = "assets/imgs/avatar_enfant.svg";
+        }
+        else {
+          if (patientFile?.civility == "MME") {
+            this.imageSource = this.avatars.women
+          }
+          else {
+            this.imageSource = this.avatars.man
           }
         }
+      }));
+  }
+
+  getLinkedPatients() {
+    return this.patientService.getPatientsByParentId(this.patientId).pipe(takeUntil(this._destroyed$)).pipe(tap(res => {
+      res.forEach((elm) => {
+        this.linkedPatientList.push(
+          this.mappingLinkedPatients(elm)
+        );
       });
+      this.linkedPatients.next(this.linkedPatientList)
+    }
+    ));
   }
-
-  mappingToItemsList(patients) {
-    this.itemsList = [];
-    Array.from(patients).forEach((element) => {
-      this.mappingByItem(element);
+  mappingLinkedPatients(patient) {
+    const linkedPatients = new MyPatients();
+    linkedPatients.fullInfo = patient;
+    linkedPatients.users = [];
+    linkedPatients.users.push({
+      id: patient.id,
+      fullName: patient.firstName + " " + patient.lastName,
+      img: this.avatars.man,
+      type: "PATIENT",
+      civility: patient.civility
     });
-  }
-  mappingByItem(element) {
-    let image: string | ArrayBuffer;
-
-    this.documentService.downloadFile(element.photoId).subscribe((response) => {
-      let myReader: FileReader = new FileReader();
-      myReader.onloadend = (e) => {
-        image = myReader.result;
-        patient.id = element.id;
-        patient.users = [
-          {
-            fullName: element.fullName,
-            img: element.photoId
-              ? image
-              : element.civility == "M"
-              ? "assets/imgs/avatar_homme.svg"
-              : element.civility == "MME"
-              ? "assets/imgs/avatar_femme.svg"
-              : element.civility == "CHILD"
-              ? "assets/imgs/avatar_enfant.svg"
-              : "assets/imgs/user.png",
-            title: "",
-            type: "PATIENT",
-            civility: element.civility,
+    linkedPatients.photoId = patient.photoId;
+    linkedPatients.isSeen = true;
+    linkedPatients.isViewDetail = true;
+    if (linkedPatients.photoId) {
+      linkedPatients.users.forEach((user) => {
+        this.documentService.downloadFile(linkedPatients.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              user.img = myReader.result;
+            };
+            let ok = myReader.readAsDataURL(response.body);
           },
-        ];
-        patient.isViewDetail = true;
-        patient.isArchieve = true;
-        patient.isSeen = true;
-        this.itemsList.push(patient);
-      };
-      let ok = myReader.readAsDataURL(response.body);
-    });
-
-    let patient = new PracticianSearch();
-  }
-
-  getMyNotes(patientId) {
-    if(this.idPractician){
-      this.notesService.getPracticianNotes(patientId,this.idPractician).subscribe((notes) => {
-        notes.forEach((note) => {
-          this.noteList.push({
-            id: note.id,
-            users: [
-              {
-                fullName:
-                  note.value.length < 60
-                    ? note.value
-                    : note.value.substring(0, 60) + "...",
-              },
-            ],
-            time: note.noteDate,
-            isViewDetail: true,
-            isArchieve: true,
-            isSeen: true,
-          });
-        });
+          (error) => {
+            if (user.civility == "M") {
+              user.img = this.avatars.man;
+            } else if (user.civility == "MME") {
+              user.img = this.avatars.women;
+            } else if (user.civility == "CHILD") {
+              user.img = this.avatars.child;
+            }
+          }
+        );
       });
-    }else {
-      this.notesService.getMyNotes(patientId).subscribe((notes) => {
-        notes.forEach((note) => {
-          this.noteList.push({
-            id: note.id,
-            users: [
-              {
-                fullName:
-                  note.value.length < 60
-                    ? note.value
-                    : note.value.substring(0, 60) + "...",
-              },
-            ],
-            time: note.noteDate,
-            isViewDetail: true,
-            isArchieve: true,
-            isSeen: true,
-          });
-        });
+    } else {
+      linkedPatients.users.forEach((user) => {
+        if (user.civility == "M") {
+          user.img = this.avatars.man;
+        } else if (user.civility == "MME") {
+          user.img = this.avatars.women;
+        } else if (user.civility == "CHILD") {
+          user.img = this.avatars.child;
+        }
       });
     }
-
+    return linkedPatients;
   }
-  sendMessageClicked(item) {
-    this.router.navigate(["/messagerie-ecrire"], {
-      queryParams: {
-        id: item.accountId,
-      },
+  getCategories() {
+    return this.categoryService.getCategoriesByPractician(this.practicianId).pipe(takeUntil(this._destroyed$)).pipe(tap(res => {
+      this.categoryList.next(res);
+    }));
+  }
+  submit(model) {
+    this.patientService
+      .updatePatientFile(model)
+      .subscribe(this.handleResponse, this.handleError);
+  }
+  handleResponse = (res) => {
+    if (res) {
+      this.notifMessage = this.patientService.messages.edit_info_success;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "info",
+        template: this.customNotificationTmpl,
+      });
+      this.submitted = false;
+    } else {
+      this.notifMessage = this.patientService.errors.failed_update;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+      return;
+    }
+  };
+
+  handleError = (err) => {
+    if (err && err.error && err.error.apierror) {
+      this.notifMessage = err.error.apierror.message;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+    } else {
+      this.notifMessage = this.patientService.errors.failed_update;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+    }
+  };
+  submitNote(model) {
+    if (model.id == null) {
+      this.noteService.addNoteforPatientFile(model, this.patientId, this.practicianId).subscribe(res => {
+        if (res) {
+          this.notifMessage = this.noteService.messages.add_success;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+        }
+        else {
+          this.notifMessage = this.noteService.errors.failed_add;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+          return;
+        }
+      });
+    }
+    else {
+      this.noteService.updateNote(model).subscribe(res => {
+        if (res) {
+          this.notifMessage = this.noteService.messages.edit_success;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+        }
+        else {
+          this.notifMessage = this.noteService.errors.failed_edit;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+          return;
+        }
+      });
+    }
+  }
+  archieveNote(noteId) {
+    this.noteService.deleteNote(noteId).subscribe((result) => {
+      if (result) {
+        this.notifMessage = this.noteService.messages.delete_success;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
     });
   }
-  BackButton() {
+  goBack() {
     this._location.back();
   }
-  getSelectedPatientCategoryAndNote(patientId) {
-    if (this.idPractician) {
-      this.myPatientService
-        .getPatientCategoryByPractician(patientId, this.idPractician)
-        .subscribe((result) => {
-          if (result) {
-            this.patient.category = result.category;
-            this.patient.note = result.noteOnPatient;
-          } else {
-            this.patient.category = "";
-            this.patient.note = "";
-          }
-        });
-    } else {
-      this.myPatientService
-        .getMyPatientCategory(patientId)
-        .subscribe((result) => {
-          if (result) {
-            this.patient.category = result.category;
-            this.patient.note = result.noteOnPatient;
-          } else {
-            this.patient.category = "";
-            this.patient.note = "";
-          }
-        });
-    }
-  }
-  cardClicked(note) {
-    this.router.navigate(["note/" + note.id], { relativeTo: this.route });
-  }
-  addNoteAction() {
-    this.router.navigate(["note/add"], { relativeTo: this.route });
-  }
-  archieveNote(note) {
-    this.notesService.deleteNote(note.id).subscribe((result) => {
-      this.noteList = this.noteList.filter((n) => n.id != note.id);
-    });
+  // destory any subscribe to avoid memory leak
+  ngOnDestroy(): void {
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 }
+
+

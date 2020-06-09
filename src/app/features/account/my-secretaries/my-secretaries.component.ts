@@ -13,6 +13,7 @@ import { DialogService } from "@app/features/services/dialog.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from 'rxjs';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
+import { GlobalService } from '@app/core/services/global.service';
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -38,19 +39,24 @@ export class MySecretariesComponent implements OnInit {
   isLabelShow: boolean;
   public otherPhones = FormArray;
   image: string | ArrayBuffer;
-  imageSource = "assets/imgs/avatar_secrétaire.svg";
+  imageSource ;string;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     public router: Router,
     public accountService: AccountService,
     private contactsService: ContactsService,
     private dialogService: DialogService,
     private documentService: MyDocumentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private globalService:GlobalService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
     this.errors = this.accountService.errors;
     this.isLabelShow = false;
+    this.avatars= this.globalService.avatars;
+    this.imageSource = this.avatars.secretary;
+
   }
 
   get ctr() {
@@ -65,7 +71,6 @@ export class MySecretariesComponent implements OnInit {
   }
 
   initInfoForm() {
-    this.updateCSS();
     this.infoForm = new FormGroup({
       id: new FormControl(null),
       sec_id: new FormControl(null),
@@ -81,7 +86,6 @@ export class MySecretariesComponent implements OnInit {
     });
   }
   updatePhone(p): FormGroup {
-    this.updateCSS();
     return this.formBuilder.group({
       id: [p.id ? p.id : null],
       phoneNumber: [p.phoneNumber ? p.phoneNumber : ""],
@@ -168,7 +172,7 @@ export class MySecretariesComponent implements OnInit {
         {
           id: sec.id,
           fullName: sec.fullName,
-          img: "assets/imgs/avatar_secrétaire.svg",
+          img: this.avatars.secretary,
           type: "SECRETARY",
         },
       ],
@@ -191,7 +195,7 @@ export class MySecretariesComponent implements OnInit {
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            user.img = "assets/imgs/avatar_secrétaire.svg";
+            user.img = this.avatars.secretary;
           }
         );
       });
@@ -209,7 +213,7 @@ export class MySecretariesComponent implements OnInit {
         let ok = myReader.readAsDataURL(response.body);
       },
       (error) => {
-        this.image = "assets/imgs/avatar_secrétaire.svg";
+        this.image = this.avatars.secretary;
       }
     );
   }
@@ -221,7 +225,6 @@ export class MySecretariesComponent implements OnInit {
         this.getPictureProfile(value.secretary.photoId);
       }
       if (this.selectedSecretary?.otherPhones && this.selectedSecretary?.otherPhones.length != 0) {
-        this.updateCSS();
         this.isLabelShow = true;
         this.selectedSecretary.otherPhones.forEach(p =>
           this.phoneList.push(this.updatePhone(p)));
@@ -237,7 +240,6 @@ export class MySecretariesComponent implements OnInit {
         picture: value.secretary ? value.secretary.photoId : null,
         otherPhones: value.secretary.otherPhones ? this.phoneList : []
       });
-      this.updateCSS();
       this.infoForm.disable();
       this.isEdit = true;
       this.isList = false;
@@ -263,26 +265,5 @@ export class MySecretariesComponent implements OnInit {
             });
         }
       });
-  }
-  updateCSS() {
-    $(document).ready(function () {
-      $("input").prop("disabled", true);
-      $(".form-control").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("pointer-events", "none");
-      });
-      $(".dropbtn.btn").each(function () {
-        $(this).attr("disabled", true);
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border-color", "#F1F1F1");
-        $(this).css("padding", "8px");
-        $(this).css("pointer-events", "none");
-      });
-      $(".arrow-down").each(function () {
-        $(this).css("background", "#F1F1F1");
-        $(this).css("border", "0px");
-      });
-    });
   }
 }

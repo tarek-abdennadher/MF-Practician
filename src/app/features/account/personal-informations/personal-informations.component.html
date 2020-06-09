@@ -25,8 +25,7 @@
   <div class="col-md-12">
     <div class="form-group title">
       <hr width="3%" color="#ff0063" align="left" />
-      <i class="far fa-user-cog"><span *ngIf="!isPatientFile">&nbsp;&nbsp;{{ messages.my_info }}</span>
-        <span *ngIf="isPatientFile">&nbsp;&nbsp;{{ messages.patient_info }}</span></i>
+      <i class="far fa-user-cog"><span>&nbsp;&nbsp;{{ messages.my_info }}</span></i>
     </div>
   </div>
   <br />
@@ -55,7 +54,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row" *ngIf="!isPatientFile && !isPractician">
+            <div class="form-group row" *ngIf="!isPractician">
               <label for="last_name" class="col-sm-3 col-form-label">{{
                 labels.last_name
               }}</label>
@@ -71,7 +70,7 @@
               </div>
             </div>
           </div>
-          <div class="col" *ngIf="!isPatientFile">
+          <div class="col">
             <div class="col-sm-2 col-md-2 image-container">
               <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
                 [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
@@ -96,15 +95,13 @@
         <div class="row" *ngIf="isPractician">
           <div class="col">
             <div class="form-group row">
-              <label *ngIf="!this.isPatientFile" for="title" class="col-sm-3 col-form-label">{{ labels.title }}</label>
-              <label *ngIf="this.isPatientFile" for="title"
-                class="col-sm-3 col-form-label">{{ labels.civility }}</label>
-              <div *ngIf="!isPatientFile" class="col-sm-9">
+              <label for="title" class="col-sm-3 col-form-label">{{ labels.title }}</label>
+              <div class="col-sm-9">
                 <select formControlName="title" class="civility custom-select"
                   [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="title">
                   <option value="null" disabled="true">{{ labels.title }}</option>
-                  <option value="Docteur">Dr</option>
-                  <option value="Professeur">Pr</option>
+                  <option *ngFor="let item of jobTitlesList" value="{{ item }}">{{ item | JobTitle }}
+                  </option>
                 </select>
                 <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
                   <div *ngIf="ctr.title.errors.required">
@@ -112,15 +109,8 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="isPatientFile" class="col-sm-9">
-                <select [attr.disabled]="isPatientFile" formControlName="civility" class="civility custom-select"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }">
-                  <option value="M">M</option>
-                  <option value="MME">Mme</option>
-                </select>
-              </div>
             </div>
-            <div *ngIf="!isPatientFile" class="form-group row">
+            <div class="form-group row">
               <label for="speciality" class="col-sm-3 col-form-label">{{
                 labels.speciality
               }}</label>
@@ -140,27 +130,11 @@
                 </div>
               </div>
             </div>
-
-            <div *ngIf="isPatientFile" class="form-group row">
-              <label for="birthday" class="col-sm-3 col-form-label">{{
-                labels.birth_date
-              }}</label>
-              <div class="col-sm-9 input-icons">
-                <i class="fa fa-calendar icon"></i>
-                <input disabled type="text" formControlName="birthday" class="calender form-control input-field"
-                  placeholder="{{ messages.birth_date}}" [bsConfig]="{dateInputFormat: 'DD/MM/YYYY'}" bsDatepicker />
-              </div>
-            </div>
           </div>
           <div class="col">
             <div class="col-sm-2 col-md-2 image-container">
-              <img [src]="
-                  isPatientFile
-                    ? infoPatient?.img
-                    : image
-                    ? image
-                    : 'assets/imgs/user.png'
-                " alt="Profile" [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
+              <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
+                [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
               <div class="middle">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons">
                   <div class="row">
@@ -181,7 +155,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <div class="form-group row" *ngIf="isPatientFile || isPractician">
+            <div class="form-group row" *ngIf="isPractician">
               <label for="last_name" class="col-sm-3 col-form-label">{{
                 labels.last_name
               }}</label>
@@ -211,7 +185,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row" *ngIf="!isPatientFile && !isPractician">
+            <div class="form-group row" *ngIf="!isPractician">
               <label for="email" class="col-sm-3 col-form-label">{{
                 labels.email_input
               }}</label>
@@ -245,13 +219,12 @@
                 labels.additional_address
               }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="additional_address" class="form-control" id="additional_address"
-                  [ngClass]="{ 'is-invalid': submitted }" />
+                <input type="text" formControlName="additional_address" class="form-control" id="additional_address" />
               </div>
             </div>
           </div>
           <div class="col">
-            <div class="form-group row" *ngIf="isPatientFile || isPractician">
+            <div class="form-group row" *ngIf="isPractician">
               <label for="email" class="col-sm-3 col-form-label">{{
                 labels.email_input
               }}</label>
@@ -286,28 +259,13 @@
                   {{ errors.invalid_phone }}
                 </div>
               </div>
-              <div *ngIf="!isPatientFile" class="col-sm-1">
+              <div class="col-sm-1">
                 <button (click)="addPhone()" class="btn btn-xs btn-icon">
                   <i class="far fa-plus"></i>
                 </button>
               </div>
             </div>
-            <div class="form-group row" *ngIf="isPatientFile">
-              <label for="category" class="col-sm-3 col-form-label">Catégorie</label>
-              <div class="col-sm-9">
-                <select formControlName="category" class="civility custom-select"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="category">
-                  <option value="null" disabled="true"></option>
-                  <option *ngFor="let cat of mesCategories" [ngValue]="cat.id">{{cat.name}}</option>
-                </select>
-                <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
-                  <div *ngIf="ctr.civility.errors.required">
-                    {{ labels.required }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div *ngIf="!isPatientFile" class="form-group row">
+            <div class="form-group row">
               <label *ngIf="isLabelShow" for="other_phone"
                 class="col-sm-3 col-form-label">{{ labels.other_phone }}</label>
               <div id="otherPhone" class="col-sm-9">
@@ -320,7 +278,7 @@
         </div>
       </div>
       <br />
-      <div *ngIf="!isPatientFile" class="row justify-content-center">
+      <div class="row justify-content-center">
         <button (click)="submit()" type="submit" class="btn btn-primary">
           <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
         </button>
@@ -337,18 +295,13 @@
           </p>
         </div>
       </div>
-      <div class="row justify-content-center" *ngIf="isPatientFile">
-        <button type="button" class="btn btn-primary" (click)="updatePatientFile()">
-          <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
-        </button>
-      </div>
     </form>
   </div>
 </div>
 
 <br />
 
-<div *ngIf="!isPatientFile" class="card">
+<div class="card">
   <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
     class="alert alert-success alert-dismissible fade show pointer" role="alert">
     {{ messages.edit_password_success }}
@@ -423,8 +376,8 @@
             </div>
           </div>
           <div class="row justify-content-center">
-            <lib-hls-password-strength *ngIf="!isPatientFile" id="checkstrength"
-              [passwordToCheck]="passwordForm.value.new_password" (passwordStrength)="passwordValid($event)">
+            <lib-hls-password-strength id="checkstrength" [passwordToCheck]="passwordForm.value.new_password"
+              (passwordStrength)="passwordValid($event)">
             </lib-hls-password-strength>
           </div>
           <br />

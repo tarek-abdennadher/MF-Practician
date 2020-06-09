@@ -8,6 +8,7 @@ import { observable, forkJoin, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
+import { CivilityPipe } from '@app/shared/pipes/civility.pipe';
 
 @Component({
   selector: "app-documents-list",
@@ -24,7 +25,7 @@ export class DocumentsListComponent implements OnInit {
   observables = [];
   attachementsList: any[];
   itemList = [];
-  imageSource = "assets/imgs/user.png";
+  imageSource : string;
   public filterDocumentsForm: FormGroup;
   documentTypes = new Set();
   destinations = new Set();
@@ -34,18 +35,23 @@ export class DocumentsListComponent implements OnInit {
   pageNo = 0;
   listLength = 0;
   scroll = false;
+  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private globalService: GlobalService,
     private route: ActivatedRoute,
     public documentsService: MyDocumentsService,
     private _location: Location,
     private formBuilder: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private civilityPipe: CivilityPipe
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
       destination: [""],
     });
+    this.avatars = this.globalService.avatars;
+    this.imageSource = this.avatars.user;
+
   }
 
   ngOnInit(): void {
@@ -76,47 +82,78 @@ export class DocumentsListComponent implements OnInit {
           (response) => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
-              this.documentsService.person = {
-                fullName: details.fullName,
-                picture: myReader.result,
-              };
+              if (account.role == "PRACTICIAN") {
+                this.documentsService.person = {
+                  fullName: `${details.jobTitle} ${details.fullName}`,
+                  picture: myReader.result,
+                };
+              } else {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: myReader.result,
+                };
+              }
             };
             let ok = myReader.readAsDataURL(response.body);
           },
           (error) => {
-            this.documentsService.person = {
-              fullName: details.fullName,
-              picture: "assets/imgs/user.png",
-            };
+            if (account.role == "PATIENT") {
+              if (details.civility == "M") {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: this.avatars.man,
+                };
+              } else if (details.civility == "MME") {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: this.avatars.women,
+                };
+              } else if (details.civility == "CHILD") {
+                this.documentsService.person = {
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                  picture: this.avatars.child,
+                };
+              }
+            } else if (account.role == "PRACTICIAN") {
+              this.documentsService.person = {
+                fullName: `${details.jobTitle} ${details.fullName}`,
+                picture: this.avatars.doctor,
+              };
+            } else if (account.role == "SECRETARY") {
+              this.documentsService.person = {
+                fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+                picture: this.avatars.secretary,
+              };
+            }
           }
         );
       } else {
         if (account.role == "PATIENT") {
           if (details.civility == "M") {
             this.documentsService.person = {
-              fullName: details.fullName,
-              picture: "assets/imgs/avatar_homme.svg",
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+              picture: this.avatars.man,
             };
           } else if (details.civility == "MME") {
             this.documentsService.person = {
-              fullName: details.fullName,
-              picture: "assets/imgs/avatar_femme.svg",
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+              picture: this.avatars.women,
             };
           } else if (details.civility == "CHILD") {
             this.documentsService.person = {
-              fullName: details.fullName,
-              picture: "assets/imgs/avatar_enfant.svg",
+              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+              picture: this.avatars.child,
             };
           }
         } else if (account.role == "PRACTICIAN") {
           this.documentsService.person = {
-            fullName: details.fullName,
-            picture: "assets/imgs/avatar_docteur.svg",
+            fullName: `${details.jobTitle} ${details.fullName}`,
+            picture: this.avatars.doctor,
           };
         } else if (account.role == "SECRETARY") {
           this.documentsService.person = {
-            fullName: details.fullName,
-            picture: "assets/imgs/avatar_secrétaire.svg",
+            fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
+            picture: this.avatars.secretary,
           };
         }
       }
@@ -188,6 +225,7 @@ export class DocumentsListComponent implements OnInit {
       time: attachement.updatedAt,
       download: true,
       visualize: true,
+      realName: node.name
     };
   }
 
@@ -230,7 +268,7 @@ export class DocumentsListComponent implements OnInit {
       .downloadFile(attachement.nodeId)
       .subscribe((response) => {
         const blob = new Blob([response.body]);
-        const filename = attachement.users[0].fullName;
+        const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
@@ -263,7 +301,7 @@ export class DocumentsListComponent implements OnInit {
     this.documentsService
       .downloadFile(attachement.nodeId)
       .subscribe((response) => {
-        const filename = attachement.users[0].fullName;
+        const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
@@ -296,8 +334,8 @@ export class DocumentsListComponent implements OnInit {
       var win = window.open();
       win.document.write(
         '<iframe src="' +
-          fileURL +
-          '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+        fileURL +
+        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
       );
     }
   }
