@@ -9,7 +9,7 @@
 
   <div class="col-md-5 form-inline">
     <form [formGroup]="searchForm" class="form-inline col-md-12">
-      <div class="col-md-11">
+      <div class="col-md-12">
         <input
           tabindex="1"
           id="patients"
@@ -18,12 +18,15 @@
           type="text"
           class="form-control"
           (change)="searchActionClicked()"
+          [(ngModel)]="valueSearch"
+          (focusin)="onFocusInputSearch(true)"
+          (focusout)="onFocusInputSearch(false)"
         />
+        <span>
+        <i (click)="searchActionClicked()" class="fa fa-search custom-search-style"  [ngClass]="valueSearchSelected && valueSearch? 'm-r-70' : ''"></i>
+      </span>
       </div>
 
-      <div class="col-md-1">
-        <i (click)="searchActionClicked()" class="fa fa-search"></i>
-      </div>
     </form>
   </div>
   <form *ngIf="section =='accepted' " class="col-md-2"
