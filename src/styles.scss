@@ -88,7 +88,7 @@ a {
   padding: 0px !important;
 }
 
-/* mat-confirm-dialog (customised dialog) */
+  /* mat-confirm-dialog (customised dialog) */
 .confirm-dialog-container .mat-dialog-container {
   box-shadow: 0px 2px 0px #0000000d;
   border-radius: 23px;
@@ -181,3 +181,14 @@ a {
       international-phone-number .dropdown button.dropbtn.btn .arrow-down {
         border-bottom:#f1f1f1;}
       }
+
+/* ======= Override  international-phone-number component style ======= */
+
+.dropbtn .flag {
+  margin-bottom: 0.1em;
+  margin-right: 0.2em;
+}
+.flagInput {
+  margin-right: 0.16em;
+}
+/* ====================================================================== */
