@@ -96,4 +96,34 @@ export class MyDocumentsService {
     );
     return this.http.request(req);
   }
+
+  getMySendersAndreceiversDetailsByObject(object:string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/mySendersAndReceivers/object/"+object
+    );
+  }
+  getMySendersAndreceiversDetailsBySenderForId(senderForId:string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/mySendersAndReceivers/senderFor/"+senderForId
+    );
+  }
+
+  getMySendersAndreceiversDetailsBySenderForIdAndObject(senderForId:string,object:string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/mySendersAndReceivers/object/"+object+"/senderFor/"+senderForId
+    );
+  }
+
+  getAllObjects():Observable<Set<string>>{
+    return this.globalService.call(RequestType.GET,
+      this.globalService.url.attachements+"/allObjects");
+  }
+
+  getMyObjects(id:number):Observable<Set<string>>{
+    return this.globalService.call(RequestType.GET,
+      this.globalService.url.attachements+"/myObjects/" + id);
+  }
 }
