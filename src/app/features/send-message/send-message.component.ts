@@ -33,6 +33,7 @@ export class SendMessageComponent implements OnInit {
   toList: Subject<any[]> = new Subject<any[]>();
   forList: Subject<any[]> = new Subject<any[]>();
   objectsList = [];
+  requestTypeList = [];
   selectedFiles: any;
   links = {};
   page = this.globalService.messagesDisplayScreen.inbox;
@@ -42,6 +43,12 @@ export class SendMessageComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  objectsListForTls = [
+    {id: 1111, name: "Instructions Urgentes", information: "Instructions Urgentes", body: ""},
+    {id: 2222,name: "Reports de rdv", information: "Reports de rdv", body: ""},
+    {id: 3333,name: "Modifications de plannings", information: "Modifications de plannings", body: ""},
+    {id: 4444,name: "Instructions diverses", information: "Instructions diverses", body: ""},
+  ];
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService,
@@ -256,7 +263,7 @@ export class SendMessageComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((requestTypes: any) => {
-          this.objectsList = requestTypes;
+          this.requestTypeList = requestTypes;
         })
       );
   }
@@ -347,6 +354,17 @@ export class SendMessageComponent implements OnInit {
   }
   addProContactAction() {
     this.router.navigate(["/praticien-recherche"]);
+  }
+
+  getSelectedToList(event) {
+    if (event) {
+      if(event.type == "TELESECRETARYGROUP") {
+        this.objectsList = this.objectsListForTls;
+      } else {
+        this.objectsList = this.requestTypeList;
+      }
+    }
+
   }
 
   goToBack() {

@@ -15,6 +15,7 @@
   [imagedropdown]="imageDropdown"
   (sendEmailAction)="sendMessage($event)"
   (addProContactAction)="addProContactAction()"
+  (toListAction)= "getSelectedToList($event)"
 ></lib-hls-send-message>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
