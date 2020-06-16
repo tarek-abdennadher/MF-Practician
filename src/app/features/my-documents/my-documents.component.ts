@@ -126,6 +126,8 @@ export class MyDocumentsComponent implements OnInit {
         return senderDetail.practician;
       case "SECRETARY":
         return senderDetail.secretary;
+      case "TELESECRETARYGROUP":
+        return senderDetail.telesecretaryGroup;
       default:
         return null;
     }
