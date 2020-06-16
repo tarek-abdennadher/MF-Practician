@@ -44,6 +44,8 @@ export class MyPatientsComponent implements OnInit {
   mesCategories = [];
   public filterPatientsForm: FormGroup;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  public valueSearch;
+  public valueSearchSelected;
 
   constructor(
     private globalService: GlobalService,
@@ -328,6 +330,7 @@ export class MyPatientsComponent implements OnInit {
     this.filtredPatients =
       filterBy != null ? this.performFilter(filterBy) : this.myPatients;
   }
+
   writeAction(item) {
     this.router.navigate(["/messagerie-ecrire/"], {
       queryParams: {
@@ -405,6 +408,13 @@ export class MyPatientsComponent implements OnInit {
             });
         }
       });
+  }
+
+  public onFocusInputSearch(value: boolean) {
+    if (value === true && !(/\S/.test(this.valueSearch))) {
+      this.valueSearch = null;
+    }
+    this.valueSearchSelected = value;
   }
 
   refuseAction(item) {

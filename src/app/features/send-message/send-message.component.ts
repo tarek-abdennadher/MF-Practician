@@ -24,15 +24,16 @@ import { NgxSpinnerService } from "ngx-spinner";
 export class SendMessageComponent implements OnInit {
   public uuid: string;
   private _destroyed$ = new Subject();
-  imageSource: any ;
-  imageDropdown : string;
+  imageSource: any;
+  imageDropdown: string;
   connectedUserType = "MEDICAL";
   user = this.localSt.retrieve("user");
   role = this.localSt.retrieve("role");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
-  forList = [];
+  forList: Subject<any[]> = new Subject<any[]>();
   objectsList = [];
+  requestTypeList = [];
   selectedFiles: any;
   links = {};
   page = this.globalService.messagesDisplayScreen.inbox;
@@ -42,6 +43,12 @@ export class SendMessageComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  objectsListForTls = [
+    {id: 1111, name: "Instructions Urgentes", information: "Instructions Urgentes", body: ""},
+    {id: 2222,name: "Reports de rdv", information: "Reports de rdv", body: ""},
+    {id: 3333,name: "Modifications de plannings", information: "Modifications de plannings", body: ""},
+    {id: 4444,name: "Instructions diverses", information: "Instructions diverses", body: ""},
+  ];
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService,
@@ -95,8 +102,8 @@ export class SendMessageComponent implements OnInit {
       this.connectedUserType = "SECRETARY";
       this.featureService.myPracticians.subscribe(
         (val) => {
-          this.forList = val;
-          this.forList.forEach((item) => {
+          let list = [];
+          val.forEach((item) => {
             if (item.photo) {
               this.documentService.downloadFile(item.photo).subscribe(
                 (response) => {
@@ -113,13 +120,15 @@ export class SendMessageComponent implements OnInit {
             } else {
               item.img = this.avatars.doctor;
             }
+            list.push(item);
           });
+          this.forList.next(list);
         }
       );
     }
     forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {});
+      .subscribe((res) => { });
   }
 
   getAllContactsPractician() {
@@ -254,7 +263,7 @@ export class SendMessageComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((requestTypes: any) => {
-          this.objectsList = requestTypes;
+          this.requestTypeList = requestTypes;
         })
       );
   }
@@ -268,8 +277,8 @@ export class SendMessageComponent implements OnInit {
     });
     message.cc
       ? message.cc.forEach((cc) => {
-          newMessage.ccReceivers.push({ receiverId: cc.id });
-        })
+        newMessage.ccReceivers.push({ receiverId: cc.id });
+      })
       : null;
 
     newMessage.sender = {
@@ -278,7 +287,7 @@ export class SendMessageComponent implements OnInit {
       sendedForId: message.for && message.for.id ? message.for.id : null,
     };
     message.object != "" &&
-    message.object[0].name.toLowerCase() !=
+      message.object[0].name.toLowerCase() !=
       this.globalService.messagesDisplayScreen.other
       ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
@@ -345,6 +354,17 @@ export class SendMessageComponent implements OnInit {
   }
   addProContactAction() {
     this.router.navigate(["/praticien-recherche"]);
+  }
+
+  getSelectedToList(event) {
+    if (event) {
+      if(event.type == "TELESECRETARYGROUP") {
+        this.objectsList = this.objectsListForTls;
+      } else {
+        this.objectsList = this.requestTypeList;
+      }
+    }
+
   }
 
   goToBack() {

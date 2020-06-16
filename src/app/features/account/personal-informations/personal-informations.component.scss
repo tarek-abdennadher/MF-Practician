@@ -253,7 +253,12 @@ background-color: $input-color;
       }
       international-phone-number .dropdown button.dropbtn.btn .arrow-down {
         border-bottom:#f1f1f1;}
+      international-phone-number button.dropbtn.btn{
+        pointer-events : unset!important;
+  }
       }
       .form-control{
         height: 40px;
       }
+
+
