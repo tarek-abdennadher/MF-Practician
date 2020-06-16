@@ -113,6 +113,12 @@ export class FeaturesService {
     return decoded.cred_key;
   }
 
+  getExpiretime() {
+    const token = this.localSt.retrieve("token");
+    var decoded = jwt_decode(token);
+    return new Date(decoded.exp*1000);
+  }
+
   getCountOfMyArchieve() {
     return this.globalService.call(
       RequestType.GET,
