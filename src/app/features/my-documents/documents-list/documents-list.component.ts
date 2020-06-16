@@ -57,8 +57,15 @@ export class DocumentsListComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.idSenderReceiver = params["id"];
-      this.getAttachementById(this.idSenderReceiver, this.pageNo);
     });
+    this.route.queryParams.subscribe(
+      params => {
+        this.filterDocumentsForm.patchValue({
+          documentType: params["type"],
+        });
+        this.filter();
+      }
+    );
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);
   }

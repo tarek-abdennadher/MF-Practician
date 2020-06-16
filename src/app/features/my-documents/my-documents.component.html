@@ -1,12 +1,18 @@
 <div class="form-inline col-md-12">
   <lib-hlsLinks
-    class="col-md-9 padd-right bloc-links"
+    class="col-md-7 padd-right bloc-links"
     [page]="page"
     [topText]="topText"
     [backButton]="backButton"
     (backButtonAction)="goBack()"
   >
   </lib-hlsLinks>
+  <form [formGroup]="filterDocumentsForm" class="col-md-2">
+    <select id="documentType" class="form-control col-md-12" formControlName="documentType" (change)="filter()">
+      <option [value]="''"> Type</option>
+      <option *ngFor="let item of documentTypes" [value]="item">{{ item }}</option>
+    </select>
+  </form>
   <div class="col-md-3 input-icons bloc-search">
     <input
       tabindex="1"

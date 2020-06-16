@@ -12,6 +12,8 @@ enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { PatientSerch } from "../my-patients/my-patients";
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { AccountService } from '../services/account.service';
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
@@ -31,20 +33,34 @@ export class MyDocumentsComponent implements OnInit {
   search: string;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
 
+  public filterDocumentsForm: FormGroup;
+
+  destinations = new Set();
+  documentTypes = new Set();
+
+  account: any;
+  linkedPatients: any;
   constructor(
     private mydocumentsService: MyDocumentsService,
     private globalService: GlobalService,
     private _location: Location,
     public router: Router,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private formBuilder: FormBuilder,
+    private accountService: AccountService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
+    this.filterDocumentsForm = this.formBuilder.group({
+      documentType: [""],
+      destination: [""],
+    });
   }
 
   ngOnInit(): void {
     this.getMySendersAndReceivers();
+    this.getAllObjects();
+    this.getPersonalInfo();
   }
 
   getMySendersAndReceivers() {
@@ -151,7 +167,11 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/mes-documents/list/" + item.id]);
+    this.router.navigate(["/mes-documents/list/" + item.id],{
+      queryParams: {
+        type: this.filterDocumentsForm.value.documentType
+      },
+    });
   }
 
   searchAction() {
@@ -198,5 +218,187 @@ export class MyDocumentsComponent implements OnInit {
     });
     atcObj.appendTo("#patients");
     atcObj.showSpinner();
+  }
+  getMySendersAndReceiversBySenderForAndObject(senderFor,object){
+    this.mydocumentsService
+      .getMySendersAndreceiversDetailsBySenderForIdAndObject(senderFor,object)
+      .subscribe((sendersAndReceivers) => {
+        sendersAndReceivers.forEach((element) => {
+          let senderAndReceiver = this.mappingSendersAndReceivers(element);
+          this.itemsList.push(senderAndReceiver);
+        });
+        this.itemsList.forEach((item) => {
+          if (item.photoId) {
+            item.users.forEach((user) => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          } else {
+            item.users.forEach((user) => {
+              if (user.type == "MEDICAL") {
+                user.img = this.avatars.doctor;
+              } else if (user.type == "SECRETARY") {
+                user.img = this.avatars.secretary;
+              }else if (user.type == "TELESECRETARYGROUP") {
+                user.img = this.avatars.tls;
+              } else if (user.type == "PATIENT") {
+                if (user.civility == "M") {
+                  user.img = this.avatars.man;
+                } else if (user.civility == "MME") {
+                  user.img = this.avatars.women;
+                } else if (user.civility == "CHILD") {
+                  user.img = this.avatars.child;
+                }
+              }
+            });
+          }
+        });
+      });
+  }
+  getMySendersAndReceiversBySenderFor(senderFor){
+    this.mydocumentsService
+    .getMySendersAndreceiversDetailsBySenderForId(senderFor)
+    .subscribe((sendersAndReceivers) => {
+      sendersAndReceivers.forEach((element) => {
+        let senderAndReceiver = this.mappingSendersAndReceivers(element);
+        this.itemsList.push(senderAndReceiver);
+      });
+      this.itemsList.forEach((item) => {
+        if (item.photoId) {
+          item.users.forEach((user) => {
+            this.documentService.downloadFile(item.photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  user.img = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                user.img = "assets/imgs/user.png";
+              }
+            );
+          });
+        } else {
+          item.users.forEach((user) => {
+            if (user.type == "MEDICAL") {
+              user.img = this.avatars.doctor;
+            } else if (user.type == "SECRETARY") {
+              user.img = this.avatars.secretary;
+            }else if (user.type == "TELESECRETARYGROUP") {
+              user.img = this.avatars.tls;
+            } else if (user.type == "PATIENT") {
+              if (user.civility == "M") {
+                user.img = this.avatars.man;
+              } else if (user.civility == "MME") {
+                user.img = this.avatars.women;
+              } else if (user.civility == "CHILD") {
+                user.img = this.avatars.child;
+              }
+            }
+          });
+        }
+      });
+    });
+  }
+  getMySendersAndReceiversByObject(object){
+    this.mydocumentsService
+    .getMySendersAndreceiversDetailsByObject(object)
+    .subscribe((sendersAndReceivers) => {
+      sendersAndReceivers.forEach((element) => {
+        let senderAndReceiver = this.mappingSendersAndReceivers(element);
+        this.itemsList.push(senderAndReceiver);
+      });
+      this.itemsList.forEach((item) => {
+        if (item.photoId) {
+          item.users.forEach((user) => {
+            this.documentService.downloadFile(item.photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  user.img = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                user.img = "assets/imgs/user.png";
+              }
+            );
+          });
+        } else {
+          item.users.forEach((user) => {
+            if (user.type == "MEDICAL") {
+              user.img = this.avatars.doctor;
+            } else if (user.type == "SECRETARY") {
+              user.img = this.avatars.secretary;
+            }else if (user.type == "TELESECRETARYGROUP") {
+              user.img = this.avatars.tls;
+            } else if (user.type == "PATIENT") {
+              if (user.civility == "M") {
+                user.img = this.avatars.man;
+              } else if (user.civility == "MME") {
+                user.img = this.avatars.women;
+              } else if (user.civility == "CHILD") {
+                user.img = this.avatars.child;
+              }
+            }
+          });
+        }
+      });
+    });
+  }
+  getAllObjects(){
+    this.documentService.getAllObjects().subscribe(objects => {
+      this.documentTypes = objects;
+    })
+  }
+  getPersonalInfo() {
+    this.accountService.getCurrentAccount().subscribe((account) => {
+      if (account && account.patient) {
+        this.account = account.patient;
+        this.linkedPatients = this.account.linkedPatients;
+        this.linkedPatients.forEach((patient) => {
+          this.destinations.add(patient);
+        });
+      }
+    });
+  }
+  filter() {
+    this.itemsList = [];
+    if (
+      this.filterDocumentsForm.value.destination != "" &&
+      this.filterDocumentsForm.value.documentType != ""
+    ) {
+      this.getMySendersAndReceiversBySenderForAndObject(
+        this.filterDocumentsForm.value.destination,
+        this.filterDocumentsForm.value.documentType
+      );
+    } else if (
+      this.filterDocumentsForm.value.destination != "" &&
+      this.filterDocumentsForm.value.documentType == ""
+    ) {
+      this.getMySendersAndReceiversBySenderFor(
+        this.filterDocumentsForm.value.destination
+      );
+    } else if (
+      this.filterDocumentsForm.value.destination == "" &&
+      this.filterDocumentsForm.value.documentType != ""
+    ) {
+      this.getMySendersAndReceiversByObject(
+        this.filterDocumentsForm.value.documentType
+      );
+    } else {
+      this.getMySendersAndReceivers();
+    }
   }
 }
