@@ -51,6 +51,10 @@
   outline: none;
 }
 
+::ng-deep .e-input-focus {
+   padding-right: 0 !important;
+}
+
 .form-inline .form-control {
   display: inline-block !important;
   width: 100%;
