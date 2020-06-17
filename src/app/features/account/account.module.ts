@@ -17,6 +17,7 @@ import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
 import { PipesModule } from '@app/shared/pipes/pipes.module';
+import { MyContactsComponent } from './my-contacts/my-contacts.component';
 @NgModule({
   declarations: [
     MyAccountComponent,
@@ -26,6 +27,7 @@ import { PipesModule } from '@app/shared/pipes/pipes.module';
     StatsComponent,
     CategoryComponent,
     CategoryDetailComponent,
+    MyContactsComponent,
   ],
   imports: [
     FormsModule,
