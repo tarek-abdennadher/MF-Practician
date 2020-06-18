@@ -1,6 +1,13 @@
 <br />
 <div class="card">
     <br />
+    <notifier-container></notifier-container>
+    <ng-template #customNotification let-notificationData="notification">
+        <div class="text-center" type="notificationData.type">
+            <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+            &nbsp;<span>{{ notificationData.message }}</span>
+        </div>
+    </ng-template>
     <div class="row">
         <div class="col-md-10">
             <div class="form-group title">
@@ -8,7 +15,7 @@
                 <i class="far fa-user-md"><span>&nbsp;&nbsp;{{ labels.my_contacts }}</span></i>
             </div>
         </div>
-        <a class="inline col-md-1">
+        <a (click)="addAction()" class="inline col-md-1">
             <i class="far fa-plus"></i><br /><span>Ajouter</span>
         </a>
     </div>

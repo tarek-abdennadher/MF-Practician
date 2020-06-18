@@ -8,6 +8,14 @@
         </div>
     </div>
     <br />
+    <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
+        class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+        {{ messages.phone_error }}
+        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </a>
+    <br />
     <notifier-container></notifier-container>
     <ng-template #customNotification let-notificationData="notification">
         <div class="text-center" type="notificationData.type">
@@ -15,6 +23,7 @@
             &nbsp;<span>{{ notificationData.message }}</span>
         </div>
     </ng-template>
+
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
         <div class="container">
             <div class="row">

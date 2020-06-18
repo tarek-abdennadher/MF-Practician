@@ -49,7 +49,7 @@ export class MyContactDetailComponent implements OnInit {
     this.initInfoForm();
     this.practicianId = this.featureService.getUserId();
     this.route.params.subscribe((params) => {
-      if (params["id"]) {
+      if (params["id"] != "add") {
         this.action = "edit";
         this.contactId = params["id"];
         this.getContactById(this.contactId);
@@ -114,16 +114,15 @@ export class MyContactDetailComponent implements OnInit {
     };
     if (this.action == "add") {
       this.service
-        .addContactBookToPractician(this.infoForm.value.practicianId, model)
+        .addContactBookToPractician(this.practicianId, model)
         .subscribe((result) => {
           if (result) {
-            this.notifMessage = this.service.messages.add_success;
-            this.notifier.show({
-              message: this.notifMessage,
-              type: "info",
-              template: this.customNotificationTmpl,
-            });
             this.submitted = false;
+            this.router.navigate(["/compte/mes-contacts"], {
+              queryParams: {
+                status: "createSuccess",
+              },
+            });
           } else {
             this.notifMessage = this.service.messages.add_fail;
             this.notifier.show({
@@ -137,13 +136,12 @@ export class MyContactDetailComponent implements OnInit {
     } else {
       this.service.updateContactBook(model).subscribe((result) => {
         if (result) {
-          this.notifMessage = this.service.messages.edit_info_success;
-          this.notifier.show({
-            message: this.notifMessage,
-            type: "info",
-            template: this.customNotificationTmpl,
-          });
           this.submitted = false;
+          this.router.navigate(["/compte/mes-contacts"], {
+            queryParams: {
+              status: "editSuccess",
+            },
+          });
         } else {
           this.notifMessage = this.service.messages.failed_update;
           this.notifier.show({

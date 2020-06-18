@@ -24,7 +24,8 @@ export class ContactBookService {
         edit_info_success: "Informations du contact modifiées avec succès.",
         failed_update: "Erreur survenue lors de la modification des informations du contact.",
         delete_contact_confirm: "Êtes-vous sûr de vouloir supprimer ce contact ?",
-        delete_contact: "Supprimer un contact"
+        delete_contact: "Supprimer un contact",
+        phone_error: "      Veuillez vérifier les téléphones saisis"
 
     };
     constructor(private globalService: GlobalService) { }

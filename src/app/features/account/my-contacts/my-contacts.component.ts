@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GlobalService } from '@app/core/services/global.service';
 import { AccountService } from '@app/features/services/account.service';
 import { LocalStorageService } from 'ngx-webstorage';
@@ -6,6 +6,7 @@ import { FeaturesService } from '@app/features/features.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ContactBookService } from '@app/features/services/contact-book.service';
 import { DialogService } from '@app/features/services/dialog.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-my-contacts',
@@ -13,6 +14,7 @@ import { DialogService } from '@app/features/services/dialog.service';
   styleUrls: ['./my-contacts.component.scss']
 })
 export class MyContactsComponent implements OnInit {
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   public labels: any;
   errorMessage = "";
   successMessage = "";
@@ -20,6 +22,7 @@ export class MyContactsComponent implements OnInit {
   itemsList: Array<any> = [];
   public imageSource;
   public practicianId;
+  private readonly notifier: NotifierService;
   constructor(
     private globalService: GlobalService,
     private accountService: AccountService,
@@ -28,13 +31,31 @@ export class MyContactsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private contactBookService: ContactBookService,
-    private dialogService: DialogService) {
+    private dialogService: DialogService,
+    notifierService: NotifierService) {
+    this.notifier = notifierService;
     this.labels = this.accountService.messages;
     this.imageSource = this.globalService.avatars.user;
     this.practicianId = this.featureService.getUserId();
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params["status"] == "createSuccess") {
+        this.notifier.show({
+          message: this.contactBookService.messages.add_success,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
+      if (params["status"] == "editSuccess") {
+        this.notifier.show({
+          message: this.contactBookService.messages.edit_info_success,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
+    });
     this.getMyContacts();
   }
 
@@ -77,6 +98,11 @@ export class MyContactsComponent implements OnInit {
   cardClicked(contact) {
     this.router.navigate([`${contact.id}`], { relativeTo: this.route });
   }
+
+  addAction() {
+    this.router.navigate([`add`], { relativeTo: this.route });
+  }
+
   delete(event) {
     this.dialogService
       .openConfirmDialog(
