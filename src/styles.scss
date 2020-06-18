@@ -7,10 +7,12 @@
   font-family: "Segoe UI Bold";
   src: url("./assets/fonts/Segoe-UI-Bold.ttf");
 }
+
 @font-face {
   font-family: "Segoe UI Medium";
   src: url("./assets/fonts/Segoe-UI-Medium.ttf");
 }
+
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
 // Include the common styles for Angular Material. We include this here so that you only
@@ -37,9 +39,9 @@ $patient-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $patient-theme: mat-light-theme(
-  $patient-primary,
-  $patient-accent,
-  $patient-warn
+    $patient-primary,
+    $patient-accent,
+    $patient-warn
 );
 
 // Include theme styles for core and each component used in your app.
@@ -66,14 +68,17 @@ body {
     zoom: 100%;
   }
 }
+
 input,
 select,
 textarea {
   font-family: "Segoe UI" !important;
 }
+
 a {
   text-decoration: unset;
 }
+
 .modal-backdrop {
   width: 100% !important;
   height: 100% !important;
@@ -82,6 +87,7 @@ a {
 .m-r-70 {
   margin-right: 50px !important;
 }
+
 /* for dialog pop-up */
 
 .btn-dialog-close {
@@ -91,22 +97,25 @@ a {
   padding: 0px !important;
 }
 
-  /* mat-confirm-dialog (customised dialog) */
+/* mat-confirm-dialog (customised dialog) */
 .confirm-dialog-container .mat-dialog-container {
   box-shadow: 0px 2px 0px #0000000d;
   border-radius: 23px;
   opacity: 1;
   padding: 0px;
 }
+
 .close {
   color: #bcbcbc !important;
 }
+
 .confirm-dialog-container .content-container {
   margin: 20px 5px 15px 5px;
   color: #bcbcbc;
   display: flex;
   text-align: center;
 }
+
 .confirm-dialog-container #close-icon {
   text-align: left;
   font-size: 20px;
@@ -117,6 +126,7 @@ a {
   padding-left: 2px;
   margin-right: 12px;
 }
+
 .confirm-dialog-container #close-icon:hover {
   cursor: pointer;
 }
@@ -162,36 +172,57 @@ a {
   opacity: 1;
   text-transform: uppercase;
 }
+
 .group-element {
   text-align: center;
   padding-top: 14px;
 }
+
 .btn-space {
   margin-right: 15px;
 }
+
 ::ng-deep {
   international-phone-number .form-control {
-        height: 30px !important;
-        border-color: #f1f1f1;
-        background-color:#f1f1f1;
-      }
-      international-phone-number .dropdown button.dropbtn.btn,  button.dropbtn.btn:hover{
-          border-color: #f1f1f1;
-          background-color:#f1f1f1;
-          padding: 4px !important;
-          height: 30px !important;
-      }
-      international-phone-number .dropdown button.dropbtn.btn .arrow-down {
-        border-bottom:#f1f1f1;}
-      }
+    height: 30px !important;
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+  }
+
+  international-phone-number .dropdown button.dropbtn.btn, button.dropbtn.btn:hover {
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+    padding: 4px !important;
+    height: 30px !important;
+  }
+
+  international-phone-number .dropdown button.dropbtn.btn .arrow-down {
+    border-bottom: #f1f1f1;
+  }
+
+}
+
+.m-px-12-5 {
+margin-left: 12.5px;
+}
 
 /* ======= Override  international-phone-number component style ======= */
 
 .dropbtn .flag {
-  margin-bottom: 0.1em;
   margin-right: 0.2em;
 }
+
+.dropbtn.btn .arrow-down {
+  margin-top: 0.55em;
+  top: 0 !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  position: unset;
+  border-bottom: unset;
+}
+
 .flagInput {
   margin-right: 0.16em;
 }
+
 /* ====================================================================== */
