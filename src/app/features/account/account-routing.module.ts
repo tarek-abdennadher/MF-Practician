@@ -9,6 +9,7 @@ import { StatsComponent } from './stats/stats.component';
 import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
 import { MyContactsComponent } from './my-contacts/my-contacts.component';
+import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path: "mes-contacts",
         component: MyContactsComponent
+      },
+      {
+        path: "mes-contacts/:id",
+        component: MyContactDetailComponent
       },
       {
         path: "mes-factures",

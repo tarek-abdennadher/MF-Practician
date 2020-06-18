@@ -9,7 +9,8 @@ $input-color: #f1f1f1;
   font-size: 18px !important;
   line-height: 0px !important;
   letter-spacing: -0.75px;
-  color: $color-helssy-grey;
+  padding-right: 15px;
+  padding-left: 15px;
   font-family: "Segoe UI" !important;
   i,
   hr {
@@ -26,6 +27,23 @@ $input-color: #f1f1f1;
     font-family: "Segoe UI Medium" !important;
   }
 }
+.inline {
+    font-family: "Segoe UI";
+    text-align: center;
+    color: $color-helssy-grey !important;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 10px;
+    line-height: 14px;
+    cursor: pointer;
+    padding-top: 26px;
+  }
+  .fa,
+    .far,
+    .fal {
+      font-size: 17px;
+      line-height: 20px;
+    }
 /* Button Css */
 .btn-icon {
   max-width: 50px;
@@ -57,6 +75,10 @@ $input-color: #f1f1f1;
   opacity: 1;
   color: white;
   font-family: "Segoe UI" !important;
+}
+.btn.btn-primary.btn-xs,
+.btn.btn-danger.btn-xs {
+  width: 40px;
 }
 /* end button CSS */
 
