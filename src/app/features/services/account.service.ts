@@ -61,7 +61,8 @@ export class AccountService {
     title_delete_account: "supprimer un compte",
     notes: "Mes notes",
     date: "Date (*)",
-    website: "Site web"
+    website: "Site web",
+    my_contacts: "Mes contacts"
   };
   public errors = {
     required: "Champs obligatoire",
@@ -175,6 +176,7 @@ export class AccountService {
   getPracticianTelesecretary() {
     return this.globalService.call(RequestType.GET,
       this.globalService.url.practician + "tls"
-      );
+    );
   }
+
 }

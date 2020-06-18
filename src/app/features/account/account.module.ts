@@ -17,6 +17,48 @@ import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
 import { PipesModule } from '@app/shared/pipes/pipes.module';
+import { MyContactsComponent } from './my-contacts/my-contacts.component';
+import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { NotifierModule, NotifierOptions } from 'angular-notifier';
+const notifierOptions: NotifierOptions = {
+  position: {
+    horizontal: {
+      position: "left",
+      distance: 400,
+    },
+    vertical: {
+      position: "top",
+      distance: 90,
+    },
+  },
+  theme: "material",
+  behaviour: {
+    autoHide: 2000,
+    onClick: false,
+    onMouseover: "pauseAutoHide",
+    showDismissButton: false,
+  },
+  animations: {
+    enabled: true,
+    show: {
+      preset: "fade",
+      speed: 1500,
+      easing: "ease",
+    },
+    hide: {
+      preset: "fade",
+      speed: 300,
+      easing: "ease",
+      offset: 50,
+    },
+    shift: {
+      speed: 300,
+      easing: "ease",
+    },
+    overlap: 150,
+  },
+};
 @NgModule({
   declarations: [
     MyAccountComponent,
@@ -26,6 +68,8 @@ import { PipesModule } from '@app/shared/pipes/pipes.module';
     StatsComponent,
     CategoryComponent,
     CategoryDetailComponent,
+    MyContactsComponent,
+    MyContactDetailComponent,
   ],
   imports: [
     FormsModule,
@@ -38,7 +82,9 @@ import { PipesModule } from '@app/shared/pipes/pipes.module';
     HlsPasswordStrengthModule,
     SharedModule,
     InternationalPhoneNumberModule,
-    PipesModule
+    PipesModule,
+    NgxSpinnerModule,
+    NotifierModule.withConfig(notifierOptions),
   ],
   providers: [AccountService],
 })
