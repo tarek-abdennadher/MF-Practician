@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AccountService {
@@ -62,7 +63,9 @@ export class AccountService {
     notes: "Mes notes",
     date: "Date (*)",
     website: "Site web",
-    my_contacts: "Mes contacts"
+    my_contacts: "Mes contacts",
+    patients: "Patients",
+    tls: "TLS"
   };
   public errors = {
     required: "Champs obligatoire",
@@ -70,6 +73,11 @@ export class AccountService {
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
+  };
+  public stats = {
+    patient_title: "Patients",
+    patient_m_1: "Messages reçus des patients",
+    patient_m_2: "Messages envoyés aux patients",
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -179,4 +187,16 @@ export class AccountService {
     );
   }
 
+  getPatientStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "patientStat/" + id
+    );
+  }
+  getTlsStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "groupStat/" + id
+    );
+  }
 }

@@ -21,6 +21,8 @@ import { MyContactsComponent } from './my-contacts/my-contacts.component';
 import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
+import { ApxPieComponent } from './stats/apx-pie/apx-pie.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -70,6 +72,7 @@ const notifierOptions: NotifierOptions = {
     CategoryDetailComponent,
     MyContactsComponent,
     MyContactDetailComponent,
+    ApxPieComponent,
   ],
   imports: [
     FormsModule,
@@ -85,6 +88,7 @@ const notifierOptions: NotifierOptions = {
     PipesModule,
     NgxSpinnerModule,
     NotifierModule.withConfig(notifierOptions),
+    NgApexchartsModule
   ],
   providers: [AccountService],
 })
