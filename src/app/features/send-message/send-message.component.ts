@@ -311,6 +311,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.featureService.sentState.next(true);
             this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
@@ -333,6 +334,7 @@ export class SendMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.featureService.sentState.next(true);
             this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
