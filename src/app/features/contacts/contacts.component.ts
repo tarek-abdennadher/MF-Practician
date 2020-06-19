@@ -192,10 +192,12 @@ export class ContactsComponent implements OnInit {
             });
           } else {
             item.users.forEach((user) => {
-              if (user.type == "MEDICAL") {
+              if (user.contactType == "MEDICAL") {
                 user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
+              } else if (user.contactType == "SECRETARY") {
                 user.img = this.avatars.secretary;
+              } else {
+                  user.img = this.avatars.doctor;
               }
             });
           }
