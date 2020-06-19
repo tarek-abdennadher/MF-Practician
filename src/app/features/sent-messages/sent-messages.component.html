@@ -1,27 +1,11 @@
-<lib-hlsLinks
-  [links]="links"
-  [page]="page"
-  [topText]="topText"
-  [bottomText]="bottomText"
-  [number]="number"
-  [backButton]="backButton"
-  (selectAllAction)="selectAllActionClicked()"
-  (deSelectAllAction)="deSelectAllActionClicked()"
-  (seenAction)="seenActionClicked()"
-  (seenAllAction)="seenAllActionClicked()"
-  (importantAction)="importantActionClicked()"
-  (deleteAction)="deleteActionClicked()"
-  (archieveAction)="archieveActionClicked()"
-  (addNoteAction)="addNoteActionClicked()"
-  (filterAction)="filterActionClicked($event)"
-></lib-hlsLinks>
-<lib-hlsMessagingList
-  [list]="filtredItemList"
-  [isSent]="true"
-  (archieveAction)="archieveMessage($event)"
-  (cardAction)="cardClicked($event)"
-  [imageSource]="imageSource"
-></lib-hlsMessagingList>
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+  [backButton]="backButton" (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
+  (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
+  (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
+  (filterAction)="filterActionClicked($event)"></lib-hlsLinks>
+<lib-hlsMessagingList [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
+  (cardAction)="cardClicked($event)" [imageSource]="imageSource"></lib-hlsMessagingList>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
