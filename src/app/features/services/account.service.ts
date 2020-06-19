@@ -65,7 +65,8 @@ export class AccountService {
     website: "Site web",
     my_contacts: "Mes contacts",
     patients: "Patients",
-    tls: "TLS"
+    tls: "TLS",
+    leaves: "Mes congés"
   };
   public errors = {
     required: "Champs obligatoire",
@@ -197,6 +198,13 @@ export class AccountService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "groupStat/" + id
+    );
+  }
+
+  getOptionById(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.option + "/" + id
     );
   }
 }

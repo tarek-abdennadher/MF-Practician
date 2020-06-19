@@ -10,6 +10,7 @@ import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
 import { MyContactsComponent } from './my-contacts/my-contacts.component';
 import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
+import { MyLeavesComponent } from './my-leaves/my-leaves.component';
 
 const routes: Routes = [
   {
@@ -52,6 +53,10 @@ const routes: Routes = [
       {
         path: "mes-categories/:id",
         component: CategoryDetailComponent
+      },
+      {
+        path: "mes-conges",
+        component: MyLeavesComponent
       }
     ]
   }

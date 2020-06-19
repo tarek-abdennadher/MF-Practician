@@ -23,6 +23,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { ApxPieComponent } from './stats/apx-pie/apx-pie.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { MyLeavesComponent } from './my-leaves/my-leaves.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -73,6 +74,7 @@ const notifierOptions: NotifierOptions = {
     MyContactsComponent,
     MyContactDetailComponent,
     ApxPieComponent,
+    MyLeavesComponent,
   ],
   imports: [
     FormsModule,

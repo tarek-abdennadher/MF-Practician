@@ -71,7 +71,8 @@ export class GlobalService {
     practician_invitation: this.BASE_URL_CA + "/account/invitePractician",
     category: this.BASE_URL_CA + "/category",
     note: this.BASE_URL_CA + "/note",
-    contact_book: this.BASE_URL_CA + "/contact-book"
+    contact_book: this.BASE_URL_CA + "/contact-book",
+    option: this.BASE_URL_CA + "/option"
 
   };
   public toastrMessages = {
@@ -107,13 +108,13 @@ export class GlobalService {
   };
 
   public avatars = {
-    doctor:"assets/imgs/avatar_docteur.svg",
-    child:"assets/imgs/avatar_enfant.svg",
-    women:"assets/imgs/avatar_femme.svg",
-    man:"assets/imgs/avatar_homme.svg",
-    secretary:"assets/imgs/avatar_secrétaire.svg",
-    tls:"assets/imgs/avatar_tls.svg",
-    user:"assets/imgs/user.png",
+    doctor: "assets/imgs/avatar_docteur.svg",
+    child: "assets/imgs/avatar_enfant.svg",
+    women: "assets/imgs/avatar_femme.svg",
+    man: "assets/imgs/avatar_homme.svg",
+    secretary: "assets/imgs/avatar_secrétaire.svg",
+    tls: "assets/imgs/avatar_tls.svg",
+    user: "assets/imgs/user.png",
     telesecretary: "assets/imgs/etablissement.svg"
   }
   public call(
