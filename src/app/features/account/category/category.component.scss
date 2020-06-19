@@ -47,6 +47,8 @@ $input-color: #f1f1f1;
     line-height: 20px;
   }
 #card{
-  background-color: #f7f7f7;
+  background-color: white;
   border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
 }
