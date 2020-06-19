@@ -10,13 +10,11 @@ import { FeaturesService } from '@app/features/features.service';
   styleUrls: ['./stats.component.scss']
 })
 export class StatsComponent implements OnInit {
-  action: string = "add";
   selectedId: Number;
   submitted = false;
   patientMap = new Subject<any>();
   tlsMap = new Subject<any>();
   public messages: any;
-  public title = "Stats";
   constructor(
     private route: ActivatedRoute,
     private router: Router,

@@ -63,7 +63,9 @@ export class AccountService {
     notes: "Mes notes",
     date: "Date (*)",
     website: "Site web",
-    my_contacts: "Mes contacts"
+    my_contacts: "Mes contacts",
+    patients: "Patients",
+    tls: "TLS"
   };
   public errors = {
     required: "Champs obligatoire",
