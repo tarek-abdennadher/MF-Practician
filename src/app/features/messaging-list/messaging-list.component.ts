@@ -5,6 +5,7 @@ import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: "app-messaging-list",
@@ -49,6 +50,7 @@ export class MessagingListComponent implements OnInit {
   scroll = false;
   paramsId;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  searchContext = false;
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -67,6 +69,7 @@ export class MessagingListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild("inbox");
     this.itemsList = new Array();
     this.route.params.subscribe((params) => {
       this.pageNo = 0;
@@ -137,7 +140,9 @@ export class MessagingListComponent implements OnInit {
             });
         this.paramsId = this.featureService.selectedPracticianId;
         this.getMyInbox(this.featureService.selectedPracticianId, this.pageNo);
+        this.searchInboxPractician(this.featureService.selectedPracticianId);
       } else {
+        this.featureService.selectedPracticianId = 0;
         this.featureService.getNumberOfInbox().subscribe(val => {
           this.number = val;
           this.bottomText =
@@ -169,6 +174,7 @@ export class MessagingListComponent implements OnInit {
         this.isMyInbox = true;
         this.paramsId = this.featureService.getUserId();
         this.getMyInbox(this.featureService.getUserId(), this.pageNo);
+        this.searchInbox();
       }
     });
 
@@ -262,6 +268,7 @@ export class MessagingListComponent implements OnInit {
             }
           );
       }
+      this.featureService.markAsSeen(this.featureService.searchInbox, messagesId);
     }
   }
 
@@ -272,10 +279,7 @@ export class MessagingListComponent implements OnInit {
     if (messagesId.length > 0) {
       this.messagesServ.markMessageAsArchived(messagesId).subscribe(
         (resp) => {
-          let listToArchive = (this.itemsList = this.itemsList.filter(function (
-            elm,
-            ind
-          ) {
+          let listToArchive = (this.itemsList.slice(0).filter(function (elm,ind) {
             return messagesId.indexOf(elm.id) != -1;
           }));
           listToArchive.forEach((message) => {
@@ -292,15 +296,10 @@ export class MessagingListComponent implements OnInit {
                   .includes(notification.messageId)
             );
           });
-          this.itemsList = this.itemsList.filter(function (elm, ind) {
-            return messagesId.indexOf(elm.id) == -1;
-          });
-          this.filtredItemList = this.filtredItemList.filter(function (
-            elm,
-            ind
-          ) {
-            return messagesId.indexOf(elm.id) == -1;
-          });
+          this.itemsList = this.itemsList.filter(elm => !messagesId.includes(elm.id))
+          this.filtredItemList = this.filtredItemList.filter(elm => !messagesId.includes(elm.id))
+          this.deleteElementsFromInbox(messagesId.slice(0));
+          this.featureService.archiveState.next(true);
         },
         (error) => {
           console.log("We have to find a way to notify user by this error");
@@ -417,20 +416,18 @@ export class MessagingListComponent implements OnInit {
       photoId: message.sender.photoId,
     };
     if (parsedMessage.photoId) {
-      parsedMessage.users.forEach((user) => {
-        this.documentService.downloadFile(parsedMessage.photoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              user.img = myReader.result.toString();
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            user.img = this.avatars.user;
-          }
-        );
-      });
+      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            parsedMessage.users[0].img = myReader.result.toString();
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
     } else {
       parsedMessage.users.forEach((user) => {
         if (user.type == "MEDICAL") {
@@ -471,6 +468,7 @@ export class MessagingListComponent implements OnInit {
               this.featureService.setNumberOfInbox(
                 this.featureService.getNumberOfInboxValue() - 1
               );
+              this.featureService.markAsSeen(this.featureService.searchInbox, [messageId]);
             }
 
             let filtredIndex = this.filtredItemList.findIndex(
@@ -542,6 +540,8 @@ export class MessagingListComponent implements OnInit {
         this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
+        this.deleteElementsFromInbox([messageId]);
+        this.featureService.archiveState.next(true);
         if (!event.isSeen) {
           this.featureService.numberOfArchieve++;
           this.featureService.setNumberOfInbox(
@@ -642,9 +642,48 @@ export class MessagingListComponent implements OnInit {
   }
 
   onScroll() {
-    if (this.listLength > 9 ) {
+    if (this.listLength > 9  && !this.searchContext) {
       this.pageNo++;
       this.getMyInboxNextPage(this.paramsId, this.pageNo);
+    }
+  }
+
+  deleteElementsFromInbox(ids) {
+    let searchList = this.featureService.getSearchInboxValue();
+    searchList = searchList.filter(x => !ids.includes(x.id))
+    this.featureService.setSearchInbox(searchList);
+  }
+
+  searchInbox() {
+    this.featureService.getFilteredInboxSearch().subscribe(res => {
+      if (res?.length > 0) {
+        this.filtredItemList = res.slice(0);
+        this.searchContext = true;
+      }
+      else {
+        this.filtredItemList = this.itemsList;
+        this.searchContext = false;
+      }
+    })
+  }
+
+  searchInboxPractician(id: number) {
+    const numb = +id ;
+    if (this.featureService.searchPracticianInboxFiltered && this.featureService.searchPracticianInboxFiltered.get(numb)) {
+      this.featureService.searchPracticianInboxFiltered.get(numb).subscribe(res => {
+        if (res?.length > 0) {
+          this.filtredItemList = res;
+          this.searchContext = true;
+        }
+        else {
+          this.filtredItemList = this.itemsList;
+          this.searchContext = false;
+        }
+      })
+    } else {
+      setTimeout(() => {
+        this.searchInboxPractician(id)
+      }, 1000);
     }
   }
 }

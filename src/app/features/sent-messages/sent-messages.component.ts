@@ -48,6 +48,7 @@ export class SentMessagesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild("sent");
     this.route.queryParams.subscribe((params) => {
       if (params["status"] == "archiveSuccess") {
         this.notifier.show({
@@ -58,6 +59,7 @@ export class SentMessagesComponent implements OnInit {
       }
     });
     this.sentMessage();
+    this.searchSent();
   }
 
   sentMessage() {
@@ -150,6 +152,38 @@ export class SentMessagesComponent implements OnInit {
     return messageSent;
   }
 
+  parseMessages(messages) {
+    let parsedMessages = [];
+    messages.forEach((message) => {
+      const messageSent = this.mappingMessage(message);
+      messageSent.id = message.id;
+      messageSent.users.forEach((user) => {
+        if (user.photoId) {
+          this.documentService.downloadFile(user.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        } else {
+          if (user.type == "PRACTICIAN") {
+            user.img = "assets/imgs/avatar_docteur.svg";
+          } else if (user.type == "SECRETARY") {
+            user.img = "assets/imgs/avatar_secrétaire.svg";
+          }
+        }
+      });
+      parsedMessages.push(messageSent);
+    });
+    return parsedMessages;
+  }
+
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
@@ -187,15 +221,10 @@ export class SentMessagesComponent implements OnInit {
     if (messagesId.length > 0) {
       this.messageService.markMessageAsArchived(messagesId).subscribe(
         (resp) => {
-          this.itemsList = this.itemsList.filter(function (elm, ind) {
-            return messagesId.indexOf(elm.id) == -1;
-          });
-          this.filtredItemList = this.filtredItemList.filter(function (
-            elm,
-            ind
-          ) {
-            return messagesId.indexOf(elm.id) == -1;
-          });
+          this.itemsList = this.itemsList.filter(elm => !messagesId.includes(elm.id))
+          this.filtredItemList = this.filtredItemList.filter(elm => !messagesId.includes(elm.id))
+          this.deleteElementsFromInbox(messagesId.slice(0));
+          this.featureService.archiveState.next(true);
         },
         (error) => {
           console.log("We have to find a way to notify user by this error");
@@ -207,12 +236,10 @@ export class SentMessagesComponent implements OnInit {
     let messageId = event.id;
     this.messageService.markMessageAsArchived([messageId]).subscribe(
       (resp) => {
-        this.itemsList = this.itemsList.filter(function (elm, ind) {
-          return elm.id != event.id;
-        });
-        this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
-          return elm.id != event.id;
-        });
+        this.itemsList = this.itemsList.filter(elm => messageId != elm.id);
+        this.filtredItemList = this.filtredItemList.filter(elm => messageId != elm.id)
+        this.deleteElementsFromInbox([messageId]);
+        this.featureService.archiveState.next(true);
       },
       (error) => {
         console.log("We have to find a way to notify user by this error");
@@ -239,6 +266,24 @@ export class SentMessagesComponent implements OnInit {
   selectItem(event) {
     this.selectedObjects = event.filter((a) => a.isChecked == true);
   }
+
+  deleteElementsFromInbox(ids) {
+    let searchList = this.featureService.getSearchSentValue();
+    searchList = searchList.filter(x => !ids.includes(x.id))
+    this.featureService.setSearchSent(searchList);
+  }
+
+  searchSent() {
+    this.featureService.getFilteredSentSearch().subscribe(res => {
+      if (res?.length > 0) {
+        this.filtredItemList = res;
+      }
+      else {
+        this.filtredItemList = this.itemsList;
+      }
+    })
+  }
+
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();

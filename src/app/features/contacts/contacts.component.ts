@@ -8,6 +8,7 @@ import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from '@app/core/services/global.service';
+import { FeaturesService } from '../features.service';
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
@@ -42,7 +43,8 @@ export class ContactsComponent implements OnInit {
     private contactsService: ContactsService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private featureService : FeaturesService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -50,6 +52,7 @@ export class ContactsComponent implements OnInit {
   }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.featureService.setActiveChild("practician");
     this.route.queryParams.subscribe((params) => {
       if (params["status"]) {
         let notifMessage = "";
