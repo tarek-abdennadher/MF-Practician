@@ -352,9 +352,6 @@ export class FeaturesComponent implements OnInit {
   archieveActionClicked() {
     console.log("archieveAction");
   }
-  addNoteActionClicked() {
-    console.log("addNoteAction");
-  }
   filterActionClicked(event) {
     console.log(event);
   }
