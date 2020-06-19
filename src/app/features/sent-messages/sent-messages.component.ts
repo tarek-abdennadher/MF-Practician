@@ -219,9 +219,6 @@ export class SentMessagesComponent implements OnInit {
       }
     );
   }
-  addNoteActionClicked() {
-    console.log("addNoteAction");
-  }
   filterActionClicked(event) {
     this.filtredItemList =
       event == "all"
