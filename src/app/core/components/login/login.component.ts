@@ -3,6 +3,7 @@ import { LoginService } from "@app/core/services/login.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { GlobalService } from "@app/core/services/global.service";
+import { trimFunction } from '@app/shared/functions/trim';
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -38,6 +39,7 @@ export class LoginComponent implements OnInit {
     this.localStorage.store("token", null);
   }
   submit(model) {
+    model.email = trimFunction(model.email);
     this.email = model.email;
     this.errorMessage = "";
     this.successMessage = "";
