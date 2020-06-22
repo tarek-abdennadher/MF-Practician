@@ -6,11 +6,13 @@ import { Location } from "@angular/common";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import * as FileSaver from "file-saver";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, tap } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
-import { DialogService } from "../services/dialog.service";
+import { MyPatientsService } from '../services/my-patients.service';
+import { FormGroup, FormControl } from '@angular/forms';
+import { DialogService } from '../services/dialog.service';
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -21,6 +23,7 @@ export class MessagingDetailComponent implements OnInit {
   previousURL = "";
   role: string = "PRACTICIAN";
   imageSource: string;
+  patientFileImage: string | ArrayBuffer;
   isFromInbox: boolean;
   IsinboxContext: boolean = false;
   showAcceptRefuse: boolean;
@@ -49,6 +52,7 @@ export class MessagingDetailComponent implements OnInit {
   sentContext = false;
   attachements: string[] = [];
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  patientFile: any;
   constructor(
     private _location: Location,
     private router: Router,
@@ -58,7 +62,9 @@ export class MessagingDetailComponent implements OnInit {
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
     notifierService: NotifierService,
-    private localSt: LocalStorageService
+    private localSt: LocalStorageService,
+    private patientService: MyPatientsService,
+    private dialogService: DialogService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -156,7 +162,7 @@ export class MessagingDetailComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
-              }else if (receiver.role == "TELESECRETARYGROUP") {
+              } else if (receiver.role == "TELESECRETARYGROUP") {
                 receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
@@ -188,7 +194,7 @@ export class MessagingDetailComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
-              }else if (receiver.role == "TELESECRETARYGROUP") {
+              } else if (receiver.role == "TELESECRETARYGROUP") {
                 receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
@@ -223,7 +229,7 @@ export class MessagingDetailComponent implements OnInit {
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
               this.messagingDetail.sender.img =
                 this.avatars.secretary;
-            }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
+            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.img = this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
@@ -260,7 +266,7 @@ export class MessagingDetailComponent implements OnInit {
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
               this.messagingDetail.sender.forImg =
                 this.avatars.secretary;
-            }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
+            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.forImg =
                 this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
@@ -320,7 +326,7 @@ export class MessagingDetailComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
-              }else if (receiver.role == "TELESECRETARYGROUP") {
+              } else if (receiver.role == "TELESECRETARYGROUP") {
                 receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
@@ -352,7 +358,7 @@ export class MessagingDetailComponent implements OnInit {
                 receiver.img = this.avatars.doctor;
               } else if (receiver.role == "SECRETARY") {
                 receiver.img = this.avatars.secretary;
-              }else if (receiver.role == "TELESECRETARYGROUP") {
+              } else if (receiver.role == "TELESECRETARYGROUP") {
                 receiver.img = this.avatars.tls;
               } else if (receiver.role == "PATIENT") {
                 if (receiver.civility == "M") {
@@ -425,7 +431,7 @@ export class MessagingDetailComponent implements OnInit {
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
               this.messagingDetail.sender.forImg =
                 this.avatars.secretary;
-            }else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
+            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
               this.messagingDetail.sender.forImg =
                 this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
@@ -579,14 +585,18 @@ export class MessagingDetailComponent implements OnInit {
   }
   displayPatientFile(idAccount) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.router.navigate(["/fiche-patient/" + idAccount]);
+      this.getPatientFile(idAccount, this.featureService.getUserId());
     } else {
-      this.router.navigate([
-        "/fiche-patient/" +
-          idAccount +
-          "/" +
-          this.featureService.selectedPracticianId,
-      ]);
+      this.getPatientFile(idAccount, this.featureService.selectedPracticianId);
     }
   }
+
+  getPatientFile(patientId, practicianId) {
+    this.patientService.getPatientFileByPracticianId(patientId, practicianId)
+      .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
+        this.patientFile = patientFile;
+        this.dialogService.openPatientFile("Fiche Patient", this.patientFile)
+      });
+  }
+
 }

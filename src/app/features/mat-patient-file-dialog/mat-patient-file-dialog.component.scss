@@ -1,0 +1,74 @@
+$color-helssy-grey: #6e819bd4;
+$input-color: #f1f1f1;
+.form-control{
+    height: 40px;
+  }
+  .col-form-label {
+    font-size: 15px !important;
+    color: $color-helssy-grey;
+    font-family: "Segoe UI Medium" !important;
+  }
+  .image-container {
+    width: 100%;
+    height: auto;
+    .image {
+      opacity: 1;
+      transition: 0.5s ease;
+      backface-visibility: hidden;
+    }
+  }
+  .avatar {
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+  .border-avatar {
+    border-color: white;
+  }
+  ::ng-deep {
+    international-phone-number .form-control {
+          height: 30px ;
+          border-color: #e9ecef;
+          background-color:#e9ecef;
+        }
+        international-phone-number button.dropbtn.btn,  button.dropbtn.btn:hover, button.dropbtn.btn:focus{
+            border-color: #e9ecef ;
+            background-color: #e9ecef;
+            padding: 4px !important;
+            height: 30px !important;
+        }
+        international-phone-number button.dropbtn.btn .arrow-down {
+          border-bottom:#e9ecef;}
+        }
+        .form-control{
+          height: 40px ;
+          border: 1px solid #ced4da;
+          background-color: #e9ecef;
+        }
+        ::ng-deep {
+          international-phone-number.form-control.disabled {
+            color: #e9ecef;
+            background-color: #e9ecef;
+            pointer-events : none;
+          }
+          international-phone-number button.dropbtn.btn, .input-group-addon.flagInput:focus{
+            pointer-events : none;
+            background-color: #e9ecef;
+          }
+        }
+.phone {
+    background: #e9ecef 0% 0% no-repeat padding-box;
+    opacity: 1;
+    border: 1px solid #ced4da;
+    font-family: "Segoe UI";
+    font-size: 17px;
+    line-height: 24px;
+    height: 40px;
+  }
+  .otherPhone{
+    margin-bottom: 1rem;
+  }
+  .category{
+    margin-top: -1rem;
+  }
