@@ -25,10 +25,12 @@ export class MyAccountComponent implements OnInit {
     private featureService: FeaturesService
   ) {
     this.labels = this.accountService.messages;
+    this.practicianId = this.featureService.getUserId();
+
   }
   public userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
-    this.practicianId = this.featureService.getUserId();
+    this.getOptionById();
   }
 
   desactivateAccount() {
