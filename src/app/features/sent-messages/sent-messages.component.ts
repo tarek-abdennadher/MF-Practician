@@ -272,7 +272,10 @@ export class SentMessagesComponent implements OnInit {
 
   searchSent() {
     this.featureService.getFilteredSentSearch().subscribe(res => {
-      if (res?.length > 0) {
+      if (res == null) {
+        this.filtredItemList = [];
+      }
+      else if (res?.length > 0) {
         this.filtredItemList = res;
       }
       else {
