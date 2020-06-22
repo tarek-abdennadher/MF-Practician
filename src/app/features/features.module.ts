@@ -40,7 +40,6 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { PipesModule } from '@app/shared/pipes/pipes.module';
-import { NgApexchartsModule } from 'ng-apexcharts';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -124,8 +123,7 @@ const notifierOptions: NotifierOptions = {
     InternationalPhoneNumberModule,
     InfiniteScrollModule,
     MatProgressSpinnerModule,
-    PipesModule,
-    NgApexchartsModule
+    PipesModule
   ],
 
   providers: [MessageService, ContactsService],
