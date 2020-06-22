@@ -185,7 +185,11 @@ export class ArchieveMessagesComponent implements OnInit {
 
   searchArchive() {
     this.featureService.getFilteredArchiveSearch().subscribe(res => {
-      if (res?.length > 0) {
+      if (res == null) {
+        this.filtredItemList = [];
+        this.searchContext = true;
+      }
+      else if (res?.length > 0) {
         this.filtredItemList = res;
         this.searchContext = true;
       }

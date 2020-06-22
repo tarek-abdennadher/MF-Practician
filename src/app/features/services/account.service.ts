@@ -66,7 +66,11 @@ export class AccountService {
     my_contacts: "Mes contacts",
     patients: "Patients",
     tls: "TLS",
-    leaves: "Mes congés"
+    leaves: "Mes congés",
+    birthday: "Date de naissance",
+    add_address: "Complément d'addresse",
+    category: "Catégorie",
+    other_phone: "Autre tél"
   };
   public errors = {
     required: "Champs obligatoire",

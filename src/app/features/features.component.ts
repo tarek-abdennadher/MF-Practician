@@ -13,6 +13,7 @@ import { AccountService } from "./services/account.service";
 import { forkJoin, BehaviorSubject } from "rxjs";
 import { PracticianSearch } from "./practician-search/practician-search.model";
 import { PatientSerch, CitySerch } from "./my-patients/my-patients";
+import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
 import { ArchieveMessagesService } from './archieve-messages/archieve-messages.service';
 import { MessageService } from './services/message.service';
 import { MessageSent } from '@app/shared/models/message-sent';
@@ -44,7 +45,8 @@ export class FeaturesComponent implements OnInit {
     private messageArchiveService: ArchieveMessagesService,
     private documentService: MyDocumentsService,
     private accountService: AccountService,
-    private practicianSearchService: PracticianSearchService
+    private practicianSearchService: PracticianSearchService,
+    private jobTitlePipe: JobtitlePipe
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -65,7 +67,7 @@ export class FeaturesComponent implements OnInit {
   private stompClientList = [];
 
   ngOnInit(): void {
-    this.featuresService.fullName = this.user?.firstName + " " + this.user?.lastName;
+    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) + " "+ this.user?.firstName + " " + this.user?.lastName;
     this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     })
@@ -228,7 +230,7 @@ export class FeaturesComponent implements OnInit {
         notifications.forEach((notif) => {
           notificationsFormated.push({
             id: notif.id,
-            sender: notif.senderFullName,
+            sender: notif.jobTitle? this.jobTitlePipe.transform(notif.jobTitle) + " " + notif.senderFullName:notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
             messageId: notif.messageId,
@@ -390,14 +392,18 @@ export class FeaturesComponent implements OnInit {
       let practicianId = + this.featuresService.selectedPracticianId
       if (practicianId == 0) {
         if (event) {
-          this.featuresService.setFilteredInboxSearch(this.featuresService.getSearchInboxValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase()))));
+          let result = this.featuresService.getSearchInboxValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())))
+          result = result.length > 0 ? result : null;
+          this.featuresService.setFilteredInboxSearch(result);
         }
         else {
           this.featuresService.setFilteredInboxSearch([]);
         }
       } else {
           if (event) {
-            this.featuresService.searchPracticianInboxFiltered.get(practicianId).next(this.featuresService.searchPracticianInbox.get(practicianId).getValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase()))));
+            let result = this.featuresService.searchPracticianInbox.get(practicianId).getValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())));
+            result = result.length > 0 ? result : null;
+            this.featuresService.searchPracticianInboxFiltered.get(practicianId).next(result);
           }
           else {
             this.featuresService.searchPracticianInboxFiltered.get(practicianId).next([]);
@@ -405,14 +411,18 @@ export class FeaturesComponent implements OnInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "sent") {
       if (event) {
-        this.featuresService.setFilteredSentSearch(this.featuresService.getSearchSentValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase()))));
+        let result = this.featuresService.getSearchSentValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())))
+        result = result.length > 0 ? result : null;
+        this.featuresService.setFilteredSentSearch(result);
       }
       else {
         this.featuresService.setFilteredSentSearch([]);
       }
     } else if (this.featuresService.activeChild.getValue() == "archived") {
       if (event) {
-        this.featuresService.setFilteredArchiveSearch(this.featuresService.getSearchArchiveValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase()))));
+        let result = this.featuresService.getSearchArchiveValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())))
+        result = result.length > 0 ? result : null;
+        this.featuresService.setFilteredArchiveSearch(result);
       }
       else {
         this.featuresService.setFilteredArchiveSearch([]);
@@ -420,7 +430,9 @@ export class FeaturesComponent implements OnInit {
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
         this.router.navigate(["/praticien-recherche"]);
-        this.featuresService.setSearchFiltredPractician(this.practicians.filter(x => (x.fullName).toLowerCase().includes(event.toLowerCase())));
+        let result = this.practicians.filter(x => (x.fullName).toLowerCase().includes(event.toLowerCase()));
+        result = result.length > 0 ? result : null;
+        this.featuresService.setSearchFiltredPractician(result);
       } else {
         this.router.navigate(["/mes-contacts-pro"]);
       }
