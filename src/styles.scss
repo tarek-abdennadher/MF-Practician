@@ -105,18 +105,24 @@ a {
   padding: 0px;
 }
 
+.patient-file-container .mat-dialog-container {
+  box-shadow: 0px 2px 0px #0000000d;
+  border-radius: 23px;
+  opacity: 1;
+  padding-top: 0px;
+}
 .close {
   color: #bcbcbc !important;
 }
 
-.confirm-dialog-container .content-container {
+.confirm-dialog-container .content-container, .patient-file-container .content-container{
   margin: 20px 5px 15px 5px;
   color: #bcbcbc;
   display: flex;
   text-align: center;
 }
 
-.confirm-dialog-container #close-icon {
+.confirm-dialog-container #close-icon,.patient-file-container #close-icon  {
   text-align: left;
   font-size: 20px;
   background: #f1f1f1 0% 0% no-repeat padding-box;
@@ -127,7 +133,7 @@ a {
   margin-right: 12px;
 }
 
-.confirm-dialog-container #close-icon:hover {
+.confirm-dialog-container #close-icon:hover, .patient-file-container #close-icon:hover {
   cursor: pointer;
 }
 
@@ -164,7 +170,7 @@ a {
   opacity: 1;
 }
 
-.confirm-dialog-container span.title-span {
+.confirm-dialog-container span.title-span ,.patient-file-container span.title-span  {
   font-size: 17px;
   font-weight: Bold;
   letter-spacing: 0px;
