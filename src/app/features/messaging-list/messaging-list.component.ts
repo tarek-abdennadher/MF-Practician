@@ -656,11 +656,13 @@ export class MessagingListComponent implements OnInit {
 
   searchInbox() {
     this.featureService.getFilteredInboxSearch().subscribe(res => {
-      if (res?.length > 0) {
-        this.filtredItemList = res.slice(0);
+      if (res == null) {
+        this.filtredItemList = [];
         this.searchContext = true;
-      }
-      else {
+      } else if (res?.length > 0) {
+        this.filtredItemList = res;
+        this.searchContext = true;
+      } else {
         this.filtredItemList = this.itemsList;
         this.searchContext = false;
       }
@@ -671,11 +673,13 @@ export class MessagingListComponent implements OnInit {
     const numb = +id ;
     if (this.featureService.searchPracticianInboxFiltered && this.featureService.searchPracticianInboxFiltered.get(numb)) {
       this.featureService.searchPracticianInboxFiltered.get(numb).subscribe(res => {
-        if (res?.length > 0) {
+        if (res == null) {
+          this.filtredItemList = [];
+          this.searchContext = true;
+        } else if (res?.length > 0) {
           this.filtredItemList = res;
           this.searchContext = true;
-        }
-        else {
+        } else {
           this.filtredItemList = this.itemsList;
           this.searchContext = false;
         }
