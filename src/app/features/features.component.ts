@@ -13,6 +13,7 @@ import { AccountService } from "./services/account.service";
 import { forkJoin, BehaviorSubject } from "rxjs";
 import { PracticianSearch } from "./practician-search/practician-search.model";
 import { PatientSerch, CitySerch } from "./my-patients/my-patients";
+import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
 import { ArchieveMessagesService } from './archieve-messages/archieve-messages.service';
 import { MessageService } from './services/message.service';
 import { MessageSent } from '@app/shared/models/message-sent';
@@ -44,7 +45,8 @@ export class FeaturesComponent implements OnInit {
     private messageArchiveService: ArchieveMessagesService,
     private documentService: MyDocumentsService,
     private accountService: AccountService,
-    private practicianSearchService: PracticianSearchService
+    private practicianSearchService: PracticianSearchService,
+    private jobTitlePipe: JobtitlePipe
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -65,7 +67,7 @@ export class FeaturesComponent implements OnInit {
   private stompClientList = [];
 
   ngOnInit(): void {
-    this.featuresService.fullName = this.user?.firstName + " " + this.user?.lastName;
+    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) + " "+ this.user?.firstName + " " + this.user?.lastName;
     this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     })
@@ -228,7 +230,7 @@ export class FeaturesComponent implements OnInit {
         notifications.forEach((notif) => {
           notificationsFormated.push({
             id: notif.id,
-            sender: notif.senderFullName,
+            sender: notif.jobTitle? this.jobTitlePipe.transform(notif.jobTitle) + " " + notif.senderFullName:notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
             messageId: notif.messageId,
