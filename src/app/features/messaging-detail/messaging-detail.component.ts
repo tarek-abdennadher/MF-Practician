@@ -6,12 +6,11 @@ import { Location } from "@angular/common";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import * as FileSaver from "file-saver";
 import { Subject } from "rxjs";
-import { takeUntil, tap } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyPatientsService } from '../services/my-patients.service';
-import { FormGroup, FormControl } from '@angular/forms';
 import { DialogService } from '../services/dialog.service';
 @Component({
   selector: "app-messaging-detail",
