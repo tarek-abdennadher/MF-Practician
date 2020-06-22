@@ -124,7 +124,8 @@ const notifierOptions: NotifierOptions = {
     InternationalPhoneNumberModule,
     InfiniteScrollModule,
     MatProgressSpinnerModule,
-    PipesModule
+    PipesModule,
+    NgApexchartsModule
   ],
 
   providers: [MessageService, ContactsService],
