@@ -122,6 +122,9 @@ export class MessagingListService {
           }
 
       this.featuresService.setNumberOfInbox(this.featuresService.getNumberOfInboxValue() + 1);
+      let realTimeMessageList = this.featuresService.getSearchInboxValue();
+      realTimeMessageList.unshift(notification.message);
+      this.featuresService.setSearchInbox(realTimeMessageList);
     }
   }
 
@@ -338,6 +341,13 @@ export class MessagingListService {
     );
   }
 
+  public getAllInboxMessages(pageSize: number): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "myInbox?pageSize=" + pageSize
+    );
+  }
+
   public countMyInboxNotSeen(): Observable<number> {
     return this.globalService.call(
       RequestType.GET,
@@ -349,6 +359,13 @@ export class MessagingListService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id+"?pageNo="+pageNo
+    );
+  }
+
+  public getAllInboxByAccountId(id, pageSize): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "inbox-by-account/" + id+"?pageSize=" + pageSize
     );
   }
   public markMessageAsSeen(id: number): Observable<boolean> {

@@ -501,7 +501,7 @@ export class MyPatientsComponent implements OnInit {
     }
   }
   searchAutoComplete() {
-    if (!this.featuresService.initialSearch) {
+    if (!this.featuresService.initialSearch || (this.featuresService.initialSearch && !this.atcObj['isRendered'])) {
       this.featuresService.initialSearch = true;
       this.atcObj = null;
       const myPatients = [];

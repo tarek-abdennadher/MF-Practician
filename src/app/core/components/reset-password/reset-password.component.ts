@@ -3,6 +3,7 @@ import { LoginService } from "@app/core/services/login.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { GlobalService } from "@app/core/services/global.service";
+import { trimFunction } from '@app/shared/functions/trim';
 @Component({
   selector: "app-reset-password",
   templateUrl: "./reset-password.component.html",
@@ -30,6 +31,7 @@ export class ResetPasswordComponent implements OnInit {
     this.successMessage = "";
   }
   submit(model) {
+    model.email = trimFunction(model.email);
     this.errorMessage = "";
     this.successMessage = "";
     this.loginService.getRoleByEmail(model.email).subscribe(res => {
