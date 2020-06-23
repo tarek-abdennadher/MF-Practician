@@ -206,6 +206,9 @@ export class PersonalInformationsComponent implements OnInit {
           picture: account.practician.photoId
             ? account.practician.photoId
             : null,
+          city: account.practician.city ? account.practician.city : null,
+          zipCode: account.practician.zipCode ? account.practician.zipCode : null
+
         });
       } else if (account && account.secretary) {
         this.account = account.secretary;
@@ -258,6 +261,8 @@ export class PersonalInformationsComponent implements OnInit {
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           jobTitle: this.infoForm.value.title,
+          city: this.infoForm.value.city,
+          zipCode: this.infoForm.value.zipCode,
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
