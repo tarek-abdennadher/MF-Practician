@@ -22,6 +22,8 @@ import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-con
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { MyLeavesComponent } from './my-leaves/my-leaves.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -87,8 +89,9 @@ const notifierOptions: NotifierOptions = {
     InternationalPhoneNumberModule,
     PipesModule,
     NgxSpinnerModule,
-    NotifierModule.withConfig(notifierOptions)
+    NotifierModule.withConfig(notifierOptions),
+    BsDatepickerModule.forRoot(),
   ],
-  providers: [AccountService],
+  providers: [AccountService, MyLeavesGuard],
 })
 export class AccountModule { }

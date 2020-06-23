@@ -11,6 +11,7 @@ import { CategoryDetailComponent } from './category/category-detail/category-det
 import { MyContactsComponent } from './my-contacts/my-contacts.component';
 import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 import { MyLeavesComponent } from './my-leaves/my-leaves.component';
+import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
 
 const routes: Routes = [
   {
@@ -56,7 +57,8 @@ const routes: Routes = [
       },
       {
         path: "mes-conges",
-        component: MyLeavesComponent
+        component: MyLeavesComponent,
+        canActivate: [MyLeavesGuard]
       }
     ]
   }
