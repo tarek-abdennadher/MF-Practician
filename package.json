@@ -84,7 +84,10 @@
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
     "tslib": "^1.10.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "hammerjs": "^2.0.8",
+    "apexcharts": "^3.13.2",
+    "ng-apexcharts": "^1.1.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.900.1",
