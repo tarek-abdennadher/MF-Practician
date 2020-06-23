@@ -259,27 +259,17 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-            if (this.messagingDetail.sender.role == "PRACTICIAN") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.doctor;
-            } else if (this.messagingDetail.sender.role == "SECRETARY") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.secretary;
-            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.tls;
-            } else if (this.messagingDetail.sender.role == "PATIENT") {
-              if (this.messagingDetail.sender.civility == "M") {
+              if (this.messagingDetail.sender.senderForCivility == "M") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.man;
-              } else if (this.messagingDetail.sender.civility == "MME") {
+              } else if (this.messagingDetail.sender.senderForCivility == "MME") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.women;
-              } else if (this.messagingDetail.sender.civility == "CHILD") {
+              } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.child;
               }
-            }
+
           }
         });
     } else {
@@ -424,27 +414,18 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-            if (this.messagingDetail.sender.role == "PRACTICIAN") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.doctor;
-            } else if (this.messagingDetail.sender.role == "SECRETARY") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.secretary;
-            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.tls;
-            } else if (this.messagingDetail.sender.role == "PATIENT") {
-              if (this.messagingDetail.sender.civility == "M") {
+
+              if (this.messagingDetail.sender.senderForCivility == "M") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.man;
-              } else if (this.messagingDetail.sender.civility == "MME") {
+              } else if (this.messagingDetail.sender.senderForCivility == "MME") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.women;
-              } else if (this.messagingDetail.sender.civility == "CHILD") {
+              } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.child;
               }
-            }
+
           }
         });
     }
