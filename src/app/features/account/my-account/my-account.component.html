@@ -24,6 +24,11 @@
   <a mat-tab-link [routerLink]="'mes-stats'" routerLinkActive #rlf="routerLinkActive" [active]="rlf.isActive">
     <i class="far fa-chart-pie-alt my-tab-icon"></i> {{ labels.stats_tab }}
   </a>
+  <a *ngIf="showLeaves" mat-tab-link [routerLink]="'mes-conges'" routerLinkActive #rlf="routerLinkActive"
+    [active]="rlf.isActive">
+    <i class="far fa-calendar-week my-tab-icon"></i> {{ labels.leaves }}
+  </a>
+
 
 </nav>
 

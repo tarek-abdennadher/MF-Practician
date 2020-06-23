@@ -66,14 +66,22 @@ export class AccountService {
     my_contacts: "Mes contacts",
     patients: "Patients",
     tls: "TLS",
+    leaves: "Mes congés",
     birthday: "Date de naissance",
     add_address: "Complément d'addresse",
     category: "Catégorie",
-    other_phone: "Autre tél"
+    other_phone: "Autre tél",
+    start_date_leave: "Date de début des congés",
+    end_date_leave: "Date de fin de congés",
+    date_error: "Veuillez vérifier la date saisie",
+    validate: "Enregistrer",
+    required: "Le champ est obligatoire",
+    update_leaves_success: "Dates de congés modifiées avec succès",
+    update_leaves_fail: "Erreur survenue lors de la mise à jour des dates de congés."
   };
   public errors = {
-    required: "Champs obligatoire",
-    invalid_format: "Format invalide",
+    required: "Le champ est obligatoire",
+    invalid_format: "Le format saisi est invalide",
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
@@ -201,6 +209,21 @@ export class AccountService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "groupStat/" + id
+    );
+  }
+
+  getOptionById(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.option + "/" + id
+    );
+  }
+  updateLeavesInOptionByPractician(leaveStartDate, leaveEndDate) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.option + "/leaves/" +
+      leaveStartDate + "/" + leaveEndDate
+
     );
   }
 }
