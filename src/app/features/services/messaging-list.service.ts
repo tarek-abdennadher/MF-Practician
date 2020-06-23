@@ -5,6 +5,7 @@ import { Observable, Subject, BehaviorSubject } from "rxjs";
 import { FeaturesService } from "../features.service";
 import * as _ from "lodash";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
 
 @Injectable({
   providedIn: "root",
@@ -18,7 +19,8 @@ export class MessagingListService {
   constructor(
     private globalService: GlobalService,
     private featuresService: FeaturesService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private jobTitlePipe: JobtitlePipe
   ) {
     this.avatars = this.globalService.avatars;
   }
@@ -39,7 +41,7 @@ export class MessagingListService {
               myReader.onloadend = (e) => {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: myReader.result,
                   messageId: notification.messageId,
@@ -51,8 +53,8 @@ export class MessagingListService {
             (error) => {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
+                senderId: notification.senderId,
               picture: this.avatars.user,
               messageId: notification.messageId,
               type: notification.type,
@@ -62,7 +64,7 @@ export class MessagingListService {
             if (notification.message.sender.role == "PRACTICIAN") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.doctor,
                 messageId: notification.messageId,
@@ -71,7 +73,7 @@ export class MessagingListService {
             } else if (notification.message.sender.role == "SECRETARY") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.secretary,
                 messageId: notification.messageId,
@@ -80,7 +82,7 @@ export class MessagingListService {
             }else if (notification.message.sender.role == "TELESECRETARYGROUP") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.tls,
                 messageId: notification.messageId,
@@ -90,7 +92,7 @@ export class MessagingListService {
               if (notification.message.sender.civility == "M") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.man,
                   messageId: notification.messageId,
@@ -99,7 +101,7 @@ export class MessagingListService {
               } else if (notification.message.sender.civility == "MME") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.women,
                   messageId: notification.messageId,
@@ -108,7 +110,7 @@ export class MessagingListService {
               } else if (notification.message.sender.civility == "CHILD") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.child,
                   messageId: notification.messageId,
@@ -120,6 +122,9 @@ export class MessagingListService {
           }
 
       this.featuresService.setNumberOfInbox(this.featuresService.getNumberOfInboxValue() + 1);
+      let realTimeMessageList = this.featuresService.getSearchInboxValue();
+      realTimeMessageList.unshift(notification.message);
+      this.featuresService.setSearchInbox(realTimeMessageList);
     }
   }
 
@@ -135,7 +140,7 @@ export class MessagingListService {
               myReader.onloadend = (e) => {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: myReader.result,
                   type: notification.type,
@@ -146,7 +151,7 @@ export class MessagingListService {
             (error) => {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.user,
                 type: notification.type,
@@ -157,7 +162,7 @@ export class MessagingListService {
             if (notification.role == "PRACTICIAN") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.doctor,
                 messageId: notification.messageId,
@@ -166,7 +171,7 @@ export class MessagingListService {
             } else if (notification.role == "SECRETARY") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.secretary,
                 messageId: notification.messageId,
@@ -175,7 +180,7 @@ export class MessagingListService {
             }else if (notification.role == "TELESECRETARYGROUP") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.tls,
                 messageId: notification.messageId,
@@ -185,7 +190,7 @@ export class MessagingListService {
               if (notification.civility == "M") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.man,
                   messageId: notification.messageId,
@@ -194,7 +199,7 @@ export class MessagingListService {
               } else if (notification.civility == "MME") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.women,
                   messageId: notification.messageId,
@@ -203,7 +208,7 @@ export class MessagingListService {
               } else if (notification.civility == "CHILD") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.child,
                   messageId: notification.messageId,
@@ -229,7 +234,7 @@ export class MessagingListService {
               myReader.onloadend = (e) => {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: myReader.result,
                   messageId: notification.messageId,
@@ -241,8 +246,8 @@ export class MessagingListService {
             (error) => {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
+                senderId: notification.senderId,
               picture: this.avatars.user,
               messageId: notification.messageId,
               type: notification.type,
@@ -252,7 +257,7 @@ export class MessagingListService {
             if (notification.role == "PRACTICIAN") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.doctor,
                 messageId: notification.messageId,
@@ -261,7 +266,7 @@ export class MessagingListService {
             } else if (notification.role == "SECRETARY") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.secretary,
                 messageId: notification.messageId,
@@ -270,7 +275,7 @@ export class MessagingListService {
             } else if (notification.role == "TELESECRETARYGROUP") {
               this.featuresService.listNotifications.unshift({
                 id: notification.id,
-                sender: notification.senderFullName,
+                sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                 senderId: notification.senderId,
                 picture: this.avatars.tls,
                 messageId: notification.messageId,
@@ -280,7 +285,7 @@ export class MessagingListService {
               if (notification.message.sender.civility == "M") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.man,
                   messageId: notification.messageId,
@@ -289,7 +294,7 @@ export class MessagingListService {
               } else if (notification.civility == "MME") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.women,
                   messageId: notification.messageId,
@@ -298,7 +303,7 @@ export class MessagingListService {
               } else if (notification.civility == "CHILD") {
                 this.featuresService.listNotifications.unshift({
                   id: notification.id,
-                  sender: notification.senderFullName,
+                  sender: notification.jobTitle? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName:notification.senderFullName,
                   senderId: notification.senderId,
                   picture: this.avatars.child,
                   messageId: notification.messageId,
@@ -336,6 +341,13 @@ export class MessagingListService {
     );
   }
 
+  public getAllInboxMessages(pageSize: number): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "myInbox?pageSize=" + pageSize
+    );
+  }
+
   public countMyInboxNotSeen(): Observable<number> {
     return this.globalService.call(
       RequestType.GET,
@@ -347,6 +359,13 @@ export class MessagingListService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id+"?pageNo="+pageNo
+    );
+  }
+
+  public getAllInboxByAccountId(id, pageSize): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "inbox-by-account/" + id+"?pageSize=" + pageSize
     );
   }
   public markMessageAsSeen(id: number): Observable<boolean> {

@@ -8,6 +8,8 @@ import { FacturesComponent } from './factures/factures.component';
 import { StatsComponent } from './stats/stats.component';
 import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
+import { MyContactsComponent } from './my-contacts/my-contacts.component';
+import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 
 const routes: Routes = [
   {
@@ -26,6 +28,14 @@ const routes: Routes = [
       {
         path: "mon-telesecretariat",
         component: TeleSecretariesComponent
+      },
+      {
+        path: "mes-contacts",
+        component: MyContactsComponent
+      },
+      {
+        path: "mes-contacts/:id",
+        component: MyContactDetailComponent
       },
       {
         path: "mes-factures",
@@ -51,4 +61,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AccountRoutingModule {}
+export class AccountRoutingModule { }

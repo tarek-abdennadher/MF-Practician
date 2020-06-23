@@ -16,6 +16,13 @@ export class ArchieveMessagesService {
     );
   }
 
+  getAllMyArchivedMessages(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.archived_messages + "my?pageSize="+ 1000000
+    );
+  }
+
   public markMessageAsSeen(id: number): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,

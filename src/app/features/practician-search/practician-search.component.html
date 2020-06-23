@@ -7,7 +7,7 @@
   [backButton]="backButton"
 ></lib-hlsLinks>
 
-<div class="col-md-12 search-side">
+<div class="col-md-12 search-side"style="visibility: hidden;">
   <div class="col-md-3 form-inline">
     <button class="btn" id="back-button"><i class="far fa-user-md"></i></button>
     <p>
@@ -15,7 +15,7 @@
       <span>{{ text }}</span>
     </p>
   </div>
-  <div class="col-md-2 form-inline">
+  <div class="col-md-2 form-inline"style="visibility: hidden;">
     <button class="btn" id="back-button">
       <i class="far fa-map-marker"></i>
     </button>
@@ -24,7 +24,7 @@
       <span>{{ city }}</span>
     </p>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-2"style="visibility: hidden;">
     <button class="btn" id="edit-button" (click)="edit()">
       <i class="far fa-pen">&nbsp;&nbsp;</i>{{ texts.edit }}
     </button>

@@ -71,6 +71,7 @@ export class GlobalService {
     practician_invitation: this.BASE_URL_CA + "/account/invitePractician",
     category: this.BASE_URL_CA + "/category",
     note: this.BASE_URL_CA + "/note",
+    contact_book: this.BASE_URL_CA + "/contact-book"
 
   };
   public toastrMessages = {

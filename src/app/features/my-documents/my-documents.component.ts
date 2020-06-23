@@ -14,6 +14,7 @@ import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { PatientSerch } from "../my-patients/my-patients";
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AccountService } from '../services/account.service';
+import { FeaturesService } from '../features.service';
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
@@ -47,7 +48,8 @@ export class MyDocumentsComponent implements OnInit {
     public router: Router,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private featureService : FeaturesService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -58,6 +60,7 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild("document");
     this.getMySendersAndReceivers();
     this.getAllObjects();
     this.getPersonalInfo();
@@ -126,6 +129,8 @@ export class MyDocumentsComponent implements OnInit {
         return senderDetail.practician;
       case "SECRETARY":
         return senderDetail.secretary;
+      case "TELESECRETARYGROUP":
+        return senderDetail.telesecretaryGroup;
       default:
         return null;
     }
