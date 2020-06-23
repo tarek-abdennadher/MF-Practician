@@ -76,7 +76,7 @@ const notifierOptions: NotifierOptions = {
     MyContactsComponent,
     MyContactDetailComponent,
     MyLeavesComponent,
-    MyContactDetailComponent
+    MyContactDetailComponent,
     ApxPieComponent
   ],
   imports: [
