@@ -50,7 +50,7 @@ export class PersonalInformationsComponent implements OnInit {
   public passwordForm: FormGroup;
   public today = new Date().toISOString().substr(0, 10);
   account: any;
-  imageSource : string;
+  imageSource: string;
   password = "";
   public phones = new Array();
   public isPhonesValid = false;
@@ -110,7 +110,9 @@ export class PersonalInformationsComponent implements OnInit {
         address: new FormControl(null, Validators.required),
         additional_address: new FormControl(null),
         phone: new FormControl(null, Validators.required),
-        picture: new FormControl(null)
+        picture: new FormControl(null),
+        city: new FormControl(null),
+        zipCode: new FormControl(null)
       });
     } else {
       this.infoForm = new FormGroup({
@@ -292,11 +294,12 @@ export class PersonalInformationsComponent implements OnInit {
           this.featureService.imageSource = this.avatars.doctor;
         } else {
           this.featureService.imageSource = this.avatars.secretary;
-      }}
-      if(this.isPractician){
-        this.featureService.fullName=`${model.practician.firstName} ${model.practician.lastName}`
-      }else{
-        this.featureService.fullName=`${model.secretary.firstName} ${model.secretary.lastName}`
+        }
+      }
+      if (this.isPractician) {
+        this.featureService.fullName = `${model.practician.firstName} ${model.practician.lastName}`
+      } else {
+        this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`
       }
     });
   }
@@ -380,9 +383,9 @@ export class PersonalInformationsComponent implements OnInit {
   }
 
   deletePicture() {
-    if(this.isPractician){
+    if (this.isPractician) {
       this.image = this.avatars.doctor;
-    }else {
+    } else {
       this.image = this.avatars.secretary;;
     }
     this.account.photoId = null;
