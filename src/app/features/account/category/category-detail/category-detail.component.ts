@@ -73,20 +73,23 @@ export class CategoryDetailComponent implements OnInit {
       id: this.infoForm.value.id,
       name: this.infoForm.value.name,
     };
-    if(this.selectedCategoryId=="add"){
-    this.categoryService.addCategory(model).subscribe((res) => {
-      this.showAlert = true;
-      $(".alert").alert();
-      this.submitted = false;
-      this.router.navigate([`compte/mes-categories/`]);
-    });
-  } else {
-    this.categoryService.updateCategory(model).subscribe((res) => {
-      this.showAlert = true;
-      $(".alert").alert();
-      this.submitted = false;
-      this.router.navigate([`compte/mes-categories/`]);
-    });
+    if (this.selectedCategoryId == "add") {
+      this.categoryService.addCategory(model).subscribe((res) => {
+        this.showAlert = true;
+        $(".alert").alert();
+        this.submitted = false;
+        this.router.navigate([`compte/mes-categories/`]);
+      });
+    } else {
+      this.categoryService.updateCategory(model).subscribe((res) => {
+        this.showAlert = true;
+        $(".alert").alert();
+        this.submitted = false;
+        this.router.navigate([`compte/mes-categories/`]);
+      });
+    }
   }
+  cancel() {
+    this.router.navigate(["/compte/mes-categories"]);
   }
 }
