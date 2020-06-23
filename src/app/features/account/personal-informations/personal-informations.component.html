@@ -222,6 +222,32 @@
                 <input type="text" formControlName="additional_address" class="form-control" id="additional_address" />
               </div>
             </div>
+            <div class="row" *ngIf="isPractician">
+              <label for="postal" class="col-sm-3 col-form-label">{{
+                messages._zip_code
+              }}</label>
+              <div class="col-sm-9">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <input type="text" formControlName="zipCode" class="form-control" id="postal" />
+                      </div>
+                    </div>
+                  </div>
+                  <label for="ville" class="col-md-3 col-form-label">{{
+                    messages._city
+                  }}</label>
+                  <div class="col">
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <input type="text" formControlName="city" class="form-control" id="ville" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="col">
             <div class="form-group row" *ngIf="isPractician">
