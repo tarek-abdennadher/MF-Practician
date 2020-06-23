@@ -23,25 +23,8 @@ export class MyAccountComponent implements OnInit {
     this.labels = this.accountService.messages;
   }
   public userRole = this.localSt.retrieve("role");
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
-  desactivateAccount() {
-    this.dialogService
-      .openConfirmDialog(
-        this.labels.delete_account_confirm,
-        this.labels.title_delete_account
-      )
-      .afterClosed()
-      .subscribe((res) => {
-        if (res) {
-          this.accountService.desactivateAccount().subscribe((resp) => {
-            if (resp) {
-              this.router.navigate(["/connexion"]);
-            }
-          });
-        }
-      });
-  }
   BackButton() {
     this.router.navigate(["/messagerie"]);
   }
