@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { GlobalService } from '@app/core/services/global.service';
 
 @Component({
   selector: 'app-mat-patient-file-dialog',
@@ -22,11 +23,13 @@ export class MatPatientFileDialogComponent implements OnInit {
     private service: AccountService,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
+    private globalService: GlobalService,
     public dialogRef: MatDialogRef<MatPatientFileDialogComponent>
   ) {
     this.labels = this.service.messages;
     this.isLabelShow = false;
     this.isMaidenNameShow = false;
+    this.avatars = this.globalService.avatars;
   }
   get phoneList() {
     return <FormArray>this.patientFileForm.get("otherPhones");
