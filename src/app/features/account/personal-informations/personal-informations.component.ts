@@ -72,7 +72,8 @@ export class PersonalInformationsComponent implements OnInit {
     private featureService: FeaturesService,
     private categoryService: CategoryService,
     private patientService: MyPatientsService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private jobTitlePipe: JobtitlePipe
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -294,7 +295,7 @@ export class PersonalInformationsComponent implements OnInit {
           this.featureService.imageSource = this.avatars.secretary;
       }}
       if(this.isPractician){
-        this.featureService.fullName=`${model.practician.firstName} ${model.practician.lastName}`
+        this.featureService.fullName=`${this.jobTitlePipe.transform(model.practician.jobTitle) } ${model.practician.firstName} ${model.practician.lastName}`
       }else{
         this.featureService.fullName=`${model.secretary.firstName} ${model.secretary.lastName}`
       }
