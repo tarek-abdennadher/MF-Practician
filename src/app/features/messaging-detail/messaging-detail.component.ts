@@ -268,6 +268,9 @@ export class MessagingDetailComponent implements OnInit {
               } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.child;
+              } else {
+                this.messagingDetail.sender.forImg =
+                  this.avatars.doctor;
               }
 
           }
@@ -424,6 +427,9 @@ export class MessagingDetailComponent implements OnInit {
               } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
                 this.messagingDetail.sender.forImg =
                   this.avatars.child;
+              }else {
+                this.messagingDetail.sender.forImg =
+                  this.avatars.doctor;
               }
 
           }
