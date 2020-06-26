@@ -3,6 +3,11 @@
     <mat-icon id="close-icon" class="close" aria-label="Close" (click)="closeDialog()">close</mat-icon>
 </div>
 <br />
+<ng-container class="row justify-content-center" *ngIf="isDeleted">
+    <div #alert class="alert alert-info fade show" role="alert">
+        <strong>{{ labels.is_deleted }}</strong>
+    </div>
+</ng-container>
 <br />
 <div>
     <div [formGroup]="patientFileForm">

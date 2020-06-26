@@ -77,7 +77,8 @@ export class AccountService {
     validate: "Enregistrer",
     required: "Le champ est obligatoire",
     update_leaves_success: "Dates de congés modifiées avec succès",
-    update_leaves_fail: "Erreur survenue lors de la mise à jour des dates de congés."
+    update_leaves_fail: "Erreur survenue lors de la mise à jour des dates de congés.",
+    is_deleted: " Ce compte patient a été supprimé !"
   };
   public errors = {
     required: "Le champ est obligatoire",

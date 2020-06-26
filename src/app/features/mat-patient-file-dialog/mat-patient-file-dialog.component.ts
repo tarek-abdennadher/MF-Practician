@@ -16,6 +16,7 @@ export class MatPatientFileDialogComponent implements OnInit {
   image: string | ArrayBuffer;
   public phoneForm: FormGroup;
   isLabelShow: boolean;
+  isDeleted: boolean = false;
   isMaidenNameShow: boolean;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
@@ -29,6 +30,7 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.labels = this.service.messages;
     this.isLabelShow = false;
     this.isMaidenNameShow = false;
+    this.isDeleted = false;
     this.avatars = this.globalService.avatars;
   }
   get phoneList() {
@@ -61,6 +63,9 @@ export class MatPatientFileDialogComponent implements OnInit {
     });
   }
   patchValue(data) {
+    if (data?.patientFile?.deleted) {
+      this.isDeleted = true
+    }
     if (data?.patientFile?.photoId) {
       this.documentService.downloadFile(data.patientFile.photoId).subscribe(
         (response) => {
