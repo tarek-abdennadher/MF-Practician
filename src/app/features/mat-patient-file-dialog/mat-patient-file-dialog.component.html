@@ -3,6 +3,19 @@
     <mat-icon id="close-icon" class="close" aria-label="Close" (click)="closeDialog()">close</mat-icon>
 </div>
 <br />
+<div *ngIf="isDeleted" class="card-message">
+    <div class="card-header bg-danger">
+        <br />
+        <div id="cercle-error">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+        </div>
+    </div>
+    <div>
+        <br />
+        <div class="card-text">{{ labels.is_deleted }}</div>
+        <br />
+    </div>
+</div>
 <br />
 <div>
     <div [formGroup]="patientFileForm">
