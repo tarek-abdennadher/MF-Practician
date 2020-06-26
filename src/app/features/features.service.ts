@@ -26,8 +26,8 @@ export class FeaturesService {
   public fullName :string;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
 
-  public searchInboxFiltered = new BehaviorSubject(null);
-  public searchInbox = new BehaviorSubject(null);
+  public searchInboxFiltered = new BehaviorSubject([]);
+  public searchInbox = new BehaviorSubject([]);
   public searchPracticianInboxFiltered = new Map();
   public searchPracticianInbox = new Map();
   public searchFiltredPractician = new BehaviorSubject([]);
