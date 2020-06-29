@@ -26,6 +26,22 @@ export class FeaturesService {
   public fullName :string;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
 
+  public searchInboxFiltered = new BehaviorSubject([]);
+  public searchInbox = new BehaviorSubject([]);
+  public searchPracticianInboxFiltered = new Map();
+  public searchPracticianInbox = new Map();
+  public searchFiltredPractician = new BehaviorSubject([]);
+  public searchFilteredSent = new BehaviorSubject([]);
+  public searchSent = new BehaviorSubject([]);
+  public searchFilteredArchive = new BehaviorSubject([]);
+  public searchArchive= new BehaviorSubject([]);
+  public activeChild = new BehaviorSubject("inbox") ;
+
+  public inboxState = new BehaviorSubject(false) ;
+  public sentState = new BehaviorSubject(false) ;
+  public archiveState = new BehaviorSubject(false) ;
+
+
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService
@@ -56,6 +72,78 @@ export class FeaturesService {
 
   setNumberOfInbox(number) {
     this._numberOfInbox.next(number);
+  }
+
+  // InboxSearch getter and setter
+
+  getSearchInboxValue() {
+    return this.searchInbox.getValue();
+  }
+  setSearchInbox(list) {
+    this.searchInbox.next(list);
+  }
+  getFilteredInboxSearch() {
+    return this.searchInboxFiltered.asObservable();
+  }
+
+  setFilteredInboxSearch(list) {
+    this.searchInboxFiltered.next(list);
+  }
+
+  // SentSearch getter and setter
+
+  getSearchSentValue() {
+    return this.searchSent.getValue();
+  }
+  setSearchSent(list) {
+    this.searchSent.next(list);
+  }
+  getFilteredSentSearch() {
+    return this.searchFilteredSent.asObservable();
+  }
+
+  setFilteredSentSearch(list) {
+    this.searchFilteredSent.next(list);
+  }
+
+  // SentSearch getter and setter
+
+  getSearchArchiveValue() {
+    return this.searchArchive.getValue();
+  }
+  setSearchArchive(list) {
+    this.searchArchive.next(list);
+  }
+  getFilteredArchiveSearch() {
+    return this.searchFilteredArchive.asObservable();
+  }
+
+  setFilteredArchiveSearch(list) {
+    this.searchFilteredArchive.next(list);
+  }
+
+  // PracticianSearch getter and setter
+
+  getSearchFiltredPractician() {
+    return this.searchFiltredPractician.asObservable();
+  }
+
+  setSearchFiltredPractician(list) {
+    this.searchFiltredPractician.next(list);
+  }
+
+  setActiveChild(text) {
+    this.activeChild.next(text);
+  }
+
+  markAsSeen(obsList, ids) {
+    let val = obsList.getValue();
+    val.forEach(elm => {
+      if (ids.includes(elm.id)) {
+        elm.isSeen = true;
+      }
+    })
+    obsList.next(val);
   }
 
   updateNumberOfInboxForPractician(accountId, inboxNumber) {

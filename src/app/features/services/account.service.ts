@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AccountService {
@@ -62,14 +63,34 @@ export class AccountService {
     notes: "Mes notes",
     date: "Date (*)",
     website: "Site web",
-    my_contacts: "Mes contacts"
+    my_contacts: "Mes contacts",
+    patients: "Patients",
+    tls: "TLS",
+    leaves: "Mes congés",
+    birthday: "Date de naissance",
+    add_address: "Complément d'addresse",
+    category: "Catégorie",
+    other_phone: "Autre tél",
+    start_date_leave: "Date de début des congés",
+    end_date_leave: "Date de fin de congés",
+    date_error: "Veuillez vérifier la date saisie",
+    validate: "Enregistrer",
+    required: "Le champ est obligatoire",
+    update_leaves_success: "Dates de congés modifiées avec succès",
+    update_leaves_fail: "Erreur survenue lors de la mise à jour des dates de congés.",
+    is_deleted: " Le compte patient a été désactivé  !"
   };
   public errors = {
-    required: "Champs obligatoire",
-    invalid_format: "Format invalide",
+    required: "Le champ est obligatoire",
+    invalid_format: "Le format saisi est invalide",
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
+  };
+  public stats = {
+    patient_title: "Patients",
+    patient_m_1: "Messages reçus des patients",
+    patient_m_2: "Messages envoyés aux patients",
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -179,4 +200,31 @@ export class AccountService {
     );
   }
 
+  getPatientStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "patientStat/" + id
+    );
+  }
+  getTlsStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "groupStat/" + id
+    );
+  }
+
+  getOptionById(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.option + "/" + id
+    );
+  }
+  updateLeavesInOptionByPractician(leaveStartDate, leaveEndDate) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.option + "/leaves/" +
+      leaveStartDate + "/" + leaveEndDate
+
+    );
+  }
 }

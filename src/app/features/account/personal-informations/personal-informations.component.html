@@ -191,7 +191,7 @@
               }}</label>
               <div class="col-sm-9">
                 <input disabled type="text" formControlName="email" class="form-control" id="email"
-                  [ngClass]="{ 'is-invalid': submitted }" />
+                  [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }" />
                 <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
                   <div *ngIf="ctr.email.errors.required">
                     {{ labels.required }}
@@ -222,6 +222,32 @@
                 <input type="text" formControlName="additional_address" class="form-control" id="additional_address" />
               </div>
             </div>
+            <div class="row" *ngIf="isPractician">
+              <label for="postal" class="col-sm-3 col-form-label">{{
+                messages._zip_code
+              }}</label>
+              <div class="col-sm-9">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <input type="text" formControlName="zipCode" class="form-control" id="postal" />
+                      </div>
+                    </div>
+                  </div>
+                  <label for="ville" class="col-md-3 col-form-label">{{
+                    messages._city
+                  }}</label>
+                  <div class="col">
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <input type="text" formControlName="city" class="form-control" id="ville" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="col">
             <div class="form-group row" *ngIf="isPractician">
@@ -230,7 +256,7 @@
               }}</label>
               <div class="col-sm-9">
                 <input disabled type="text" formControlName="email" class="form-control" id="email"
-                  [ngClass]="{ 'is-invalid': submitted }" />
+                  [ngClass]="{ 'is-invalid': submitted && ctr.email.errors}" />
                 <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
                   <div *ngIf="ctr.email.errors.required">
                     {{ labels.required }}
@@ -329,7 +355,7 @@
   <div class="card-body">
     <div class="col-md-12">
       <div class="container">
-        <form [formGroup]="passwordForm" (ngSubmit)="isPasswordValid && resetPasswordSubmit()">
+        <form [formGroup]="passwordForm" (ngSubmit)="resetPasswordSubmit()">
           <div class="row">
             <div class="col">
               <div class="form-group row">

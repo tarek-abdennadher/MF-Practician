@@ -21,6 +21,11 @@ import { MyContactsComponent } from './my-contacts/my-contacts.component';
 import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
+import { MyLeavesComponent } from './my-leaves/my-leaves.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
+import { ApxPieComponent } from './stats/apx-pie/apx-pie.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -70,6 +75,9 @@ const notifierOptions: NotifierOptions = {
     CategoryDetailComponent,
     MyContactsComponent,
     MyContactDetailComponent,
+    MyLeavesComponent,
+    MyContactDetailComponent,
+    ApxPieComponent
   ],
   imports: [
     FormsModule,
@@ -85,7 +93,9 @@ const notifierOptions: NotifierOptions = {
     PipesModule,
     NgxSpinnerModule,
     NotifierModule.withConfig(notifierOptions),
+    BsDatepickerModule.forRoot(),
+    NgApexchartsModule
   ],
-  providers: [AccountService],
+  providers: [AccountService, MyLeavesGuard],
 })
 export class AccountModule { }

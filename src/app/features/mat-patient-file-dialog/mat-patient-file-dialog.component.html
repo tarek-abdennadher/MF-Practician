@@ -1,0 +1,107 @@
+<div class="group-element">
+    <span class="title-span">{{ data.title }}</span>
+    <mat-icon id="close-icon" class="close" aria-label="Close" (click)="closeDialog()">close</mat-icon>
+</div>
+<br />
+<div *ngIf="isDeleted" class="card-message">
+    <div class="card-header bg-danger">
+        <br />
+        <div id="cercle-error">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+        </div>
+    </div>
+    <div>
+        <br />
+        <div class="card-text">{{ labels.is_deleted }}</div>
+        <br />
+    </div>
+</div>
+<br />
+<div>
+    <div [formGroup]="patientFileForm">
+        <div class="container">
+            <div class="row">
+                <div class="col ">
+                    <div class="form-group row">
+                        <label for="civility" class="col-sm-4 col-form-label">{{labels.civility}}</label>
+                        <input type="text" formControlName="civility" class="form-control col-sm-8" id="civility"
+                            disabled />
+                    </div>
+                    <div class="form-group row"> <label for="lastName"
+                            class="col-sm-4 col-form-label">{{labels.last_name}}</label>
+                        <input type="text" formControlName="lastName" class="form-control col-sm-8" id="lastName"
+                            disabled /></div>
+                    <div class=" form-group row" *ngIf="isMaidenNameShow">
+                        <label for="maidenName" class="col-sm-4 col-form-label">{{labels.nom_jeune_fille}}</label>
+                        <input type="text" formControlName="maidenName" class="form-control col-sm-8" id="maidenName"
+                            disabled />
+                    </div>
+                    <div class="form-group row">
+                        <label for="firstName" class="col-sm-4 col-form-label">{{labels.first_name}}</label>
+                        <input type="text" formControlName="firstName" class="form-control col-sm-8" id="firstName"
+                            disabled />
+                    </div>
+                    <div class="form-group row">
+                        <label for="address" class="col-sm-4 col-form-label">{{labels._address}}</label>
+                        <input type="text" formControlName="address" class="form-control col-sm-8" id="address"
+                            disabled />
+                    </div>
+                    <div class="form-group row">
+                        <label for="additionalAddress" class="col-sm-4 col-form-label">{{labels.add_address}}</label>
+                        <input type="text" formControlName="additionalAddress" class="form-control col-sm-8"
+                            id="additionalAddress" disabled />
+                    </div>
+                    <div class=" form-group row" *ngIf="isLabelShow">
+                        <label for="category" class="col-sm-4 col-form-label">{{labels.category}}</label>
+                        <input type="text" formControlName="category" class="form-control col-sm-8" id="category"
+                            disabled />
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <div class="col-sm-2 col-md-2 image-container">
+                            <img [src]="image ? image : 'assets/imgs/avatar_homme.svg'" alt="Profile"
+                                class="avatar image" />
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <label for="birthday" class="col-sm-4 col-form-label">{{labels.birthday}}</label>
+                        <input type="text" formControlName="birthday" class="form-control col-sm-8" id="birthday"
+                            disabled />
+                    </div>
+                    <div class=" form-group row">
+                        <label for="email" class="col-sm-4 col-form-label">{{labels._email_address}}</label>
+                        <input type="text" formControlName="email" class="form-control col-sm-8" id="email" disabled />
+                    </div>
+                    <div class="form-group row">
+                        <label for="phoneNumber" class="col-sm-4 col-form-label">{{labels._phone}}</label>
+                        <international-phone-number class="form-control disabled phone col-sm-8" id="phoneNumber"
+                            formControlName="phoneNumber" placeholder="Téléphone" [maxlength]="20">
+                        </international-phone-number>
+                    </div>
+                    <!-- Other Phones Field -->
+                    <div *ngIf="isLabelShow" class="form-group row">
+                        <label for="otherPhone" class="col-sm-4 col-form-label">{{ labels.other_phone }}</label>
+                        <div id="otherPhone" class="col-sm-8 p-0">
+                            <div formArrayName="otherPhones" *ngFor="let p of phoneList.controls; let i = index">
+                                <div [formGroupName]="i" class="otherPhone">
+                                    <international-phone-number class="form-control disabled"
+                                        formControlName="otherPhone" placeholder="Téléphone" [maxlength]="20">
+                                    </international-phone-number>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" form-group row" [ngClass]="{'category': isLabelShow }" *ngIf="!isLabelShow">
+                        <label for="category" class="col-sm-4 col-form-label">{{labels.category}}</label>
+                        <input type="text" formControlName="category" class="form-control col-sm-8" id="category"
+                            disabled />
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

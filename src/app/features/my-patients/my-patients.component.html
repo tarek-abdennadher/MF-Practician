@@ -64,6 +64,9 @@
   (archivedAction)="archivedAction($event)"
   (activatedAction)="activatedAction($event)"
   (cardAction)="cardClicked($event)"
+  (upSortAction)="upSortClicked()"
+  (downSortAction)="downSortClicked()"
+  [hasPaging]="true"
 ></lib-hlsMessagingList>
 
 <div

@@ -40,6 +40,9 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { PipesModule } from '@app/shared/pipes/pipes.module';
+import { MatPatientFileDialogComponent } from './mat-patient-file-dialog/mat-patient-file-dialog.component';
+import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -97,7 +100,8 @@ const notifierOptions: NotifierOptions = {
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
     PatientDetailComponent,
-    PersonalInformationsComponent
+    PersonalInformationsComponent,
+    MatPatientFileDialogComponent
   ],
   imports: [
     FormsModule,
@@ -123,9 +127,10 @@ const notifierOptions: NotifierOptions = {
     InternationalPhoneNumberModule,
     InfiniteScrollModule,
     MatProgressSpinnerModule,
-    PipesModule
+    PipesModule,
+    NgApexchartsModule
   ],
 
-  providers: [MessageService, ContactsService],
+  providers: [MessageService, ContactsService, JobtitlePipe],
 })
 export class FeaturesModule { }

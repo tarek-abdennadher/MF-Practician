@@ -8,10 +8,13 @@
   (sendEvent)="displaySendAction()"
 ></lib-hlsLinks>
 <lib-hlsMessagingList
-  [list]="itemsList"
+  [list]="filtredItemList"
   (cardAction)="cardClicked($event)"
   [isCheckbox]="false"
   [imageSource]="imageSource"
+  [hasPaging]="true"
+  (upSortAction)="upSortClicked()"
+  (downSortAction)="downSortClicked()"
   [caller]="'archieve'"
 ></lib-hlsMessagingList>
 

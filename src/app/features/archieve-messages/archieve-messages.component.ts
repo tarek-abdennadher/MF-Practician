@@ -6,6 +6,7 @@ import { Location } from "@angular/common";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from "@app/core/services/global.service";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Component({
   selector: "app-archieve-messages",
@@ -25,10 +26,14 @@ export class ArchieveMessagesComponent implements OnInit {
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
+  filtredItemList = [];
   pageNo = 0;
   scroll = false;
+  searchContext: boolean;
   listLength = 0;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  direction: OrderDirection = OrderDirection.DESC;
+
   constructor(
     public router: Router,
     private archivedService: ArchieveMessagesService,
@@ -42,11 +47,15 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild("archived");
     this.getMyMessagesArchived(this.pageNo);
+    this.searchArchive();
   }
 
   getMyMessagesArchived(pageNo: number) {
-    this.archivedService.getMyArchivedMessages(pageNo).subscribe((messages) => {
+    this.scroll = true;
+    this.archivedService.getMyArchivedMessages(pageNo, this.direction).subscribe((messages) => {
+      this.scroll = false;
       this.number = this.featureService.numberOfArchieve;
       this.bottomText =
         this.number > 1
@@ -55,39 +64,11 @@ export class ArchieveMessagesComponent implements OnInit {
       messages.forEach((message) => {
         let archivedMessage = this.mappingMessageArchived(message);
         archivedMessage.users.forEach((user) => {
-          if (user.photoId) {
-            this.documentService.downloadFile(user.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                user.img = this.avatars.user;
-              }
-            );
-          } else {
-            if (user.type == "MEDICAL") {
-              user.img =this.avatars.doctor;
-            } else if (user.type == "SECRETARY") {
-              user.img = this.avatars.secretary;
-            }else if (user.type == "TELESECRETARYGROUP") {
-              user.img = this.avatars.tls;
-            } else if (user.type == "PATIENT") {
-              if (user.civility == "M") {
-                user.img = this.avatars.man;
-              } else if (user.civility == "MME") {
-                user.img = this.avatars.women;
-              } else if (user.civility == "CHILD") {
-                user.img = this.avatars.child;
-              }
-            }
-          }
+          this.loadPhoto(user);
         });
         this.itemsList.push(archivedMessage);
       });
+      this.filtredItemList = this.itemsList;
     });
   }
   displaySendAction() {
@@ -129,6 +110,40 @@ export class ArchieveMessagesComponent implements OnInit {
 
     return messageArchived;
   }
+
+  loadPhoto(user) {
+    if (user.photoId) {
+      this.documentService.downloadFile(user.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            user.img = myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          user.img = this.avatars.user;
+        }
+      );
+    } else {
+      if (user.type == "MEDICAL") {
+        user.img =this.avatars.doctor;
+      } else if (user.type == "SECRETARY") {
+        user.img = this.avatars.secretary;
+      }else if (user.type == "TELESECRETARYGROUP") {
+        user.img = this.avatars.tls;
+      } else if (user.type == "PATIENT") {
+        if (user.civility == "M") {
+          user.img = this.avatars.man;
+        } else if (user.civility == "MME") {
+          user.img = this.avatars.women;
+        } else if (user.civility == "CHILD") {
+          user.img = this.avatars.child;
+        }
+      }
+    }
+  }
+
   cardClicked(item) {
     if (!item.isSeen) {
       this.markMessageAsSeen(item.id);
@@ -147,6 +162,7 @@ export class ArchieveMessagesComponent implements OnInit {
   markMessageAsSeen(messageId) {
     this.archivedService.markMessageAsSeen(messageId).subscribe((result) => {
       this.featureService.numberOfArchieve--;
+      this.featureService.markAsSeen(this.featureService.searchArchive, [messageId]);
     });
   }
 
@@ -166,10 +182,53 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   onScroll() {
-    if (this.listLength != this.itemsList.length) {
+    if (this.listLength != this.itemsList.length && !this.searchContext) {
       this.listLength = this.itemsList.length;
       this.pageNo++;
       this.getMyMessagesArchived(this.pageNo);
     }
+  }
+
+  searchArchive() {
+    this.featureService.getFilteredArchiveSearch().subscribe(res => {
+      if (res == null) {
+        this.filtredItemList = [];
+        this.searchContext = true;
+      }
+      else if (res?.length > 0) {
+        this.filtredItemList = res;
+        this.searchContext = true;
+      }
+      else {
+        this.filtredItemList = this.itemsList;
+        this.searchContext = false;
+      }
+    })
+  }
+
+  mapAllMessages(messages) {
+    messages.forEach((message) => {
+      const archivedMessage = this.mappingMessageArchived(message);
+      archivedMessage.users.forEach((user) => {
+        this.loadPhoto(user)
+      });
+      this.filtredItemList.push(archivedMessage);
+    });
+  }
+
+  upSortClicked() {
+    this.direction = OrderDirection.ASC;
+    this.resetList();
+  }
+
+  downSortClicked() {
+    this.direction = OrderDirection.DESC;
+    this.resetList();
+  }
+
+  resetList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.getMyMessagesArchived(this.pageNo);
   }
 }

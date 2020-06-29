@@ -42,125 +42,49 @@ export class PracticianSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.practicianSearchService.currentSearch.subscribe((data: search) => {
-      this.text = data.text;
-      this.city = data.city;
-      this.getPractians(data.text, data.city);
+    this.featureService.getSearchFiltredPractician().subscribe(list => {
+      this.getPractians(list);
     });
   }
-  getPractians(text, city) {
-    if (!text && !city) {
-      this.practicianSearchService.getAllPracticians().subscribe((list) => {
-        if (this.localSt.retrieve("role") == "PRACTICIAN") {
-          list = list.filter(
-            (a) => a.accountId != this.featureService.getUserId()
-          );
-        }
-        this.itemsList = [];
-        this.number = list.length;
-        this.bottomText = this.number > 1 ? "résultats" : "résultat";
-        list.forEach((message) => {
-          let practician = this.mappingPracticians(message);
-          this.itemsList.push(practician);
-        });
-        this.itemsList.forEach((item) => {
-          if (item.photoId) {
-            item.users.forEach((user) => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = this.avatars.user;
-                }
-              );
-            });
-          } else {
-            item.users.forEach((user) => {
-              if (user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              }
-            });
-          }
-        });
-      });
-    } else if (!text && city) {
-      this.practicianSearchService
-        .getPracticiansByCity(city)
-        .subscribe((list) => {
-          if (this.localSt.retrieve("role") == "PRACTICIAN") {
-            list = list.filter(
-              (a) => a.accountId != this.featureService.getUserId()
-            );
-          }
-          this.itemsList = [];
-          this.number = list.length;
-          this.bottomText = this.number > 1 ? "résultats" : "résultat";
-          list.forEach((message) => {
-            let practician = this.mappingPracticians(message);
-            this.itemsList.push(practician);
-          });
-          this.itemsList.forEach((item) => {
-            if (item.photoId) {
-              item.users.forEach((user) => {
-                this.documentService.downloadFile(item.photoId).subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      user.img = myReader.result;
-                    };
-                    let ok = myReader.readAsDataURL(response.body);
-                  },
-                  (error) => {
-                    user.img = this.avatars.user;
-                  }
-                );
-              });
-            }
-          });
-        });
-    } else {
-      this.practicianSearchService
-        .getPracticiansBytextAndCity(text, city == undefined ? "" : city)
-        .subscribe((list) => {
-          if (this.localSt.retrieve("role") == "PRACTICIAN") {
-            list = list.filter(
-              (a) => a.accountId != this.featureService.getUserId()
-            );
-          }
-          this.itemsList = [];
-          this.number = list.length;
-          this.bottomText = this.number > 1 ? "résultats" : "résultat";
-          list.forEach((message) => {
-            let practician = this.mappingPracticians(message);
-            this.itemsList.push(practician);
-          });
-          this.itemsList.forEach((item) => {
-            if (item.photoId) {
-              item.users.forEach((user) => {
-                this.documentService.downloadFile(item.photoId).subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      user.img = myReader.result;
-                    };
-                    let ok = myReader.readAsDataURL(response.body);
-                  },
-                  (error) => {
-                    user.img = this.avatars.user;
-                  }
-                );
-              });
-            }
-          });
-        });
+  getPractians(list) {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      list = list.filter(
+        (a) => a.accountId != this.featureService.getUserId()
+      );
     }
+    this.itemsList = [];
+    this.number = list.length;
+    this.bottomText = this.number > 1 ? "résultats" : "résultat";
+    list.forEach((message) => {
+      let practician = this.mappingPracticians(message);
+      this.itemsList.push(practician);
+    });
+    this.itemsList.forEach((item) => {
+      if (item.photoId) {
+        item.users.forEach((user) => {
+          this.documentService.downloadFile(item.photoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              user.img = this.avatars.user;
+            }
+          );
+        });
+      } else {
+        item.users.forEach((user) => {
+          if (user.type == "MEDICAL") {
+            user.img = this.avatars.doctor;
+          } else if (user.type == "SECRETARY") {
+            user.img = this.avatars.secretary;
+          }
+        });
+      }
+    });
   }
   edit() {
     this.featureService.changeSearch(new search(this.text, this.city));

@@ -24,3 +24,17 @@ $color-white: #ffffff;
     font-family: "Segoe UI Medium" !important;
   }
 }
+.chart-title {
+  font-size: 17px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Segoe UI Medium" !important;
+  text-align: center;
+}
+.chart{
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 1px solid #F1F1F1;
+  border-radius: 5px;
+  opacity: 1;
+}
