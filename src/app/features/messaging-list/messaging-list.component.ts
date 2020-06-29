@@ -315,12 +315,20 @@ export class MessagingListComponent implements OnInit {
         ? this.itemsList
         : this.itemsList.filter(
             (item) =>
-              item.users[0].type.toLowerCase() ==
-              (event == "doctor"
-                ? "medical"
-                : event == "secretary"
-                ? "telesecretarygroup" && "secretary"
-                : event)
+            {
+              switch (event) {
+                case "doctor":
+                  return item.users[0].type.toLowerCase() == "medical";
+                case "secretary":
+                  return item.users[0].type.toLowerCase() == "secretary" ||
+                  item.users[0].type.toLowerCase() == "telesecretarygroup"
+                default:
+                  return item.users[0].type.toLowerCase() == event;
+
+              }
+
+            }
+
           );
   }
 
