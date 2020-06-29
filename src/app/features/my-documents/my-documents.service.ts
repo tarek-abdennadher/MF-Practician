@@ -3,44 +3,53 @@ import { GlobalService } from "@app/core/services/global.service";
 import { Observable, observable } from "rxjs";
 import { RequestType } from "@app/shared/enmus/requestType";
 import { HttpEvent, HttpRequest, HttpClient } from '@angular/common/http';
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Injectable({
   providedIn: "root"
 })
 export class MyDocumentsService {
-  public person:any;
-  constructor(private globalService: GlobalService, private http: HttpClient) {}
+  public person: any;
+  constructor(private globalService: GlobalService, private http: HttpClient) { }
 
-  getMyAttachements(pageNo:number): Observable<any[]> {
+  getMyAttachements(pageNo: number): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.attachements + "/my"
     );
   }
 
-  getMyAttachementsBySenderOrReceiverId(id:number,pageNo): Observable<any[]> {
+  getMyAttachementsBySenderOrReceiverId(id: number, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"?pageNo="+pageNo
+      this.globalService.url.attachements + "/my/" + id, {
+        params: { 'pageNo': pageNo, 'order': order }
+      }
     );
   }
-  getMyAttachementsByObject(id:number,object:string,pageNo): Observable<any[]> {
+  getMyAttachementsByObject(id: number, object: string, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"/object/"+object+"?pageNo="+pageNo
+      this.globalService.url.attachements + "/my/" + id + "/object/" + object , {
+        params: { 'pageNo': pageNo, 'order': order }
+      }
     );
   }
-  getMyAttachementsBySenderForId(id:number,senderForId:string,pageNo): Observable<any[]> {
+  getMyAttachementsBySenderForId(id: number, senderForId: string, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"/senderFor/"+senderForId+"?pageNo="+pageNo
+      this.globalService.url.attachements + "/my/" + id + "/senderFor/" + senderForId , {
+        params: { 'pageNo': pageNo, 'order': order }
+      }
     );
   }
 
-  getMyAttachementsBySenderForIdAndObject(id:number,senderForId:string,object:string,pageNo): Observable<any[]> {
+  getMyAttachementsBySenderForIdAndObject(id: number, senderForId: string, object: string, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/my/"+id+"/object/"+object+"/senderFor/"+senderForId+"?pageNo="+pageNo
+      this.globalService.url.attachements + "/my/" + id + "/object/" + object + "/senderFor/" + senderForId , {
+        params: { 'pageNo': pageNo, 'order': order }
+      }
     );
   }
 
@@ -97,33 +106,33 @@ export class MyDocumentsService {
     return this.http.request(req);
   }
 
-  getMySendersAndreceiversDetailsByObject(object:string): Observable<any[]> {
+  getMySendersAndreceiversDetailsByObject(object: string): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/mySendersAndReceivers/object/"+object
+      this.globalService.url.attachements + "/mySendersAndReceivers/object/" + object
     );
   }
-  getMySendersAndreceiversDetailsBySenderForId(senderForId:string): Observable<any[]> {
+  getMySendersAndreceiversDetailsBySenderForId(senderForId: string): Observable<any[]> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.attachements + "/mySendersAndReceivers/senderFor/"+senderForId
-    );
-  }
-
-  getMySendersAndreceiversDetailsBySenderForIdAndObject(senderForId:string,object:string): Observable<any[]> {
-    return this.globalService.call(
-      RequestType.GET,
-      this.globalService.url.attachements + "/mySendersAndReceivers/object/"+object+"/senderFor/"+senderForId
+      this.globalService.url.attachements + "/mySendersAndReceivers/senderFor/" + senderForId
     );
   }
 
-  getAllObjects():Observable<Set<string>>{
+  getMySendersAndreceiversDetailsBySenderForIdAndObject(senderForId: string, object: string): Observable<any[]> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.attachements + "/mySendersAndReceivers/object/" + object + "/senderFor/" + senderForId
+    );
+  }
+
+  getAllObjects(): Observable<Set<string>> {
     return this.globalService.call(RequestType.GET,
-      this.globalService.url.attachements+"/allObjects");
+      this.globalService.url.attachements + "/allObjects");
   }
 
-  getMyObjects(id:number):Observable<Set<string>>{
+  getMyObjects(id: number): Observable<Set<string>> {
     return this.globalService.call(RequestType.GET,
-      this.globalService.url.attachements+"/myObjects/" + id);
+      this.globalService.url.attachements + "/myObjects/" + id);
   }
 }

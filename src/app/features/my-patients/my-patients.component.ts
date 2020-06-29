@@ -15,6 +15,7 @@ enableRipple(true);
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -46,6 +47,7 @@ export class MyPatientsComponent implements OnInit {
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   public valueSearch;
   public valueSearchSelected;
+  direction: OrderDirection = OrderDirection.DESC;
 
   constructor(
     private globalService: GlobalService,
@@ -118,7 +120,7 @@ export class MyPatientsComponent implements OnInit {
   }
   getPatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParactician(pageNo)
+      .getPatientsOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -137,7 +139,7 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParactician(pageNo)
+      .getPatientsOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -152,7 +154,7 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
     this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId)
+      .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -171,7 +173,7 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsProhibitedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsProhibitedOfCurrentParactician(pageNo)
+      .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -190,7 +192,7 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPatientsProhibitedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsProhibitedOfCurrentParactician(pageNo)
+      .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -205,7 +207,7 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsPendingOfCurrentParactician(pageNo)
+      .getPatientsPendingOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -224,7 +226,7 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsPendingOfCurrentParactician(pageNo)
+      .getPatientsPendingOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -239,7 +241,7 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsArchivedOfCurrentParactician(pageNo)
+      .getPatientsArchivedOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -258,7 +260,7 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsArchivedOfCurrentParactician(pageNo)
+      .getPatientsArchivedOfCurrentParactician(pageNo,this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -564,5 +566,20 @@ export class MyPatientsComponent implements OnInit {
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
     }
+  }
+
+  upSortClicked() {
+    this.direction = OrderDirection.ASC;
+    this.resetList();
+  }
+
+  downSortClicked() {
+    this.direction = OrderDirection.DESC;
+    this.resetList();
+  }
+
+  resetList() {
+    this.pageNo = 0;
+    this.filter();
   }
 }

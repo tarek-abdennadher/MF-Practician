@@ -11,6 +11,9 @@
   (cardAction)="cardClicked($event)"
   [isCheckbox]="false"
   [imageSource]="imageSource"
+  [hasPaging]="true"
+  (upSortAction)="upSortClicked()"
+  (downSortAction)="downSortClicked()"
 ></lib-hlsMessagingList>
 
 <div

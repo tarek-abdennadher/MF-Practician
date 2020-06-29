@@ -209,4 +209,20 @@ export class ArchieveMessagesComponent implements OnInit {
       this.filtredItemList.push(archivedMessage);
     });
   }
+
+  upSortClicked() {
+    this.direction = OrderDirection.ASC;
+    this.resetList();
+  }
+
+  downSortClicked() {
+    this.direction = OrderDirection.DESC;
+    this.resetList();
+  }
+
+  resetList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.getMyMessagesArchived(this.pageNo);
+  }
 }

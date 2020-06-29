@@ -15,12 +15,17 @@
 ></lib-hlsLinks>
 <lib-hlsMessagingList
   [list]="filtredItemList"
+  [hasPaging]="true"
   (cardAction)="cardClicked($event)"
   (markAsSeenAction)="markMessageAsSeen($event)"
   (archieveAction)="archieveMessage($event)"
   (selectItemAction)="selectItem($event)"
   [imageSource]="imageSource"
+  [hasPaging]="true"
+  (upSortAction)="upSortClicked()"
+  (downSortAction)="downSortClicked()"
 ></lib-hlsMessagingList>
+
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
