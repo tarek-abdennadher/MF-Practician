@@ -464,6 +464,10 @@ export class MessagingDetailComponent implements OnInit {
       });
   }
 
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   replyAction() {
     this.router.navigate(["/messagerie-repondre/", this.idMessage]);
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, LOCALE_ID, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
 import { Subject, forkJoin } from 'rxjs';
@@ -47,6 +47,7 @@ export class PatientDetailComponent implements OnInit {
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private featureService: FeaturesService,
     private accountService: AccountService,
     private localeService: BsLocaleService,
@@ -117,6 +118,10 @@ export class PatientDetailComponent implements OnInit {
           }
         }
       }));
+  }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
   }
 
   getLinkedPatients() {

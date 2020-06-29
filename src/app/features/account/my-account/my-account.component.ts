@@ -48,4 +48,7 @@ export class MyAccountComponent implements OnInit {
   return() {
     this.router.navigate(["/messagerie"]);
   }
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
 }

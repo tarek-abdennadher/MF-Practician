@@ -90,6 +90,9 @@ export class ArchieveMessagesComponent implements OnInit {
       });
     });
   }
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
     messageArchived.id = message.id;

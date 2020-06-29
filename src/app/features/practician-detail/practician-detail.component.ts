@@ -67,6 +67,11 @@ export class PracticianDetailComponent implements OnInit {
         }
       });
   }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   isMyFAvorite(id) {
     this.practicianDetailService
       .isPracticianFavorite(id)

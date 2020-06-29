@@ -106,6 +106,10 @@ export class SentMessagesComponent implements OnInit {
       });
   }
 
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   mappingMessage(message) {
     const messageSent = new MessageSent();
     messageSent.isSeen = true;
