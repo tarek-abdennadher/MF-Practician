@@ -4,7 +4,7 @@ import { MyDocumentsComponent } from "./my-documents.component";
 import { HlsLinksModule } from "hls-links";
 import { MyDocumentsRoutingModule } from "./my-documents-routing.module";
 import { HlsDocumentsModule } from "hls-documents";
-import { HlsMessagingListModule } from "hls-messaging-list";
+import { HlsMessagingListModule } from "@app/core/lib-messaging-list/hls-messaging-list.module";
 import { DocumentsListComponent } from "./documents-list/documents-list.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';

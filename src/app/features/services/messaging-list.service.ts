@@ -6,6 +6,7 @@ import { FeaturesService } from "../features.service";
 import * as _ from "lodash";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Injectable({
   providedIn: "root",
@@ -355,10 +356,12 @@ export class MessagingListService {
     );
   }
 
-  public getInboxByAccountId(id,pageNo): Observable<any> {
+  public getInboxByAccountId(id, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + "inbox-by-account/" + id+"?pageNo="+pageNo
+      this.globalService.url.messages + "inbox-by-account/" + id, {
+        params:{ 'pageNo': pageNo, 'order': order}
+      }
     );
   }
 
