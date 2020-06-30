@@ -22,7 +22,7 @@ import { OrderDirection } from '@app/shared/enmus/order-direction';
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
-  imageSource : string;
+  imageSource: string;
   myPatients = [];
   filtredPatients = [];
   isMyPatients = true;
@@ -207,13 +207,14 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsPendingOfCurrentParactician(pageNo, this.direction)
+      .getPendingInvitations(pageNo, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
+        this.myPatients = [];
         myPatients.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
@@ -226,7 +227,7 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsPendingOfCurrentParactician(pageNo, this.direction)
+      .getPendingInvitations(pageNo, this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -260,7 +261,7 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsArchivedOfCurrentParactician(pageNo,this.direction)
+      .getPatientsArchivedOfCurrentParactician(pageNo, this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -425,7 +426,7 @@ export class MyPatientsComponent implements OnInit {
 
   refuseAction(item) {
     this.myPatientsService
-      .declinePatientInvitation(item.users[0].id)
+      .prohibitePatient(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
