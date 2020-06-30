@@ -299,7 +299,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   countMyPatientPending() {
-    this.featuresService.getCountOfMyPatientPending().subscribe((num) => {
+    this.featuresService.countPendingInvitations().subscribe((num) => {
       this.featuresService.setNumberOfPending(num);
     });
   }
