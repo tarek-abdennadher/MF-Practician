@@ -20,6 +20,29 @@
     margin-right: -550px;
   }
 }
+
+@media only screen and (max-width: 769px) {
+  .show-mobile {
+    display: flex;
+  }
+  .hide-mobile {
+    display: none;
+  }
+  .xs-pd-lr-unset {
+    padding-right: unset;
+    padding-left: unset;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .show-mobile {
+    display: none;
+  }
+  .hide-mobile {
+    display: flex;
+  }
+}
+
 .custom-search-style {
   float: right;
   margin-right: 15px;
