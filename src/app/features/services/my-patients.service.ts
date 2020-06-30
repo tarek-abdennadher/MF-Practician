@@ -34,18 +34,27 @@ export class MyPatientsService {
   getPatientsProhibitedOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited" , {
-        params: { 'pageNo': pageNo, 'order': order }
-      }
+      this.globalService.url.favorite + "myPatient/prohibited", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
   getPatientsPendingOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/pending" , {
-        params: { 'pageNo': pageNo, 'order': order }
-      }
+      this.globalService.url.favorite + "myPatient/pending", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
+    );
+  }
+
+  getPendingInvitations(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "invitations", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
@@ -53,8 +62,8 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.favorite + "myPatient/archived", {
-        params: { 'pageNo': pageNo, 'order': order }
-      }
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
