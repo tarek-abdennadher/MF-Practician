@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { ContactsService } from "../services/contacts.service";
-import { ActivatedRoute } from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 import { Location } from "@angular/common";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
@@ -31,6 +31,7 @@ export class SecretaryDetailComponent implements OnInit {
     private accountService: AccountService,
     private contactsService: ContactsService,
     private route: ActivatedRoute,
+    public router: Router,
     private _location: Location,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
@@ -63,6 +64,11 @@ export class SecretaryDetailComponent implements OnInit {
       otherPhones: this.formBuilder.array([])
     });
   }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   updatePhone(p): FormGroup {
     return this.formBuilder.group({
       id: [p.id ? p.id : null],

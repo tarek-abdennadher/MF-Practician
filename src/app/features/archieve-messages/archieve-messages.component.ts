@@ -71,6 +71,9 @@ export class ArchieveMessagesComponent implements OnInit {
       this.filtredItemList = this.itemsList;
     });
   }
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
     messageArchived.id = message.id;

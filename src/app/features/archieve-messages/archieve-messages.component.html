@@ -5,6 +5,7 @@
   [number]="number"
   [backButton]="backButton"
   (backButtonAction)="BackButton()"
+  (sendEvent)="displaySendAction()"
 ></lib-hlsLinks>
 <lib-hlsMessagingList
   [list]="filtredItemList"
@@ -14,6 +15,7 @@
   [hasPaging]="true"
   (upSortAction)="upSortClicked()"
   (downSortAction)="downSortClicked()"
+  [caller]="'archieve'"
 ></lib-hlsMessagingList>
 
 <div

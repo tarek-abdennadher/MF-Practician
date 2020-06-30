@@ -5,6 +5,7 @@
     [topText]="topText"
     [backButton]="backButton"
     (backButtonAction)="goBack()"
+    (sendEvent)="displaySendAction()"
   >
   </lib-hlsLinks>
   <form [formGroup]="filterDocumentsForm" class="col-md-2">

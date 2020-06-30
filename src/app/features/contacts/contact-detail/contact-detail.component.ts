@@ -74,6 +74,11 @@ export class ContactDetailComponent implements OnInit {
   get ctr() {
     return this.infoForm.controls;
   }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   getContact(id) {
     this.contactsService.getContactById(id).subscribe((contact) => {
       this.otherPhones.next(contact.otherPhones);

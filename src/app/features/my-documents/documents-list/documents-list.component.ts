@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 import { MyDocumentsService } from "../my-documents.service";
 import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
@@ -38,6 +38,7 @@ export class DocumentsListComponent implements OnInit {
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private globalService: GlobalService,
+    private router: Router,
     private route: ActivatedRoute,
     public documentsService: MyDocumentsService,
     private _location: Location,
@@ -79,6 +80,10 @@ export class DocumentsListComponent implements OnInit {
         });
       }
     });
+  }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
   }
 
   getAccountDetails(id) {

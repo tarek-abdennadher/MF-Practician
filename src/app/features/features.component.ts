@@ -372,9 +372,7 @@ export class FeaturesComponent implements OnInit {
   logoClicked() {
     this.router.navigate(["/messagerie"]);
   }
-  receiveCollapsed($event) {
-    this.collapedSideBar = $event;
-  }
+
   openNotifications() {
     console.log("notifications seen");
   }
