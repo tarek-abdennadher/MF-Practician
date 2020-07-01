@@ -14,6 +14,7 @@ export class MatPatientFileDialogComponent implements OnInit {
   public patientFileForm: FormGroup;
   labels: any;
   image: string | ArrayBuffer;
+  practicianImage: string | ArrayBuffer;
   public phoneForm: FormGroup;
   isLabelShow: boolean;
   isDeleted: boolean = false;
@@ -39,6 +40,21 @@ export class MatPatientFileDialogComponent implements OnInit {
   ngOnInit() {
     this.initPatientFileForm();
     this.patchValue(this.data);
+
+    if (this.data?.patientFile?.practicianPhotoId) {
+      this.documentService.downloadFile(this.data.patientFile.practicianPhotoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            this.practicianImage = myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          this.practicianImage = this.avatars.doctor
+        }
+      );
+    }
   }
   updatePhone(p): FormGroup {
     return this.formBuilder.group({
@@ -113,6 +129,8 @@ export class MatPatientFileDialogComponent implements OnInit {
       email: data?.patientFile?.email,
       address: data?.patientFile?.address,
       additionalAddress: data?.patientFile?.additionalAddress,
+      city: data?.patientFile?.city,
+      zipCode: data?.patientFile?.zipCode,
       phoneNumber: data?.patientFile?.phoneNumber,
       category: data?.patientFile?.category?.name
     })

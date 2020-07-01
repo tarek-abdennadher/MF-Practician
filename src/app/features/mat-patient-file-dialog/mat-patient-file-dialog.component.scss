@@ -3,12 +3,17 @@ $input-color: #f1f1f1;
 $color-helssy-pink: #ff0063;
 $color-helssy-white: #ffffff;
 .form-control{
-    height: 40px;
+  height: 40px;
+background: #F1F1F1 0% 0% no-repeat padding-box;
+border: 1px solid #EAEAEA;
+opacity: 1;
   }
   .col-form-label {
     font-size: 15px !important;
     color: $color-helssy-grey;
+    letter-spacing: -0.66px;
     font-family: "Segoe UI Medium" !important;
+    text-align: left;
   }
   .image-container {
     width: 100%;
@@ -98,4 +103,42 @@ $color-helssy-white: #ffffff;
     margin-left: auto;
     margin-right: auto;
   }
-  
+i{
+text-align: left;
+font-size: 17px;
+letter-spacing: -0.75px;
+color: #ACB6C3;
+opacity: 1;
+}
+.sub-title{
+text-align: left;
+font-size: 17px;
+line-height: 20px;
+letter-spacing: -0.75px;
+color: #6E819B;
+opacity: 1;
+}
+.practician{
+  font-family: "Segoe UI";
+  text-align: left;
+  font-size: 17px;
+  line-height: 14px;
+letter-spacing: -0.75px;
+color: #6E819B;
+}
+.speciality{
+  font-family: "Segoe UI";
+  text-align: left;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 14px;
+letter-spacing: -0.44px;
+color: #ACB6C3;
+text-transform: uppercase;
+}
+.practician-image{
+  opacity: 1;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+}

@@ -78,7 +78,10 @@ export class AccountService {
     required: "Le champ est obligatoire",
     update_leaves_success: "Dates de congés modifiées avec succès",
     update_leaves_fail: "Erreur survenue lors de la mise à jour des dates de congés.",
-    is_deleted: " Le compte patient a été désactivé  !"
+    is_deleted: " Le compte patient a été désactivé  !",
+    personal_info: "Informations personnelles",
+    cordonnees: "Coordonnées",
+    info_compl: "Informations complémentaires"
   };
   public errors = {
     required: "Le champ est obligatoire",
