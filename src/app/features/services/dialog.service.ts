@@ -24,8 +24,8 @@ export class DialogService {
   }
   openPatientFile(title, patientFile) {
     return this.dialog.open(MatPatientFileDialogComponent, {
-      width: "100%",
-      height: "auto",
+      width: "900px",
+      height: "75%",
       panelClass: "patient-file-container",
       disableClose: true,
       position: { top: "120px" },

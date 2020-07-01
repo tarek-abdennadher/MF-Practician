@@ -106,10 +106,10 @@ a {
 }
 
 .patient-file-container .mat-dialog-container {
-  box-shadow: 0px 2px 0px #0000000d;
-  border-radius: 23px;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 20px #0000000D;
   opacity: 1;
-  padding-top: 0px;
+  padding-top: 5px;
 }
 .close {
   color: #bcbcbc !important;
@@ -170,13 +170,22 @@ a {
   opacity: 1;
 }
 
-.confirm-dialog-container span.title-span ,.patient-file-container span.title-span  {
+.confirm-dialog-container span.title-span   {
   font-size: 17px;
   font-weight: Bold;
   letter-spacing: 0px;
   color: #6e819bd4;
   opacity: 1;
   text-transform: uppercase;
+}
+.patient-file-container span.title-span  {
+  font-size: 25px;
+  font-weight: Bold;
+  text-align: left;
+  letter-spacing: -1.1px;
+  color: #6E819B;
+  opacity: 1;
+  float: left;
 }
 
 .group-element {
