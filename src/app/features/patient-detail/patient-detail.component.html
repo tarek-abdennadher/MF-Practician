@@ -1,4 +1,4 @@
-<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number" (sendEvent)="displaySendAction()"
   [backButton]="backButton" (backButtonAction)="goBack()"></lib-hlsLinks>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">

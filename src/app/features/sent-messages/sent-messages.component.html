@@ -2,7 +2,7 @@
   [backButton]="backButton" (selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
   (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
-  (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
+  (deleteAction)="deleteActionClicked()" (sendEvent)="displaySendAction()" (archieveAction)="archieveActionClicked()"
   (filterAction)="filterActionClicked($event)"></lib-hlsLinks>
 <lib-hlsMessagingList [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
   (cardAction)="cardClicked($event)" [imageSource]="imageSource"></lib-hlsMessagingList>

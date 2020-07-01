@@ -92,6 +92,11 @@ export class PracticianSearchComponent implements OnInit {
       jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   mappingPracticians(message) {
     const practician = new PracticianSearch();
     practician.id = message.id;
