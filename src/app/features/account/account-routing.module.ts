@@ -32,14 +32,6 @@ const routes: Routes = [
         component: TeleSecretariesComponent
       },
       {
-        path: "mes-contacts",
-        component: MyContactsComponent
-      },
-      {
-        path: "mes-contacts/:id",
-        component: MyContactDetailComponent
-      },
-      {
         path: "mes-factures",
         component: FacturesComponent
       },
