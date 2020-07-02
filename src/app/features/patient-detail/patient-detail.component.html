@@ -1,5 +1,5 @@
-<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number" (sendEvent)="displaySendAction()"
-  [backButton]="backButton" (backButtonAction)="goBack()"></lib-hlsLinks>
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+  (sendEvent)="displaySendAction()" [backButton]="backButton" (backButtonAction)="goBack()"></lib-hlsLinks>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
@@ -7,9 +7,10 @@
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
-<lib-hls-patient-file [imageSource]="imageSource" [noteimageSource]="noteimageSource" [patient]="patientFile"
-  [categoryList]="categoryList" [linkedPatients]="linkedPatients" (submitAction)="submit($event)"
-  (archieveNoteAction)="archieveNote($event)" (submitNoteAction)="submitNote($event)">
+<lib-hls-patient-file [imageSource]="imageSource" [practicianImage]="practicianImage"
+  [noteimageSource]="noteimageSource" [patient]="patientFile" [categoryList]="categoryList"
+  [linkedPatients]="linkedPatients" (submitAction)="submit($event)" (archieveNoteAction)="archieveNote($event)"
+  (submitNoteAction)="submitNote($event)">
 </lib-hls-patient-file>
 
 <app-messaging-list [isPatientFile]="true" [idAccount]="patientId"></app-messaging-list>
