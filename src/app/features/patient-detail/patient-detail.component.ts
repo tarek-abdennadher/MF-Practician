@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, LOCALE_ID, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
 import { Subject, forkJoin } from 'rxjs';
@@ -25,7 +25,7 @@ import { GlobalService } from '@app/core/services/global.service';
 export class PatientDetailComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
-  noteimageSource : string;
+  noteimageSource: string;
   page = "MY_PRACTICIANS";
   notifMessage = "";
   links = {};
@@ -38,7 +38,8 @@ export class PatientDetailComponent implements OnInit {
   patientId: number;
   patientFile = new Subject<PatientFile>();
   errors;
-  imageSource: string | ArrayBuffer ;
+  imageSource: string | ArrayBuffer;
+  practicianImage: string | ArrayBuffer;
   submitted = false;
   categoryList = new Subject<[]>();
   linkedPatients = new Subject();
@@ -47,6 +48,7 @@ export class PatientDetailComponent implements OnInit {
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private featureService: FeaturesService,
     private accountService: AccountService,
     private localeService: BsLocaleService,
@@ -116,7 +118,25 @@ export class PatientDetailComponent implements OnInit {
             this.imageSource = this.avatars.man
           }
         }
+        if (patientFile?.practicianPhotoId != null) {
+          this.documentService.downloadFile(patientFile.practicianPhotoId).subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                this.practicianImage = myReader.result;
+              };
+              let ok = myReader.readAsDataURL(response.body);
+            },
+            (error) => {
+              this.practicianImage = this.avatars.doctor
+            }
+          );
+        }
       }));
+  }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
   }
 
   getLinkedPatients() {

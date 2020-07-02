@@ -1,4 +1,5 @@
-<lib-hlsLinks [topText]="topText" [page]="page" [backButton]="backButton" (backButtonAction)="BackButton()">
+<lib-hlsLinks [topText]="topText" [page]="page" [backButton]="backButton" (backButtonAction)="BackButton()"
+  (sendEvent)="displaySendAction()">
 </lib-hlsLinks>
 
 <a *ngIf="userRole !== 'PRACTICIAN'" [routerLink]="'mes-informations'" routerLinkActive>
@@ -15,15 +16,17 @@
   <a mat-tab-link [routerLink]="'mon-telesecretariat'" routerLinkActive #rlc="routerLinkActive" [active]="rlc.isActive">
     <i class="far fa-user-headset my-tab-icon"></i> {{ labels.tele_secretariat_tab }}
   </a>
-  <a mat-tab-link [routerLink]="'mes-contacts'" routerLinkActive #rle="routerLinkActive" [active]="rle.isActive">
-    <i class="far fa-user-md my-tab-icon"></i> {{ labels.my_contacts }}
-  </a>
   <a mat-tab-link [routerLink]="'mes-categories'" routerLinkActive #rle="routerLinkActive" [active]="rle.isActive">
     <i class="far fa-cog my-tab-icon"></i> {{ labels.categories_tab }}
   </a>
   <a mat-tab-link [routerLink]="'mes-stats'" routerLinkActive #rlf="routerLinkActive" [active]="rlf.isActive">
     <i class="far fa-chart-pie-alt my-tab-icon"></i> {{ labels.stats_tab }}
   </a>
+  <a *ngIf="showLeaves" mat-tab-link [routerLink]="'mes-conges'" routerLinkActive #rlf="routerLinkActive"
+    [active]="rlf.isActive">
+    <i class="far fa-calendar-week my-tab-icon"></i> {{ labels.leaves }}
+  </a>
+
 
 </nav>
 

@@ -6,6 +6,7 @@ import { Location } from "@angular/common";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from "@app/core/services/global.service";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Component({
   selector: "app-archieve-messages",
@@ -31,6 +32,8 @@ export class ArchieveMessagesComponent implements OnInit {
   searchContext: boolean;
   listLength = 0;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  direction: OrderDirection = OrderDirection.DESC;
+
   constructor(
     public router: Router,
     private archivedService: ArchieveMessagesService,
@@ -51,7 +54,7 @@ export class ArchieveMessagesComponent implements OnInit {
 
   getMyMessagesArchived(pageNo: number) {
     this.scroll = true;
-    this.archivedService.getMyArchivedMessages(pageNo).subscribe((messages) => {
+    this.archivedService.getMyArchivedMessages(pageNo, this.direction).subscribe((messages) => {
       this.scroll = false;
       this.number = this.featureService.numberOfArchieve;
       this.bottomText =
@@ -67,6 +70,9 @@ export class ArchieveMessagesComponent implements OnInit {
       });
       this.filtredItemList = this.itemsList;
     });
+  }
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
   }
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
@@ -208,5 +214,21 @@ export class ArchieveMessagesComponent implements OnInit {
       });
       this.filtredItemList.push(archivedMessage);
     });
+  }
+
+  upSortClicked() {
+    this.direction = OrderDirection.ASC;
+    this.resetList();
+  }
+
+  downSortClicked() {
+    this.direction = OrderDirection.DESC;
+    this.resetList();
+  }
+
+  resetList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.getMyMessagesArchived(this.pageNo);
   }
 }

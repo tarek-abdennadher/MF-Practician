@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable } from "rxjs";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Injectable({
   providedIn: "root",
@@ -15,37 +16,54 @@ export class MyPatientsService {
     edit_info_success: "Informations personnelles modifiées avec succès"
   }
 
-  getPatientsOfCurrentParactician(pageNo: number): Observable<any> {
+  getPatientsOfCurrentParactician(pageNo: number, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my?pageNo=" + pageNo
-    );
+      this.globalService.url.patientFile + "my", {
+      params: { 'pageNo': pageNo, 'order': order }
+    });
   }
-  getPatientsOfCurrentParacticianByCategory(pageNo: number, categoryId: number): Observable<any> {
+  getPatientsOfCurrentParacticianByCategory(pageNo: number, categoryId: number, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my/byCategory/" + categoryId + "?pageNo=" + pageNo
+      this.globalService.url.patientFile + "my/byCategory/" + categoryId, {
+      params: { 'pageNo': pageNo, 'order': order }
+    });
+  }
+
+  getPatientsProhibitedOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/prohibited", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
-  getPatientsProhibitedOfCurrentParactician(pageNo): Observable<any> {
+  getPatientsPendingOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited?pageNo=" + pageNo
+      this.globalService.url.favorite + "myPatient/pending", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
-  getPatientsPendingOfCurrentParactician(pageNo): Observable<any> {
+  getPendingInvitations(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/pending?pageNo=" + pageNo
+      this.globalService.url.favorite + "invitations", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
-  getPatientsArchivedOfCurrentParactician(pageNo): Observable<any> {
+  getPatientsArchivedOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/archived?pageNo=" + pageNo
+      this.globalService.url.favorite + "myPatient/archived", {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 

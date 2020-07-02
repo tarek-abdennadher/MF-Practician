@@ -45,6 +45,11 @@ export class PracticianInvitationComponent implements OnInit {
   BackButton() {
     this.router.navigate(["/praticien-recherche"]);
   }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   initForm() {
     this.infoForm = new FormGroup({
       title: new FormControl(null, Validators.required),

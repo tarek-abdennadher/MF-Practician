@@ -83,6 +83,9 @@ export class ContactsComponent implements OnInit {
       this.getAllContactsForSecretary();
     }
   }
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
   getAllContactsForSecretary() {
     this.contactsService.getContactsProForSecretary().subscribe(
       (contacts) => {

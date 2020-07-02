@@ -14,8 +14,10 @@ export class MatPatientFileDialogComponent implements OnInit {
   public patientFileForm: FormGroup;
   labels: any;
   image: string | ArrayBuffer;
+  practicianImage: string | ArrayBuffer;
   public phoneForm: FormGroup;
   isLabelShow: boolean;
+  isDeleted: boolean = false;
   isMaidenNameShow: boolean;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
@@ -29,6 +31,7 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.labels = this.service.messages;
     this.isLabelShow = false;
     this.isMaidenNameShow = false;
+    this.isDeleted = false;
     this.avatars = this.globalService.avatars;
   }
   get phoneList() {
@@ -37,6 +40,21 @@ export class MatPatientFileDialogComponent implements OnInit {
   ngOnInit() {
     this.initPatientFileForm();
     this.patchValue(this.data);
+
+    if (this.data?.patientFile?.practicianPhotoId) {
+      this.documentService.downloadFile(this.data.patientFile.practicianPhotoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            this.practicianImage = myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          this.practicianImage = this.avatars.doctor
+        }
+      );
+    }
   }
   updatePhone(p): FormGroup {
     return this.formBuilder.group({
@@ -61,6 +79,9 @@ export class MatPatientFileDialogComponent implements OnInit {
     });
   }
   patchValue(data) {
+    if (data?.patientFile?.deleted) {
+      this.isDeleted = true
+    }
     if (data?.patientFile?.photoId) {
       this.documentService.downloadFile(data.patientFile.photoId).subscribe(
         (response) => {
@@ -108,6 +129,8 @@ export class MatPatientFileDialogComponent implements OnInit {
       email: data?.patientFile?.email,
       address: data?.patientFile?.address,
       additionalAddress: data?.patientFile?.additionalAddress,
+      city: data?.patientFile?.city,
+      zipCode: data?.patientFile?.zipCode,
       phoneNumber: data?.patientFile?.phoneNumber,
       category: data?.patientFile?.category?.name
     })

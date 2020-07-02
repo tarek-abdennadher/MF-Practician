@@ -5,12 +5,17 @@
   [number]="number"
   [backButton]="backButton"
   (backButtonAction)="BackButton()"
+  (sendEvent)="displaySendAction()"
 ></lib-hlsLinks>
 <lib-hlsMessagingList
   [list]="filtredItemList"
   (cardAction)="cardClicked($event)"
   [isCheckbox]="false"
   [imageSource]="imageSource"
+  [hasPaging]="true"
+  (upSortAction)="upSortClicked()"
+  (downSortAction)="downSortClicked()"
+  [caller]="'archieve'"
 ></lib-hlsMessagingList>
 
 <div

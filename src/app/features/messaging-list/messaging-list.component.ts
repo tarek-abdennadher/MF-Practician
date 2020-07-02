@@ -6,6 +6,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { BehaviorSubject } from 'rxjs';
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Component({
   selector: "app-messaging-list",
@@ -51,6 +52,7 @@ export class MessagingListComponent implements OnInit {
   paramsId;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   searchContext = false;
+  direction: OrderDirection = OrderDirection.DESC;
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -218,6 +220,11 @@ export class MessagingListComponent implements OnInit {
       a.isChecked = true;
     });
   }
+
+  displaySendAction() {
+    this.router.navigate(["/messagerie-ecrire"]);
+  }
+
   deSelectAllActionClicked() {
     this.filtredItemList.forEach((a) => {
       a.isChecked = false;
@@ -313,18 +320,26 @@ export class MessagingListComponent implements OnInit {
         ? this.itemsList
         : this.itemsList.filter(
             (item) =>
-              item.users[0].type.toLowerCase() ==
-              (event == "doctor"
-                ? "medical"
-                : event == "secretary"
-                ? "telesecretarygroup" && "secretary"
-                : event)
+            {
+              switch (event) {
+                case "doctor":
+                  return item.users[0].type.toLowerCase() == "medical";
+                case "secretary":
+                  return item.users[0].type.toLowerCase() == "secretary" ||
+                  item.users[0].type.toLowerCase() == "telesecretarygroup"
+                default:
+                  return item.users[0].type.toLowerCase() == event;
+
+              }
+
+            }
+
           );
   }
 
   getMyInbox(accountId, pageNo) {
     this.messagesServ
-      .getInboxByAccountId(accountId, pageNo)
+      .getInboxByAccountId(accountId, pageNo, this.direction)
       .subscribe((retrievedMess) => {
         if (!this.isMyInbox) {
           this.featureService.myPracticians.asObservable().subscribe(list => {
@@ -357,7 +372,7 @@ export class MessagingListComponent implements OnInit {
 
   getMyInboxNextPage(accountId, pageNo) {
     this.messagesServ
-      .getInboxByAccountId(accountId, pageNo)
+      .getInboxByAccountId(accountId, pageNo, this.direction)
       .subscribe((retrievedMess) => {
         this.listLength = retrievedMess.length
         if (retrievedMess.length > 0) {
@@ -690,4 +705,22 @@ export class MessagingListComponent implements OnInit {
       }, 1000);
     }
   }
+
+  upSortClicked() {
+    this.direction = OrderDirection.ASC;
+    this.resetList();
+  }
+
+  downSortClicked() {
+    this.direction = OrderDirection.DESC;
+    this.resetList();
+  }
+
+  resetList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.getMyInbox(this.paramsId, this.pageNo);
+  }
+
 }
