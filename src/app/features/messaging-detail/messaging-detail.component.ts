@@ -465,7 +465,11 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   acceptAction() {
-    this.router.navigate(["/messagerie-repondre/", this.idMessage]);
+    this.router.navigate(["/messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        status: "accept",
+      }
+    });
   }
 
   refuseAction() {
