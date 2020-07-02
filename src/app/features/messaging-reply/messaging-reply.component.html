@@ -14,7 +14,7 @@
   [isReply]="true"
   [senderRolePatient]="messagingDetail.sender.role == 'PATIENT'"
   [objectsList]="objectsList"
-  [refuseResponse]="refuseResponse"
+  [refuseResponse]="false"
   (sendAction)="replyMessage($event)"
 ></lib-hlsMessagingDetail>
 <notifier-container></notifier-container>
