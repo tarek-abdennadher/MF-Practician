@@ -98,7 +98,7 @@ export class GlobalService {
     patient: "patient",
     patients: "patients",
     my_patients: "Mes patients",
-    documents: "Mes documents",
+    documents: "Documents reçus",
     delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
     delete_title_patient: "Supprimer le patient",
     newArchivedMessage: "message non lu",
