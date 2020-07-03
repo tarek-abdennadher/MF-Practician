@@ -9,7 +9,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { Location } from "@angular/common";
 import { NotifierService } from "angular-notifier";
 import { takeUntil } from "rxjs/operators";
-import { Subject } from "rxjs";
+import { Subject, BehaviorSubject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
@@ -26,8 +26,10 @@ export class MessagingReplyComponent implements OnInit {
   imageSource: string;
   isFromInbox = true;
   senderRolePatient = true;
+  showRefuseForTls : boolean;
   messagingDetail: any;
   idMessage: number;
+  bodyObs = new BehaviorSubject(null);
 
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
@@ -89,16 +91,17 @@ export class MessagingReplyComponent implements OnInit {
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((message) => {
+        console.log(this.showRefuseForTls);
         message.toReceivers.forEach((element) => {
           if (element.receiverId == this.featureService.getUserId()) {
             this.isMyMessage = true;
           }
         });
+        this.getResponseBody(message);
         message.hasFiles = false;
-        if (this.refuseResponse) {
-          message.object = [];
-          this.getAllRefuseTypes();
-        }
+        // if (this.refuseResponse) {
+        //   message.object = [];
+        // }
         message.body = "";
         this.messagingDetail = message;
         this.messagingDetail.toReceivers.forEach((receiver) => {
@@ -184,6 +187,41 @@ export class MessagingReplyComponent implements OnInit {
       .subscribe((refuseTypes) => {
         this.objectsList = refuseTypes;
       });
+  }
+
+  getResponseBody(message) {
+    if (this.isMyMessage && message.requestTypeId && message.requestTitleId) {
+      let requestDto;
+      if (message.sender.role == 'PATIENT') {
+        requestDto = {
+          patientId: message.sender.senderId,
+          patientForId: message.sender.sendedForId,
+          practicianId: this.featureService.getUserId(),
+          requestId: message.requestTypeId,
+          titleId: message.requestTitleId,
+          websiteOrigin: "PATIENT"
+        }
+      } else if (message.sender.role == "TELESECRETARYGROUP" || message.sender.role == "SUPERVISOR") {
+        requestDto = {
+          patientId: message.sender.sendedForId,
+          patientForId: null,
+          practicianId: this.featureService.getUserId(),
+          requestId: message.requestTypeId,
+          titleId: message.requestTitleId,
+          websiteOrigin: "TLS"
+        }
+      }
+      if (this.refuseResponse) {
+        this.messagingDetailService.getRefuseRequest(requestDto).subscribe(resp => {
+          this.bodyObs.next(resp.body);
+        })
+      }
+      if (this.acceptResponse) {
+        this.messagingDetailService.getAcceptRequest(requestDto).subscribe(resp => {
+          this.bodyObs.next(resp.body);
+        })
+      }
+    }
   }
 
   replyMessage(message) {

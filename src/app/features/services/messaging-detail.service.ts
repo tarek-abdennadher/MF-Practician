@@ -42,4 +42,20 @@ export class MessagingDetailService {
       ids
     );
   }
+
+  public getRefuseRequest(request): Observable<any> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.requestType + "/refuse/body",
+      request
+    );
+  }
+
+  public getAcceptRequest(request): Observable<any> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.requestType + "/accept/body",
+      request
+    );
+  }
 }
