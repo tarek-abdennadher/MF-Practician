@@ -25,6 +25,7 @@ export class GlobalService {
     accountRole: this.BASE_URL_CA + "/account/role/",
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",
+    requestType: this.BASE_URL_MA + "/requestType",
     produce: this.BASE_URL_MA + "/messages/produce",
     message: this.BASE_URL_MA + "/messages",
     replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",

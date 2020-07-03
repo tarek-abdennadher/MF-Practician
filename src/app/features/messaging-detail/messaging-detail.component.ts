@@ -52,6 +52,7 @@ export class MessagingDetailComponent implements OnInit {
   attachements: string[] = [];
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   patientFile: any;
+  showRefuseForTls: boolean;
   constructor(
     private _location: Location,
     private router: Router,
@@ -279,6 +280,9 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .subscribe((message) => {
+          this.showRefuseForTls = ((message.sender.role == 'TELESECRETARYGROUP' ||
+          message.sender.role == 'TELESECRETARYGROUP') &&
+          message.requestTypeId != null && message.requestTitleId != null);
           this.getAttachements(message.nodesId);
           this.senderRolePatient =
             this.sentContext && message.toReceivers.length == 1
