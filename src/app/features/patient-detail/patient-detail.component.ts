@@ -132,6 +132,9 @@ export class PatientDetailComponent implements OnInit {
             }
           );
         }
+        else {
+          this.practicianImage = this.avatars.doctor
+        }
       }));
   }
 
