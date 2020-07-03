@@ -241,3 +241,19 @@ margin-left: 12.5px;
 }
 
 /* ====================================================================== */
+
+/* ============== Material radio buttons override style ================= */
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle{
+  border-color: #41bddf;
+}
+
+.mat-radio-button.mat-accent .mat-radio-inner-circle{
+  color:rgb(66, 134, 244);
+  background-color: #41bddf ;
+}
+
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+  background-color:rgb(66, 134, 244);
+}
+/* ====================================================================== */

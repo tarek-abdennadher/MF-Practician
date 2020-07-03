@@ -21,6 +21,20 @@
   }
 }
 
+@media only screen and (max-width: 500px) {
+  .show-mobile {
+    padding-right: unset;
+    padding-left: unset;
+  }
+  #documentType {
+    width: 200%;
+  }
+
+  .xs-pd-r-unset {
+    padding-right: unset;
+  }
+}
+
 @media only screen and (max-width: 769px) {
   .show-mobile {
     display: flex;
