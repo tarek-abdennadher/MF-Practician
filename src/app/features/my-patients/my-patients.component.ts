@@ -15,13 +15,14 @@ enableRipple(true);
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { OrderDirection } from "@app/shared/enmus/order-direction";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
+  links = { isAdd: true };
   imageSource: string;
   myPatients = [];
   filtredPatients = [];
@@ -44,7 +45,14 @@ export class MyPatientsComponent implements OnInit {
   atcObj: AutoComplete = new AutoComplete();
   mesCategories = [];
   public filterPatientsForm: FormGroup;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
   public valueSearch;
   public valueSearchSelected;
   direction: OrderDirection = OrderDirection.DESC;
@@ -70,7 +78,6 @@ export class MyPatientsComponent implements OnInit {
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
 
   ngOnInit(): void {
@@ -120,7 +127,11 @@ export class MyPatientsComponent implements OnInit {
   }
   getPatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParactician(pageNo, this.direction)
+      .getPatientsOfCurrentParacticianV2(
+        this.featureService.getUserId(),
+        pageNo,
+        this.direction
+      )
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -129,7 +140,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
         this.searchAutoComplete();
@@ -139,7 +150,11 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParactician(pageNo, this.direction)
+      .getPatientsOfCurrentParacticianV2(
+        this.featureService.getUserId(),
+        pageNo,
+        this.direction
+      )
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -154,7 +169,11 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
     this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId, this.direction)
+      .getPatientsOfCurrentParacticianByCategory(
+        pageNo,
+        categoryId,
+        this.direction
+      )
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -278,15 +297,16 @@ export class MyPatientsComponent implements OnInit {
     const myPatients = new MyPatients();
     myPatients.users = [];
     myPatients.users.push({
-      id: patient.patientId,
-      accountId: patient.id,
+      id: patient.id,
+      accountId: patient.patient ? patient.patient.accountId : null,
+      patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
       type: "PATIENT",
       civility: patient.civility,
     });
     myPatients.photoId = patient.photoId;
-    myPatients.isMarkAsSeen = true;
+    myPatients.isMarkAsSeen = patient.patient ? true : false;
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
@@ -343,7 +363,7 @@ export class MyPatientsComponent implements OnInit {
   }
   prohibitAction(item) {
     this.myPatientsService
-      .prohibitePatient(item.users[0].id)
+      .prohibitePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -354,7 +374,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   editAction(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
   }
   deleteAction(item) {
     this.dialogService
@@ -377,8 +397,9 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   authorizeAction(item) {
+    console.log(item);
     this.myPatientsService
-      .authorizePatient(item.users[0].id)
+      .authorizePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -391,7 +412,7 @@ export class MyPatientsComponent implements OnInit {
 
   acceptedAction(item) {
     this.myPatientsService
-      .acceptPatientInvitation(item.users[0].id)
+      .acceptPatientInvitation(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -414,7 +435,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   public onFocusInputSearch(value: boolean) {
-    if (value === true && !(/\S/.test(this.valueSearch))) {
+    if (value === true && !/\S/.test(this.valueSearch)) {
       this.valueSearch = null;
     }
     this.valueSearchSelected = value;
@@ -426,7 +447,7 @@ export class MyPatientsComponent implements OnInit {
 
   refuseAction(item) {
     this.myPatientsService
-      .prohibitePatient(item.users[0].id)
+      .prohibitePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -445,7 +466,7 @@ export class MyPatientsComponent implements OnInit {
 
   archivedAction(item) {
     this.myPatientsService
-      .archivePatient(item.users[0].id)
+      .archivePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -458,7 +479,7 @@ export class MyPatientsComponent implements OnInit {
 
   activatedAction(item) {
     this.myPatientsService
-      .activatePatient(item.users[0].id)
+      .activatePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -471,14 +492,16 @@ export class MyPatientsComponent implements OnInit {
 
   getPendingListRealTime(pageNo) {
     this.featureService.getNumberOfPendingObs().subscribe((resp) => {
-      if (this.featureService.getNumberOfPendingValue() != this.myPatients.length) {
+      if (
+        this.featureService.getNumberOfPendingValue() != this.myPatients.length
+      ) {
         this.getPatientsPendingOfCurrentParactician(pageNo);
       }
     });
   }
 
   cardClicked(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
   }
 
   onScroll() {
@@ -508,7 +531,10 @@ export class MyPatientsComponent implements OnInit {
     }
   }
   searchAutoComplete() {
-    if (!this.featuresService.initialSearch || (this.featuresService.initialSearch && !this.atcObj['isRendered'])) {
+    if (
+      !this.featuresService.initialSearch ||
+      (this.featuresService.initialSearch && !this.atcObj["isRendered"])
+    ) {
       this.featuresService.initialSearch = true;
       this.atcObj = null;
       const myPatients = [];
@@ -586,5 +612,8 @@ export class MyPatientsComponent implements OnInit {
   resetList() {
     this.pageNo = 0;
     this.filter();
+  }
+  add() {
+    this.router.navigate(["/ajout-patient"]);
   }
 }
