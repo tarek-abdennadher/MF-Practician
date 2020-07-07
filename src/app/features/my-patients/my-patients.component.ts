@@ -398,7 +398,6 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   authorizeAction(item) {
-    console.log(item);
     this.myPatientsService
       .authorizePatient(item.users[0].patientId)
       .subscribe((resp) => {
@@ -428,9 +427,7 @@ export class MyPatientsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe((resp) => {
-              console.log("invitation accepter");
-            });
+            .subscribe((resp) => {});
         }
       });
   }

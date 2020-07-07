@@ -93,7 +93,6 @@ export class AddPatientComponent implements OnInit {
   }
   submit(model) {
     model.practicianId = this.practicianId;
-    console.log(model);
     this.patientService
       .createPatientFile(model)
       .subscribe(this.handleResponse, this.handleError);
