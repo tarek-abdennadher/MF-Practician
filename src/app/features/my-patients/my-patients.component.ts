@@ -160,7 +160,7 @@ export class MyPatientsComponent implements OnInit {
           this.number = this.number + myPatients.length;
           myPatients.forEach((elm) => {
             this.myPatients.push(
-              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
           });
         }
@@ -182,7 +182,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
         this.searchAutoComplete();
@@ -201,7 +201,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
         this.searchAutoComplete();
@@ -217,7 +217,7 @@ export class MyPatientsComponent implements OnInit {
           this.number = this.number + myPatients.length;
           myPatients.forEach((elm) => {
             this.myPatients.push(
-              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
           });
         }
@@ -236,7 +236,7 @@ export class MyPatientsComponent implements OnInit {
         this.myPatients = [];
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
         this.searchAutoComplete();
@@ -252,7 +252,7 @@ export class MyPatientsComponent implements OnInit {
           this.number = this.number + myPatients.length;
           myPatients.forEach((elm) => {
             this.myPatients.push(
-              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
           });
         }
@@ -270,7 +270,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
         this.searchAutoComplete();
@@ -286,7 +286,7 @@ export class MyPatientsComponent implements OnInit {
           this.number = this.number + myPatients.length;
           myPatients.forEach((elm) => {
             this.myPatients.push(
-              this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
           });
         }
@@ -310,6 +310,7 @@ export class MyPatientsComponent implements OnInit {
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
+    myPatients.isPatientFile = patient.patient ? false : true;
     if (myPatients.photoId) {
       myPatients.users.forEach((user) => {
         this.documentService.downloadFile(myPatients.photoId).subscribe(
@@ -491,6 +492,8 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPendingListRealTime(pageNo) {
+    this.number = 0;
+    this.bottomText = this.globalService.messagesDisplayScreen.patient;
     this.featureService.getNumberOfPendingObs().subscribe((resp) => {
       if (
         this.featureService.getNumberOfPendingValue() != this.myPatients.length
