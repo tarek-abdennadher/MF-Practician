@@ -79,6 +79,8 @@ export class MessagingListComponent implements OnInit {
       this.itemsList = new Array();
       this.filtredItemList = new Array();
       this.messages = [];
+      this.getRealTimeMessage();
+      this.getPracticianRealTimeMessage();
       if (
         params["id"] ||
         (this.isPatientFile &&
@@ -180,8 +182,6 @@ export class MessagingListComponent implements OnInit {
       }
     });
 
-    this.getRealTimeMessage();
-    this.getPracticianRealTimeMessage();
     this.route.queryParams.subscribe((params) => {
       if (params["status"]) {
         let notifMessage = "";
