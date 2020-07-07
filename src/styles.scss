@@ -50,7 +50,10 @@ $patient-theme: mat-light-theme(
 @include angular-material-theme($patient-theme);
 
 /* You can add global styles to this file, and also import other style files */
-
+html *
+{
+   font-family: "Segoe UI";
+}
 html,
 body {
   margin: 0;
