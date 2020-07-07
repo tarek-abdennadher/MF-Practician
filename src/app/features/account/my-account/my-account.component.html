@@ -1,5 +1,4 @@
-<lib-hlsLinks [topText]="topText" [page]="page" [backButton]="backButton" (backButtonAction)="BackButton()"
-  (sendEvent)="displaySendAction()">
+<lib-hlsLinks [topText]="topText" [page]="page" [backButton]="backButton" (backButtonAction)="BackButton()">
 </lib-hlsLinks>
 
 <a *ngIf="userRole !== 'PRACTICIAN'" [routerLink]="'mes-informations'" routerLinkActive>
