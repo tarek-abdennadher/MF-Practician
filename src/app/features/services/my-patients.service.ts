@@ -183,6 +183,12 @@ export class MyPatientsService {
       this.globalService.url.patientFile + patientId + "/" + practicianId
     );
   }
+  getPatientFileById(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "v2/" + id
+    );
+  }
   getPatientsByParentId(patientId: number) {
     return this.globalService.call(
       RequestType.GET,
@@ -201,6 +207,20 @@ export class MyPatientsService {
       RequestType.POST,
       this.globalService.url.patientFile,
       patientFile
+    );
+  }
+
+  getPatientsOfCurrentParacticianV2(
+    id,
+    pageNo: number,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "my/v2/" + id,
+      {
+        params: { pageNo: pageNo, order: order },
+      }
     );
   }
 }
