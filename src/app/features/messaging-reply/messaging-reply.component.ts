@@ -82,10 +82,6 @@ export class MessagingReplyComponent implements OnInit {
     });
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   getMessageDetailById(id) {
     this.messagingDetailService
       .getMessagingDetailById(id)
@@ -234,9 +230,7 @@ export class MessagingReplyComponent implements OnInit {
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
-    replyMessage.object = !this.refuseResponse
-      ? message.object
-      : message.object.name;
+    replyMessage.object = message.object;
     let sendedFor = null;
     if (!this.isMyMessage) {
       sendedFor =

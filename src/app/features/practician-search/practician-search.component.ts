@@ -93,9 +93,6 @@ export class PracticianSearchComponent implements OnInit {
     });
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
 
   mappingPracticians(message) {
     const practician = new PracticianSearch();

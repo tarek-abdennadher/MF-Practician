@@ -158,10 +158,6 @@ export class PatientDetailComponent implements OnInit {
       );
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   getLinkedPatients() {
     return this.patientService
       .getPatientsByParentId(this.patientId)

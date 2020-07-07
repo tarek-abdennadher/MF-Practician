@@ -65,10 +65,6 @@ export class SecretaryDetailComponent implements OnInit {
     });
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   updatePhone(p): FormGroup {
     return this.formBuilder.group({
       id: [p.id ? p.id : null],
