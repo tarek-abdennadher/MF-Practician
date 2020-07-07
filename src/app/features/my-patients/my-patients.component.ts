@@ -15,13 +15,14 @@ enableRipple(true);
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { OrderDirection } from "@app/shared/enmus/order-direction";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
+  links = { isAdd: true };
   imageSource: string;
   myPatients = [];
   filtredPatients = [];
@@ -44,7 +45,14 @@ export class MyPatientsComponent implements OnInit {
   atcObj: AutoComplete = new AutoComplete();
   mesCategories = [];
   public filterPatientsForm: FormGroup;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
   public valueSearch;
   public valueSearchSelected;
   direction: OrderDirection = OrderDirection.DESC;
@@ -70,7 +78,6 @@ export class MyPatientsComponent implements OnInit {
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
 
   ngOnInit(): void {
@@ -154,7 +161,11 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
     this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(pageNo, categoryId, this.direction)
+      .getPatientsOfCurrentParacticianByCategory(
+        pageNo,
+        categoryId,
+        this.direction
+      )
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -414,7 +425,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   public onFocusInputSearch(value: boolean) {
-    if (value === true && !(/\S/.test(this.valueSearch))) {
+    if (value === true && !/\S/.test(this.valueSearch)) {
       this.valueSearch = null;
     }
     this.valueSearchSelected = value;
@@ -471,7 +482,9 @@ export class MyPatientsComponent implements OnInit {
 
   getPendingListRealTime(pageNo) {
     this.featureService.getNumberOfPendingObs().subscribe((resp) => {
-      if (this.featureService.getNumberOfPendingValue() != this.myPatients.length) {
+      if (
+        this.featureService.getNumberOfPendingValue() != this.myPatients.length
+      ) {
         this.getPatientsPendingOfCurrentParactician(pageNo);
       }
     });
@@ -508,7 +521,10 @@ export class MyPatientsComponent implements OnInit {
     }
   }
   searchAutoComplete() {
-    if (!this.featuresService.initialSearch || (this.featuresService.initialSearch && !this.atcObj['isRendered'])) {
+    if (
+      !this.featuresService.initialSearch ||
+      (this.featuresService.initialSearch && !this.atcObj["isRendered"])
+    ) {
       this.featuresService.initialSearch = true;
       this.atcObj = null;
       const myPatients = [];
@@ -586,5 +602,8 @@ export class MyPatientsComponent implements OnInit {
   resetList() {
     this.pageNo = 0;
     this.filter();
+  }
+  add() {
+    this.router.navigate(["/ajout-patient"]);
   }
 }
