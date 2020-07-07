@@ -82,10 +82,6 @@ export class MessagingReplyComponent implements OnInit {
     });
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   getMessageDetailById(id) {
     this.messagingDetailService
       .getMessagingDetailById(id)

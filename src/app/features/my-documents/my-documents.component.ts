@@ -136,10 +136,6 @@ export class MyDocumentsComponent implements OnInit {
     }
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   mappingSendersAndReceivers(senderAndReceiver) {
     const practician = new PracticianSearch();
     const detail = this.getDetailSwitchRole(senderAndReceiver);

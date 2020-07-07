@@ -221,10 +221,6 @@ export class MessagingListComponent implements OnInit {
     });
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   deSelectAllActionClicked() {
     this.filtredItemList.forEach((a) => {
       a.isChecked = false;
