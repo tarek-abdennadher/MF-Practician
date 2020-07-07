@@ -363,7 +363,7 @@ export class MyPatientsComponent implements OnInit {
   }
   prohibitAction(item) {
     this.myPatientsService
-      .prohibitePatient(item.users[0].id)
+      .prohibitePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -374,7 +374,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   editAction(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
   }
   deleteAction(item) {
     this.dialogService
@@ -397,8 +397,9 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   authorizeAction(item) {
+    console.log(item);
     this.myPatientsService
-      .authorizePatient(item.users[0].id)
+      .authorizePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -411,7 +412,7 @@ export class MyPatientsComponent implements OnInit {
 
   acceptedAction(item) {
     this.myPatientsService
-      .acceptPatientInvitation(item.users[0].id)
+      .acceptPatientInvitation(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -446,7 +447,7 @@ export class MyPatientsComponent implements OnInit {
 
   refuseAction(item) {
     this.myPatientsService
-      .prohibitePatient(item.users[0].id)
+      .prohibitePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -465,7 +466,7 @@ export class MyPatientsComponent implements OnInit {
 
   archivedAction(item) {
     this.myPatientsService
-      .archivePatient(item.users[0].id)
+      .archivePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -478,7 +479,7 @@ export class MyPatientsComponent implements OnInit {
 
   activatedAction(item) {
     this.myPatientsService
-      .activatePatient(item.users[0].id)
+      .activatePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
