@@ -39,12 +39,12 @@ import { HlsPasswordStrengthModule } from "hls-password-strength";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { PipesModule } from '@app/shared/pipes/pipes.module';
-import { MatPatientFileDialogComponent } from './mat-patient-file-dialog/mat-patient-file-dialog.component';
-import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
-import { NgApexchartsModule } from 'ng-apexcharts';
-import { AddPatientComponent } from './my-patients/add-patient/add-patient.component';
-import { NewMessageMobileComponent } from './new-message-mobile/new-message-mobile.component';
+import { PipesModule } from "@app/shared/pipes/pipes.module";
+import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
+import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
+import { NgApexchartsModule } from "ng-apexcharts";
+import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
+import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -105,7 +105,7 @@ const notifierOptions: NotifierOptions = {
     PersonalInformationsComponent,
     MatPatientFileDialogComponent,
     AddPatientComponent,
-    NewMessageMobileComponent
+    NewMessageMobileComponent,
   ],
   imports: [
     FormsModule,
@@ -132,9 +132,9 @@ const notifierOptions: NotifierOptions = {
     InfiniteScrollModule,
     MatProgressSpinnerModule,
     PipesModule,
-    NgApexchartsModule
+    NgApexchartsModule,
   ],
 
   providers: [MessageService, ContactsService, JobtitlePipe],
 })
-export class FeaturesModule { }
+export class FeaturesModule {}
