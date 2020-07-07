@@ -1,6 +1,7 @@
 export class MyPatients {
   users: any;
   isMarkAsSeen: boolean;
+  isPatientFile: boolean;
   isSeen: boolean;
   isProhibited: boolean;
   isArchived: boolean;
