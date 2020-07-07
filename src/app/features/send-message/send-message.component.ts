@@ -152,10 +152,6 @@ export class SendMessageComponent implements OnInit {
     }
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   parseContactsPractician(contactsPractician) {
     let myList = [];
     contactsPractician.forEach((contactPractician) => {
