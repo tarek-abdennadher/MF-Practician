@@ -82,10 +82,6 @@ export class DocumentsListComponent implements OnInit {
     });
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   getAccountDetails(id) {
     this.accountService.getAccountDetails(id).subscribe((account) => {
       let details = this.getDetailSwitchRole(account);

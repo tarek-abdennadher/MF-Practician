@@ -44,6 +44,7 @@ import { MatPatientFileDialogComponent } from './mat-patient-file-dialog/mat-pat
 import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AddPatientComponent } from './my-patients/add-patient/add-patient.component';
+import { NewMessageMobileComponent } from './new-message-mobile/new-message-mobile.component';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -103,7 +104,8 @@ const notifierOptions: NotifierOptions = {
     PatientDetailComponent,
     PersonalInformationsComponent,
     MatPatientFileDialogComponent,
-    AddPatientComponent
+    AddPatientComponent,
+    NewMessageMobileComponent
   ],
   imports: [
     FormsModule,

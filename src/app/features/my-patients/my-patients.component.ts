@@ -431,10 +431,6 @@ export class MyPatientsComponent implements OnInit {
     this.valueSearchSelected = value;
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   refuseAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].id)
