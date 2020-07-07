@@ -127,7 +127,11 @@ export class MyPatientsComponent implements OnInit {
   }
   getPatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParactician(pageNo, this.direction)
+      .getPatientsOfCurrentParacticianV2(
+        this.featureService.getUserId(),
+        pageNo,
+        this.direction
+      )
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -136,7 +140,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm.patient, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
         this.searchAutoComplete();
@@ -146,7 +150,11 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsOfCurrentParactician(pageNo, this.direction)
+      .getPatientsOfCurrentParacticianV2(
+        this.featureService.getUserId(),
+        pageNo,
+        this.direction
+      )
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -289,15 +297,16 @@ export class MyPatientsComponent implements OnInit {
     const myPatients = new MyPatients();
     myPatients.users = [];
     myPatients.users.push({
-      id: patient.patientId,
-      accountId: patient.id,
+      id: patient.id,
+      accountId: patient.patient ? patient.patient.accountId : null,
+      patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
       type: "PATIENT",
       civility: patient.civility,
     });
     myPatients.photoId = patient.photoId;
-    myPatients.isMarkAsSeen = true;
+    myPatients.isMarkAsSeen = patient.patient ? true : false;
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
@@ -354,7 +363,7 @@ export class MyPatientsComponent implements OnInit {
   }
   prohibitAction(item) {
     this.myPatientsService
-      .prohibitePatient(item.users[0].id)
+      .prohibitePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -365,7 +374,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   editAction(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
   }
   deleteAction(item) {
     this.dialogService
@@ -388,8 +397,9 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   authorizeAction(item) {
+    console.log(item);
     this.myPatientsService
-      .authorizePatient(item.users[0].id)
+      .authorizePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -402,7 +412,7 @@ export class MyPatientsComponent implements OnInit {
 
   acceptedAction(item) {
     this.myPatientsService
-      .acceptPatientInvitation(item.users[0].id)
+      .acceptPatientInvitation(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -433,7 +443,7 @@ export class MyPatientsComponent implements OnInit {
 
   refuseAction(item) {
     this.myPatientsService
-      .prohibitePatient(item.users[0].id)
+      .prohibitePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -452,7 +462,7 @@ export class MyPatientsComponent implements OnInit {
 
   archivedAction(item) {
     this.myPatientsService
-      .archivePatient(item.users[0].id)
+      .archivePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -465,7 +475,7 @@ export class MyPatientsComponent implements OnInit {
 
   activatedAction(item) {
     this.myPatientsService
-      .activatePatient(item.users[0].id)
+      .activatePatient(item.users[0].patientId)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -487,7 +497,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].accountId]);
+    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
   }
 
   onScroll() {
