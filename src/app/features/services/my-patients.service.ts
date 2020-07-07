@@ -2,68 +2,98 @@ import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable } from "rxjs";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
   providedIn: "root",
 })
 export class MyPatientsService {
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
   public errors = {
-    failed_update: "Erreur survenue lors de la modification de la fiche patient"
+    failed_update:
+      "Erreur survenue lors de la modification de la fiche patient",
+    failed_add: "Erreur survenue lors de l'ajout de la fiche patient",
   };
   public messages = {
-    edit_info_success: "Informations personnelles modifiées avec succès"
-  }
+    edit_info_success: "Informations personnelles modifiées avec succès",
+    add_info_success: "Fiche Patient créée avec succès",
+  };
 
-  getPatientsOfCurrentParactician(pageNo: number, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  getPatientsOfCurrentParactician(
+    pageNo: number,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my", {
-      params: { 'pageNo': pageNo, 'order': order }
-    });
+      this.globalService.url.patientFile + "my",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
   }
-  getPatientsOfCurrentParacticianByCategory(pageNo: number, categoryId: number, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  getPatientsOfCurrentParacticianByCategory(
+    pageNo: number,
+    categoryId: number,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my/byCategory/" + categoryId, {
-      params: { 'pageNo': pageNo, 'order': order }
-    });
-  }
-
-  getPatientsProhibitedOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
-    return this.globalService.call(
-      RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited", {
-      params: { 'pageNo': pageNo, 'order': order }
-    }
+      this.globalService.url.patientFile + "my/byCategory/" + categoryId,
+      {
+        params: { pageNo: pageNo, order: order },
+      }
     );
   }
 
-  getPatientsPendingOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  getPatientsProhibitedOfCurrentParactician(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/pending", {
-      params: { 'pageNo': pageNo, 'order': order }
-    }
+      this.globalService.url.favorite + "myPatient/prohibited",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
     );
   }
 
-  getPendingInvitations(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  getPatientsPendingOfCurrentParactician(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "invitations", {
-      params: { 'pageNo': pageNo, 'order': order }
-    }
+      this.globalService.url.favorite + "myPatient/pending",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
     );
   }
 
-  getPatientsArchivedOfCurrentParactician(pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  getPendingInvitations(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/archived", {
-      params: { 'pageNo': pageNo, 'order': order }
-    }
+      this.globalService.url.favorite + "invitations",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
+  }
+
+  getPatientsArchivedOfCurrentParactician(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/archived",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
     );
   }
 
@@ -141,10 +171,10 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patientFile +
-      "my/category/" +
-      patientId +
-      "/" +
-      practicianId
+        "my/category/" +
+        patientId +
+        "/" +
+        practicianId
     );
   }
   getPatientFileByPracticianId(patientId: number, practicianId: number) {
@@ -162,6 +192,13 @@ export class MyPatientsService {
   updatePatientFile(patientFile) {
     return this.globalService.call(
       RequestType.PUT,
+      this.globalService.url.patientFile,
+      patientFile
+    );
+  }
+  createPatientFile(patientFile) {
+    return this.globalService.call(
+      RequestType.POST,
       this.globalService.url.patientFile,
       patientFile
     );

@@ -80,6 +80,7 @@ export class PatientDetailComponent implements OnInit {
       this.practicianId = this.featureService.selectedPracticianId;
     }
     this.route.params.subscribe((params) => {
+      
       this.patientId = params["idAccount"];
     });
     forkJoin(this.getPatientFile(), this.getCategories(), this.getLinkedPatients()).subscribe((res) => { });

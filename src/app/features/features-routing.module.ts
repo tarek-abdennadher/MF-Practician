@@ -15,9 +15,10 @@ import { SendMessageComponent } from "./send-message/send-message.component";
 import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
-import { MessagingDetailResolve } from './services/messaging-detail.resolve';
-import { MessagingDetailService } from './services/messaging-detail.service';
-import { data } from 'jquery';
+import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
+import { MessagingDetailService } from "./services/messaging-detail.service";
+import { data } from "jquery";
+import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 
 const routes: Routes = [
   {
@@ -56,9 +57,9 @@ const routes: Routes = [
       {
         path: "messagerie-repondre/:id",
         component: MessagingReplyComponent,
-        resolve:{
-          messagingdetail:MessagingDetailResolve
-        }
+        resolve: {
+          messagingdetail: MessagingDetailResolve,
+        },
       },
       {
         path: "praticien-recherche",
@@ -71,6 +72,10 @@ const routes: Routes = [
       {
         path: "fiche-patient/:idAccount",
         component: PatientDetailComponent,
+      },
+      {
+        path: "ajout-patient",
+        component: AddPatientComponent,
       },
       {
         path: "fiche-patient/:idAccount/:idPractician",
@@ -111,9 +116,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [
-    MessagingDetailService,
-    MessagingDetailResolve
-  ]
+  providers: [MessagingDetailService, MessagingDetailResolve],
 })
-export class FeaturesRoutingModule { }
+export class FeaturesRoutingModule {}
