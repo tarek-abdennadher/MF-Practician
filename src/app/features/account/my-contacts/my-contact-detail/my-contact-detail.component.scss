@@ -9,7 +9,7 @@ $input-color: #f1f1f1;
     line-height: 0px !important;
     letter-spacing: -0.75px;
     color: $color-helssy-grey;
-    font-family: "Segoe UI" !important;
+    font-family: "Gotham" !important;
     i,
     hr {
       margin-left: 10px;
@@ -22,18 +22,18 @@ $input-color: #f1f1f1;
       line-height: 0px !important;
       letter-spacing: -0.75px;
       color: $color-helssy-grey;
-      font-family: "Segoe UI Medium" !important;
+      font-family: "Gotham Medium" !important;
     }
   }
 /* Fields CSS*/
 .col-form-label {
     font-size: 15px !important;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
+    font-family: "Gotham Medium" !important;
   }
   .form-group {
     select {
-      font-family: "Segoe UI" !important;
+      font-family: "Gotham" !important;
       line-height: 14px;
       text-align: left;
       letter-spacing: -0.66px;
@@ -43,7 +43,7 @@ $input-color: #f1f1f1;
       height: calc(1.5em + 0.75rem + 2px);
     }
     .form-control {
-      font-family: "Segoe UI" !important;
+      font-family: "Gotham" !important;
       line-height: 14px;
       text-align: left;
       letter-spacing: -0.66px;
@@ -55,7 +55,7 @@ $input-color: #f1f1f1;
       background: #f1f1f1 0% 0% no-repeat padding-box;
       border: 1px solid #eaeaea;
       opacity: 1;
-      font-family: "Segoe UI";
+      font-family: "Gotham";
     }
   }
   /* End Fields CSS */
@@ -63,7 +63,7 @@ $input-color: #f1f1f1;
     background: $input-color 0% 0% no-repeat padding-box;
     opacity: 1;
     border-color: $input-color !important;
-    font-family: "Segoe UI";
+    font-family: "Gotham";
     font-size: 17px;
     line-height: 24px;
     height: 40px;
@@ -90,12 +90,12 @@ $input-color: #f1f1f1;
     opacity: 1;
     color: white;
     border-color: #41bddf;
-    font-family: "Segoe UI" !important;
+    font-family: "Gotham" !important;
   }
   .btn-primary {
     background-color: #41bddf !important;
     text-align: center !important;
-    font-family: "Segoe UI" !important;
+    font-family: "Gotham" !important;
     box-shadow: none;
   }
   .btn-success {
