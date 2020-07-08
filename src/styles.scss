@@ -13,6 +13,11 @@
   src: url("./assets/fonts/Segoe-UI-Medium.ttf");
 }
 
+@font-face {
+  font-family: "Gotham Medium";
+  src: url("./assets/fonts/Gotham-Medium.ttf");
+}
+
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
 // Include the common styles for Angular Material. We include this here so that you only
@@ -20,7 +25,7 @@
 // Be sure that you only ever include this mixin once!
 
 $custom-typography: mat-typography-config(
-  $font-family: "Segoe UI",
+  $font-family: "Gotham",
   $headline: mat-typography-level(32px, 48px, 700),
   $body-1: mat-typography-level(16px, 24px, 500),
 );
@@ -52,7 +57,7 @@ $patient-theme: mat-light-theme(
 /* You can add global styles to this file, and also import other style files */
 html *
 {
-   font-family: "Segoe UI";
+   font-family: "Gotham";
 }
 html,
 body {
@@ -75,7 +80,7 @@ body {
 input,
 select,
 textarea {
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
 }
 
 a {
