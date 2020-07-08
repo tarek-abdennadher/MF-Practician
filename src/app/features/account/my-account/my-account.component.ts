@@ -47,7 +47,4 @@ export class MyAccountComponent implements OnInit {
       }
     });
   }
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
 }

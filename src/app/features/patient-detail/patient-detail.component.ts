@@ -158,10 +158,6 @@ export class PatientDetailComponent implements OnInit {
       );
   }
 
-  displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
-  }
-
   getLinkedPatients() {
     return this.patientService
       .getPatientsByParentId(this.patientId)
@@ -278,7 +274,7 @@ export class PatientDetailComponent implements OnInit {
   submitNote(model) {
     if (model.id == null) {
       this.noteService
-        .addNoteforPatientFile(model, this.patientId, this.practicianId)
+        .addNoteforPatientFile(model, this.patientFileId)
         .subscribe((res) => {
           if (res) {
             this.notifMessage = this.noteService.messages.add_success;
