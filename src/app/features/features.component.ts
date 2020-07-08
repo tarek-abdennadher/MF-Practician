@@ -13,11 +13,11 @@ import { AccountService } from "./services/account.service";
 import { forkJoin, BehaviorSubject } from "rxjs";
 import { PracticianSearch } from "./practician-search/practician-search.model";
 import { PatientSerch, CitySerch } from "./my-patients/my-patients";
-import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
-import { ArchieveMessagesService } from './archieve-messages/archieve-messages.service';
-import { MessageService } from './services/message.service';
-import { MessageSent } from '@app/shared/models/message-sent';
-import { MessageArchived } from './archieve-messages/message-archived';
+import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
+import { ArchieveMessagesService } from "./archieve-messages/archieve-messages.service";
+import { MessageService } from "./services/message.service";
+import { MessageSent } from "@app/shared/models/message-sent";
+import { MessageArchived } from "./archieve-messages/message-archived";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -31,7 +31,7 @@ export class FeaturesComponent implements OnInit {
   city: string = "";
   numberOfPending = 0;
   inboxNumber: any;
-  avatars:any
+  avatars: any;
   practicians: any;
   secretaryIds: any = [];
   constructor(
@@ -67,10 +67,15 @@ export class FeaturesComponent implements OnInit {
   private stompClientList = [];
 
   ngOnInit(): void {
-    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) + " "+ this.user?.firstName + " " + this.user?.lastName;
-    this.featuresService.getNumberOfInbox().subscribe(val => {
+    this.featuresService.fullName =
+      this.jobTitlePipe.transform(this.user.jobTitle) +
+      " " +
+      this.user?.firstName +
+      " " +
+      this.user?.lastName;
+    this.featuresService.getNumberOfInbox().subscribe((val) => {
       this.inboxNumber = val;
-    })
+    });
     if (this.userRole && this.userRole == "SECRETARY") {
       this.featuresService.getSecretaryPracticians().subscribe((value) => {
         this.featuresService.myPracticians.next(value);
@@ -95,53 +100,58 @@ export class FeaturesComponent implements OnInit {
   }
 
   observeState() {
-    this.featuresService.inboxState.subscribe(state => {
-      if(state) {
+    this.featuresService.inboxState.subscribe((state) => {
+      if (state) {
         this.getAllInbox();
         this.featuresService.inboxState.next(false);
       }
-    })
-    this.featuresService.sentState.subscribe(state => {
-      if(state) {
+    });
+    this.featuresService.sentState.subscribe((state) => {
+      if (state) {
         this.sentMessage();
         this.featuresService.sentState.next(false);
       }
-    })
-    this.featuresService.archiveState.subscribe(state => {
-      if(state) {
+    });
+    this.featuresService.archiveState.subscribe((state) => {
+      if (state) {
         this.getAllArchive();
         this.featuresService.archiveState.next(false);
       }
-    })
+    });
   }
 
   getAllInbox() {
-    this.messageListService.getAllInboxMessages(1000000).subscribe(res => {
-      let result = res.map(elm => this.parseMessage(elm))
+    this.messageListService.getAllInboxMessages(1000000).subscribe((res) => {
+      let result = res.map((elm) => this.parseMessage(elm));
       this.featuresService.setSearchInbox(result);
     });
   }
 
   getAllInboxByAccountId(id) {
-    this.messageListService.getAllInboxByAccountId(id, 1000000).subscribe(res => {
-      let result = res.map(elm => this.parseMessage(elm))
-      let inboxObs = new BehaviorSubject(result);
-      this.featuresService.searchPracticianInbox.set(id,inboxObs);
-      this.featuresService.searchPracticianInboxFiltered.set(id,new BehaviorSubject([]));
-    })
+    this.messageListService
+      .getAllInboxByAccountId(id, 1000000)
+      .subscribe((res) => {
+        let result = res.map((elm) => this.parseMessage(elm));
+        let inboxObs = new BehaviorSubject(result);
+        this.featuresService.searchPracticianInbox.set(id, inboxObs);
+        this.featuresService.searchPracticianInboxFiltered.set(
+          id,
+          new BehaviorSubject([])
+        );
+      });
   }
 
   getAllArchive() {
-    this.messageArchiveService.getAllMyArchivedMessages().subscribe(res => {
-      let list = res.map(item => this.mapArchiveMessages(item));
+    this.messageArchiveService.getAllMyArchivedMessages().subscribe((res) => {
+      let list = res.map((item) => this.mapArchiveMessages(item));
       this.featuresService.setSearchArchive(list);
-    })
+    });
   }
 
   sentMessage() {
-    this.messageService.sentMessage().subscribe(res => {
+    this.messageService.sentMessage().subscribe((res) => {
       this.featuresService.setSearchSent(this.parseMessages(res));
-    })
+    });
   }
 
   getPracticians() {
@@ -193,9 +203,9 @@ export class FeaturesComponent implements OnInit {
   }
 
   getPracticiansRealTimeMessage() {
-    this.featuresService.getSecretaryPracticiansId().subscribe(ids => {
-      this.secretaryIds = ids
-      this.secretaryIds.forEach(id => {
+    this.featuresService.getSecretaryPracticiansId().subscribe((ids) => {
+      this.secretaryIds = ids;
+      this.secretaryIds.forEach((id) => {
         this.getAllInboxByAccountId(id);
       });
       for (var i = 0; i < ids.length; i++) {
@@ -205,21 +215,21 @@ export class FeaturesComponent implements OnInit {
         this.stompClientList[i].debug = () => {};
         const that = this;
         this.stompClientList[i].connect({}, function (frame) {
-          this.subscribe(
-            "/topic/notification/" + id,
-            (message) => {
-              if (message.body) {
-                let notification = JSON.parse(message.body);
-                if (notification.type == "MESSAGE" || notification.type == "MESSAGE_IN_PROGRESS" ||
-                    notification.type == "MESSAGE_TREATED") {
-                  that.messageListService.setPracticianNotifObs(notification);
-                }
+          this.subscribe("/topic/notification/" + id, (message) => {
+            if (message.body) {
+              let notification = JSON.parse(message.body);
+              if (
+                notification.type == "MESSAGE" ||
+                notification.type == "MESSAGE_IN_PROGRESS" ||
+                notification.type == "MESSAGE_TREATED"
+              ) {
+                that.messageListService.setPracticianNotifObs(notification);
               }
             }
-          );
+          });
         });
-      };
-    })
+      }
+    });
   }
 
   getMyNotificationsNotSeen() {
@@ -230,14 +240,18 @@ export class FeaturesComponent implements OnInit {
         notifications.forEach((notif) => {
           notificationsFormated.push({
             id: notif.id,
-            sender: notif.jobTitle? this.jobTitlePipe.transform(notif.jobTitle) + " " + notif.senderFullName:notif.senderFullName,
+            sender: notif.jobTitle
+              ? this.jobTitlePipe.transform(notif.jobTitle) +
+                " " +
+                notif.senderFullName
+              : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
             messageId: notif.messageId,
             type: notif.type,
             photoId: notif.senderPhotoId,
-            role:notif.role,
-            civility:notif.civility
+            role: notif.role,
+            civility: notif.civility,
           });
         });
         let photoIds: Set<string> = new Set();
@@ -258,18 +272,18 @@ export class FeaturesComponent implements OnInit {
                 notificationsFormated.forEach((notif) => {
                   if (notif.photoId && photosMap.has(notif.photoId)) {
                     notif.picture = photosMap.get(notif.photoId);
-                  }else {
+                  } else {
                     if (notif.role == "PRACTICIAN") {
                       notif.picture = this.avatars.doctor;
                     } else if (notif.role == "SECRETARY") {
                       notif.picture = this.avatars.secretary;
                     } else if (notif.role == "TELESECRETARYGROUP") {
                       notif.picture = this.avatars.tls;
-                    }else if (notif.role == "PATIENT") {
+                    } else if (notif.role == "PATIENT") {
                       if (notif.civility == "M") {
                         notif.picture = this.avatars.man;
                       } else if (notif.civility == "MME") {
-                        notif.picture =this.avatars.women;
+                        notif.picture = this.avatars.women;
                       } else if (notif.civility == "CHILD") {
                         notif.picture = this.avatars.child;
                       }
@@ -387,48 +401,79 @@ export class FeaturesComponent implements OnInit {
 
   searchActionClicked(event) {
     if (this.featuresService.activeChild.getValue() == "inbox") {
-      let practicianId = + this.featuresService.selectedPracticianId
+      let practicianId = +this.featuresService.selectedPracticianId;
       if (practicianId == 0) {
         if (event) {
-          let result = this.featuresService.getSearchInboxValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())))
+          let result = this.featuresService
+            .getSearchInboxValue()
+            .filter(
+              (x) =>
+                x.users[0].fullName
+                  .toLowerCase()
+                  .includes(event.toLowerCase()) ||
+                x.object.name.toLowerCase().includes(event.toLowerCase())
+            );
           result = result.length > 0 ? result : null;
           this.featuresService.setFilteredInboxSearch(result);
-        }
-        else {
+        } else {
           this.featuresService.setFilteredInboxSearch([]);
         }
       } else {
-          if (event) {
-            let result = this.featuresService.searchPracticianInbox.get(practicianId).getValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())));
-            result = result.length > 0 ? result : null;
-            this.featuresService.searchPracticianInboxFiltered.get(practicianId).next(result);
-          }
-          else {
-            this.featuresService.searchPracticianInboxFiltered.get(practicianId).next([]);
-          }
+        if (event) {
+          let result = this.featuresService.searchPracticianInbox
+            .get(practicianId)
+            .getValue()
+            .filter(
+              (x) =>
+                x.users[0].fullName
+                  .toLowerCase()
+                  .includes(event.toLowerCase()) ||
+                x.object.name.toLowerCase().includes(event.toLowerCase())
+            );
+          result = result.length > 0 ? result : null;
+          this.featuresService.searchPracticianInboxFiltered
+            .get(practicianId)
+            .next(result);
+        } else {
+          this.featuresService.searchPracticianInboxFiltered
+            .get(practicianId)
+            .next([]);
+        }
       }
     } else if (this.featuresService.activeChild.getValue() == "sent") {
       if (event) {
-        let result = this.featuresService.getSearchSentValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())))
+        let result = this.featuresService
+          .getSearchSentValue()
+          .filter(
+            (x) =>
+              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
+              x.object.name.toLowerCase().includes(event.toLowerCase())
+          );
         result = result.length > 0 ? result : null;
         this.featuresService.setFilteredSentSearch(result);
-      }
-      else {
+      } else {
         this.featuresService.setFilteredSentSearch([]);
       }
     } else if (this.featuresService.activeChild.getValue() == "archived") {
       if (event) {
-        let result = this.featuresService.getSearchArchiveValue().filter(x => ((x.users[0].fullName).toLowerCase().includes(event.toLowerCase()) || (x.object.name).toLowerCase().includes(event.toLowerCase())))
+        let result = this.featuresService
+          .getSearchArchiveValue()
+          .filter(
+            (x) =>
+              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
+              x.object.name.toLowerCase().includes(event.toLowerCase())
+          );
         result = result.length > 0 ? result : null;
         this.featuresService.setFilteredArchiveSearch(result);
-      }
-      else {
+      } else {
         this.featuresService.setFilteredArchiveSearch([]);
       }
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
         this.router.navigate(["/praticien-recherche"]);
-        let result = this.practicians.filter(x => (x.fullName).toLowerCase().includes(event.toLowerCase()));
+        let result = this.practicians.filter((x) =>
+          x.fullName.toLowerCase().includes(event.toLowerCase())
+        );
         result = result.length > 0 ? result : null;
         this.featuresService.setSearchFiltredPractician(result);
       } else {
@@ -499,8 +544,7 @@ export class FeaturesComponent implements OnInit {
           this.hasImage = true;
           this.getPictureProfile(this.account.photoId);
         } else {
-          this.featuresService.imageSource =
-            this.avatars.secretary;
+          this.featuresService.imageSource = this.avatars.secretary;
         }
       }
     });
@@ -658,7 +702,7 @@ export class FeaturesComponent implements OnInit {
             user.img = this.avatars.doctor;
           } else if (user.type == "SECRETARY") {
             user.img = this.avatars.secretary;
-          }else if (user.type == "TELESECRETARYGROUP") {
+          } else if (user.type == "TELESECRETARYGROUP") {
             user.img = this.avatars.tls;
           } else if (user.type == "PATIENT") {
             if (user.civility == "M") {
@@ -730,10 +774,10 @@ export class FeaturesComponent implements OnInit {
       );
     } else {
       if (user.type == "MEDICAL") {
-        user.img =this.avatars.doctor;
+        user.img = this.avatars.doctor;
       } else if (user.type == "SECRETARY") {
         user.img = this.avatars.secretary;
-      }else if (user.type == "TELESECRETARYGROUP") {
+      } else if (user.type == "TELESECRETARYGROUP") {
         user.img = this.avatars.tls;
       } else if (user.type == "PATIENT") {
         if (user.civility == "M") {
@@ -765,8 +809,11 @@ export class FeaturesComponent implements OnInit {
   mapArchiveMessages(message) {
     const archivedMessage = this.mappingMessageArchived(message);
     archivedMessage.users.forEach((user) => {
-      this.loadPhoto(user)
+      this.loadPhoto(user);
     });
     return archivedMessage;
+  }
+  addPatient() {
+    this.router.navigate(["/ajout-patient"]);
   }
 }
