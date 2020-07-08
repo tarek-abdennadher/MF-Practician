@@ -9,7 +9,7 @@ $input-color: #f1f1f1;
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
   i,
   hr {
     margin-left: 10px;
@@ -23,12 +23,12 @@ $input-color: #f1f1f1;
     line-height: 0px !important;
     letter-spacing: -0.75px;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
+    font-family: "Gotham Medium" !important;
   }
 }
 
 .inline {
-  font-family: "Segoe UI";
+  font-family: "Gotham";
   text-align: center;
   color: $helssy-grey !important;
   display: inline-block;
