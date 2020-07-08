@@ -8,22 +8,21 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class NoteService {
-  constructor(public router: Router, public globalService: GlobalService) { }
+  constructor(public router: Router, public globalService: GlobalService) {}
   public errors = {
     failed_add: "Erreur survenue lors de l'ajout de la note",
-    failed_edit: "Erreur survenue lors de la modification de la note"
+    failed_edit: "Erreur survenue lors de la modification de la note",
   };
   public messages = {
     add_success: "Note ajoutée avec succès",
     edit_success: "Note modifiée avec succès ",
-    delete_success: "Note supprimée avec succès"
-  }
+    delete_success: "Note supprimée avec succès",
+  };
 
-
-  addNoteforPatientFile(note, patientId, practicianId): Observable<any> {
+  addNoteforPatientFile(note, patientFileId): Observable<any> {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.note + "/" + patientId + "/" + practicianId,
+      this.globalService.url.note + "/add/v2/" + patientFileId,
       note
     );
   }
@@ -42,6 +41,4 @@ export class NoteService {
       note
     );
   }
-
 }
-
