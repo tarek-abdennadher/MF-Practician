@@ -16,26 +16,32 @@
 @font-face {
   font-family: "Gotham Medium";
   src: 
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf"),
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff")
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2"),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf") format('truetype'),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff") format('woff'),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2") format('woff2'),
       url("./assets/fonts/Gotham-Medium/Gotham-Medium.eot");
+      font-weight: normal;
+      font-style: normal;
 }
 
 @font-face {
   font-family: "Gotham Bold";
-  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf"),
-       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff"),
-       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2"),
+  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf") format('truetype'),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff") format('woff'),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2") format('woff2'),
        url("./assets/fonts/Gotham-Bold/Gotham-Bold.eot");
+       font-weight: normal;
+       font-style: normal;
 }
 
 @font-face {
   font-family: "Gotham";
-  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf"),
-       url("./assets/fonts/Gotham-Book/Gotham-Book.woff"),
-       url("./assets/fonts/Gotham-Book/Gotham-Book.woff2"),
+  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf") format('truetype'),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.woff") format('woff'),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.woff2") format('woff2'),
        url("./assets/fonts/Gotham-Book/Gotham-Book.eot");
+       font-weight: normal;
+       font-style: normal;
 }
 
 @import "~angular-notifier/styles/core.scss";
