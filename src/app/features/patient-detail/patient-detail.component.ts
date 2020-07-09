@@ -52,6 +52,7 @@ export class PatientDetailComponent implements OnInit {
   categoryList = new Subject<[]>();
   linkedPatients = new Subject();
   linkedPatientList = [];
+  userRole: string;
   private readonly notifier: NotifierService;
   avatars: {
     doctor: string;
@@ -88,8 +89,10 @@ export class PatientDetailComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.localStorage.retrieve("role") == "PRACTICIAN") {
+      this.userRole = "PRACTICIAN"
       this.practicianId = this.featureService.getUserId();
     } else {
+      this.userRole = "SECRETARY"
       this.practicianId = this.featureService.selectedPracticianId;
     }
     this.route.params.subscribe((params) => {
@@ -100,7 +103,7 @@ export class PatientDetailComponent implements OnInit {
       this.getPatientFile(),
       this.getCategories(),
       this.getLinkedPatients()
-    ).subscribe((res) => {});
+    ).subscribe((res) => { });
   }
 
   getPatientFile() {
@@ -327,6 +330,9 @@ export class PatientDetailComponent implements OnInit {
     });
   }
   goBack() {
+    this._location.back();
+  }
+  cancelAction() {
     this._location.back();
   }
   // destory any subscribe to avoid memory leak

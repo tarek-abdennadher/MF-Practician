@@ -51,7 +51,6 @@ export class MessagingDetailComponent implements OnInit {
   sentContext = false;
   attachements: string[] = [];
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
-  patientFile: any;
   showRefuseForTls: boolean;
   constructor(
     private _location: Location,
@@ -63,7 +62,6 @@ export class MessagingDetailComponent implements OnInit {
     private featureService: FeaturesService,
     notifierService: NotifierService,
     private localSt: LocalStorageService,
-    private patientService: MyPatientsService,
     private dialogService: DialogService
   ) {
     this.notifier = notifierService;
@@ -260,19 +258,19 @@ export class MessagingDetailComponent implements OnInit {
                 }
               );
           } else {
-              if (this.messagingDetail.sender.senderForCivility == "M") {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.man;
-              } else if (this.messagingDetail.sender.senderForCivility == "MME") {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.women;
-              } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.child;
-              } else {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.doctor;
-              }
+            if (this.messagingDetail.sender.senderForCivility == "M") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.man;
+            } else if (this.messagingDetail.sender.senderForCivility == "MME") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.women;
+            } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.child;
+            } else {
+              this.messagingDetail.sender.forImg =
+                this.avatars.doctor;
+            }
 
           }
         });
@@ -281,8 +279,8 @@ export class MessagingDetailComponent implements OnInit {
         .getMessagingDetailById(id)
         .subscribe((message) => {
           this.showRefuseForTls = ((message.sender.role == 'TELESECRETARYGROUP' ||
-          message.sender.role == 'TELESECRETARYGROUP') &&
-          message.requestTypeId != null && message.requestTitleId != null);
+            message.sender.role == 'TELESECRETARYGROUP') &&
+            message.requestTypeId != null && message.requestTitleId != null);
           this.getAttachements(message.nodesId);
           this.senderRolePatient =
             this.sentContext && message.toReceivers.length == 1
@@ -422,19 +420,19 @@ export class MessagingDetailComponent implements OnInit {
               );
           } else {
 
-              if (this.messagingDetail.sender.senderForCivility == "M") {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.man;
-              } else if (this.messagingDetail.sender.senderForCivility == "MME") {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.women;
-              } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.child;
-              }else {
-                this.messagingDetail.sender.forImg =
-                  this.avatars.doctor;
-              }
+            if (this.messagingDetail.sender.senderForCivility == "M") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.man;
+            } else if (this.messagingDetail.sender.senderForCivility == "MME") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.women;
+            } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
+              this.messagingDetail.sender.forImg =
+                this.avatars.child;
+            } else {
+              this.messagingDetail.sender.forImg =
+                this.avatars.doctor;
+            }
 
           }
         });
@@ -580,18 +578,19 @@ export class MessagingDetailComponent implements OnInit {
   }
   displayPatientFile(idAccount) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.getPatientFile(idAccount, this.featureService.getUserId());
+      this.getPatientFile(idAccount, this.featureService.getUserId(), "PRACTICIAN");
     } else {
-      this.getPatientFile(idAccount, this.featureService.selectedPracticianId);
+      this.getPatientFile(idAccount, this.featureService.selectedPracticianId, "SECRETARY");
     }
   }
 
-  getPatientFile(patientId, practicianId) {
-    this.patientService.getPatientFileByPracticianId(patientId, practicianId)
-      .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
-        this.patientFile = patientFile;
-        this.dialogService.openPatientFile("Fiche Patient", this.patientFile)
-      });
+  getPatientFile(patientId, practicianId, userRole) {
+    let info = {
+      patientId: patientId,
+      practicianId: practicianId,
+      userRole: userRole
+    }
+    this.dialogService.openPatientFile("Fiche Patient", info);
   }
 
 }

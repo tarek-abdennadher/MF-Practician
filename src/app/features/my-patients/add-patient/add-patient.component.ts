@@ -42,6 +42,7 @@ export class AddPatientComponent implements OnInit {
   linkedPatients = new Subject();
   linkedPatientList = [];
   notes: any[] = [];
+  userRole: string;
   private readonly notifier: NotifierService;
   avatars: {
     doctor: string;
@@ -75,11 +76,13 @@ export class AddPatientComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.localStorage.retrieve("role") == "PRACTICIAN") {
+      this.userRole = "PRACTICIAN"
       this.practicianId = this.featureService.getUserId();
     } else {
+      this.userRole = "SECRETARY"
       this.practicianId = this.featureService.selectedPracticianId;
     }
-    forkJoin(this.getCategories()).subscribe((res) => {});
+    forkJoin(this.getCategories()).subscribe((res) => { });
   }
   getCategories() {
     return this.categoryService
@@ -139,9 +142,12 @@ export class AddPatientComponent implements OnInit {
       });
     }
   };
-  submitNote(model) {}
-  archieveNote(noteId) {}
+  submitNote(model) { }
+  archieveNote(noteId) { }
   goBack() {
+    this._location.back();
+  }
+  cancelAction() {
     this._location.back();
   }
   ngOnDestroy(): void {

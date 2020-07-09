@@ -22,16 +22,16 @@ export class DialogService {
       },
     });
   }
-  openPatientFile(title, patientFile) {
+  openPatientFile(title, info) {
     return this.dialog.open(MatPatientFileDialogComponent, {
-      width: "900px",
+      width: "1000px",
       height: "75%",
       panelClass: "patient-file-container",
       disableClose: true,
       position: { top: "120px" },
       data: {
         title: title,
-        patientFile: patientFile
+        info: info
       },
     });
   }
