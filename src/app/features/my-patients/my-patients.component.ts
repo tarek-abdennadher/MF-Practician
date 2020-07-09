@@ -22,7 +22,7 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit {
-  links = { isAdd: true };
+  links = {};
   imageSource: string;
   myPatients = [];
   filtredPatients = [];
@@ -608,8 +608,5 @@ export class MyPatientsComponent implements OnInit {
   resetList() {
     this.pageNo = 0;
     this.filter();
-  }
-  add() {
-    this.router.navigate(["/ajout-patient"]);
   }
 }
