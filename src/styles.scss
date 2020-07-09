@@ -5,22 +5,37 @@
 
 @font-face {
   font-family: "Segoe UI Bold";
-  src: url("./assets/fonts/Segoe-UI-Bold.ttf");
+  src: url("./assets/fonts/Segoe/Segoe-UI-Bold.ttf");
 }
 
 @font-face {
   font-family: "Segoe UI Medium";
-  src: url("./assets/fonts/Segoe-UI-Medium.ttf");
+  src: url("./assets/fonts/Segoe/Segoe-UI-Medium.ttf");
 }
 
 @font-face {
   font-family: "Gotham Medium";
-  src: url("./assets/fonts/Gotham-Medium.ttf");
+  src: 
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf"),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff")
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2"),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.eot");
+}
+
+@font-face {
+  font-family: "Gotham Bold";
+  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf"),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff"),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2"),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.eot");
 }
 
 @font-face {
   font-family: "Gotham";
-  src: url("./assets/fonts/Gotham-Book.ttf");
+  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf"),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.woff"),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.woff2"),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.eot");
 }
 
 @import "~angular-notifier/styles/core.scss";
