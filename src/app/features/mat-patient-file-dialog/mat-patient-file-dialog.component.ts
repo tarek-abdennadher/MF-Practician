@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { AccountService } from '../services/account.service';
@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 import { CategoryService } from '../services/category.service';
 import { takeUntil } from 'rxjs/operators';
 import { MyPatientsService } from '../services/my-patients.service';
+import { NotifierService } from 'angular-notifier';
+import { NoteService } from '../services/note.service';
 
 @Component({
   selector: 'app-mat-patient-file-dialog',
@@ -16,6 +18,7 @@ import { MyPatientsService } from '../services/my-patients.service';
   styleUrls: ['./mat-patient-file-dialog.component.scss']
 })
 export class MatPatientFileDialogComponent implements OnInit {
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   public patientFileForm: FormGroup;
   labels: any;
   image: string | ArrayBuffer;
@@ -27,21 +30,27 @@ export class MatPatientFileDialogComponent implements OnInit {
   userRole: string;
   linkedPatients = new Subject<[]>();
   categoryList = new Subject<[]>();
+  notifMessage = "";
+  patientFileId: number;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   private _destroyed$ = new Subject();
+  private readonly notifier: NotifierService;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
+    private noteService: NoteService,
     private service: AccountService,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
     private categoryService: CategoryService,
     private patientService: MyPatientsService,
+    notifierService: NotifierService,
     public dialogRef: MatDialogRef<MatPatientFileDialogComponent>
   ) {
     this.labels = this.service.messages;
     this.isMaidenNameShow = false;
     this.isDeleted = false;
+    this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.noteimageSource = this.avatars.user;
     this.patchValue(this.data);
@@ -55,6 +64,7 @@ export class MatPatientFileDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
         this.patientFile.next(patientFile);
         this.userRole = data.info.userRole;
+        this.patientFileId = patientFile.id;
         if (patientFile.photoId) {
           this.documentService.downloadFile(patientFile.photoId).subscribe(
             (response) => {
@@ -106,8 +116,61 @@ export class MatPatientFileDialogComponent implements OnInit {
 
   }
 
-  submitNote(model) { }
-  archieveNote(noteId) { }
+  submitNote(model) {
+    if (model.id == null) {
+      this.noteService
+        .addNoteforPatientFile(model, this.patientFileId)
+        .subscribe((res) => {
+          if (res) {
+            this.notifMessage = this.noteService.messages.add_success;
+            this.notifier.show({
+              message: this.notifMessage,
+              type: "info",
+              template: this.customNotificationTmpl,
+            });
+          } else {
+            this.notifMessage = this.noteService.errors.failed_add;
+            this.notifier.show({
+              message: this.notifMessage,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+            return;
+          }
+        });
+    } else {
+      this.noteService.updateNote(model).subscribe((res) => {
+        if (res) {
+          this.notifMessage = this.noteService.messages.edit_success;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+        } else {
+          this.notifMessage = this.noteService.errors.failed_edit;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+          return;
+        }
+      });
+    }
+  }
+  archieveNote(noteId) {
+    this.noteService.deleteNote(noteId).subscribe((result) => {
+      if (result) {
+        this.notifMessage = this.noteService.messages.delete_success;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
+    });
+  }
 
   closeDialog() {
     this.dialogRef.close(false);
@@ -116,7 +179,49 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.dialogRef.close(false);
   }
   submit(model) {
-    //TODO
+    this.patientService
+      .updatePatientFile(model)
+      .subscribe(this.handleResponse, this.handleError);
   }
+  handleResponse = (res) => {
+    if (res) {
+      this.closeDialog();
+      this.notifMessage = this.patientService.messages.edit_info_success;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "info",
+        template: this.customNotificationTmpl,
+      });
+    } else {
+      this.closeDialog();
+      this.notifMessage = this.patientService.errors.failed_update;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+      return;
+    }
+  };
+
+  handleError = (err) => {
+    if (err && err.error && err.error.apierror) {
+      this.closeDialog();
+      this.notifMessage = err.error.apierror.message;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+    } else {
+      this.closeDialog();
+      this.notifMessage = this.patientService.errors.failed_update;
+      this.notifier.show({
+        message: this.notifMessage,
+        type: "error",
+        template: this.customNotificationTmpl,
+      });
+    }
+  };
 
 }
