@@ -1,0 +1,61 @@
+$color-helssy-blue: #1A56A7;
+$color-helssy-grey: #6E819B;
+$color-white: #FFFFFF;
+$helssy-grey: #6e819bd4;
+$input-color: #f1f1f1;
+.title {
+  color: $color-helssy-grey;
+  font-size: 18px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Segoe UI" !important;
+  i,
+  hr {
+    margin-left: 10px;
+
+  }
+  i{
+    font-size: 17px;
+  }
+  span {
+    font-size: 17px !important;
+    line-height: 0px !important;
+    letter-spacing: -0.75px;
+    color: $color-helssy-grey;
+    font-family: "Segoe UI Medium" !important;
+  }
+}
+
+.inline {
+  font-family: "Segoe UI";
+  text-align: center;
+  color: $helssy-grey !important;
+  display: inline-block;
+  margin-left: 57px;
+  color: $helssy-grey !important;
+  text-decoration: none;
+  font-size: 10px;
+  line-height: 14px;
+  cursor: pointer;
+  //padding-top: 26px;
+}
+.fa,
+  .far,
+  .fal {
+    font-size: 17px;
+    line-height: 20px;
+  }
+#card{
+  background-color: white;
+  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.col-form-label {
+  font-size: 15px !important;
+  color: $color-helssy-grey;
+  font-family: "Segoe UI Medium" !important;
+  margin-left: 34px;
+}

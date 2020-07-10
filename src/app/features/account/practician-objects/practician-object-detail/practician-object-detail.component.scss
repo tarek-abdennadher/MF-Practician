@@ -1,0 +1,325 @@
+$color-helssy-grey: #6e819b;
+$helsey_blue: #1a56a7;
+$helssy-blue: #41bddf;
+$input-color: #f1f1f1;
+.title {
+  color: $helsey_blue;
+  i,
+  hr {
+    margin-left: 10px;
+  }
+  span {
+    font-weight: bold;
+  }
+}
+.card {
+  border-radius: 0.4rem;
+  border: none;
+}
+.col-form-label {
+  color: $helsey_blue;
+}
+.container {
+  max-width: unset;
+}
+input,
+select {
+  border-color: $input-color;
+  background-color: $input-color;
+}
+.btn-icon {
+  max-width: 50px;
+  background-color: #41bddf;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: lighter;
+  height: calc(1.5em + 0.75rem + 2px);
+}
+.btn-icon:hover {
+  background-color: RoyalBlue;
+}
+input[type="date"] {
+  height: calc(1.5em + 0.75rem + 2px);
+}
+select {
+  height: calc(1.5em + 0.75rem + 2px);
+}
+input[type="date"]::-webkit-inner-spin-button {
+  opacity: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: url(https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/calendar-16.png)
+    center/80% no-repeat;
+  color: rgba(0, 0, 0, 0);
+  opacity: 0.5;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background: url(https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/calendar-16.png)
+    center/80% no-repeat;
+  opacity: 0.8;
+}
+
+.avatar {
+  vertical-align: middle;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.border-avatar {
+  border-color: white;
+}
+.btn {
+  background: #41BDDF 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  color: white;
+  border-color :#41bddf ;
+  margin: 4px;
+  font-family: "Segoe UI" !important;
+}
+.btn-primary {
+  background-color: #41bddf !important;
+  text-align: center !important;
+  font-family: "Segoe UI" !important;
+  box-shadow: none;
+}
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+.btn-danger {
+  background-color: #c74020 !important;
+  text-align: center !important;
+}
+.add-btn {
+  width: 100% !important;
+  height: 100% !important;
+  border: 1px solid #f1f1f1;
+  background-color: #f1f1f1;
+  border-radius: 0.2rem;
+  box-shadow: none;
+  margin-bottom: 15px;
+  min-height: 100%;
+  min-width: 100%;
+  color: $helsey_blue;
+  span {
+    display: block;
+  }
+}
+#checkstrength {
+  text-align: center;
+}
+.link1 {
+  color: $color-helssy-grey !important;
+  font-size: 14px;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.fit-content {
+  width: 180px;
+}
+
+input[type="file"] {
+  display: none;
+}
+.input-icons i {
+  position: absolute;
+}
+.icon {
+  color: $color-helssy-grey;
+  width: 40px;
+  text-align: right;
+  font-size: 17px;
+  padding: 12px;
+}
+.calender.form-control {
+  padding: 6px 6px 6px 50px !important;
+}
+
+.title {
+  color: $color-helssy-grey;
+  font-size: 18px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Segoe UI" !important;
+  i,
+  hr {
+    margin-left: 10px;
+  }
+  i {
+    font-size: 17px;
+  }
+  span {
+    font-size: 17px !important;
+    line-height: 0px !important;
+    letter-spacing: -0.75px;
+    color: $color-helssy-grey;
+    font-family: "Segoe UI Medium" !important;
+  }
+}
+
+.col-form-label {
+  font-size: 15px !important;
+  color: $color-helssy-grey;
+  font-family: "Segoe UI Medium" !important;
+}
+
+.phone {
+  background: $input-color 0% 0% no-repeat padding-box;
+  opacity: 1;
+  border-color: $input-color !important;
+  font-family: "Segoe UI";
+  font-size: 17px;
+  line-height: 24px;
+  height: 50px;
+}
+
+.btn.btn-primary.btn-xs,
+.btn.btn-danger.btn-xs {
+  width: 40px;
+}
+
+// buttons add phone CSS
+.btn-icon {
+  max-width: 40px;
+  color: white;
+  cursor: pointer;
+  font-weight: lighter;
+  background: #41bddf 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  opacity: 1;
+  height: 50px;
+}
+// Image CSS
+.image-container {
+  width: 100%;
+  height: auto;
+  .image {
+    opacity: 1;
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+  }
+}
+.image-container:hover .image {
+  opacity: 0.3;
+}
+
+.image-container:hover .middle {
+  opacity: 1;
+}
+
+.image-buttons {
+  display: inline;
+  background-color: transparent;
+  padding: 16px 32px;
+}
+.middle {
+  transition: 0.5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 65%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+.image-icon {
+  cursor: pointer;
+}
+.input-icons i {
+  position: absolute;
+}
+
+.input-icons {
+  width: 100%;
+  margin-bottom: -45px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+}
+
+.custom-control-label {
+  font-size: 15px !important;
+  color: $color-helssy-grey;
+  font-family: "Segoe UI Medium" !important;
+}
+
+//controls
+.control {
+  font-family: "Segoe UI Medium" !important;
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 5px;
+  padding-top: 3px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.control input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.control_indicator {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background: #eaeaea 0% 0% no-repeat padding-box;
+  border: 0px solid #000000;
+}
+
+.control:hover input ~ .control_indicator,
+.control input:focus ~ .control_indicator {
+  background: #eaeaea 0% 0% no-repeat padding-box;
+}
+
+.control input:checked ~ .control_indicator {
+  background: $helssy-blue;
+}
+
+.control input:disabled ~ .control_indicator {
+  background: #eaeaea 0% 0% no-repeat padding-box;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.control_indicator:after {
+  box-sizing: unset;
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.control input:checked ~ .control_indicator:after {
+  display: block;
+}
+
+.control-checkbox .control_indicator:after {
+  left: 7px;
+  top: 3px;
+  width: 3px;
+  height: 8px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-control-input
+  .control-checkbox
+  input:disabled
+  ~ .control_indicator:after {
+  border-color: #eaeaea;
+}

@@ -12,6 +12,8 @@ import { MyContactsComponent } from './my-contacts/my-contacts.component';
 import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 import { MyLeavesComponent } from './my-leaves/my-leaves.component';
 import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
+import { PracticianObjectsComponent } from './practician-objects/practician-objects.component';
+import { PracticianObjectDetailComponent } from './practician-objects/practician-object-detail/practician-object-detail.component';
 
 const routes: Routes = [
   {
@@ -51,6 +53,14 @@ const routes: Routes = [
         path: "mes-conges",
         component: MyLeavesComponent,
         canActivate: [MyLeavesGuard]
+      },
+      {
+        path: "mes-objets",
+        component: PracticianObjectsComponent
+      },
+      {
+        path: "mes-objets/:id",
+        component: PracticianObjectDetailComponent
       }
     ]
   }
