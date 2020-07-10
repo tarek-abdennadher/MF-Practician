@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { takeUntil, tap } from "rxjs/operators";
-import { Subject, forkJoin } from "rxjs";
+import { Subject, forkJoin, BehaviorSubject } from "rxjs";
 import { RequestTypeService } from "../services/request-type.service";
 import { MessageService } from "../services/message.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -32,8 +32,9 @@ export class SendMessageComponent implements OnInit {
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList: Subject<any[]> = new Subject<any[]>();
+  selectedObject = new BehaviorSubject<any>(null);
   objectsList = [];
-  requestTypeList = [];
+  practicianObjectList = [];
   selectedFiles: any;
   links = {};
   page = this.globalService.messagesDisplayScreen.inbox;
@@ -125,7 +126,7 @@ export class SendMessageComponent implements OnInit {
       }
       );
     }
-    forkJoin(this.getAllContactsPractician(), this.getAllRequestTypes())
+    forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => { });
   }
@@ -256,13 +257,13 @@ export class SendMessageComponent implements OnInit {
     this.toList.next(myList);
   }
 
-  getAllRequestTypes() {
+  getAllObjectList() {
     return this.requestTypeService
-      .getAllRequestTypes()
+      .getAllObjects()
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((requestTypes: any) => {
-          this.requestTypeList = requestTypes;
+          this.practicianObjectList = requestTypes.map(e =>  {return {"id": e.id, "title": e.object, "name": e.object, "destination": e.destination, "allowDocument": e.allowDocument, "body": ""}});
         })
       );
   }
@@ -358,15 +359,59 @@ export class SendMessageComponent implements OnInit {
   }
 
   getSelectedToList(event) {
-    if (event) {
-      if(event.type == "TELESECRETARYGROUP") {
-        this.objectsList = this.objectsListForTls;
+    if (event && event.to.length !== 0) {
+      let type = event.to[0].type;
+      if (type == "MEDICAL") {
+        this.objectsList = this.practicianObjectList.filter(item => item.destination == "PRACTICIAN" || item.destination == "OTHER");
+      } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
+        this.objectsList = this.practicianObjectList.filter(item => item.destination == "SECRETARY" || item.destination == "OTHER");
+      } else if (type == "PATIENT") {
+        this.objectsList = this.practicianObjectList.filter(item => item.destination == "PATIENT" || item.destination == "OTHER");
       } else {
-        this.objectsList = this.requestTypeList;
+        this.objectsList = this.practicianObjectList.filter(item => item.destination == "OTHER");
       }
+      this.objectsList.push({"id": 0, "title": "Autre", "name": "Autre", "destination": "Autre"})
     }
-
   }
+
+  objectSelection(item) {
+    let selectedObj = item.object[0];
+    if (selectedObj && selectedObj.title != "autre") {
+      const objectDto = {
+        senderId: this.featureService.getUserId(),
+        receiverId: item.to[0].id,
+        objectId: selectedObj.id
+      }
+      selectedObj.requestDto = objectDto;
+      let newData = {id: selectedObj.id, name: selectedObj.title, body: null, file: null};
+      const body = this.requestTypeService.getObjectBody(objectDto).pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((resBody: any) => {
+        newData.body = resBody.body;
+      }));
+      if (selectedObj.allowDocument) {
+        const doc = this.requestTypeService.getDocument(objectDto).pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((response: any) => {
+          const blob = new Blob([response.body]);
+          var fileOfBlob = new File([blob], selectedObj.title + '.pdf');
+          newData.file = fileOfBlob;
+      }));
+      forkJoin(body, doc)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => { this.selectedObject.next(newData);});
+      }
+      else {
+        forkJoin(body)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => { this.selectedObject.next(newData);});
+      }
+      //this.selectedObject.next(result);
+      //this.openDialog(selectedObj);
+    }
+  }
+
+
 
   goToBack() {
     this._location.back();

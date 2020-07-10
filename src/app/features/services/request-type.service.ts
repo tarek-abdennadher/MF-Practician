@@ -10,10 +10,22 @@ export class RequestTypeService {
 
   ngOnInit() {}
 
-  getAllRequestTypes() {
+  getAllObjects() {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.requestTypes
+      this.globalService.url.practicianObject + "/myObject"
     );
+  }
+
+  getObjectBody(objectDto) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.practicianObject + "/body", objectDto
+    );
+  }
+
+  getDocument(request) {
+    return this.globalService.call(RequestType.POST, this.globalService.url.practicianObject + "/generatePdf"
+    , request, { observe: "response", responseType: "blob" })
   }
 }

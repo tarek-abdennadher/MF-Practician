@@ -81,7 +81,20 @@ export class AccountService {
     is_deleted: " Le compte patient a été désactivé  !",
     personal_info: "Informations personnelles",
     cordonnees: "Coordonnées",
-    info_compl: "Informations complémentaires"
+    info_compl: "Informations complémentaires",
+    my_object: "Mes objets",
+    cible: "Cible",
+    practician: "Praticien",
+    secretary_tls: "Secretaire/Télésecretaire",
+    patient: "Patient",
+    other: "Autre",
+    object: "Objet",
+    content: "Message",
+    docBody: "Corps du document",
+    docModel: "Modèle de document",
+    allowDocument: "Autorise un objet libre ?",
+    select_object: "Selectionnez un objet",
+    title: "Model de document"
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -228,6 +241,62 @@ export class AccountService {
       this.globalService.url.option + "/leaves/" +
       leaveStartDate + "/" + leaveEndDate
 
+    );
+  }
+
+  getPracticianObjectList() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.practician_object + "/myObject"
+    );
+  }
+
+  getPracticianObjectById(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.practician_object + "/"+id
+    );
+  }
+
+  createPracticianObject(object) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.practician_object ,object
+    );
+  }
+
+  updatePracticianObject(object) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.practician_object ,object
+    );
+  }
+
+  deletePracticianObject(id) {
+    return this.globalService.call(
+      RequestType.DELETE,
+      this.globalService.url.practician_object + "/" + id
+    );
+  }
+
+  getAllDocumentModel(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.documentModel + "/my"
+    );
+  }
+
+  getObjectSearchList() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.practician_object + "/mySearchList"
+    );
+  }
+
+  clonePracticianObject(id) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.practician_object + "/cloneToMine/"+id
     );
   }
 }

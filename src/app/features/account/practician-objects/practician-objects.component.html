@@ -1,0 +1,45 @@
+<br />
+<div class="card" id="card">
+  <br />
+  <div class="row">
+    <div class=" col-md-10 form-group title">
+      <hr width="3%" color="#ff0063" align="left" />
+      <i class="far fa-cog my-tab-icon"><span>&nbsp;&nbsp;{{ messages.my_object }}</span></i>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group row">
+        <label for="objetPraticien" class="col-sm-3 col-form-label">{{
+          messages.object
+        }}</label>
+        <div class="col-sm-4">
+          <select
+            [(ngModel)]="selectedObject"
+            class="civility custom-select"
+            id="objetPraticien"
+            (change)="onChange($event)"
+          >
+            <option [value]="" selected hidden>{{
+              messages.select_object
+            }}</option>
+            <option *ngFor="let item of searchList" [value]="item.id">{{
+              item.object
+            }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+        <a (click)="addAction()" class="inline col-md-1">
+          <i class="far fa-plus"></i><br /><span>Ajouter</span>
+        </a>
+      <div class="col-md-1"></div>
+  </div>
+  <br />
+  <div>
+    <lib-hlsMessagingList [list]="itemsList" [isMyPatients]="false" (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)" (archieveAction)="deleteCategory($event)" [isCheckbox]="false"
+      [imageSource]="imageSource">
+    </lib-hlsMessagingList>
+    <br />
+  </div>
