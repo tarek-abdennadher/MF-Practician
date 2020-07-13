@@ -185,7 +185,6 @@ export class MatPatientFileDialogComponent implements OnInit {
   }
   handleResponse = (res) => {
     if (res) {
-      this.closeDialog();
       this.notifMessage = this.patientService.messages.edit_info_success;
       this.notifier.show({
         message: this.notifMessage,
@@ -193,7 +192,6 @@ export class MatPatientFileDialogComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
     } else {
-      this.closeDialog();
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
         message: this.notifMessage,
@@ -206,7 +204,6 @@ export class MatPatientFileDialogComponent implements OnInit {
 
   handleError = (err) => {
     if (err && err.error && err.error.apierror) {
-      this.closeDialog();
       this.notifMessage = err.error.apierror.message;
       this.notifier.show({
         message: this.notifMessage,
@@ -214,7 +211,6 @@ export class MatPatientFileDialogComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
     } else {
-      this.closeDialog();
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
         message: this.notifMessage,
