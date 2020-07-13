@@ -60,8 +60,8 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.patchValue(this.data);
   }
   patchValue(data) {
-    this.patientService.getPatientFileByPracticianId(data.info.patientId, data.info.practicianId)
-      .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
+    if (data.info.patientFileId != null) {
+      this.patientService.getPatientFileById(data.info.patientFileId).pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
         this.patientFile.next(patientFile);
         this.userRole = data.info.userRole;
         this.patientFileId = patientFile.id;
@@ -81,7 +81,6 @@ export class MatPatientFileDialogComponent implements OnInit {
               else {
                 this.image = this.avatars.man
               }
-
             }
           );
         }
@@ -109,6 +108,58 @@ export class MatPatientFileDialogComponent implements OnInit {
           );
         }
       });
+    }
+    else {
+      this.patientService.getPatientFileByPracticianId(data.info.patientId, data.info.practicianId)
+        .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
+          this.patientFile.next(patientFile);
+          this.userRole = data.info.userRole;
+          this.patientFileId = patientFile.id;
+          if (patientFile.photoId) {
+            this.documentService.downloadFile(patientFile.photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.image = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                if (patientFile?.civility == "MME") {
+                  this.image = this.avatars.women
+                }
+                else {
+                  this.image = this.avatars.man
+                }
+
+              }
+            );
+          }
+          else {
+            if (patientFile?.civility == "MME") {
+              this.image = this.avatars.women
+            }
+            else {
+              this.image = this.avatars.man
+            }
+
+          }
+          if (patientFile?.practicianPhotoId) {
+            this.documentService.downloadFile(patientFile.practicianPhotoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.practicianImage = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                this.practicianImage = this.avatars.doctor
+              }
+            );
+          }
+        });
+    }
     this.categoryService
       .getCategoriesByPractician(data.info.practicianId).subscribe(res => {
         this.categoryList.next(res)
