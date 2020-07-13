@@ -26,6 +26,7 @@ export class GlobalService {
     practiciens: this.BASE_URL_CA + "/practician",
     requestTypes: this.BASE_URL_CA + "/requestTypes",
     requestType: this.BASE_URL_MA + "/requestType",
+    practicianObject: this.BASE_URL_MA + "/practicianObject",
     produce: this.BASE_URL_MA + "/messages/produce",
     message: this.BASE_URL_MA + "/messages",
     replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",
@@ -73,8 +74,9 @@ export class GlobalService {
     category: this.BASE_URL_CA + "/category",
     note: this.BASE_URL_CA + "/note",
     contact_book: this.BASE_URL_CA + "/contact-book",
-    option: this.BASE_URL_CA + "/option"
-
+    option: this.BASE_URL_CA + "/option",
+    practician_object: this.BASE_URL_MA + "/practicianObject",
+    documentModel: this.BASE_URL_MA + "/model",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",

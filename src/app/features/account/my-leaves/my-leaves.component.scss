@@ -8,7 +8,7 @@ $color-white: #ffffff;
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
   i,
   hr {
     margin-left: 10px;
@@ -21,16 +21,16 @@ $color-white: #ffffff;
     line-height: 0px !important;
     letter-spacing: -0.75px;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
+    font-family: "Gotham Medium" !important;
   }
 }
 .col-form-label {
   font-size: 15px !important;
   color: $color-helssy-grey;
-  font-family: "Segoe UI Medium" !important;
+  font-family: "Gotham Medium" !important;
 }
 .form-control {
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
   line-height: 14px;
   text-align: left;
   letter-spacing: -0.66px;
@@ -45,12 +45,12 @@ $color-white: #ffffff;
   opacity: 1;
   color: white;
   border-color: #41bddf;
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
 }
 .btn-primary {
   background-color: #41bddf !important;
   text-align: center !important;
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
   box-shadow: none;
 }
 .btn-success {

@@ -1,0 +1,189 @@
+$color-helssy-grey: #6e819b;
+$helsey_blue: #1a56a7;
+$input-color: #f1f1f1;
+
+.title {
+  color: $color-helssy-grey;
+  font-size: 18px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Gotham" !important;
+  i,
+  hr {
+    margin-left: 10px;
+  }
+  i {
+    font-size: 17px;
+  }
+  span {
+    font-size: 17px !important;
+    line-height: 0px !important;
+    letter-spacing: -0.75px;
+    color: $color-helssy-grey;
+    font-family: "Gotham Medium" !important;
+  }
+}
+.input-icons i {
+  position: absolute;
+}
+.icon {
+  color: $color-helssy-grey;
+  width: 40px;
+  text-align: right;
+  font-size: 17px;
+  padding: 12px;
+}
+.calender.form-control {
+  padding: 6px 6px 6px 50px !important;
+}
+
+label {
+  font-size: 15px !important;
+  color: $color-helssy-grey;
+  font-family: "Gotham Medium" !important;
+}
+input,
+select {
+  border-color: $input-color;
+  background-color: $input-color;
+}
+// notification CSS
+@media (min-width: 800px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 70vw;
+    }
+  }
+}
+@media (min-width: 850px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 72vw;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 75vw;
+    }
+  }
+}
+@media (min-width: 950px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 78vw;
+    }
+  }
+}
+
+@media (min-width: 1000px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 83vw;
+    }
+  }
+}
+@media (min-width: 1050px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 85.3vw;
+    }
+  }
+}
+@media (min-width: 1100px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 86vw;
+    }
+  }
+}
+@media (min-width: 1150px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 87vw;
+    }
+  }
+}
+@media (min-width: 1200px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 88vw;
+    }
+  }
+}
+
+@media (min-width: 1250px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 90vw;
+    }
+  }
+}
+
+@media (min-width: 1300px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 92.8vw;
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 95vw;
+    }
+  }
+}
+
+@media (min-width: 1500px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 97vw;
+    }
+  }
+}
+
+@media (min-width: 1600px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 99.7vw;
+    }
+  }
+}
+
+@media (min-width: 1700px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 99.8vw;
+    }
+  }
+}
+
+@media (min-width: 1850px) {
+  ::ng-deep {
+    .notifier__notification--material {
+      width: 78.4vw;
+    }
+  }
+}
+::ng-deep {
+  international-phone-number .form-control {
+    height: 30px;
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+  }
+  international-phone-number .dropdown button.dropbtn.btn,
+  button.dropbtn.btn:hover {
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+    padding: 6px;
+    height: 30px;
+  }
+  international-phone-number .dropdown button.dropbtn.btn .arrow-down {
+    border-bottom: #f1f1f1;
+  }
+}

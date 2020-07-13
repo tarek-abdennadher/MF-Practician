@@ -26,6 +26,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
 import { ApxPieComponent } from './stats/apx-pie/apx-pie.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { PracticianObjectsComponent } from './practician-objects/practician-objects.component';
+import { PracticianObjectDetailComponent } from './practician-objects/practician-object-detail/practician-object-detail.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -73,6 +75,8 @@ const notifierOptions: NotifierOptions = {
     StatsComponent,
     CategoryComponent,
     CategoryDetailComponent,
+    PracticianObjectsComponent,
+    PracticianObjectDetailComponent,
     MyContactsComponent,
     MyContactDetailComponent,
     MyLeavesComponent,

@@ -1,17 +1,14 @@
 $color-helssy-grey: #6e819b;
 $helsey_blue: #1a56a7;
 $input-color: #f1f1f1;
-@font-face {
-  font-family: "Segoe UI Medium";
-  src: url("assets/fonts/Segoe-UI-Medium.ttf");
-}
+
 .title {
   color: $color-helssy-grey;
   font-size: 18px !important;
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
   i,
   hr {
     margin-left: 10px;
@@ -24,7 +21,7 @@ $input-color: #f1f1f1;
     line-height: 0px !important;
     letter-spacing: -0.75px;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
+    font-family: "Gotham Medium" !important;
   }
 }
 .input-icons i {
@@ -44,7 +41,7 @@ $input-color: #f1f1f1;
 label {
     font-size: 15px !important;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
+    font-family: "Gotham Medium" !important;
   }
   input,
   select {

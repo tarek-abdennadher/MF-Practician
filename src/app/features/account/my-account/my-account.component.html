@@ -25,6 +25,9 @@
     [active]="rlf.isActive">
     <i class="far fa-calendar-week my-tab-icon"></i> {{ labels.leaves }}
   </a>
+  <a mat-tab-link [routerLink]="'mes-objets'" routerLinkActive #rlf="routerLinkActive" [active]="rlf.isActive">
+    <i class="far fa-cog my-tab-icon"></i> {{ labels.my_object }}
+  </a>
 
 
 </nav>

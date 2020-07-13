@@ -5,12 +5,43 @@
 
 @font-face {
   font-family: "Segoe UI Bold";
-  src: url("./assets/fonts/Segoe-UI-Bold.ttf");
+  src: url("./assets/fonts/Segoe/Segoe-UI-Bold.ttf");
 }
 
 @font-face {
   font-family: "Segoe UI Medium";
-  src: url("./assets/fonts/Segoe-UI-Medium.ttf");
+  src: url("./assets/fonts/Segoe/Segoe-UI-Medium.ttf");
+}
+
+@font-face {
+  font-family: "Gotham Medium";
+  src: 
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf") format('truetype'),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff") format('woff'),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2") format('woff2'),
+      url("./assets/fonts/Gotham-Medium/Gotham-Medium.eot");
+      font-weight: normal;
+      font-style: normal;
+}
+
+@font-face {
+  font-family: "Gotham Bold";
+  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf") format('truetype'),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff") format('woff'),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2") format('woff2'),
+       url("./assets/fonts/Gotham-Bold/Gotham-Bold.eot");
+       font-weight: normal;
+       font-style: normal;
+}
+
+@font-face {
+  font-family: "Gotham";
+  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf") format('truetype'),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.woff") format('woff'),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.woff2") format('woff2'),
+       url("./assets/fonts/Gotham-Book/Gotham-Book.eot");
+       font-weight: normal;
+       font-style: normal;
 }
 
 @import "~angular-notifier/styles/core.scss";
@@ -20,7 +51,7 @@
 // Be sure that you only ever include this mixin once!
 
 $custom-typography: mat-typography-config(
-  $font-family: "Segoe UI",
+  $font-family: "Gotham",
   $headline: mat-typography-level(32px, 48px, 700),
   $body-1: mat-typography-level(16px, 24px, 500),
 );
@@ -52,7 +83,7 @@ $patient-theme: mat-light-theme(
 /* You can add global styles to this file, and also import other style files */
 html *
 {
-   font-family: "Segoe UI";
+   font-family: "Gotham";
 }
 html,
 body {
@@ -75,7 +106,7 @@ body {
 input,
 select,
 textarea {
-  font-family: "Segoe UI" !important;
+  font-family: "Gotham" !important;
 }
 
 a {
