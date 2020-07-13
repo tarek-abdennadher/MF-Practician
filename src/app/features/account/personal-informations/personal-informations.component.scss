@@ -261,4 +261,8 @@ background-color: $input-color;
         height: 40px;
       }
 
-
+@media only screen and (max-width: 500px) {
+  .w-xs-custom {
+   max-width: 80%;
+  }
+}

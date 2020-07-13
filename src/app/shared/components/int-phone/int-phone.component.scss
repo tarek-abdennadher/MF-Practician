@@ -45,4 +45,69 @@ $color-helssy-blue: #1A56A7;
               international-phone-number .dropdown button.dropbtn.btn .arrow-down {
                 border-bottom:#f1f1f1;}
               }
-        
+
+@media only screen and (max-width: 575px) {
+  .mlpl-custom-0 {
+    margin-left: 0;
+    padding-left: unset;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .w-xs-custom {
+    max-width: 80%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .mobile-display-flex {
+    display: flex;
+  }
+  .mobile-display-none {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1475px) {
+  .mobile-display-flex {
+    display: none;
+  }
+  .mobile-display-none {
+    display: flex;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1474px) {
+  .mobile-display-flex {
+    display: flex;
+  }
+  .mobile-display-none {
+    display: none;
+  }
+  .m-t-xs-6 {
+    margin-top: 6px;
+  }
+}
+
+
+@media only screen and (max-width: 400px) {
+  .mobile-display-flex {
+    display: flex;
+  }
+  .mobile-display-none {
+    display: none;
+  }
+  .m-t-xs-6 {
+    margin-top: 3px;
+  }
+}
+
+@media only screen and (min-width: 401px) and (max-width: 767px) {
+  .mobile-display-flex {
+    display: none;
+  }
+  .mobile-display-none {
+    display: flex;
+  }
+}
+
