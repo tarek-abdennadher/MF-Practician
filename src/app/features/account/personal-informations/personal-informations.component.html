@@ -30,15 +30,34 @@
   </div>
   <br />
   <div class="card-body">
+    <div class="col-sm-12 image-container d-md-none text-center mb-3">
+      <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
+           [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
+      <div class="middle">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons">
+          <div class="row">
+            <label for="file-upload">
+              <i class="far fa-cog fa-lg image-icon">&nbsp; </i>
+            </label>
+            <input id="file-upload" type="file" (change)="selectFileToUpload($event)" />
+          </div>
+          <div class="row mt-1">
+            <a (click)="deletePicture()">
+              <i class="far fa-trash-alt fa-lg image-icon">&nbsp;</i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
       <div class="container">
         <div class="row" *ngIf="!isPractician">
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group row">
-              <label for="civility" class="col-sm-3 col-form-label">{{
+              <label for="civility" class="col-md-3 col-12 col-form-label">{{
                 labels.civility
               }}</label>
-              <div class="col-sm-9">
+              <div class="col-sm-9 col-12">
                 <select formControlName="civility" class="civility custom-select"
                   [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="civility">
                   <option value="null" disabled="true">{{
@@ -71,7 +90,7 @@
             </div>
           </div>
           <div class="col">
-            <div class="col-sm-2 col-md-2 image-container">
+            <div class="d-none d-md-flex col-sm-2 col-md-2 image-container">
               <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
                 [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
               <div class="middle">
@@ -96,7 +115,7 @@
           <div class="col">
             <div class="form-group row">
               <label for="title" class="col-sm-3 col-form-label">{{ labels.title }}</label>
-              <div class="col-sm-9">
+              <div class="col-sm-9 col-12">
                 <select formControlName="title" class="civility custom-select"
                   [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="title">
                   <option value="null" disabled="true">{{ labels.title }}</option>
@@ -131,7 +150,7 @@
               </div>
             </div>
           </div>
-          <div class="col">
+          <div class="col d-none d-md-flex">
             <div class="col-sm-2 col-md-2 image-container">
               <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
                 [ngClass]="{ 'border-avatar': !hasImage }" class="avatar image" />
@@ -154,7 +173,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col-12 col-md">
             <div class="form-group row" *ngIf="isPractician">
               <label for="last_name" class="col-sm-3 col-form-label">{{
                 labels.last_name
@@ -235,10 +254,10 @@
                       </div>
                     </div>
                   </div>
-                  <label for="ville" class="col-md-3 col-form-label">{{
+                  <label for="ville" class="col-md-3 col-form-label d-none d-md-flex">{{
                     messages._city
                   }}</label>
-                  <div class="col">
+                  <div class="col d-none d-md-flex">
                     <div class="form-group row">
                       <div class="col-md-12">
                         <input type="text" formControlName="city" class="form-control" id="ville" />
@@ -247,6 +266,13 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div *ngIf="isPractician" class="form-group row d-md-none">
+              <label for="ville" class="col-sm-3 col-form-label">{{ messages._city}}</label>
+              <div class="col-sm-9">
+                <input type="text" formControlName="city" class="form-control" id="ville" />
+             </div>
             </div>
           </div>
           <div class="col">
@@ -271,7 +297,7 @@
               <label for="phone" class="col-sm-3 col-form-label">{{
                 labels.phone
               }}</label>
-              <div class="col-sm-8">
+              <div class="w-xs-custom col-11 col-sm-8">
                 <international-phone-number class="form-control phone" id="phone" formControlName="phone"
                   placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
                   [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }">
@@ -285,7 +311,7 @@
                   {{ errors.invalid_phone }}
                 </div>
               </div>
-              <div class="col-sm-1">
+              <div class="col-1 col-sm-1">
                 <button (click)="addPhone()" class="btn btn-xs btn-icon">
                   <i class="far fa-plus"></i>
                 </button>
