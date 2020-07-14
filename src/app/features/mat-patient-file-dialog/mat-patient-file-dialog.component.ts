@@ -79,7 +79,10 @@ export class MatPatientFileDialogComponent implements OnInit {
                 this.image = this.avatars.women
               }
               else {
-                this.image = this.avatars.man
+                if (patientFile?.civility == "CHILD") {
+                  this.image = this.avatars.child
+                }
+                else this.image = this.avatars.man
               }
             }
           );
@@ -89,7 +92,10 @@ export class MatPatientFileDialogComponent implements OnInit {
             this.image = this.avatars.women
           }
           else {
-            this.image = this.avatars.man
+            if (patientFile?.civility == "CHILD") {
+              this.image = this.avatars.child
+            }
+            else this.image = this.avatars.man
           }
 
         }
@@ -129,7 +135,10 @@ export class MatPatientFileDialogComponent implements OnInit {
                   this.image = this.avatars.women
                 }
                 else {
-                  this.image = this.avatars.man
+                  if (patientFile?.civility == "CHILD") {
+                    this.image = this.avatars.child
+                  }
+                  else this.image = this.avatars.man
                 }
 
               }
@@ -140,7 +149,10 @@ export class MatPatientFileDialogComponent implements OnInit {
               this.image = this.avatars.women
             }
             else {
-              this.image = this.avatars.man
+              if (patientFile?.civility == "CHILD") {
+                this.image = this.avatars.child
+              }
+              else this.image = this.avatars.man
             }
 
           }

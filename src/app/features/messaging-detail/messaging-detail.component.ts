@@ -588,21 +588,17 @@ export class MessagingDetailComponent implements OnInit {
       }
       this.getPatientFile(info);
     } else {
-      this.accountService.getAccountById(idAccount).subscribe(res => {
-        if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
-          this.accountService.getAccountById(this.messagingDetail.sender.senderId).subscribe(res => {
-            this.practicianId = res?.practician.id;
-          });
-        } else {
-          this.practicianId = this.featureService.selectedPracticianId
-        }
-        let info = {
-          patientId: res?.patient.id,
-          practicianId: this.practicianId,
-          userRole: "SECRETARY"
-        }
-        this.getPatientFile(info);
-      });
+      if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
+        this.practicianId = this.messagingDetail.sender.senderId;
+      } else {
+        this.practicianId = this.featureService.selectedPracticianId
+      }
+      let info = {
+        patientId: idAccount,
+        practicianId: this.practicianId,
+        userRole: "SECRETARY"
+      }
+      this.getPatientFile(info);
     }
   }
   displayForPatientFile(patientFileId) {
@@ -615,9 +611,14 @@ export class MessagingDetailComponent implements OnInit {
       this.getPatientFile(info);
     }
     else {
+      if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
+        this.practicianId = this.messagingDetail.sender.senderId;
+      } else {
+        this.practicianId = this.featureService.selectedPracticianId
+      }
       let info = {
         patientFileId: patientFileId,
-        practicianId: this.featureService.selectedPracticianId,
+        practicianId: this.practicianId,
         userRole: "SECRETARY"
       }
       this.getPatientFile(info);

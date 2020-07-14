@@ -33,6 +33,7 @@ export class SendMessageComponent implements OnInit {
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList: Subject<any[]> = new Subject<any[]>();
+  forFieldList = [];
   selectedObject = new BehaviorSubject<any>(null);
   objectsList = [];
   practicianObjectList = [];
@@ -104,8 +105,8 @@ export class SendMessageComponent implements OnInit {
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.getSecretaryPracticians().subscribe((value) => {
-        let list = [];
         value.forEach((item) => {
+          item.type = "CONTACT_PRO"
           if (item.photo) {
             this.documentService.downloadFile(item.photo).subscribe(
               (response) => {
@@ -122,9 +123,9 @@ export class SendMessageComponent implements OnInit {
           } else {
             item.img = this.avatars.doctor;
           }
-          list.push(item);
+          this.forFieldList.push(item);
         });
-        this.forList.next(list);
+        this.forList.next(this.forFieldList);
       }
       );
     }
@@ -155,23 +156,80 @@ export class SendMessageComponent implements OnInit {
     }
   }
   getAllPatientFilesByPracticianId() {
-    return this.patientService
-      .getAllPatientFilesByPracticianId(this.featureService.getUserId())
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((patientFiles) => {
-          let list = [];
-          patientFiles.forEach((item) => {
-            if (item.photoId) {
-              this.documentService.downloadFile(item.photo).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    item.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      return this.patientService
+        .getAllPatientFilesByPracticianId(this.featureService.getUserId())
+        .pipe(takeUntil(this._destroyed$))
+        .pipe(
+          tap((patientFiles) => {
+            let list = [];
+            patientFiles.forEach((item) => {
+              if (item.photoId) {
+                this.documentService.downloadFile(item.photo).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      item.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    if (item?.civility == "MME") {
+                      item.img = this.avatars.women;
+                    }
+                    else {
+                      if (item?.civility == "CHILD") {
+                        item.img = this.avatars.child
+                      }
+                      else item.img = this.avatars.man;
+                    }
+                  }
+                );
+              } else {
+                if (item?.civility == "MME") {
+                  item.img = this.avatars.women;
+                }
+                else {
+                  if (item?.civility == "CHILD") {
+                    item.img = this.avatars.child
+                  }
+                  else item.img = this.avatars.man;
+                }
+              }
+              list.push(item);
+            });
+            this.forList.next(list);
+          })
+        );
+    }
+    else {
+      if (this.selectedPracticianId) {
+        return this.patientService
+          .getAllPatientFilesByPracticianId(this.selectedPracticianId)
+          .pipe(takeUntil(this._destroyed$))
+          .pipe(
+            tap((patientFiles) => {
+              patientFiles.forEach((item) => {
+                item.type = "PATIENT_FILE"
+                if (item.photoId) {
+                  this.documentService.downloadFile(item.photo).subscribe(
+                    (response) => {
+                      let myReader: FileReader = new FileReader();
+                      myReader.onloadend = (e) => {
+                        item.img = myReader.result;
+                      };
+                      let ok = myReader.readAsDataURL(response.body);
+                    },
+                    (error) => {
+                      if (item?.civility == "MME") {
+                        item.img = this.avatars.women;
+                      }
+                      else {
+                        item.img = this.avatars.man;
+                      }
+                    }
+                  );
+                } else {
                   if (item?.civility == "MME") {
                     item.img = this.avatars.women;
                   }
@@ -179,20 +237,16 @@ export class SendMessageComponent implements OnInit {
                     item.img = this.avatars.man;
                   }
                 }
-              );
-            } else {
-              if (item?.civility == "MME") {
-                item.img = this.avatars.women;
-              }
-              else {
-                item.img = this.avatars.man;
-              }
-            }
-            list.push(item);
-          });
-          this.forList.next(list);
-        })
-      );
+                this.forFieldList.push(item);
+              });
+              this.forList.next(this.forFieldList);
+              console.log(this.forFieldList)
+            })
+          );
+      }
+    }
+
+
   }
   parseContactsPractician(contactsPractician) {
     let myList = [];
@@ -332,11 +386,22 @@ export class SendMessageComponent implements OnInit {
       };
     }
     else {
-      newMessage.sender = {
-        senderId: this.featureService.getUserId(),
-        originalSenderId: this.featureService.getUserId(),
-        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
-      };
+      if (message.for && message.for[0].type == "PATIENT_FILE") {
+        newMessage.sender = {
+          senderId: this.featureService.getUserId(),
+          originalSenderId: this.featureService.getUserId(),
+          sentForPatientFile: message.for && message.for[0] ? message.for[0].id : null,
+          senderForCivility: message.for && message.for[0] ? message.for[0]?.civility : null,
+          senderForPhotoId: message.for && message.for[0] ? message.for[0]?.photoId : null,
+          senderForfullName: message.for && message.for[0] ? message.for[0]?.fullName : null
+        };
+      } else {
+        newMessage.sender = {
+          senderId: this.featureService.getUserId(),
+          originalSenderId: this.featureService.getUserId(),
+          sendedForId: message.for && message.for[0] ? message.for[0].id : null
+        };
+      }
     }
     message.object != "" &&
       message.object[0].name.toLowerCase() !=
