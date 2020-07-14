@@ -136,7 +136,10 @@ export class PatientDetailComponent implements OnInit {
             if (patientFile?.civility == "MME") {
               this.imageSource = this.avatars.women;
             } else {
-              this.imageSource = this.avatars.man;
+              if (patientFile?.civility == "CHILD") {
+                this.imageSource = this.avatars.child
+              }
+              else this.imageSource = this.avatars.man
             }
           }
           if (patientFile?.practicianPhotoId != null) {
