@@ -64,6 +64,7 @@ export class MyDocumentsComponent implements OnInit {
     this.getMySendersAndReceivers();
     this.getAllObjects();
     this.getPersonalInfo();
+    this.featureService.setIsMessaging(false);
   }
 
   getMySendersAndReceivers() {

@@ -24,6 +24,13 @@
     margin-top: 155px;
   }
 }
+
+@media screen and (max-width: 500px) {
+  .main-container {
+    margin-top: 120px;
+  }
+}
+
 @media print {
   .main-container {
     margin-top: 0px !important;

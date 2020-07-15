@@ -204,6 +204,7 @@ export class MessagingListComponent implements OnInit {
         });
       }
     });
+    this.featureService.setIsMessaging(true);
   }
 
   cardClicked(item) {

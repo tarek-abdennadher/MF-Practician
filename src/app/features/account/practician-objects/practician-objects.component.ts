@@ -3,6 +3,7 @@ import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { CategoryService } from "@app/features/services/category.service";
 import { GlobalService } from '@app/core/services/global.service';
+import {FeaturesService} from '@app/features/features.service';
 
 @Component({
   selector: "app-practician-objects",
@@ -22,6 +23,7 @@ export class PracticianObjectsComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute,
     private categoryService: CategoryService,
+    private featureService: FeaturesService,
     private globalService: GlobalService
   ) {
     this.messages = this.accountService.messages;
@@ -33,6 +35,7 @@ export class PracticianObjectsComponent implements OnInit {
   ngOnInit(): void {
     this.getMyObject();
     this.getSearchList();
+    this.featureService.setIsMessaging(false);
   }
 
   getSearchList() {

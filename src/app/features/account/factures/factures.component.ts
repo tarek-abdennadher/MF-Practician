@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '@app/features/services/account.service';
+import {FeaturesService} from '@app/features/features.service';
 
 @Component({
   selector: 'app-factures',
@@ -8,12 +9,13 @@ import { AccountService } from '@app/features/services/account.service';
 })
 export class FacturesComponent implements OnInit {
   public messages: any;
-  constructor(public accountService: AccountService) {
+  constructor(public accountService: AccountService, private featureService: FeaturesService) {
 
     this.messages = this.accountService.messages;
   }
 
   ngOnInit(): void {
+    this.featureService.setIsMessaging(false);
   }
 
 }

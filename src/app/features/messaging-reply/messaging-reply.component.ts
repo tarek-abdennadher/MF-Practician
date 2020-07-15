@@ -80,6 +80,7 @@ export class MessagingReplyComponent implements OnInit {
       this.messagingDetail = this.route.snapshot.data.messagingdetail;
       this.getMessageDetailById(this.idMessage);
     });
+    this.featureService.setIsMessaging(true);
   }
 
   getMessageDetailById(id) {

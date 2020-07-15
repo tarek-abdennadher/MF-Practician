@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { Location } from "@angular/common";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
+import {FeaturesService} from '@app/features/features.service';
 @Component({
   selector: "app-secretary-detail",
   templateUrl: "./secretary-detail.component.html",
@@ -35,7 +36,8 @@ export class SecretaryDetailComponent implements OnInit {
     private _location: Location,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
-    private globalService:GlobalService
+    private globalService:GlobalService,
+    private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -50,6 +52,7 @@ export class SecretaryDetailComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.getSecretary(params["id"]);
     });
+    this.featureService.setIsMessaging(false);
   }
   initInfoForm() {
     this.infoForm = new FormGroup({
