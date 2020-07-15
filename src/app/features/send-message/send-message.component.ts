@@ -33,6 +33,7 @@ export class SendMessageComponent implements OnInit {
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList: Subject<any[]> = new Subject<any[]>();
+  concernList: Subject<any[]> = new Subject<any[]>();
   forFieldList = [];
   selectedObject = new BehaviorSubject<any>(null);
   objectsList = [];
@@ -210,6 +211,7 @@ export class SendMessageComponent implements OnInit {
           .getAllPatientFilesByPracticianId(this.selectedPracticianId)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((patientFiles) => {
+            let list = [];
             patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE"
               if (item.photoId) {
@@ -238,9 +240,9 @@ export class SendMessageComponent implements OnInit {
                   item.img = this.avatars.man;
                 }
               }
-              this.forFieldList.push(item);
+              list.push(item);
             });
-            this.forList.next(this.forFieldList);
+            this.concernList.next(list);
           }
           );
       }
@@ -386,22 +388,17 @@ export class SendMessageComponent implements OnInit {
       };
     }
     else {
-      if (message.for && message.for[0].type == "PATIENT_FILE") {
-        newMessage.sender = {
-          senderId: this.featureService.getUserId(),
-          originalSenderId: this.featureService.getUserId(),
-          sentForPatientFile: message.for && message.for[0] ? message.for[0].id : null,
-          senderForCivility: message.for && message.for[0] ? message.for[0]?.civility : null,
-          senderForPhotoId: message.for && message.for[0] ? message.for[0]?.photoId : null,
-          senderForfullName: message.for && message.for[0] ? message.for[0]?.fullName : null
-        };
-      } else {
-        newMessage.sender = {
-          senderId: this.featureService.getUserId(),
-          originalSenderId: this.featureService.getUserId(),
-          sendedForId: message.for && message.for[0] ? message.for[0].id : null
-        };
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sendedForId: message.for && message.for[0] ? message.for[0].id : null
       }
+      if (message.concerns && message.concerns[0]) {
+        newMessage.sender.concernsId = message.concerns && message.concerns[0] ? message.concerns[0].id : null;
+        newMessage.sender.concernsCivility = message.concerns && message.concerns[0] ? message.concerns[0]?.civility : null;
+        newMessage.sender.concernsPhotoId = message.concerns && message.concerns[0] ? message.concerns[0]?.photoId : null;
+        newMessage.sender.concernsFullName = message.concerns && message.concerns[0] ? message.concerns[0]?.fullName : null;
+      };
     }
     message.object != "" &&
       message.object[0].name.toLowerCase() !=
