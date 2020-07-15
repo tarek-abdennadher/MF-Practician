@@ -117,6 +117,7 @@ export class MessagingDetailComponent implements OnInit {
       this.idMessage = params["id"];
       this.getMessageDetailById(this.idMessage);
     });
+    this.featureService.setIsMessaging(true);
   }
 
   getMessageDetailById(id) {

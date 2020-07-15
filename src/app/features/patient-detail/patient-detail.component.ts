@@ -104,6 +104,7 @@ export class PatientDetailComponent implements OnInit {
       this.getCategories(),
       this.getLinkedPatients()
     ).subscribe((res) => { });
+    this.featureService.setIsMessaging(false);
   }
 
   getPatientFile() {

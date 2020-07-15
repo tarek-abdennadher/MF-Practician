@@ -133,6 +133,8 @@ export class SendMessageComponent implements OnInit {
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => { });
+    this.featureService.setIsMessaging(false);
+
   }
 
   getAllContactsPractician() {

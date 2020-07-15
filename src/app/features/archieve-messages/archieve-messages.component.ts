@@ -48,6 +48,7 @@ export class ArchieveMessagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.featureService.setActiveChild("archived");
+    this.featureService.setIsMessaging(true);
     this.getMyMessagesArchived(this.pageNo);
     this.searchArchive();
   }

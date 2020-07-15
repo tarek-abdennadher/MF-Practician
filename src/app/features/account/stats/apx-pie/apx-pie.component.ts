@@ -3,6 +3,7 @@ import { ChartComponent } from "ng-apexcharts";
 import { ApexNonAxisChartSeries, ApexResponsive, ApexChart } from "ng-apexcharts";
 import { Subject } from "rxjs";
 import { AccountService } from '@app/features/services/account.service';
+import {FeaturesService} from '@app/features/features.service';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -21,7 +22,7 @@ export class ApxPieComponent implements OnInit {
   @Input() stats: Subject<any>;
   public chartOptions: Partial<ChartOptions>;
   public messages: any;
-  constructor(private accountService: AccountService) {
+  constructor(private accountService: AccountService, private featureService: FeaturesService) {
     this.messages = this.accountService.stats;
     this.chartOptions = {
       series: [0, 0],
@@ -70,5 +71,6 @@ export class ApxPieComponent implements OnInit {
         ],
       };
     });
+    this.featureService.setIsMessaging(false);
   }
 }

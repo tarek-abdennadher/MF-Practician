@@ -7,6 +7,7 @@ import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from "rxjs";
 import { AccountService } from '@app/features/services/account.service';
+import {FeaturesService} from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -37,6 +38,7 @@ export class ContactDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private contactsService: ContactsService,
+    private featureService: FeaturesService,
     public accountService: AccountService
   ) {
     this.labels = this.contactsService.messages;
@@ -54,6 +56,7 @@ export class ContactDetailComponent implements OnInit {
       }
       this.getAllSpeciality();
     });
+    this.featureService.setIsMessaging(false);
   }
   initForm() {
     this.infoForm = new FormGroup({

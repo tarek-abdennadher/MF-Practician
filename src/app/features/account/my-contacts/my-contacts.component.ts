@@ -57,6 +57,7 @@ export class MyContactsComponent implements OnInit {
       }
     });
     this.getMyContacts();
+    this.featureService.setIsMessaging(false);
   }
 
   getMyContacts() {
