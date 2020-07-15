@@ -129,7 +129,8 @@ export class SendMessageComponent implements OnInit {
       }
       );
     }
-    forkJoin(this.getAllContactsPractician(), this.getAllObjectList(), this.getAllPatientFilesByPracticianId())
+    this.getAllPatientFilesByPracticianId();
+    forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => { });
   }
@@ -157,13 +158,58 @@ export class SendMessageComponent implements OnInit {
   }
   getAllPatientFilesByPracticianId() {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      return this.patientService
+      this.patientService
         .getAllPatientFilesByPracticianId(this.featureService.getUserId())
         .pipe(takeUntil(this._destroyed$))
-        .pipe(
-          tap((patientFiles) => {
-            let list = [];
+        .subscribe((patientFiles) => {
+          let list = [];
+          patientFiles.forEach((item) => {
+            if (item.photoId) {
+              this.documentService.downloadFile(item.photo).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    item.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  if (item?.civility == "MME") {
+                    item.img = this.avatars.women;
+                  }
+                  else {
+                    if (item?.civility == "CHILD") {
+                      item.img = this.avatars.child
+                    }
+                    else item.img = this.avatars.man;
+                  }
+                }
+              );
+            } else {
+              if (item?.civility == "MME") {
+                item.img = this.avatars.women;
+              }
+              else {
+                if (item?.civility == "CHILD") {
+                  item.img = this.avatars.child
+                }
+                else item.img = this.avatars.man;
+              }
+            }
+            list.push(item);
+          });
+          this.forList.next(list);
+        }
+        );
+    }
+    else {
+      if (this.selectedPracticianId) {
+        this.patientService
+          .getAllPatientFilesByPracticianId(this.selectedPracticianId)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((patientFiles) => {
             patientFiles.forEach((item) => {
+              item.type = "PATIENT_FILE"
               if (item.photoId) {
                 this.documentService.downloadFile(item.photo).subscribe(
                   (response) => {
@@ -178,10 +224,7 @@ export class SendMessageComponent implements OnInit {
                       item.img = this.avatars.women;
                     }
                     else {
-                      if (item?.civility == "CHILD") {
-                        item.img = this.avatars.child
-                      }
-                      else item.img = this.avatars.man;
+                      item.img = this.avatars.man;
                     }
                   }
                 );
@@ -190,58 +233,13 @@ export class SendMessageComponent implements OnInit {
                   item.img = this.avatars.women;
                 }
                 else {
-                  if (item?.civility == "CHILD") {
-                    item.img = this.avatars.child
-                  }
-                  else item.img = this.avatars.man;
+                  item.img = this.avatars.man;
                 }
               }
-              list.push(item);
+              this.forFieldList.push(item);
             });
-            this.forList.next(list);
-          })
-        );
-    }
-    else {
-      if (this.selectedPracticianId) {
-        return this.patientService
-          .getAllPatientFilesByPracticianId(this.selectedPracticianId)
-          .pipe(takeUntil(this._destroyed$))
-          .pipe(
-            tap((patientFiles) => {
-              patientFiles.forEach((item) => {
-                item.type = "PATIENT_FILE"
-                if (item.photoId) {
-                  this.documentService.downloadFile(item.photo).subscribe(
-                    (response) => {
-                      let myReader: FileReader = new FileReader();
-                      myReader.onloadend = (e) => {
-                        item.img = myReader.result;
-                      };
-                      let ok = myReader.readAsDataURL(response.body);
-                    },
-                    (error) => {
-                      if (item?.civility == "MME") {
-                        item.img = this.avatars.women;
-                      }
-                      else {
-                        item.img = this.avatars.man;
-                      }
-                    }
-                  );
-                } else {
-                  if (item?.civility == "MME") {
-                    item.img = this.avatars.women;
-                  }
-                  else {
-                    item.img = this.avatars.man;
-                  }
-                }
-                this.forFieldList.push(item);
-              });
-              this.forList.next(this.forFieldList);
-              console.log(this.forFieldList)
-            })
+            this.forList.next(this.forFieldList);
+          }
           );
       }
     }
