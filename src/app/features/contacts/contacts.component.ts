@@ -82,6 +82,7 @@ export class ContactsComponent implements OnInit {
     } else if (this.userRole == "SECRETARY") {
       this.getAllContactsForSecretary();
     }
+    this.featureService.setIsMessaging(false);
   }
   getAllContactsForSecretary() {
     this.contactsService.getContactsProForSecretary().subscribe(

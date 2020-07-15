@@ -36,5 +36,5 @@
 <section class="main-container" [ngClass]="{ collapsed: collapedSideBar }">
   <!-- components will be implemented here -->
   <router-outlet></router-outlet>
-  <app-new-message-mobile></app-new-message-mobile>
+  <app-new-message-mobile *ngIf="messaging === true"></app-new-message-mobile>
 </section>

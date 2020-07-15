@@ -3,6 +3,7 @@ import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { CategoryService } from "@app/features/services/category.service";
 import { GlobalService } from '@app/core/services/global.service';
+import {FeaturesService} from '@app/features/features.service';
 
 @Component({
   selector: "app-category",
@@ -20,7 +21,8 @@ export class CategoryComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute,
     private categoryService: CategoryService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
     this.avatars = globalService.avatars;
@@ -29,6 +31,7 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyCategories();
+    this.featureService.setIsMessaging(false);
   }
 
   cardClicked(category) {

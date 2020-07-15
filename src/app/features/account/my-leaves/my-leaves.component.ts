@@ -45,6 +45,7 @@ export class MyLeavesComponent implements OnInit {
   ngOnInit(): void {
     this.initLeaveForm();
     this.getOptionById();
+    this.featureService.setIsMessaging(false);
   }
 
   initLeaveForm() {

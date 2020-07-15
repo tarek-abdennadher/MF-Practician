@@ -14,6 +14,7 @@ import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from 'rxjs';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
+import {FeaturesService} from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -48,7 +49,9 @@ export class MySecretariesComponent implements OnInit {
     private dialogService: DialogService,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
-    private globalService:GlobalService
+    private globalService: GlobalService,
+    private featureService: FeaturesService,
+
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -68,6 +71,7 @@ export class MySecretariesComponent implements OnInit {
   ngOnInit(): void {
     this.initInfoForm();
     this.getMySecretaries();
+    this.featureService.setIsMessaging(false);
   }
 
   initInfoForm() {

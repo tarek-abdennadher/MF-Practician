@@ -41,6 +41,8 @@ export class FeaturesService {
   public sentState = new BehaviorSubject(false);
   public archiveState = new BehaviorSubject(false);
 
+  public isMessaging = new BehaviorSubject<boolean>(false);
+
 
   constructor(
     private globalService: GlobalService,
@@ -60,6 +62,13 @@ export class FeaturesService {
 
   setNumberOfPending(numberOfPending) {
     this._numberOfPending.next(numberOfPending);
+  }
+
+  setIsMessaging(isMessaging) {
+    this.isMessaging.next(isMessaging);
+  }
+  getIsMessaging() {
+    return this.isMessaging.asObservable();
   }
 
   getNumberOfInboxValue() {

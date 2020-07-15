@@ -4,6 +4,7 @@ import { GlobalService } from '@app/core/services/global.service';
 import { ContactsService } from '@app/features/services/contacts.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
+import {FeaturesService} from '@app/features/features.service';
 
 @Component({
   selector: 'app-tele-secretaries',
@@ -21,7 +22,8 @@ export class TeleSecretariesComponent implements OnInit {
   public labels: any;
   public infoForm: FormGroup;
   public hasImage = false;
-  constructor(public accountService: AccountService, private globalService: GlobalService, private contactsService: ContactsService, private documentService: MyDocumentsService) {
+  constructor(public accountService: AccountService, private globalService: GlobalService, private contactsService: ContactsService,
+              private featureService: FeaturesService, private documentService: MyDocumentsService) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
     this.errors = this.accountService.errors;
@@ -32,6 +34,7 @@ export class TeleSecretariesComponent implements OnInit {
   ngOnInit(): void {
     this.initInfoForm();
     this.getTls();
+    this.featureService.setIsMessaging(false);
   }
 
   getTls() {

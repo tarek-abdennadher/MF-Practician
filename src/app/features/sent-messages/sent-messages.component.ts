@@ -60,6 +60,7 @@ export class SentMessagesComponent implements OnInit {
     });
     this.sentMessage();
     this.searchSent();
+    this.featureService.setIsMessaging(true);
   }
 
   sentMessage() {
