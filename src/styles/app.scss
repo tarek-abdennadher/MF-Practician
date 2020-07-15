@@ -2,16 +2,7 @@
 @import "responsive";
 
 @media print {
-    .breadcrumb {
-        display: none !important;
-    }
-}
-body {
-    background-image: url("assets/imgs/Background_helssy.svg");
-    background-color: #ffffff;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: contain;
-    -moz-background-size: contain;
-    background-position-x: right;
+  .breadcrumb {
+    display: none !important;
   }
+}
