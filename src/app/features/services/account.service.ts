@@ -94,7 +94,9 @@ export class AccountService {
     docModel: "Modèle de document",
     allowDocument: "Génération automatique d’un document",
     select_object: "Selectionnez un objet",
-    title: "Model de document"
+    title: "Model de document",
+    info: "Vous pouvez à partir de cet onglet, définir tous vos types objets qui vous servirons lors de la rédaction d'un message.",
+
   };
   public errors = {
     required: "Le champ est obligatoire",
