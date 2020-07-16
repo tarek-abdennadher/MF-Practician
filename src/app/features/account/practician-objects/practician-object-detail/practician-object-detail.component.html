@@ -21,6 +21,9 @@
       <i class="far fa-cog my-tab-icon"><span>&nbsp;&nbsp;{{ messages.my_object }}</span></i>
     </div>
   </div>
+  <div class="col-md-10 form-group info">
+      {{ messages.info }}
+  </div>
   <br />
   <div class="card-body">
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">

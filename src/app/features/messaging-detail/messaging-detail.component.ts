@@ -526,6 +526,14 @@ export class MessagingDetailComponent implements OnInit {
     this.router.navigate(["/messagerie-repondre/", this.idMessage]);
   }
 
+  forwardAction() {
+    this.router.navigate(["/messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        context: "forward"
+      }
+    });
+  }
+
   acceptAction() {
     this.router.navigate(["/messagerie-repondre/", this.idMessage], {
       queryParams: {

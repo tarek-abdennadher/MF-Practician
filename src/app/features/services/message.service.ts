@@ -19,6 +19,13 @@ export class MessageService {
     );
   }
 
+  forwardedMessage(): Observable<Array<Message>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.forwardedMessage
+    );
+  }
+
   replyMessageWithFile(formData): Observable<any> {
     return this.globalService.call(
       RequestType.POST,

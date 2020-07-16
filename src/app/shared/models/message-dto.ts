@@ -7,6 +7,8 @@ export class MessageDto {
   public sender?: any;
   public parent?: any;
   public hasFiles?: boolean;
+  public requestTypeId?: number;
+  public requestTitleId?: number;
 
   constructor();
   constructor(message?: any) {
@@ -17,5 +19,7 @@ export class MessageDto {
     this.sender = (message && message.sender) || "";
     this.parent = (message && message.parent) || "";
     this.hasFiles = (message && message.hasFiles) || false;
+    this.requestTypeId = (message && message.requestTypeId) || "";
+    this.requestTitleId = (message && message.requestTitleId) || "";
   }
 }

@@ -19,6 +19,7 @@ import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { data } from "jquery";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
+import { ForwardedMessagesComponent } from './forwarded-messages/forwarded-messages.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,10 @@ const routes: Routes = [
       {
         path: "messagerie-envoyes",
         component: SentMessagesComponent,
+      },
+      {
+        path: "messagerie-transferes",
+        component: ForwardedMessagesComponent,
       },
       {
         path: "mes-contacts-pro",
