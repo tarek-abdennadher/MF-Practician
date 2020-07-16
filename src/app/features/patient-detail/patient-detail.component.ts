@@ -101,8 +101,7 @@ export class PatientDetailComponent implements OnInit {
     });
     forkJoin(
       this.getPatientFile(),
-      this.getCategories(),
-      this.getLinkedPatients()
+      this.getCategories()
     ).subscribe((res) => { });
     this.featureService.setIsMessaging(false);
   }
@@ -114,6 +113,18 @@ export class PatientDetailComponent implements OnInit {
       .pipe(
         tap((patientFile) => {
           this.patientFile.next(patientFile);
+          if (patientFile.patientId) {
+            this.patientService
+              .getPatientsByParentId(patientFile.patientId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((res) => {
+                res.forEach((elm) => {
+                  this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+                });
+                this.linkedPatients.next(this.linkedPatientList);
+              }
+              );
+          }
           this.bottomText =
             patientFile?.firstName + " " + patientFile?.lastName;
           if (patientFile?.photoId) {
@@ -165,19 +176,6 @@ export class PatientDetailComponent implements OnInit {
       );
   }
 
-  getLinkedPatients() {
-    return this.patientService
-      .getPatientsByParentId(this.patientId)
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((res) => {
-          res.forEach((elm) => {
-            this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-          });
-          this.linkedPatients.next(this.linkedPatientList);
-        })
-      );
-  }
   mappingLinkedPatients(patient) {
     const linkedPatients = new MyPatients();
     linkedPatients.fullInfo = patient;

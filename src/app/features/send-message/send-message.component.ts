@@ -484,7 +484,55 @@ export class SendMessageComponent implements OnInit {
       } else {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "OTHER");
       }
-      this.objectsList.push({ "id": 0, "title": "Autre", "name": "Autre", "destination": "Autre" })
+      this.objectsList.push({ "id": 0, "title": "Autre", "name": "Autre", "destination": "Autre" });
+      if (this.localSt.retrieve("role") == "SECRETARY" && event.to.length == 1) {
+        let selectedPractician = event.to[0].id;
+        this.patientService
+          .getAllPatientFilesByPracticianId(selectedPractician)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((patientFiles) => {
+            let list = [];
+            patientFiles.forEach((item) => {
+              item.type = "PATIENT_FILE"
+              if (item.photoId) {
+                this.documentService.downloadFile(item.photo).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      item.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    if (item?.civility == "MME") {
+                      item.img = this.avatars.women;
+                    }
+                    else {
+                      item.img = this.avatars.man;
+                    }
+                  }
+                );
+              } else {
+                if (item?.civility == "MME") {
+                  item.img = this.avatars.women;
+                }
+                else {
+                  item.img = this.avatars.man;
+                }
+              }
+              list.push(item);
+            });
+            this.concernList.next(list);
+          }
+          );
+
+      }
+    }
+    else {
+      if (this.localSt.retrieve("role") == "SECRETARY" && this.selectedPracticianId == null) {
+        let list = []
+        this.concernList.next(list);
+      }
     }
   }
 
