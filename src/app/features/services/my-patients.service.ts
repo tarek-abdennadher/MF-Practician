@@ -8,7 +8,7 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
   providedIn: "root",
 })
 export class MyPatientsService {
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService) { }
   public errors = {
     failed_update:
       "Erreur survenue lors de la modification de la fiche patient",
@@ -171,10 +171,10 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patientFile +
-        "my/category/" +
-        patientId +
-        "/" +
-        practicianId
+      "my/category/" +
+      patientId +
+      "/" +
+      practicianId
     );
   }
   getPatientFileByPracticianId(patientId: number, practicianId: number) {
@@ -221,6 +221,12 @@ export class MyPatientsService {
       {
         params: { pageNo: pageNo, order: order },
       }
+    );
+  }
+  getAllPatientFilesByPracticianId(practicianId: number) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "all/" + practicianId
     );
   }
 }

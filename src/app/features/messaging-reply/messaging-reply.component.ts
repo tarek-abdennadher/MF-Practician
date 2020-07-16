@@ -84,6 +84,7 @@ export class MessagingReplyComponent implements OnInit {
       this.messagingDetail = this.route.snapshot.data.messagingdetail;
       this.getMessageDetailById(this.idMessage);
     });
+    this.featureService.setIsMessaging(true);
     this.getForwardToList();
   }
 
@@ -93,7 +94,8 @@ export class MessagingReplyComponent implements OnInit {
       .subscribe(list => {
         this.toList.next(list);
       })
-  }
+    }
+
 
   getMessageDetailById(id) {
     this.messagingDetailService

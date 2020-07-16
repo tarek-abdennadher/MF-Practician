@@ -34,6 +34,7 @@ export class FeaturesComponent implements OnInit {
   avatars: any;
   practicians: any;
   secretaryIds: any = [];
+  public messaging: boolean = true;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -98,6 +99,7 @@ export class FeaturesComponent implements OnInit {
     this.getAllArchive();
     this.sentMessage();
     this.observeState();
+    this.subscribeIsMessaging();
   }
 
   observeState() {
@@ -118,6 +120,12 @@ export class FeaturesComponent implements OnInit {
         this.getAllArchive();
         this.featuresService.archiveState.next(false);
       }
+    });
+  }
+
+  private subscribeIsMessaging() {
+    this.featuresService.getIsMessaging().subscribe( (isMessaging) => {
+      this.messaging = isMessaging;
     });
   }
 

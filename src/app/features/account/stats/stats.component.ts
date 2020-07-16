@@ -25,6 +25,7 @@ export class StatsComponent implements OnInit {
   ngOnInit(): void {
     this.selectedId = this.featureService.getUserId();
     this.messages = this.service.messages;
+    this.featureService.setIsMessaging(false);
     this.service
       .getPatientStats(this.selectedId)
       .subscribe((p: Map<string, number>) => {

@@ -10,8 +10,8 @@ import { takeUntil } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
-import { MyPatientsService } from '../services/my-patients.service';
 import { DialogService } from '../services/dialog.service';
+import { AccountService } from '../services/account.service';
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -37,6 +37,8 @@ export class MessagingDetailComponent implements OnInit {
   hideTo = false;
   hidefrom = false;
   isFromArchive = false;
+  practicianId: number;
+  patientId: number;
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.MailDetail;
@@ -62,7 +64,8 @@ export class MessagingDetailComponent implements OnInit {
     private featureService: FeaturesService,
     notifierService: NotifierService,
     private localSt: LocalStorageService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private accountService: AccountService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -114,6 +117,7 @@ export class MessagingDetailComponent implements OnInit {
       this.idMessage = params["id"];
       this.getMessageDetailById(this.idMessage);
     });
+    this.featureService.setIsMessaging(true);
   }
 
   getMessageDetailById(id) {
@@ -586,18 +590,50 @@ export class MessagingDetailComponent implements OnInit {
   }
   displayPatientFile(idAccount) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.getPatientFile(idAccount, this.featureService.getUserId(), "PRACTICIAN");
+      let info = {
+        patientId: idAccount,
+        practicianId: this.featureService.getUserId(),
+        userRole: "PRACTICIAN"
+      }
+      this.getPatientFile(info);
     } else {
-      this.getPatientFile(idAccount, this.featureService.selectedPracticianId, "SECRETARY");
+      if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
+        this.practicianId = this.messagingDetail.sender.senderId;
+      } else {
+        this.practicianId = this.featureService.selectedPracticianId
+      }
+      let info = {
+        patientId: idAccount,
+        practicianId: this.practicianId,
+        userRole: "SECRETARY"
+      }
+      this.getPatientFile(info);
     }
   }
-
-  getPatientFile(patientId, practicianId, userRole) {
-    let info = {
-      patientId: patientId,
-      practicianId: practicianId,
-      userRole: userRole
+  displayForPatientFile(patientFileId) {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      let info = {
+        patientFileId: patientFileId,
+        practicianId: this.featureService.getUserId(),
+        userRole: "PRACTICIAN"
+      }
+      this.getPatientFile(info);
     }
+    else {
+      if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
+        this.practicianId = this.messagingDetail.sender.senderId;
+      } else {
+        this.practicianId = this.featureService.selectedPracticianId
+      }
+      let info = {
+        patientFileId: patientFileId,
+        practicianId: this.practicianId,
+        userRole: "SECRETARY"
+      }
+      this.getPatientFile(info);
+    }
+  }
+  getPatientFile(info) {
     this.dialogService.openPatientFile("Fiche Patient", info);
   }
 

@@ -6,6 +6,7 @@ import { Speciality } from "@app/shared/models/speciality";
 import { ContactsService } from "../services/contacts.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { NotifierService } from "angular-notifier";
+import {FeaturesService} from '@app/features/features.service';
 
 @Component({
   selector: "app-practician-invitation",
@@ -31,6 +32,7 @@ export class PracticianInvitationComponent implements OnInit {
     private router: Router,
     private service: PracticianInvitationService,
     private contactsService: ContactsService,
+    private featureService: FeaturesService,
     notifierService: NotifierService
   ) {
     this.notifier = notifierService;
@@ -41,6 +43,7 @@ export class PracticianInvitationComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.featureService.setIsMessaging(false);
   }
   BackButton() {
     this.router.navigate(["/praticien-recherche"]);

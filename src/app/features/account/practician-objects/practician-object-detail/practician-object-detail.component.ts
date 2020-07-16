@@ -40,6 +40,7 @@ export class PracticianObjectDetailComponent implements OnInit {
       this.selectedCategoryId = params["id"];
       this.initInfoForm();
     });
+    this.featureService.setIsMessaging(false);
   }
 
   close() {

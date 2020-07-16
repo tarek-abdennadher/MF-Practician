@@ -14,34 +14,38 @@
 }
 
 @font-face {
+  font-family: "Segoe UI ";
+  src: url("./assets/fonts/Segoe/Segoe-UI.TTF");
+}
+
+@font-face {
   font-family: "Gotham Medium";
-  src: 
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf") format('truetype'),
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff") format('woff'),
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2") format('woff2'),
-      url("./assets/fonts/Gotham-Medium/Gotham-Medium.eot");
-      font-weight: normal;
-      font-style: normal;
+  src: url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf") format("truetype"),
+    url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff") format("woff"),
+    url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2") format("woff2"),
+    url("./assets/fonts/Gotham-Medium/Gotham-Medium.eot");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
   font-family: "Gotham Bold";
-  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf") format('truetype'),
-       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff") format('woff'),
-       url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2") format('woff2'),
-       url("./assets/fonts/Gotham-Bold/Gotham-Bold.eot");
-       font-weight: normal;
-       font-style: normal;
+  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf") format("truetype"),
+    url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff") format("woff"),
+    url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2") format("woff2"),
+    url("./assets/fonts/Gotham-Bold/Gotham-Bold.eot");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
   font-family: "Gotham";
-  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf") format('truetype'),
-       url("./assets/fonts/Gotham-Book/Gotham-Book.woff") format('woff'),
-       url("./assets/fonts/Gotham-Book/Gotham-Book.woff2") format('woff2'),
-       url("./assets/fonts/Gotham-Book/Gotham-Book.eot");
-       font-weight: normal;
-       font-style: normal;
+  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf") format("truetype"),
+    url("./assets/fonts/Gotham-Book/Gotham-Book.woff") format("woff"),
+    url("./assets/fonts/Gotham-Book/Gotham-Book.woff2") format("woff2"),
+    url("./assets/fonts/Gotham-Book/Gotham-Book.eot");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @import "~angular-notifier/styles/core.scss";
@@ -51,7 +55,7 @@
 // Be sure that you only ever include this mixin once!
 
 $custom-typography: mat-typography-config(
-  $font-family: "Gotham",
+  $font-family: "Segoe UI",
   $headline: mat-typography-level(32px, 48px, 700),
   $body-1: mat-typography-level(16px, 24px, 500),
 );
@@ -70,9 +74,9 @@ $patient-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $patient-theme: mat-light-theme(
-    $patient-primary,
-    $patient-accent,
-    $patient-warn
+  $patient-primary,
+  $patient-accent,
+  $patient-warn
 );
 
 // Include theme styles for core and each component used in your app.
@@ -81,20 +85,12 @@ $patient-theme: mat-light-theme(
 @include angular-material-theme($patient-theme);
 
 /* You can add global styles to this file, and also import other style files */
-html *
-{
-   font-family: "Gotham";
+html * {
+  font-family: "Segoe UI";
 }
 html,
 body {
   margin: 0;
-  background-image: url("assets/imgs/Background_helssy.svg");
-  background-color: #ffffff;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: contain;
-  -moz-background-size: contain;
-  background-position-x: right;
   @media (min-width: 400px) {
     zoom: 90%;
   }
@@ -106,7 +102,7 @@ body {
 input,
 select,
 textarea {
-  font-family: "Gotham" !important;
+  font-family: "Segoe UI" !important;
 }
 
 a {
@@ -140,8 +136,8 @@ a {
 }
 
 .patient-file-container .mat-dialog-container {
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  box-shadow: 0px 2px 20px #0000000D;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 20px #0000000d;
   opacity: 1;
   padding-top: 5px;
 }
@@ -149,14 +145,16 @@ a {
   color: #bcbcbc !important;
 }
 
-.confirm-dialog-container .content-container, .patient-file-container .content-container{
+.confirm-dialog-container .content-container,
+.patient-file-container .content-container {
   margin: 20px 5px 15px 5px;
   color: #bcbcbc;
   display: flex;
   text-align: center;
 }
 
-.confirm-dialog-container #close-icon,.patient-file-container #close-icon  {
+.confirm-dialog-container #close-icon,
+.patient-file-container #close-icon {
   text-align: left;
   font-size: 20px;
   background: #f1f1f1 0% 0% no-repeat padding-box;
@@ -167,7 +165,8 @@ a {
   margin-right: 12px;
 }
 
-.confirm-dialog-container #close-icon:hover, .patient-file-container #close-icon:hover {
+.confirm-dialog-container #close-icon:hover,
+.patient-file-container #close-icon:hover {
   cursor: pointer;
 }
 
@@ -204,7 +203,7 @@ a {
   opacity: 1;
 }
 
-.confirm-dialog-container span.title-span   {
+.confirm-dialog-container span.title-span {
   font-size: 17px;
   font-weight: Bold;
   letter-spacing: 0px;
@@ -212,12 +211,12 @@ a {
   opacity: 1;
   text-transform: uppercase;
 }
-.patient-file-container span.title-span  {
+.patient-file-container span.title-span {
   font-size: 25px;
   font-weight: Bold;
   text-align: left;
   letter-spacing: -1.1px;
-  color: #6E819B;
+  color: #6e819b;
   opacity: 1;
   float: left;
 }
@@ -238,7 +237,8 @@ a {
     background-color: #f1f1f1;
   }
 
-  international-phone-number .dropdown button.dropbtn.btn, button.dropbtn.btn:hover {
+  international-phone-number .dropdown button.dropbtn.btn,
+  button.dropbtn.btn:hover {
     border-color: #f1f1f1;
     background-color: #f1f1f1;
     padding: 4px !important;
@@ -248,11 +248,10 @@ a {
   international-phone-number .dropdown button.dropbtn.btn .arrow-down {
     border-bottom: #f1f1f1;
   }
-
 }
 
 .m-px-12-5 {
-margin-left: 12.5px;
+  margin-left: 12.5px;
 }
 
 /* ======= Override  international-phone-number component style ======= */
@@ -278,16 +277,16 @@ margin-left: 12.5px;
 
 /* ============== Material radio buttons override style ================= */
 
-.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle{
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
   border-color: #41bddf;
 }
 
-.mat-radio-button.mat-accent .mat-radio-inner-circle{
-  color:rgb(66, 134, 244);
-  background-color: #41bddf ;
+.mat-radio-button.mat-accent .mat-radio-inner-circle {
+  color: rgb(66, 134, 244);
+  background-color: #41bddf;
 }
 
 .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
-  background-color:rgb(66, 134, 244);
+  background-color: rgb(66, 134, 244);
 }
 /* ====================================================================== */

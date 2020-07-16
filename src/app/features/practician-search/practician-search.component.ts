@@ -45,6 +45,7 @@ export class PracticianSearchComponent implements OnInit {
     this.featureService.getSearchFiltredPractician().subscribe(list => {
       this.getPractians(list);
     });
+    this.featureService.setIsMessaging(false);
   }
   getPractians(list) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
