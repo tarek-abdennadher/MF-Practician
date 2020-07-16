@@ -31,6 +31,7 @@ export class GlobalService {
     message: this.BASE_URL_MA + "/messages",
     replyMessage: this.BASE_URL_MA + "/messages/createWithAttachement",
     sentMessage: this.BASE_URL_MA + "/messages/sender",
+    forwardedMessage: this.BASE_URL_MA + "/messages/forwarded",
     node: this.BASE_URL_FL + "/node",
     attachements: this.BASE_URL_FL + "/attachement",
     site: this.BASE_URL_FL + "/directories",

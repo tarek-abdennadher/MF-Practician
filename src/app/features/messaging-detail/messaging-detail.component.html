@@ -1,13 +1,37 @@
-<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="''" [number]="number"
-  [backButton]="backButton" (backButtonAction)="goToBack()" (importantAction)="importantAction()"
-  (archieveAction)="archieveActionClicked()"></lib-hlsLinks>
-<lib-hlsMessagingDetail [imageSource]="imageSource" [messagingDetail]="messagingDetail" [isFromInbox]="isFromInbox"
-  [role]="role" [hideTo]="hideTo" [hidefrom]="hidefrom" [senderRolePatient]="senderRolePatient"
-  [showAcceptRefuse]="showAcceptRefuse" [showRefuseForTls]="showRefuseForTls" [hideButtons]="prohibited"
-  (displayPatientFile)="displayPatientFile($event)" (displayForPatientFile)="displayForPatientFile($event)"
-  (replyAction)="replyAction()" (acceptAction)="acceptAction()" (refuseAction)="refuseAction()"
-  (downloadAction)="download($event)" [attachements]="attachements">
-  ></lib-hlsMessagingDetail>
+
+<lib-hlsLinks
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="''"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="goToBack()"
+  (importantAction)="importantAction()"
+  (archieveAction)="archieveActionClicked()"
+></lib-hlsLinks>
+<lib-hlsMessagingDetail
+  [imageSource]="imageSource"
+  [messagingDetail]="messagingDetail"
+  [isFromInbox]="isFromInbox"
+  [role]="role"
+  [hideTo]="hideTo"
+  [hidefrom]="hidefrom"
+  [senderRolePatient]="senderRolePatient"
+  [showAcceptRefuse]="showAcceptRefuse"
+  [showRefuseForTls]="showRefuseForTls"
+  [hideButtons]="prohibited"
+  (displayPatientFile)="displayPatientFile($event)"
+  (displayForPatientFile)="displayForPatientFile($event)"
+  (replyAction)="replyAction()"
+  (forwardAction)="forwardAction()"
+  (acceptAction)="acceptAction()"
+  (refuseAction)="refuseAction()"
+  (downloadAction)="download($event)"
+  [attachements]="attachements"
+>
+  ></lib-hlsMessagingDetail
+>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">

@@ -58,4 +58,11 @@ export class MessagingDetailService {
       request
     );
   }
+
+  public getTlsSecretaryList(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/allSecretaries"
+    );
+  }
 }
