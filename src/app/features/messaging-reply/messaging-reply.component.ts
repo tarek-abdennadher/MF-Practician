@@ -77,6 +77,7 @@ export class MessagingReplyComponent implements OnInit {
         this.acceptResponse = true
       } else if (params["context"] && params["context"] == "forward") {
         this.forwardedResponse = true;
+        this.getForwardToList();
       }
     });
     this.route.params.subscribe((params) => {
@@ -85,13 +86,15 @@ export class MessagingReplyComponent implements OnInit {
       this.getMessageDetailById(this.idMessage);
     });
     this.featureService.setIsMessaging(true);
-    this.getForwardToList();
   }
 
   getForwardToList() {
     this.messagingDetailService
       .getTlsSecretaryList().pipe(takeUntil(this._destroyed$))
       .subscribe(list => {
+        list.forEach((receiver) => {
+          this.loadPhoto(receiver);
+        });
         this.toList.next(list);
       })
     }
@@ -225,6 +228,12 @@ export class MessagingReplyComponent implements OnInit {
         })
       }
       if (this.acceptResponse) {
+        this.messagingDetailService.getAcceptRequest(requestDto).subscribe(resp => {
+          this.bodyObs.next(resp.body);
+        })
+      }
+      if (this.forwardedResponse) {
+        requestDto.websiteOrigin = "TLS";
         this.messagingDetailService.getAcceptRequest(requestDto).subscribe(resp => {
           this.bodyObs.next(resp.body);
         })

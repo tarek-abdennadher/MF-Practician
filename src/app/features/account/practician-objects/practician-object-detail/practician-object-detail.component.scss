@@ -323,3 +323,11 @@ input[type="file"] {
   ~ .control_indicator:after {
   border-color: #eaeaea;
 }
+
+.info {
+  font-size: 15PX !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: #6e819bd4;
+  font-family: "Segoe UI Medium" !important;
+}
