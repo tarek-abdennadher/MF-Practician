@@ -3,10 +3,10 @@ import { CommonModule } from "@angular/common";
 import { FeaturesRoutingModule } from "./features-routing.module";
 import { FeaturesComponent } from "./features.component";
 import { HlsNavBarModule } from "hls-nav-bar";
-import { HlsSideBarModule } from "hls-side-bar";
+import { HlsSideBarModule } from "./lib/hls-side-bar.module";
 import { MessagingListComponent } from "./messaging-list/messaging-list.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HlsMessagingDetailModule } from "hls-messaging-detail";
+import { HlsMessagingDetailModule } from "./lib-detail/hls-messaging-detail.module";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
@@ -45,6 +45,7 @@ import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { NgApexchartsModule } from "ng-apexcharts";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
+import { ForwardedMessagesComponent } from './forwarded-messages/forwarded-messages.component';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -90,6 +91,7 @@ const notifierOptions: NotifierOptions = {
     MessagingListComponent,
     MessagingDetailComponent,
     SentMessagesComponent,
+    ForwardedMessagesComponent,
     MessagingReplyComponent,
     MyPatientsComponent,
     ContactsComponent,

@@ -13,6 +13,7 @@ export class FeaturesService {
   public listNotifications = [];
   public selectedPracticianId = 0;
   private _numberOfInbox = new BehaviorSubject<number>(0);
+  numberOfForwarded: number = 0;
   numberOfArchieve: number = 0;
   numberOfAccepted: number = 0;
   private _numberOfPending = new BehaviorSubject<number>(0);
@@ -205,6 +206,13 @@ export class FeaturesService {
     const token = this.localSt.retrieve("token");
     var decoded = jwt_decode(token);
     return new Date(decoded.exp * 1000);
+  }
+
+  getCountOfForwarded() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.message + "/countForwarded"
+    );
   }
 
   getCountOfMyArchieve() {
