@@ -134,6 +134,19 @@ export class MatPatientFileDialogComponent implements OnInit {
       this.patientService.getPatientFileByPracticianId(data.info.patientId, data.info.practicianId)
         .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
           this.patientFile.next(patientFile);
+          if (patientFile.patientId) {
+            this.patientService
+              .getPatientsByParentId(patientFile.patientId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((res) => {
+                this.linkedPatientList = [];
+                res.forEach((elm) => {
+                  this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+                });
+                this.linkedPatients.next(this.linkedPatientList);
+              }
+              );
+          }
           this.userRole = data.info.userRole;
           this.patientFileId = patientFile.id;
           if (patientFile.photoId) {
