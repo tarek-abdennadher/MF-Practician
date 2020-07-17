@@ -11,6 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MyPatientsService } from '../services/my-patients.service';
 import { NotifierService } from 'angular-notifier';
 import { NoteService } from '../services/note.service';
+import { MyPatients } from '../my-patients/my-patients';
 
 @Component({
   selector: 'app-mat-patient-file-dialog',
@@ -28,7 +29,8 @@ export class MatPatientFileDialogComponent implements OnInit {
   patientFile = new Subject();
   noteimageSource: string;
   userRole: string;
-  linkedPatients = new Subject<[]>();
+  linkedPatients = new Subject();
+  linkedPatientList = [];
   categoryList = new Subject<[]>();
   notifMessage = "";
   patientFileId: number;
@@ -65,6 +67,19 @@ export class MatPatientFileDialogComponent implements OnInit {
         this.patientFile.next(patientFile);
         this.userRole = data.info.userRole;
         this.patientFileId = patientFile.id;
+        if (patientFile.patientId) {
+          this.patientService
+            .getPatientsByParentId(patientFile.patientId)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((res) => {
+              this.linkedPatientList = [];
+              res.forEach((elm) => {
+                this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+              });
+              this.linkedPatients.next(this.linkedPatientList);
+            }
+            );
+        }
         if (patientFile.photoId) {
           this.documentService.downloadFile(patientFile.photoId).subscribe(
             (response) => {
@@ -178,7 +193,54 @@ export class MatPatientFileDialogComponent implements OnInit {
       })
 
   }
-
+  mappingLinkedPatients(patient) {
+    const linkedPatients = new MyPatients();
+    linkedPatients.fullInfo = patient;
+    linkedPatients.users = [];
+    linkedPatients.users.push({
+      id: patient.id,
+      fullName: patient.firstName + " " + patient.lastName,
+      img: this.avatars.man,
+      type: "PATIENT",
+      civility: patient.civility,
+    });
+    linkedPatients.photoId = patient.photoId;
+    linkedPatients.isSeen = true;
+    linkedPatients.isViewDetail = true;
+    if (linkedPatients.photoId) {
+      linkedPatients.users.forEach((user) => {
+        this.documentService.downloadFile(linkedPatients.photoId).subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              user.img = myReader.result;
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          (error) => {
+            if (user.civility == "M") {
+              user.img = this.avatars.man;
+            } else if (user.civility == "MME") {
+              user.img = this.avatars.women;
+            } else if (user.civility == "CHILD") {
+              user.img = this.avatars.child;
+            }
+          }
+        );
+      });
+    } else {
+      linkedPatients.users.forEach((user) => {
+        if (user.civility == "M") {
+          user.img = this.avatars.man;
+        } else if (user.civility == "MME") {
+          user.img = this.avatars.women;
+        } else if (user.civility == "CHILD") {
+          user.img = this.avatars.child;
+        }
+      });
+    }
+    return linkedPatients;
+  }
   submitNote(model) {
     if (model.id == null) {
       this.noteService
