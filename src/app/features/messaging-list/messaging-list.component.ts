@@ -394,27 +394,38 @@ export class MessagingListComponent implements OnInit {
               this.patientAccountId = res;
             })
           }
-          this.messages = this.isPatientFile
-            ? retrievedMess.filter(
-              (message) => message.sender.senderId == this.patientAccountId
-            )
-            : retrievedMess;
+          if (this.patientId != null) {
+            this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
+              this.patientAccountId = res;
+              this.messages = retrievedMess.filter(
+                (message) => message.sender.senderId == this.patientAccountId);
+              this.messages.sort(function (m1, m2) {
+                return (
+                  new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+                );
+              });
+              this.itemsList.push(
+                ...this.messages.map((item) => this.parseMessage(item))
+              );
+              this.filtredItemList = this.itemsList;
+              this.number = this.itemsList.length;
+              this.bottomText = this.number > 1 ? this.globalService.messagesDisplayScreen.newMessages : this.globalService.messagesDisplayScreen.newMessage
+            })
+          }
 
-          this.messages.sort(function (m1, m2) {
-            return (
-              new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+          else {
+            this.messages.sort(function (m1, m2) {
+              return (
+                new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+              );
+            });
+            this.itemsList.push(
+              ...this.messages.map((item) => this.parseMessage(item))
             );
-          });
-          this.itemsList.push(
-            ...this.messages.map((item) => this.parseMessage(item))
-          );
-          if (this.filtredItemList.length != this.itemsList.length) {
-            this.filtredItemList = this.itemsList.filter(item => item.users[0].type.toLowerCase() == this.filtredItemList[0].users[0].type.toLowerCase());
+            if (this.filtredItemList.length != this.itemsList.length) {
+              this.filtredItemList = this.itemsList.filter(item => item.users[0].type.toLowerCase() == this.filtredItemList[0].users[0].type.toLowerCase());
+            }
           }
-          if (this.isPatientFile) {
-            this.filtredItemList = this.itemsList;
-          }
-
         }
       });
   }
