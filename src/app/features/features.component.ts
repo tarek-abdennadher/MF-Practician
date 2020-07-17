@@ -34,6 +34,7 @@ export class FeaturesComponent implements OnInit {
   avatars: any;
   practicians: any;
   secretaryIds: any = [];
+  public messaging: boolean = true;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -88,6 +89,7 @@ export class FeaturesComponent implements OnInit {
     });
     this.getMyNotificationsNotSeen();
     this.countMyInboxNotSeen();
+    this.countForwarded();
     this.countMyArchive();
     this.getPersonalInfo();
     this.countMyPatientPending();
@@ -97,6 +99,7 @@ export class FeaturesComponent implements OnInit {
     this.getAllArchive();
     this.sentMessage();
     this.observeState();
+    this.subscribeIsMessaging();
   }
 
   observeState() {
@@ -117,6 +120,12 @@ export class FeaturesComponent implements OnInit {
         this.getAllArchive();
         this.featuresService.archiveState.next(false);
       }
+    });
+  }
+
+  private subscribeIsMessaging() {
+    this.featuresService.getIsMessaging().subscribe( (isMessaging) => {
+      this.messaging = isMessaging;
     });
   }
 
@@ -306,6 +315,12 @@ export class FeaturesComponent implements OnInit {
     });
   }
 
+  countForwarded() {
+    this.featuresService.getCountOfForwarded().subscribe((resp) => {
+      this.featuresService.numberOfForwarded = resp;
+    });
+  }
+
   countMyArchive() {
     this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
       this.featuresService.numberOfArchieve = resp;
@@ -339,6 +354,9 @@ export class FeaturesComponent implements OnInit {
   }
   displaySentAction() {
     this.router.navigate(["/messagerie-envoyes"]);
+  }
+  displayForwardedAction() {
+    this.router.navigate(["/messagerie-transferes"]);
   }
   displayArchieveAction() {
     this.router.navigate(["/messagerie-archives"]);

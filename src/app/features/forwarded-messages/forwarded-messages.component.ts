@@ -10,22 +10,22 @@ import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 
 @Component({
-  selector: "app-sent-messages",
-  templateUrl: "./sent-messages.component.html",
-  styleUrls: ["./sent-messages.component.scss"],
+  selector: "app-forwarded-messages",
+  templateUrl: "./forwarded-messages.component.html",
+  styleUrls: ["./forwarded-messages.component.scss"],
 })
-export class SentMessagesComponent implements OnInit {
+export class ForwardedMessagesComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   imageSource : string;
   links = {
     isAllSelect: true,
-    isFilter: true,
+    isFilter: false,
     isArchieve: true,
   };
   page = "INBOX";
   number = 0;
-  topText = "Messages envoyés";
+  topText = "Messages transférés";
   bottomText = "";
   backButton = false;
   itemsList = [];
@@ -58,14 +58,13 @@ export class SentMessagesComponent implements OnInit {
         });
       }
     });
-    this.sentMessage();
+    this.forwardedMessage();
     this.searchSent();
-    this.featureService.setIsMessaging(true);
   }
 
-  sentMessage() {
+  forwardedMessage() {
     this.messageService
-      .sentMessage()
+      .forwardedMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
         messages.forEach((message) => {

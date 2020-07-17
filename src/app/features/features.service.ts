@@ -13,6 +13,7 @@ export class FeaturesService {
   public listNotifications = [];
   public selectedPracticianId = 0;
   private _numberOfInbox = new BehaviorSubject<number>(0);
+  numberOfForwarded: number = 0;
   numberOfArchieve: number = 0;
   numberOfAccepted: number = 0;
   private _numberOfPending = new BehaviorSubject<number>(0);
@@ -41,6 +42,8 @@ export class FeaturesService {
   public sentState = new BehaviorSubject(false);
   public archiveState = new BehaviorSubject(false);
 
+  public isMessaging = new BehaviorSubject<boolean>(false);
+
 
   constructor(
     private globalService: GlobalService,
@@ -60,6 +63,13 @@ export class FeaturesService {
 
   setNumberOfPending(numberOfPending) {
     this._numberOfPending.next(numberOfPending);
+  }
+
+  setIsMessaging(isMessaging) {
+    this.isMessaging.next(isMessaging);
+  }
+  getIsMessaging() {
+    return this.isMessaging.asObservable();
   }
 
   getNumberOfInboxValue() {
@@ -205,6 +215,13 @@ export class FeaturesService {
     const token = this.localSt.retrieve("token");
     var decoded = jwt_decode(token);
     return new Date(decoded.exp * 1000);
+  }
+
+  getCountOfForwarded() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.message + "/countForwarded"
+    );
   }
 
   getCountOfMyArchieve() {

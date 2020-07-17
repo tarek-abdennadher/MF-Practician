@@ -1,3 +1,4 @@
+
 <lib-hlsLinks
   [links]="links"
   [page]="page"
@@ -21,7 +22,9 @@
   [showRefuseForTls]="showRefuseForTls"
   [hideButtons]="prohibited"
   (displayPatientFile)="displayPatientFile($event)"
+  (displayForPatientFile)="displayForPatientFile($event)"
   (replyAction)="replyAction()"
+  (forwardAction)="forwardAction()"
   (acceptAction)="acceptAction()"
   (refuseAction)="refuseAction()"
   (downloadAction)="download($event)"

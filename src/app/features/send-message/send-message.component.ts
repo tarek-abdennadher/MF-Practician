@@ -15,6 +15,7 @@ import { LocalStorageService } from "ngx-webstorage";
 import { NotifierService } from "angular-notifier";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { MyPatientsService } from '../services/my-patients.service';
 
 @Component({
   selector: "app-send-message",
@@ -32,6 +33,8 @@ export class SendMessageComponent implements OnInit {
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: Subject<any[]> = new Subject<any[]>();
   forList: Subject<any[]> = new Subject<any[]>();
+  concernList: Subject<any[]> = new Subject<any[]>();
+  forFieldList = [];
   selectedObject = new BehaviorSubject<any>(null);
   objectsList = [];
   practicianObjectList = [];
@@ -45,10 +48,10 @@ export class SendMessageComponent implements OnInit {
   private readonly notifier: NotifierService;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   objectsListForTls = [
-    {id: 1111, name: "Instructions Urgentes", information: "Instructions Urgentes", body: ""},
-    {id: 2222,name: "Reports de rdv", information: "Reports de rdv", body: ""},
-    {id: 3333,name: "Modifications de plannings", information: "Modifications de plannings", body: ""},
-    {id: 4444,name: "Instructions diverses", information: "Instructions diverses", body: ""},
+    { id: 1111, name: "Instructions Urgentes", information: "Instructions Urgentes", body: "" },
+    { id: 2222, name: "Reports de rdv", information: "Reports de rdv", body: "" },
+    { id: 3333, name: "Modifications de plannings", information: "Modifications de plannings", body: "" },
+    { id: 4444, name: "Instructions diverses", information: "Instructions diverses", body: "" },
   ];
   constructor(
     private globalService: GlobalService,
@@ -63,6 +66,7 @@ export class SendMessageComponent implements OnInit {
     public route: ActivatedRoute,
     notifierService: NotifierService,
     private documentService: MyDocumentsService,
+    private patientService: MyPatientsService,
     private spinner: NgxSpinnerService
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
@@ -102,8 +106,8 @@ export class SendMessageComponent implements OnInit {
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.getSecretaryPracticians().subscribe((value) => {
-        let list = [];
         value.forEach((item) => {
+          item.type = "CONTACT_PRO"
           if (item.photo) {
             this.documentService.downloadFile(item.photo).subscribe(
               (response) => {
@@ -120,15 +124,18 @@ export class SendMessageComponent implements OnInit {
           } else {
             item.img = this.avatars.doctor;
           }
-          list.push(item);
+          this.forFieldList.push(item);
         });
-        this.forList.next(list);
+        this.forList.next(this.forFieldList);
       }
       );
     }
+    this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => { });
+    this.featureService.setIsMessaging(false);
+
   }
 
   getAllContactsPractician() {
@@ -152,7 +159,97 @@ export class SendMessageComponent implements OnInit {
         );
     }
   }
+  getAllPatientFilesByPracticianId() {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      this.patientService
+        .getAllPatientFilesByPracticianId(this.featureService.getUserId())
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((patientFiles) => {
+          let list = [];
+          patientFiles.forEach((item) => {
+            if (item.photoId) {
+              this.documentService.downloadFile(item.photo).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    item.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  if (item?.civility == "MME") {
+                    item.img = this.avatars.women;
+                  }
+                  else {
+                    if (item?.civility == "CHILD") {
+                      item.img = this.avatars.child
+                    }
+                    else item.img = this.avatars.man;
+                  }
+                }
+              );
+            } else {
+              if (item?.civility == "MME") {
+                item.img = this.avatars.women;
+              }
+              else {
+                if (item?.civility == "CHILD") {
+                  item.img = this.avatars.child
+                }
+                else item.img = this.avatars.man;
+              }
+            }
+            list.push(item);
+          });
+          this.forList.next(list);
+        }
+        );
+    }
+    else {
+      if (this.selectedPracticianId) {
+        this.patientService
+          .getAllPatientFilesByPracticianId(this.selectedPracticianId)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((patientFiles) => {
+            let list = [];
+            patientFiles.forEach((item) => {
+              item.type = "PATIENT_FILE"
+              if (item.photoId) {
+                this.documentService.downloadFile(item.photo).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      item.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    if (item?.civility == "MME") {
+                      item.img = this.avatars.women;
+                    }
+                    else {
+                      item.img = this.avatars.man;
+                    }
+                  }
+                );
+              } else {
+                if (item?.civility == "MME") {
+                  item.img = this.avatars.women;
+                }
+                else {
+                  item.img = this.avatars.man;
+                }
+              }
+              list.push(item);
+            });
+            this.concernList.next(list);
+          }
+          );
+      }
+    }
 
+
+  }
   parseContactsPractician(contactsPractician) {
     let myList = [];
     contactsPractician.forEach((contactPractician) => {
@@ -263,7 +360,7 @@ export class SendMessageComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((requestTypes: any) => {
-          this.practicianObjectList = requestTypes.map(e =>  {return {"id": e.id, "title": e.object, "name": e.object, "destination": e.destination, "allowDocument": e.allowDocument, "body": ""}});
+          this.practicianObjectList = requestTypes.map(e => { return { "id": e.id, "title": e.object, "name": e.object, "destination": e.destination, "allowDocument": e.allowDocument, "body": "" } });
         })
       );
   }
@@ -280,12 +377,29 @@ export class SendMessageComponent implements OnInit {
         newMessage.ccReceivers.push({ receiverId: cc.id });
       })
       : null;
-
-    newMessage.sender = {
-      senderId: this.featureService.getUserId(),
-      originalSenderId: this.featureService.getUserId(),
-      sendedForId: message.for && message.for.id ? message.for.id : null,
-    };
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sentForPatientFile: message.for && message.for[0] ? message.for[0].id : null,
+        senderForCivility: message.for && message.for[0] ? message.for[0]?.civility : null,
+        senderForPhotoId: message.for && message.for[0] ? message.for[0]?.photoId : null,
+        senderForfullName: message.for && message.for[0] ? message.for[0]?.fullName : null
+      };
+    }
+    else {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sendedForId: message.for && message.for[0] ? message.for[0].id : null
+      }
+      if (message.concerns && message.concerns[0]) {
+        newMessage.sender.concernsId = message.concerns && message.concerns[0] ? message.concerns[0].id : null;
+        newMessage.sender.concernsCivility = message.concerns && message.concerns[0] ? message.concerns[0]?.civility : null;
+        newMessage.sender.concernsPhotoId = message.concerns && message.concerns[0] ? message.concerns[0]?.photoId : null;
+        newMessage.sender.concernsFullName = message.concerns && message.concerns[0] ? message.concerns[0]?.fullName : null;
+      };
+    }
     message.object != "" &&
       message.object[0].name.toLowerCase() !=
       this.globalService.messagesDisplayScreen.other
@@ -370,7 +484,55 @@ export class SendMessageComponent implements OnInit {
       } else {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "OTHER");
       }
-      this.objectsList.push({"id": 0, "title": "Autre", "name": "Autre", "destination": "Autre"})
+      this.objectsList.push({ "id": 0, "title": "Autre", "name": "Autre", "destination": "Autre" });
+      if (this.localSt.retrieve("role") == "SECRETARY" && event.to.length == 1) {
+        let selectedPractician = event.to[0].id;
+        this.patientService
+          .getAllPatientFilesByPracticianId(selectedPractician)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((patientFiles) => {
+            let list = [];
+            patientFiles.forEach((item) => {
+              item.type = "PATIENT_FILE"
+              if (item.photoId) {
+                this.documentService.downloadFile(item.photo).subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      item.img = myReader.result;
+                    };
+                    let ok = myReader.readAsDataURL(response.body);
+                  },
+                  (error) => {
+                    if (item?.civility == "MME") {
+                      item.img = this.avatars.women;
+                    }
+                    else {
+                      item.img = this.avatars.man;
+                    }
+                  }
+                );
+              } else {
+                if (item?.civility == "MME") {
+                  item.img = this.avatars.women;
+                }
+                else {
+                  item.img = this.avatars.man;
+                }
+              }
+              list.push(item);
+            });
+            this.concernList.next(list);
+          }
+          );
+
+      }
+    }
+    else {
+      if (this.localSt.retrieve("role") == "SECRETARY" && this.selectedPracticianId == null) {
+        let list = []
+        this.concernList.next(list);
+      }
     }
   }
 
@@ -383,28 +545,28 @@ export class SendMessageComponent implements OnInit {
         objectId: selectedObj.id
       }
       selectedObj.requestDto = objectDto;
-      let newData = {id: selectedObj.id, name: selectedObj.title, body: null, file: null};
+      let newData = { id: selectedObj.id, name: selectedObj.title, body: null, file: null };
       const body = this.requestTypeService.getObjectBody(objectDto).pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((resBody: any) => {
-        newData.body = resBody.body;
-      }));
+        .pipe(
+          tap((resBody: any) => {
+            newData.body = resBody.body;
+          }));
       if (selectedObj.allowDocument) {
         const doc = this.requestTypeService.getDocument(objectDto).pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((response: any) => {
-          const blob = new Blob([response.body]);
-          var fileOfBlob = new File([blob], selectedObj.title + '.pdf');
-          newData.file = fileOfBlob;
-      }));
-      forkJoin(body, doc)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => { this.selectedObject.next(newData);});
+          .pipe(
+            tap((response: any) => {
+              const blob = new Blob([response.body]);
+              var fileOfBlob = new File([blob], selectedObj.title + '.pdf');
+              newData.file = fileOfBlob;
+            }));
+        forkJoin(body, doc)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((res) => { this.selectedObject.next(newData); });
       }
       else {
         forkJoin(body)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => { this.selectedObject.next(newData);});
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((res) => { this.selectedObject.next(newData); });
       }
       //this.selectedObject.next(result);
       //this.openDialog(selectedObj);

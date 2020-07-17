@@ -6,6 +6,7 @@ import { LocalStorageService } from "ngx-webstorage";
 import { Location } from "@angular/common";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from '@app/core/services/global.service';
+import {FeaturesService} from '@app/features/features.service';
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -30,6 +31,7 @@ export class PracticianDetailComponent implements OnInit {
     private localSt: LocalStorageService,
     private _location: Location,
     private documentService: MyDocumentsService,
+    private featureService: FeaturesService,
     private globalService: GlobalService
   ) {
     this.avatars = this.globalService.avatars;
@@ -42,6 +44,7 @@ export class PracticianDetailComponent implements OnInit {
       this.isMyFAvorite(params["id"]);
       this.getPractician(params["id"]);
     });
+    this.featureService.setIsMessaging(false);
   }
   getPractician(id) {
     this.practicianDetailService

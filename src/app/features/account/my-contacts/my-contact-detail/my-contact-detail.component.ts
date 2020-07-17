@@ -57,6 +57,7 @@ export class MyContactDetailComponent implements OnInit {
         this.action = "add";
       }
     });
+    this.featureService.setIsMessaging(false);
   }
   getContactById(id) {
     this.service.getContactBookBy(id).subscribe((contact) => {

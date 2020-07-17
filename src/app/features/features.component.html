@@ -16,6 +16,7 @@
   [practicianInbox]="myPracticians"
   (practicianInboxEvent)="displayInboxOfPracticiansAction($event)"
   [inboxNumber]="inboxNumber"
+  [forwardedNumber]="featuresService.numberOfForwarded"
   [archieveNumber]="featuresService.numberOfArchieve"
   [acceptedNumber]="featuresService.numberOfAccepted"
   [pendingNumber]="numberOfPending"
@@ -25,6 +26,7 @@
   (inboxEvent)="displayInboxAction()"
   (sendEvent)="displaySendAction()"
   (sentEvent)="displaySentAction()"
+  (forwardedEvent)="displayForwardedAction()"
   (archieveEvent)="displayArchieveAction()"
   (myPatientsEvent)="displayMyPatientsAction($event)"
   (myProContactsEvent)="displayMyMedicalsAction()"
@@ -36,5 +38,5 @@
 <section class="main-container" [ngClass]="{ collapsed: collapedSideBar }">
   <!-- components will be implemented here -->
   <router-outlet></router-outlet>
-  <app-new-message-mobile></app-new-message-mobile>
+  <app-new-message-mobile *ngIf="messaging === true"></app-new-message-mobile>
 </section>

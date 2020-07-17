@@ -44,7 +44,9 @@ export class MessagingReplyComponent implements OnInit {
   private readonly notifier: NotifierService;
   refuseResponse = false;
   acceptResponse = false;
+  forwardedResponse = false;
   objectsList = [];
+  toList = new BehaviorSubject(null);
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
   constructor(
     private _location: Location,
@@ -73,6 +75,9 @@ export class MessagingReplyComponent implements OnInit {
         this.refuseResponse = true;
       } else if(params["status"] && params["status"] == "accept") {
         this.acceptResponse = true
+      } else if (params["context"] && params["context"] == "forward") {
+        this.forwardedResponse = true;
+        this.getForwardToList();
       }
     });
     this.route.params.subscribe((params) => {
@@ -80,7 +85,20 @@ export class MessagingReplyComponent implements OnInit {
       this.messagingDetail = this.route.snapshot.data.messagingdetail;
       this.getMessageDetailById(this.idMessage);
     });
+    this.featureService.setIsMessaging(true);
   }
+
+  getForwardToList() {
+    this.messagingDetailService
+      .getTlsSecretaryList().pipe(takeUntil(this._destroyed$))
+      .subscribe(list => {
+        list.forEach((receiver) => {
+          this.loadPhoto(receiver);
+        });
+        this.toList.next(list);
+      })
+    }
+
 
   getMessageDetailById(id) {
     this.messagingDetailService
@@ -95,9 +113,6 @@ export class MessagingReplyComponent implements OnInit {
         });
         this.getResponseBody(message);
         message.hasFiles = false;
-        // if (this.refuseResponse) {
-        //   message.object = [];
-        // }
         message.body = "";
         this.messagingDetail = message;
         this.messagingDetail.toReceivers.forEach((receiver) => {
@@ -217,6 +232,12 @@ export class MessagingReplyComponent implements OnInit {
           this.bodyObs.next(resp.body);
         })
       }
+      if (this.forwardedResponse) {
+        requestDto.websiteOrigin = "TLS";
+        this.messagingDetailService.getAcceptRequest(requestDto).subscribe(resp => {
+          this.bodyObs.next(resp.body);
+        })
+      }
     }
   }
 
@@ -231,6 +252,10 @@ export class MessagingReplyComponent implements OnInit {
     replyMessage.parent = parent;
     replyMessage.body = message.body;
     replyMessage.object = message.object;
+    if (message.requestTypeId && message.requestTitleId) {
+      replyMessage.requestTypeId = message.requestTypeId;
+      replyMessage.requestTitleId = message.requestTitleId;
+    }
     let sendedFor = null;
     if (!this.isMyMessage) {
       sendedFor =
@@ -243,10 +268,18 @@ export class MessagingReplyComponent implements OnInit {
       senderId: this.featureService.getUserId(),
       originalSenderId: this.featureService.getUserId(),
       sendedForId: sendedFor,
+      forwarded: this.forwardedResponse
     };
-    replyMessage.toReceivers = [
-      { receiverId: message.sender.senderId, seen: 0 },
-    ];
+    if (this.forwardedResponse) {
+      replyMessage.toReceivers = [
+        { receiverId: message.trReceiver[0].id, seen: 0 },
+      ];
+    } else {
+      replyMessage.toReceivers = [
+        { receiverId: message.sender.senderId, seen: 0 },
+      ];
+    }
+
 
     if (message.file !== undefined) {
       this.selectedFiles = message.file;
@@ -266,6 +299,9 @@ export class MessagingReplyComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (message) => {
+            if (this.forwardedResponse) {
+              this.featureService.numberOfForwarded = this.featureService.numberOfForwarded + 1;
+            }
             this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
@@ -288,6 +324,9 @@ export class MessagingReplyComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (message) => {
+            if (this.forwardedResponse) {
+              this.featureService.numberOfForwarded = this.featureService.numberOfForwarded + 1;
+            }
             this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {

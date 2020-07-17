@@ -89,6 +89,7 @@ export class PersonalInformationsComponent implements OnInit {
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   ngOnInit(): void {
+    this.featureService.setIsMessaging(false);
     this.passwordSubmitted = false;
     this.getAllSpeciality();
     this.getjobTitles();

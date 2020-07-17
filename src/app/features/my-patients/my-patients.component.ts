@@ -116,6 +116,7 @@ export class MyPatientsComponent implements OnInit {
         }
       }
     });
+    this.featureService.setIsMessaging(false);
   }
 
   markNotificationsAsSeen() {

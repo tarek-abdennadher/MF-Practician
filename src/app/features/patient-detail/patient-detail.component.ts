@@ -53,6 +53,7 @@ export class PatientDetailComponent implements OnInit {
   linkedPatients = new Subject();
   linkedPatientList = [];
   userRole: string;
+  isPatientFile = false;
   private readonly notifier: NotifierService;
   avatars: {
     doctor: string;
@@ -96,14 +97,13 @@ export class PatientDetailComponent implements OnInit {
       this.practicianId = this.featureService.selectedPracticianId;
     }
     this.route.params.subscribe((params) => {
-      this.patientId = params["idAccount"];
       this.patientFileId = params["idAccount"];
     });
     forkJoin(
       this.getPatientFile(),
-      this.getCategories(),
-      this.getLinkedPatients()
+      this.getCategories()
     ).subscribe((res) => { });
+    this.featureService.setIsMessaging(false);
   }
 
   getPatientFile() {
@@ -113,6 +113,20 @@ export class PatientDetailComponent implements OnInit {
       .pipe(
         tap((patientFile) => {
           this.patientFile.next(patientFile);
+          if (patientFile.patientId) {
+            this.patientId = patientFile.patientId;
+            this.isPatientFile = true;
+            this.patientService
+              .getPatientsByParentId(patientFile.patientId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((res) => {
+                res.forEach((elm) => {
+                  this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+                });
+                this.linkedPatients.next(this.linkedPatientList);
+              }
+              );
+          }
           this.bottomText =
             patientFile?.firstName + " " + patientFile?.lastName;
           if (patientFile?.photoId) {
@@ -136,7 +150,10 @@ export class PatientDetailComponent implements OnInit {
             if (patientFile?.civility == "MME") {
               this.imageSource = this.avatars.women;
             } else {
-              this.imageSource = this.avatars.man;
+              if (patientFile?.civility == "CHILD") {
+                this.imageSource = this.avatars.child
+              }
+              else this.imageSource = this.avatars.man
             }
           }
           if (patientFile?.practicianPhotoId != null) {
@@ -161,19 +178,6 @@ export class PatientDetailComponent implements OnInit {
       );
   }
 
-  getLinkedPatients() {
-    return this.patientService
-      .getPatientsByParentId(this.patientId)
-      .pipe(takeUntil(this._destroyed$))
-      .pipe(
-        tap((res) => {
-          res.forEach((elm) => {
-            this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-          });
-          this.linkedPatients.next(this.linkedPatientList);
-        })
-      );
-  }
   mappingLinkedPatients(patient) {
     const linkedPatients = new MyPatients();
     linkedPatients.fullInfo = patient;

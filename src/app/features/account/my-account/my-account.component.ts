@@ -31,6 +31,7 @@ export class MyAccountComponent implements OnInit {
   public userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.getOptionById();
+    this.featureService.setIsMessaging(false);
   }
 
   BackButton() {

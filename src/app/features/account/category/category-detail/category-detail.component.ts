@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { CategoryService } from "@app/features/services/category.service";
+import {FeaturesService} from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-category-detail",
@@ -25,7 +26,8 @@ export class CategoryDetailComponent implements OnInit {
     private contactsService: ContactsService,
     public router: Router,
     private route: ActivatedRoute,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -36,6 +38,7 @@ export class CategoryDetailComponent implements OnInit {
       this.selectedCategoryId = params["id"];
       this.initInfoForm();
     });
+    this.featureService.setIsMessaging(false);
   }
 
   close() {

@@ -14,7 +14,9 @@
   [isReply]="true"
   [senderRolePatient]="messagingDetail.sender.role == 'PATIENT'"
   [objectsList]="objectsList"
+  [toList]="toList"
   [refuseResponse]="false"
+  [forwardedResponse]="forwardedResponse"
   (sendAction)="replyMessage($event)"
 ></lib-hlsMessagingDetail>
 <notifier-container></notifier-container>

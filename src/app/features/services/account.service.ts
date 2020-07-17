@@ -92,9 +92,11 @@ export class AccountService {
     content: "Message",
     docBody: "Corps du document",
     docModel: "Modèle de document",
-    allowDocument: "Autorise un objet libre ?",
+    allowDocument: "Génération automatique d’un document",
     select_object: "Selectionnez un objet",
-    title: "Model de document"
+    title: "Model de document",
+    info: "Vous pouvez à partir de cet onglet, définir tous vos types objets qui vous servirons lors de la rédaction d'un message.",
+    add_Object: "Ajouter un objet"
   };
   public errors = {
     required: "Le champ est obligatoire",

@@ -83,6 +83,7 @@ export class AddPatientComponent implements OnInit {
       this.practicianId = this.featureService.selectedPracticianId;
     }
     forkJoin(this.getCategories()).subscribe((res) => { });
+    this.featureService.setIsMessaging(false);
   }
   getCategories() {
     return this.categoryService

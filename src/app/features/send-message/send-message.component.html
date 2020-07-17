@@ -1,24 +1,10 @@
-<lib-hlsLinks
-  [links]="links"
-  [page]="page"
-  [topText]="topText"
-  [backButton]="backButton"
-  (backButtonAction)="goToBack()"
-></lib-hlsLinks>
-<lib-hls-send-message
-  [imageSource]="imageSource"
-  [connectedUserType]="connectedUserType"
-  [connectedUser]="connectedUser"
-  [toList]="toList"
-  [forList]="forList"
-  [objectsList]="objectsList"
-  [selectedObject]="selectedObject"
-  [imagedropdown]="imageDropdown"
-  (sendEmailAction)="sendMessage($event)"
-  (addProContactAction)="addProContactAction()"
-  (toListAction)= "getSelectedToList($event)"
-  (objectAction) ="objectSelection($event)"
-></lib-hls-send-message>
+<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [backButton]="backButton"
+  (backButtonAction)="goToBack()"></lib-hlsLinks>
+<lib-hls-send-message [imageSource]="imageSource" [connectedUserType]="connectedUserType"
+  [connectedUser]="connectedUser" [toList]="toList" [forList]="forList" [concernList]="concernList"
+  [objectsList]="objectsList" [selectedObject]="selectedObject" [imagedropdown]="imageDropdown"
+  (sendEmailAction)="sendMessage($event)" (addProContactAction)="addProContactAction()"
+  (toListAction)="getSelectedToList($event)" (objectAction)="objectSelection($event)"></lib-hls-send-message>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
@@ -30,6 +16,7 @@
   <div class="card" id="card-gif">
     <div class="card-body">
       <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'">
-      <p class="loading">Envoi du message en cours...</p>    </div>
+      <p class="loading">Envoi du message en cours...</p>
+    </div>
   </div>
 </ngx-spinner>
