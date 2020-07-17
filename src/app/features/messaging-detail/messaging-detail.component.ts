@@ -277,6 +277,36 @@ export class MessagingDetailComponent implements OnInit {
             }
 
           }
+          if (this.messagingDetail.sender.concernsPhotoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.concernsPhotoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.forImg = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.concernsImg = this.avatars.user;
+                }
+              );
+          } else {
+            if (this.messagingDetail.sender.senderForCivility == "M") {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.man;
+            } else if (this.messagingDetail.sender.senderForCivility == "MME") {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.women;
+            } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.child;
+            } else {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.doctor;
+            }
+          }
         });
     } else {
       this.messagingDetailService
@@ -437,7 +467,36 @@ export class MessagingDetailComponent implements OnInit {
               this.messagingDetail.sender.forImg =
                 this.avatars.doctor;
             }
-
+          }
+          if (this.messagingDetail.sender.concernsPhotoId) {
+            this.documentService
+              .downloadFile(this.messagingDetail.sender.concernsPhotoId)
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.forImg = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                (error) => {
+                  this.messagingDetail.sender.concernsImg = this.avatars.user;
+                }
+              );
+          } else {
+            if (this.messagingDetail.sender.senderForCivility == "M") {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.man;
+            } else if (this.messagingDetail.sender.senderForCivility == "MME") {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.women;
+            } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.child;
+            } else {
+              this.messagingDetail.sender.concernsImg =
+                this.avatars.doctor;
+            }
           }
         });
     }
