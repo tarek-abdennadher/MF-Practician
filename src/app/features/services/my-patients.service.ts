@@ -229,4 +229,10 @@ export class MyPatientsService {
       this.globalService.url.patientFile + "all/" + practicianId
     );
   }
+  getAccountIdByPatientId(accountId: number) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patient + "account/" + accountId
+    );
+  }
 }

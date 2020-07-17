@@ -53,6 +53,7 @@ export class PatientDetailComponent implements OnInit {
   linkedPatients = new Subject();
   linkedPatientList = [];
   userRole: string;
+  isPatientFile = false;
   private readonly notifier: NotifierService;
   avatars: {
     doctor: string;
@@ -96,7 +97,6 @@ export class PatientDetailComponent implements OnInit {
       this.practicianId = this.featureService.selectedPracticianId;
     }
     this.route.params.subscribe((params) => {
-      this.patientId = params["idAccount"];
       this.patientFileId = params["idAccount"];
     });
     forkJoin(
@@ -114,6 +114,8 @@ export class PatientDetailComponent implements OnInit {
         tap((patientFile) => {
           this.patientFile.next(patientFile);
           if (patientFile.patientId) {
+            this.patientId = patientFile.patientId;
+            this.isPatientFile = true;
             this.patientService
               .getPatientsByParentId(patientFile.patientId)
               .pipe(takeUntil(this._destroyed$))
