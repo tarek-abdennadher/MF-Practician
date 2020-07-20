@@ -144,7 +144,6 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
-        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -186,7 +185,6 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
-        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -205,7 +203,6 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
-        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -240,7 +237,6 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
-        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -274,7 +270,6 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
-        this.searchAutoComplete();
         this.filtredPatients = this.myPatients;
       });
   }
@@ -428,7 +423,7 @@ export class MyPatientsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe((resp) => {});
+            .subscribe((resp) => { });
         }
       });
   }
@@ -525,54 +520,6 @@ export class MyPatientsComponent implements OnInit {
           }
         }
       }
-    }
-  }
-  searchAutoComplete() {
-    if (
-      !this.featuresService.initialSearch ||
-      (this.featuresService.initialSearch && !this.atcObj["isRendered"])
-    ) {
-      this.featuresService.initialSearch = true;
-      this.atcObj = null;
-      const myPatients = [];
-      this.myPatients.forEach((p) => {
-        const patient = new PatientSerch();
-        patient.fullName = p.users[0].fullName;
-        patient.img = p.users[0].img;
-        patient.photoId = p.photoId;
-        myPatients.push(patient);
-      });
-      myPatients.forEach((user) => {
-        if (user.photoId) {
-          this.documentService.downloadFile(user.photoId).subscribe(
-            (response) => {
-              let myReader: FileReader = new FileReader();
-              myReader.onloadend = (e) => {
-                user.img = myReader.result;
-              };
-              let ok = myReader.readAsDataURL(response.body);
-            },
-            (error) => {
-              user.img = this.avatars.user;
-            }
-          );
-        }
-      });
-      this.atcObj = new AutoComplete({
-        dataSource: myPatients,
-        fields: { value: "fullName" },
-        itemTemplate:
-          "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
-          '<span class="country"> ${fullName} </span>',
-        placeholder: "Nom, prénom",
-        popupHeight: "450px",
-        highlight: true,
-        suggestionCount: 5,
-        noRecordsTemplate: "Aucune données trouvé",
-        sortOrder: "Ascending",
-      });
-      this.atcObj.appendTo("#patients");
-      this.atcObj.showSpinner();
     }
   }
   getMyCategories() {
