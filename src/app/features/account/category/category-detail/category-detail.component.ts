@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { CategoryService } from "@app/features/services/category.service";
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-category-detail",
@@ -81,18 +81,18 @@ export class CategoryDetailComponent implements OnInit {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate([`compte/mes-categories/`]);
+        this.router.navigate(["mes-categories"]);
       });
     } else {
       this.categoryService.updateCategory(model).subscribe((res) => {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate([`compte/mes-categories/`]);
+        this.router.navigate(["mes-categories"]);
       });
     }
   }
   cancel() {
-    this.router.navigate(["/compte/mes-categories"]);
+    this.router.navigate(["mes-categories"]);
   }
 }
