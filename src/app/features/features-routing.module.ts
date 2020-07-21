@@ -17,9 +17,12 @@ import { PracticianInvitationComponent } from "./practician-invitation/practicia
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
-import { data } from "jquery";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
-import { ForwardedMessagesComponent } from './forwarded-messages/forwarded-messages.component';
+import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
+import { CategoryComponent } from "./account/category/category.component";
+import { CategoryDetailComponent } from "./account/category/category-detail/category-detail.component";
+import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
+import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
 
 const routes: Routes = [
   {
@@ -113,6 +116,22 @@ const routes: Routes = [
       {
         path: "praticien-invitation",
         component: PracticianInvitationComponent,
+      },
+      {
+        path: "mes-categories",
+        component: CategoryComponent,
+      },
+      {
+        path: "mes-categories/:id",
+        component: CategoryDetailComponent,
+      },
+      {
+        path: "mes-objets",
+        component: PracticianObjectsComponent,
+      },
+      {
+        path: "mes-objets/:id",
+        component: PracticianObjectDetailComponent,
       },
     ],
   },

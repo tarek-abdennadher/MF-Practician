@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { CategoryService } from "@app/features/services/category.service";
-import { FeaturesService } from '@app/features/features.service';
+import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-practician-object-detail",
@@ -28,7 +28,7 @@ export class PracticianObjectDetailComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute,
     private categoryService: CategoryService,
-    private featureService: FeaturesService,
+    private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -58,7 +58,6 @@ export class PracticianObjectDetailComponent implements OnInit {
       documentModelId: new FormControl(null),
       accountId: new FormControl(null),
       originalCloneId: new FormControl(null),
-
     });
     if (this.selectedCategoryId != "add") {
       this.accountService
@@ -71,7 +70,7 @@ export class PracticianObjectDetailComponent implements OnInit {
             destination: object.destination,
             allowDocument: object.allowDocument,
             docBody: object?.docBody,
-            documentModelId: object?.documentModel?.id ,
+            documentModelId: object?.documentModel?.id,
             accountId: object?.accountId,
             originalCloneId: object?.originalCloneId,
           });
@@ -83,13 +82,13 @@ export class PracticianObjectDetailComponent implements OnInit {
   }
 
   getAllDocumentModel() {
-    this.accountService.getAllDocumentModel().subscribe(res => {
+    this.accountService.getAllDocumentModel().subscribe((res) => {
       this.documentModelList = res;
-    })
+    });
   }
 
   setRequiredValidatorDocument() {
-    if(this.ctr.allowDocument.value == true) {
+    if (this.ctr.allowDocument.value == true) {
       this.ctr.docBody.setValidators(Validators.required);
       this.ctr.docBody.updateValueAndValidity();
       this.ctr.documentModelId.setValidators(Validators.required);
@@ -115,18 +114,18 @@ export class PracticianObjectDetailComponent implements OnInit {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate([`compte/mes-objets/`]);
+        this.router.navigate(["compte/mes-objets"]);
       });
     } else {
       this.accountService.updatePracticianObject(model).subscribe((res) => {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate([`compte/mes-objets/`]);
+        this.router.navigate(["mes-objets"]);
       });
     }
   }
   cancel() {
-    this.router.navigate(["/compte/mes-objets"]);
+    this.router.navigate(["mes-objets"]);
   }
 }

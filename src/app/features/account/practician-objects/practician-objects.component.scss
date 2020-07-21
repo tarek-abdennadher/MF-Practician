@@ -1,6 +1,6 @@
-$color-helssy-blue: #1A56A7;
-$color-helssy-grey: #6E819B;
-$color-white: #FFFFFF;
+$color-helssy-blue: #1a56a7;
+$color-helssy-grey: #6e819b;
+$color-white: #ffffff;
 $helssy-grey: #6e819bd4;
 $input-color: #f1f1f1;
 .title {
@@ -13,9 +13,8 @@ $input-color: #f1f1f1;
   i,
   hr {
     margin-left: 10px;
-
   }
-  i{
+  i {
     font-size: 17px;
   }
   span {
@@ -41,16 +40,17 @@ $input-color: #f1f1f1;
   //padding-top: 26px;
 }
 .fa,
-  .far,
-  .fal {
-    font-size: 17px;
-    line-height: 20px;
-  }
-#card{
+.far,
+.fal {
+  font-size: 17px;
+  line-height: 20px;
+}
+#card {
   background-color: white;
   border: 0;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
+  border: none !important;
 }
 
 .col-form-label {
