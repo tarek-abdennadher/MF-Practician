@@ -1,14 +1,36 @@
-<a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
-  role="alert">
+<a
+  *ngIf="showAlert"
+  id="alert"
+  (click)="close()"
+  class="alert alert-success alert-dismissible fade show pointer"
+  role="alert"
+>
   {{ messages.edit_info_success }}
-  <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+  <button
+    type="button"
+    (click)="close()"
+    class="close"
+    data-dismiss="alert"
+    aria-label="Close"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </a>
-<a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
-  class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+<a
+  *ngIf="failureAlert"
+  id="FailureAlert"
+  (click)="close()"
+  class="alert alert-danger alert-dismissible fade show pointer"
+  role="alert"
+>
   {{ messages.phone_error }}
-  <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+  <button
+    type="button"
+    (click)="close()"
+    class="close"
+    data-dismiss="alert"
+    aria-label="Close"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </a>
@@ -16,10 +38,15 @@
 <div class="card">
   <br />
   <div class="row">
-    <div class=" col-md-10 form-group title">
+    <div class="col-md-10 form-group title">
       <hr width="3%" color="#ff0063" align="left" />
-      <i class="far fa-cog my-tab-icon"><span>&nbsp;&nbsp;{{ messages.categories_tab }}</span></i>
+      <i class="far fa-cog my-tab-icon"
+        ><span>&nbsp;&nbsp;{{ messages.categories_tab }}</span></i
+      >
     </div>
+  </div>
+  <div class="col-md-10 form-group info">
+    {{ messages.info2 }}
   </div>
   <br />
   <div class="card-body">
@@ -29,13 +56,22 @@
           <div class="col-6">
             <div class="form-group row">
               <label for="name" class="col-sm-3 col-form-label">{{
-                  labels.last_name
-                }}</label>
+                labels.last_name
+              }}</label>
               <div class="col-sm-9">
-                <input type="text" formControlName="name" class="form-control" id="name" [ngClass]="{
-                      'is-invalid': submitted && ctr.name.errors
-                    }" />
-                <div *ngIf="submitted && ctr.name.errors" class="invalid-feedback">
+                <input
+                  type="text"
+                  formControlName="name"
+                  class="form-control"
+                  id="name"
+                  [ngClass]="{
+                    'is-invalid': submitted && ctr.name.errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.name.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.name.errors.required">
                     {{ labels.required }}
                   </div>
@@ -45,7 +81,7 @@
           </div>
         </div>
       </div>
-      <br>
+      <br />
       <div class="row justify-content-center">
         <button type="submit" class="btn btn-primary mr-2">
           <i class="fal fa-save">&nbsp;&nbsp; {{ labels.validate }}</i>
@@ -56,3 +92,4 @@
       </div>
     </form>
   </div>
+</div>

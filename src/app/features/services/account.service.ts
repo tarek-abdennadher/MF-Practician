@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
-import { Observable } from 'rxjs';
+import { Observable } from "rxjs";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) { }
+  constructor(public router: Router, public globalService: GlobalService) {}
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -77,7 +77,8 @@ export class AccountService {
     validate: "Enregistrer",
     required: "Le champ est obligatoire",
     update_leaves_success: "Dates de congés modifiées avec succès",
-    update_leaves_fail: "Erreur survenue lors de la mise à jour des dates de congés.",
+    update_leaves_fail:
+      "Erreur survenue lors de la mise à jour des dates de congés.",
     is_deleted: " Le compte patient a été désactivé  !",
     personal_info: "Informations personnelles",
     cordonnees: "Coordonnées",
@@ -95,8 +96,11 @@ export class AccountService {
     allowDocument: "Génération automatique d’un document",
     select_object: "Selectionnez un objet",
     title: "Model de document",
-    info: "Vous pouvez à partir de cet onglet, définir tous vos types objets qui vous servirons lors de la rédaction d'un message.",
-    add_Object: "Ajouter un objet"
+    info:
+      "Vous pouvez à partir de cet onglet, définir tous vos types objets qui vous servirons lors de la rédaction d'un message.",
+    add_Object: "Ajouter un objet",
+    info2:
+      "Vous pouvez à partir de cet onglet, définir les catégories des patients",
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -140,8 +144,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-      "/" +
-      encodeURIComponent(pass)
+        "/" +
+        encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {
@@ -213,7 +217,8 @@ export class AccountService {
   }
 
   getPracticianTelesecretary() {
-    return this.globalService.call(RequestType.GET,
+    return this.globalService.call(
+      RequestType.GET,
       this.globalService.url.practician + "tls"
     );
   }
@@ -240,9 +245,11 @@ export class AccountService {
   updateLeavesInOptionByPractician(leaveStartDate, leaveEndDate) {
     return this.globalService.call(
       RequestType.PUT,
-      this.globalService.url.option + "/leaves/" +
-      leaveStartDate + "/" + leaveEndDate
-
+      this.globalService.url.option +
+        "/leaves/" +
+        leaveStartDate +
+        "/" +
+        leaveEndDate
     );
   }
 
@@ -256,21 +263,23 @@ export class AccountService {
   getPracticianObjectById(id) {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.practician_object + "/"+id
+      this.globalService.url.practician_object + "/" + id
     );
   }
 
   createPracticianObject(object) {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.practician_object ,object
+      this.globalService.url.practician_object,
+      object
     );
   }
 
   updatePracticianObject(object) {
     return this.globalService.call(
       RequestType.PUT,
-      this.globalService.url.practician_object ,object
+      this.globalService.url.practician_object,
+      object
     );
   }
 
@@ -298,7 +307,7 @@ export class AccountService {
   clonePracticianObject(id) {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.practician_object + "/cloneToMine/"+id
+      this.globalService.url.practician_object + "/cloneToMine/" + id
     );
   }
 }
