@@ -422,4 +422,11 @@ export class MessagingListService {
       ids
     );
   }
+
+  public getMessagesByPatientFile(patientFileId: number) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "ByPatientFile/" + patientFileId
+    );
+  }
 }
