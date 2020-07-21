@@ -50,6 +50,7 @@ import { CategoryComponent } from "./account/category/category.component";
 import { CategoryDetailComponent } from "./account/category/category-detail/category-detail.component";
 import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
 import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
+import { AccountService } from "./services/account.service";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -145,6 +146,6 @@ const notifierOptions: NotifierOptions = {
     NgApexchartsModule,
   ],
 
-  providers: [MessageService, ContactsService, JobtitlePipe],
+  providers: [MessageService, ContactsService, JobtitlePipe, AccountService],
 })
 export class FeaturesModule {}
