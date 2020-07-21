@@ -124,7 +124,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   private subscribeIsMessaging() {
-    this.featuresService.getIsMessaging().subscribe( (isMessaging) => {
+    this.featuresService.getIsMessaging().subscribe((isMessaging) => {
       this.messaging = isMessaging;
     });
   }
@@ -832,6 +832,12 @@ export class FeaturesComponent implements OnInit {
     return archivedMessage;
   }
   addPatient() {
-    this.router.navigate(["/ajout-patient"]);
+    this.router.navigate(["ajout-patient"]);
+  }
+  myObjects() {
+    this.router.navigate(["mes-objets"]);
+  }
+  myCategories() {
+    this.router.navigate(["mes-categories"]);
   }
 }

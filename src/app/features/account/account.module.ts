@@ -14,20 +14,20 @@ import { HlsPasswordStrengthModule } from "hls-password-strength";
 import { HlsMessagingListModule } from "hls-messaging-list";
 import { SharedModule } from "@app/shared/shared.module";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
-import { CategoryComponent } from './category/category.component';
-import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
-import { PipesModule } from '@app/shared/pipes/pipes.module';
-import { MyContactsComponent } from './my-contacts/my-contacts.component';
-import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
-import { NgxSpinnerModule } from 'ngx-spinner';
-import { NotifierModule, NotifierOptions } from 'angular-notifier';
-import { MyLeavesComponent } from './my-leaves/my-leaves.component';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
-import { ApxPieComponent } from './stats/apx-pie/apx-pie.component';
-import { NgApexchartsModule } from 'ng-apexcharts';
-import { PracticianObjectsComponent } from './practician-objects/practician-objects.component';
-import { PracticianObjectDetailComponent } from './practician-objects/practician-object-detail/practician-object-detail.component';
+import { CategoryComponent } from "./category/category.component";
+import { CategoryDetailComponent } from "./category/category-detail/category-detail.component";
+import { PipesModule } from "@app/shared/pipes/pipes.module";
+import { MyContactsComponent } from "./my-contacts/my-contacts.component";
+import { MyContactDetailComponent } from "./my-contacts/my-contact-detail/my-contact-detail.component";
+import { NgxSpinnerModule } from "ngx-spinner";
+import { NotifierModule, NotifierOptions } from "angular-notifier";
+import { MyLeavesComponent } from "./my-leaves/my-leaves.component";
+import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
+import { MyLeavesGuard } from "./my-leaves/my-leaves.guard";
+import { ApxPieComponent } from "./stats/apx-pie/apx-pie.component";
+import { NgApexchartsModule } from "ng-apexcharts";
+import { PracticianObjectsComponent } from "./practician-objects/practician-objects.component";
+import { PracticianObjectDetailComponent } from "./practician-objects/practician-object-detail/practician-object-detail.component";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -73,15 +73,11 @@ const notifierOptions: NotifierOptions = {
     TeleSecretariesComponent,
     FacturesComponent,
     StatsComponent,
-    CategoryComponent,
-    CategoryDetailComponent,
-    PracticianObjectsComponent,
-    PracticianObjectDetailComponent,
     MyContactsComponent,
     MyContactDetailComponent,
     MyLeavesComponent,
     MyContactDetailComponent,
-    ApxPieComponent
+    ApxPieComponent,
   ],
   imports: [
     FormsModule,
@@ -98,8 +94,8 @@ const notifierOptions: NotifierOptions = {
     NgxSpinnerModule,
     NotifierModule.withConfig(notifierOptions),
     BsDatepickerModule.forRoot(),
-    NgApexchartsModule
+    NgApexchartsModule,
   ],
   providers: [AccountService, MyLeavesGuard],
 })
-export class AccountModule { }
+export class AccountModule {}
