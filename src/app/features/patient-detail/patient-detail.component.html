@@ -13,5 +13,5 @@
   (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
 </lib-hls-patient-file>
 
-<app-messaging-list *ngIf="patientId != null" [isPatientFile]="isPatientFile" [patientId]="patientId">
+<app-messaging-list [isPatientFile]="isPatientFile" [patientId]="patientId" [patientFileId]="patientFileId">
 </app-messaging-list>
