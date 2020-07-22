@@ -101,6 +101,7 @@ export class AccountService {
     add_Object: "Ajouter un objet",
     info2:
       "Vous pouvez à partir de cet onglet, définir les catégories des patients",
+    resp: "Responsable",
   };
   public errors = {
     required: "Le champ est obligatoire",
