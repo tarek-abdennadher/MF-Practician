@@ -543,6 +543,7 @@ export class FeaturesComponent implements OnInit {
     }
   }
   displayInboxOfPracticiansAction(event) {
+    this.localSt.store("practicianId", event);
     this.router.navigate(["/messagerie/" + event]);
   }
 

@@ -12,6 +12,7 @@ import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from '../services/dialog.service';
 import { AccountService } from '../services/account.service';
+import { MyPatientsService } from '../services/my-patients.service';
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -65,7 +66,7 @@ export class MessagingDetailComponent implements OnInit {
     notifierService: NotifierService,
     private localSt: LocalStorageService,
     private dialogService: DialogService,
-    private accountService: AccountService
+    private patientService: MyPatientsService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -647,6 +648,8 @@ export class MessagingDetailComponent implements OnInit {
       });
     }
   }
+
+  // Display patient file using patientid and practician id
   displayPatientFile(idAccount) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       let info = {
@@ -657,18 +660,28 @@ export class MessagingDetailComponent implements OnInit {
       this.getPatientFile(info);
     } else {
       if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
-        this.practicianId = this.messagingDetail.sender.senderId;
+        if (this.messagingDetail.sender.role == "PRACTICIAN") {
+          this.practicianId = this.messagingDetail.sender.senderId;
+        }
+        else {
+          this.practicianId = this.localSt.retrieve("practicianId");
+        }
       } else {
         this.practicianId = this.featureService.selectedPracticianId
       }
-      let info = {
-        patientId: idAccount,
-        practicianId: this.practicianId,
-        userRole: "SECRETARY"
-      }
-      this.getPatientFile(info);
+
+      this.patientService.getAccountIdByPatientId(idAccount).subscribe(res => {
+        let info = {
+          patientId: res ? res : idAccount,
+          practicianId: this.practicianId,
+          userRole: "SECRETARY"
+        }
+        this.getPatientFile(info);
+      })
+
     }
   }
+  // Display patient file using patient file id
   displayForPatientFile(patientFileId) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       let info = {
@@ -681,7 +694,8 @@ export class MessagingDetailComponent implements OnInit {
     else {
       if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
         this.practicianId = this.messagingDetail.sender.senderId;
-      } else {
+      }
+      else {
         this.practicianId = this.featureService.selectedPracticianId
       }
       let info = {
