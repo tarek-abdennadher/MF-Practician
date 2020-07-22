@@ -354,30 +354,22 @@ export class MessagingListComponent implements OnInit {
         if (this.patientFileId) {
           this.messagesServ.getMessagesByPatientFile(this.patientFileId).subscribe(res => {
             this.messages = res;
-            this.messages.sort(function (m1, m2) {
-              return (
-                new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-              );
-            });
-            this.itemsList.push(
-              ...this.messages.map((item) => this.parseMessage(item))
-            );
           });
           if (this.patientId != null) {
             this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
               this.patientAccountId = res;
               this.messages = retrievedMess.filter(
                 (message) => message.sender.senderId == this.patientAccountId);
-              this.messages.sort(function (m1, m2) {
-                return (
-                  new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-                );
-              });
-              this.itemsList.push(
-                ...this.messages.map((item) => this.parseMessage(item))
-              );
             })
           }
+          this.messages.sort(function (m1, m2) {
+            return (
+              new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+            );
+          });
+          this.itemsList.push(
+            ...this.messages.map((item) => this.parseMessage(item))
+          );
           this.filtredItemList = this.itemsList;
           this.topText = this.globalService.messagesDisplayScreen.history
           this.bottomText = ""
