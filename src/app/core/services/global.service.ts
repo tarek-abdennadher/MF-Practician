@@ -109,6 +109,7 @@ export class GlobalService {
     newArchivedMessages: "messages non lus",
     attachedPersonnes: "Personnes Rattachées au patient",
     notes: "Mes notes",
+    history: "Historique des messages"
   };
 
   public avatars = {
