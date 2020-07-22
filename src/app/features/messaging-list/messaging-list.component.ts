@@ -436,6 +436,7 @@ export class MessagingListComponent implements OnInit {
           }
 
           else {
+            this.messages = retrievedMess;
             this.messages.sort(function (m1, m2) {
               return (
                 new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
