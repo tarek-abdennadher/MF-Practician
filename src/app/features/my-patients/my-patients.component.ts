@@ -147,6 +147,11 @@ export class MyPatientsComponent implements OnInit {
     this.featureService.getFilteredPatientsSearch().subscribe(res => {
       if (res == null) {
         this.filtredPatients = [];
+        this.number = this.filtredPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
       } else if (res?.length > 0) {
         let patients = [];
         res.forEach((elm) => {
@@ -155,8 +160,18 @@ export class MyPatientsComponent implements OnInit {
           );
         });
         this.filtredPatients = patients;
+        this.number = this.filtredPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
       } else {
         this.filtredPatients = this.myPatients;
+        this.number = this.filtredPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
       }
     })
   }
