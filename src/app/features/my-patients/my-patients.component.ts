@@ -53,8 +53,6 @@ export class MyPatientsComponent implements OnInit {
     secretary: string;
     user: string;
   };
-  public valueSearch;
-  public valueSearchSelected;
   direction: OrderDirection = OrderDirection.DESC;
 
   constructor(
@@ -69,10 +67,6 @@ export class MyPatientsComponent implements OnInit {
     private featuresService: FeaturesService,
     private categoryService: CategoryService
   ) {
-    this.searchForm = this.formBuilder.group({
-      search: [""],
-    });
-
     this.filterPatientsForm = this.formBuilder.group({
       category: [""],
     });
@@ -90,8 +84,10 @@ export class MyPatientsComponent implements OnInit {
         switch (params["section"]) {
           case "accepted": {
             this.section = "accepted";
+            this.featureService.setActiveChild("patient");
             this.isInvitation = false;
             this.getPatientsOfCurrentParactician(this.pageNo);
+            this.searchPatients()
             break;
           }
           case "pending": {
@@ -147,7 +143,23 @@ export class MyPatientsComponent implements OnInit {
         this.filtredPatients = this.myPatients;
       });
   }
-
+  searchPatients() {
+    this.featureService.getFilteredPatientsSearch().subscribe(res => {
+      if (res == null) {
+        this.filtredPatients = [];
+      } else if (res?.length > 0) {
+        let patients = [];
+        res.forEach((elm) => {
+          patients.push(
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+          );
+        });
+        this.filtredPatients = patients;
+      } else {
+        this.filtredPatients = this.myPatients;
+      }
+    })
+  }
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsOfCurrentParacticianV2(
@@ -344,12 +356,6 @@ export class MyPatientsComponent implements OnInit {
     );
   }
 
-  searchActionClicked() {
-    const filterBy = (<HTMLInputElement>document.getElementById("patients"))
-      .value;
-    this.filtredPatients =
-      filterBy != null ? this.performFilter(filterBy) : this.myPatients;
-  }
 
   writeAction(item) {
     this.router.navigate(["/messagerie-ecrire/"], {
@@ -427,14 +433,6 @@ export class MyPatientsComponent implements OnInit {
         }
       });
   }
-
-  public onFocusInputSearch(value: boolean) {
-    if (value === true && !/\S/.test(this.valueSearch)) {
-      this.valueSearch = null;
-    }
-    this.valueSearchSelected = value;
-  }
-
   refuseAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
