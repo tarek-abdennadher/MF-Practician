@@ -1,5 +1,8 @@
+import { SendType } from '../enmus/send-type';
+
 export class Message {
   public id?: number;
+  public sendType?: SendType | string;
   public body?: string;
   public object?: any;
   public toReceivers?: any;
@@ -10,11 +13,12 @@ export class Message {
   public address?: string;
   public freeObject?: string;
   public uuid?: string;
-  public hasFiles:boolean;
+  public hasFiles: boolean;
 
   constructor();
   constructor(message?: any) {
     this.id = (message && message.id) || "";
+    this.sendType = (message && message.sendType) || SendType.MESSAGING;
     this.body = (message && message.body) || "";
     this.toReceivers = (message && message.toReceivers) || [];
     this.ccReceivers = (message && message.ccReceivers) || [];
@@ -24,6 +28,6 @@ export class Message {
     this.address = (message && message.address) || "";
     this.freeObject = (message && message.freeObject) || "";
     this.uuid = (message && message.uuid) || "";
-    this.hasFiles=(message && message.hasFiles) || false;
+    this.hasFiles = (message && message.hasFiles) || false;
   }
 }
