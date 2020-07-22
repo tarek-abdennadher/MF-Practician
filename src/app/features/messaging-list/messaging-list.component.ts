@@ -377,10 +377,10 @@ export class MessagingListComponent implements OnInit {
                 ...this.messages.map((item) => this.parseMessage(item))
               );
             })
-            this.filtredItemList = this.itemsList;
-            this.number = this.itemsList.length;
-            this.bottomText = this.number > 1 ? this.globalService.messagesDisplayScreen.newMessages : this.globalService.messagesDisplayScreen.newMessage
           }
+          this.filtredItemList = this.itemsList;
+          this.topText = this.globalService.messagesDisplayScreen.history
+          this.bottomText = ""
         }
         else {
           this.messages = retrievedMess;
@@ -429,10 +429,10 @@ export class MessagingListComponent implements OnInit {
                   ...this.messages.map((item) => this.parseMessage(item))
                 );
               })
-              this.filtredItemList = this.itemsList;
-              this.number = this.itemsList.length;
-              this.bottomText = this.number > 1 ? this.globalService.messagesDisplayScreen.newMessages : this.globalService.messagesDisplayScreen.newMessage
             }
+            this.filtredItemList = this.itemsList;
+            this.topText = this.globalService.messagesDisplayScreen.history
+            this.bottomText = ""
           }
 
           else {
