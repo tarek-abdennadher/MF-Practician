@@ -3,7 +3,7 @@ import { AccountService } from "@app/features/services/account.service";
 import { Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "@app/features/services/dialog.service";
-import { FeaturesService } from '@app/features/features.service';
+import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-my-account",
@@ -17,6 +17,7 @@ export class MyAccountComponent implements OnInit {
   backButton = true;
   practicianId: number;
   public showLeaves: boolean = false;
+  public showTls: boolean = false;
   constructor(
     private accountService: AccountService,
     private router: Router,
@@ -26,12 +27,12 @@ export class MyAccountComponent implements OnInit {
   ) {
     this.labels = this.accountService.messages;
     this.practicianId = this.featureService.getUserId();
-
   }
   public userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
-    this.getOptionById();
     this.featureService.setIsMessaging(false);
+    this.getOptionById();
+    this.getTls();
   }
 
   BackButton() {
@@ -44,7 +45,14 @@ export class MyAccountComponent implements OnInit {
   getOptionById() {
     this.accountService.getOptionById(this.practicianId).subscribe((op) => {
       if (op != null && op.activateLeaveAutoMessage) {
-        this.showLeaves = true
+        this.showLeaves = true;
+      }
+    });
+  }
+  getTls() {
+    this.accountService.getPracticianTelesecretary().subscribe((practician) => {
+      if (practician.group != null) {
+        this.showTls = true;
       }
     });
   }
