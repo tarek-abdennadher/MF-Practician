@@ -1,10 +1,27 @@
 <lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [backButton]="backButton"
   (backButtonAction)="goToBack()"></lib-hlsLinks>
-<lib-hls-send-message [imageSource]="imageSource" [connectedUserType]="connectedUserType"
-  [connectedUser]="connectedUser" [toList]="toList" [forList]="forList" [concernList]="concernList"
-  [objectsList]="objectsList" [selectedObject]="selectedObject" [imagedropdown]="imageDropdown"
-  (sendEmailAction)="sendMessage($event)" (addProContactAction)="addProContactAction()"
-  (toListAction)="getSelectedToList($event)" (objectAction)="objectSelection($event)"></lib-hls-send-message>
+<lib-hls-send-message
+  [imageSource]="imageSource"
+  [connectedUserType]="connectedUserType"
+  [connectedUser]="connectedUser"
+  [toList]="toList"
+  [forList]="forList"
+  [concernList]="concernList"
+  [objectsList]="objectsList"
+  [selectedObject]="selectedObject"
+  [imagedropdown]="imageDropdown"
+  [messageTypesList]="sendTypeList"
+  [isCCListVisible]="isCCListVisible"
+  [isFreeObjectVisible]="isFreeObjectVisible"
+  [isObjectSelectVisible]="isObjectSelectVisible"
+  [isMessageTypesVisible]="isTypesVisible"
+  [isInstruction]="isInstruction"
+  (sendEmailAction)="sendMessage($event)"
+  (addProContactAction)="addProContactAction()"
+  (toListAction)="getSelectedToList($event)"
+  (objectAction)="objectSelection($event)"
+  (sendInstructionAction)="sendInstruction($event)"
+  (typeAction)="typeSelection($event)"></lib-hls-send-message>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
