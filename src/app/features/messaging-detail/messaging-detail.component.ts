@@ -316,6 +316,8 @@ export class MessagingDetailComponent implements OnInit {
           this.showRefuseForTls = ((message.sender.role == 'TELESECRETARYGROUP' ||
             message.sender.role == 'TELESECRETARYGROUP') &&
             message.requestTypeId != null && message.requestTitleId != null);
+          this.showAcceptRefuse = ((message.sender.role == 'PATIENT' ) &&
+          message.requestTypeId != null && message.requestTitleId != null);
           this.getAttachements(message.nodesId);
           this.senderRolePatient =
             this.sentContext && message.toReceivers.length == 1
