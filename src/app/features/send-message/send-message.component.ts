@@ -688,7 +688,6 @@ export class SendMessageComponent implements OnInit {
             this.isObjectSelectVisible = true;
             this.isInstruction = true;
             this.objectsList = this.instructionObjectsList;
-            this.toList.next([]);
             this.toList.next([this.practicianTLSGroup]);
             break;
 
