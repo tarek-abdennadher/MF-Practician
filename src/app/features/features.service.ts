@@ -38,6 +38,9 @@ export class FeaturesService {
   public searchArchive = new BehaviorSubject([]);
   public activeChild = new BehaviorSubject("inbox");
 
+  public searchPatientsFiltered = new BehaviorSubject([]);
+  public searchPatients = new BehaviorSubject([]);
+
   public inboxState = new BehaviorSubject(false);
   public sentState = new BehaviorSubject(false);
   public archiveState = new BehaviorSubject(false);
@@ -144,6 +147,22 @@ export class FeaturesService {
 
   setActiveChild(text) {
     this.activeChild.next(text);
+  }
+
+  // patient Search getter and setter
+
+  getSearchPatientsValue() {
+    return this.searchPatients.getValue();
+  }
+  setSearchPatients(list) {
+    this.searchPatients.next(list);
+  }
+  getFilteredPatientsSearch() {
+    return this.searchPatientsFiltered.asObservable();
+  }
+
+  setFilteredPatientsSearch(list) {
+    this.searchPatientsFiltered.next(list);
   }
 
   markAsSeen(obsList, ids) {
