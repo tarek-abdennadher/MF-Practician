@@ -341,6 +341,26 @@ export class PatientDetailComponent implements OnInit {
   cancelAction() {
     this._location.back();
   }
+  sendInvitation() {
+    this.patientService.sendPatientInvitation(this.patientFileId).subscribe(res => {
+      if (res) {
+        this.notifMessage = this.patientService.messages.invitation_success;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      } else {
+        this.notifMessage = this.patientService.errors.failed_invitation;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "error",
+          template: this.customNotificationTmpl,
+        });
+        return;
+      }
+    })
+  }
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();

@@ -13,10 +13,12 @@ export class MyPatientsService {
     failed_update:
       "Erreur survenue lors de la modification de la fiche patient",
     failed_add: "Erreur survenue lors de l'ajout de la fiche patient",
+    failed_invitation: "Erreur survenue lors de l'envoi de l'invitation au patient"
   };
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     add_info_success: "Fiche Patient créée avec succès",
+    invitation_success: "Invitation envoyée avec succès "
   };
 
   getPatientsOfCurrentParactician(
@@ -233,6 +235,12 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patient + "account/" + accountId
+    );
+  }
+  sendPatientInvitation(patientFileId: number) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.patientFile + "sendInvitation/" + patientFileId
     );
   }
 }
