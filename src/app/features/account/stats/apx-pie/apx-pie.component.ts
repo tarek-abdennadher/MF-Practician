@@ -25,7 +25,7 @@ export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
   public emptyData = true;
-  public infoMessage = "Aucune statistique disponible";
+  public infoMessage = "Aucune valeur à afficher";
   public chartOptions: Partial<ChartOptions>;
   public messages: any;
   constructor(
