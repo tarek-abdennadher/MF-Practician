@@ -243,6 +243,8 @@ export class PatientDetailComponent implements OnInit {
   }
   handleResponse = (res) => {
     if (res) {
+      this.bottomText =
+        res?.firstName + " " + res?.lastName;
       this.notifMessage = this.patientService.messages.edit_info_success;
       this.notifier.show({
         message: this.notifMessage,
