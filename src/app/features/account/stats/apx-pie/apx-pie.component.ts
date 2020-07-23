@@ -1,9 +1,13 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
 import { ChartComponent } from "ng-apexcharts";
-import { ApexNonAxisChartSeries, ApexResponsive, ApexChart } from "ng-apexcharts";
+import {
+  ApexNonAxisChartSeries,
+  ApexResponsive,
+  ApexChart,
+} from "ng-apexcharts";
 import { Subject } from "rxjs";
-import { AccountService } from '@app/features/services/account.service';
-import {FeaturesService} from '@app/features/features.service';
+import { AccountService } from "@app/features/services/account.service";
+import { FeaturesService } from "@app/features/features.service";
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -13,16 +17,21 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-apx-pie',
-  templateUrl: './apx-pie.component.html',
-  styleUrls: ['./apx-pie.component.scss']
+  selector: "app-apx-pie",
+  templateUrl: "./apx-pie.component.html",
+  styleUrls: ["./apx-pie.component.scss"],
 })
 export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
+  public emptyData = true;
+  public infoMessage = "Aucune statistique disponible";
   public chartOptions: Partial<ChartOptions>;
   public messages: any;
-  constructor(private accountService: AccountService, private featureService: FeaturesService) {
+  constructor(
+    private accountService: AccountService,
+    private featureService: FeaturesService
+  ) {
     this.messages = this.accountService.stats;
     this.chartOptions = {
       series: [0, 0],
@@ -70,6 +79,11 @@ export class ApxPieComponent implements OnInit {
           },
         ],
       };
+      this.chartOptions.series.forEach((n) => {
+        if (n != 0) {
+          this.emptyData = false;
+        }
+      });
     });
     this.featureService.setIsMessaging(false);
   }
