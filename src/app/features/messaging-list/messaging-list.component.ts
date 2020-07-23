@@ -358,8 +358,8 @@ export class MessagingListComponent implements OnInit {
           if (this.patientId != null) {
             this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
               this.patientAccountId = res;
-              this.messages = retrievedMess.filter(
-                (message) => message.sender.senderId == this.patientAccountId);
+              this.messages.push(...retrievedMess.filter(
+                (message) => message.sender.senderId == this.patientAccountId));
             });
           }
           this.messages.sort(function (m1, m2) {
@@ -402,8 +402,8 @@ export class MessagingListComponent implements OnInit {
             if (this.patientId != null) {
               this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
                 this.patientAccountId = res;
-                this.messages = retrievedMess.filter(
-                  (message) => message.sender.senderId == this.patientAccountId);
+                this.messages.push(...retrievedMess.filter(
+                  (message) => message.sender.senderId == this.patientAccountId));
               })
             }
             this.messages.sort(function (m1, m2) {
