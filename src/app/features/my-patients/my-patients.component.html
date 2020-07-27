@@ -22,7 +22,7 @@
   </form>
 </div>
 <br />
-<div clas="row">
+<div clas="row" *ngIf="section == 'accepted'">
   <button (click)="addPatient()" mat-icon-button class="icon-button add-button" color="primary">
     <mat-icon class="add-icon" fontSet="far" fontIcon="fa-plus"></mat-icon>
   </button>
