@@ -1,3 +1,4 @@
+$color-helssy-blue: #41bddf;
 .form-control {
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #eaeaea;
@@ -118,4 +119,27 @@
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   background-color: #f1f1f1;
   margin-left: -15px;
+}
+.add-icon {
+  font-size: 24px;
+}
+.icon-button,
+.icon-button:active,
+.icon-button:checked,
+.icon-button:enabled,
+.icon-button:hover,
+.icon-button:visited {
+  border: none;
+  outline: none;
+}
+.add-button {
+  margin-right: 30px !important;
+  margin-left: 20px !important;
+}
+::ng-deep .icon-button.add-button:focus{
+  outline: 1px solid $color-helssy-blue !important;
+  color: $color-helssy-blue !important;
+}
+::ng-deep .icon-button.add-button{
+  color: $color-helssy-blue !important;
 }

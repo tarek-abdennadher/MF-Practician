@@ -564,4 +564,7 @@ export class MyPatientsComponent implements OnInit {
     this.pageNo = 0;
     this.filter();
   }
+  addPatient() {
+    this.router.navigate(["ajout-patient"]);
+  }
 }

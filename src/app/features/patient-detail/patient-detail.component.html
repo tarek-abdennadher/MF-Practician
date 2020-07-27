@@ -11,7 +11,7 @@
   [noteimageSource]="noteimageSource" [patient]="patientFile" [categoryList]="categoryList"
   [linkedPatients]="linkedPatients" (submitAction)="submit($event)" (archieveNoteAction)="archieveNote($event)"
   (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole"
-  (sendInvitation)="sendInvitation()">
+  [sentInvitation]="sentInvitation">
 </lib-hls-patient-file>
 
 <app-messaging-list [isPatientFile]="isPatientFile" [patientId]="patientId" [patientFileId]="patientFileId">

@@ -22,6 +22,12 @@
   </form>
 </div>
 <br />
+<div clas="row">
+  <button (click)="addPatient()" mat-icon-button class="icon-button add-button" color="primary">
+    <mat-icon class="add-icon" fontSet="far" fontIcon="fa-plus"></mat-icon>
+  </button>
+</div>
+<br />
 <lib-hlsMessagingList [isCheckbox]="false" [list]="filtredPatients" [imageSource]="imageSource"
   [isInvitationPending]="isInvitation" [isMyPatients]="isMyPatients" (markAsSeenAction)="writeAction($event)"
   (writeAction)="writeAction($event)" (prohibitAction)="prohibitAction($event)" (editAction)="editAction($event)"
