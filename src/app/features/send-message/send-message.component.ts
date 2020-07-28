@@ -34,9 +34,9 @@ export class SendMessageComponent implements OnInit {
   user = this.localSt.retrieve("user");
   role = this.localSt.retrieve("role");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
-  toList: Subject<any[]> = new Subject<any[]>();
-  forList: Subject<any[]> = new Subject<any[]>();
-  concernList: Subject<any[]> = new Subject<any[]>();
+  toList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  forList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  concernList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   forFieldList = [];
   selectedObject = new BehaviorSubject<any>(null);
   objectsList = [];
@@ -58,8 +58,9 @@ export class SendMessageComponent implements OnInit {
   ];
   isTypesVisible: boolean = true;
   isCCListVisible: boolean = true;
+  isForListVisible: boolean = true;
   isFreeObjectVisible: boolean = false;
-  isObjectSelectVisible: boolean = false;
+  isObjectSelectVisible: boolean = this.isSecretary() ? false : true;
   isInstruction: boolean = false;
   practicianTLSGroup: any = null;
   lastSendType: any;
@@ -69,6 +70,7 @@ export class SendMessageComponent implements OnInit {
     { id: SendType.MESSAGING, text: "Messagerie" },
     { id: SendType.SEND_POSTAL, text: "Envoie Postal" }
   ]
+  lastObjectList: any[];
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService,
@@ -426,7 +428,7 @@ export class SendMessageComponent implements OnInit {
       ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
-    if (message.file !== undefined) {
+    if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
 
@@ -498,21 +500,18 @@ export class SendMessageComponent implements OnInit {
       if (type == "MEDICAL") {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "PRACTICIAN" || item.destination == "OTHER");
       } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
-
         if (this.isInstruction) {
           this.objectsList = this.instructionObjectsList;
         } else {
           this.objectsList = this.practicianObjectList.filter(item => item.destination == "SECRETARY" || item.destination == "OTHER");
         }
-
-        this.objectsList = this.practicianObjectList.filter(item => item.destination == "SECRETARY" || item.destination == "OTHER");
       } else if (type == "PATIENT") {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "PATIENT" || item.destination == "OTHER");
       } else {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "OTHER");
       }
       const objectListContainsOther = this.objectsList.findIndex(obj => obj.id == 0 && obj.title == "Autre") !== -1;
-      if (!objectListContainsOther) {
+      if (!objectListContainsOther && !this.isInstruction) {
         this.objectsList.push({ "id": 0, "title": "Autre", "name": "Autre", "destination": "Autre" })
       }
       if (this.localSt.retrieve("role") == "SECRETARY" && event.to.length == 1) {
@@ -557,6 +556,8 @@ export class SendMessageComponent implements OnInit {
           );
 
       }
+
+      this.lastObjectList = this.objectsList;
     }
     else {
       if (this.localSt.retrieve("role") == "SECRETARY" && this.selectedPracticianId == null) {
@@ -571,7 +572,7 @@ export class SendMessageComponent implements OnInit {
     if (selectedObj && selectedObj.title != "autre") {
       const objectDto = {
         senderId: this.featureService.getUserId(),
-        receiverId: item.to[0].id,
+        receiverId: item.to && item.to[0] && item.to[0].id,
         objectId: selectedObj.id
       }
       selectedObj.requestDto = objectDto;
@@ -629,7 +630,7 @@ export class SendMessageComponent implements OnInit {
           const groupValue = group.group;
           this.getInstructionObjectListByTLSGroupId(groupValue.id);
           let item = {
-            id: groupValue.id,
+            id: groupValue.accountId,
             fullName: groupValue.title,
             isSelected: true,
             img: null,
@@ -668,25 +669,30 @@ export class SendMessageComponent implements OnInit {
           case SendType.MESSAGING:
             this.isTypesVisible = true;
             this.isCCListVisible = true;
-            this.isFreeObjectVisible = false;
-            this.isObjectSelectVisible = true;
+            this.isForListVisible = true;
+            this.isFreeObjectVisible = this.isOtherObject() ? true : false;
+            this.isObjectSelectVisible = this.isSecretary() ? false : true;
             this.isInstruction = false;
+            this.objectsList = this.lastObjectList;
             this.toList.next(this.practicianFullToList);
             break;
           case SendType.SEND_POSTAL:
             this.isTypesVisible = true;
             this.isCCListVisible = false;
-            this.isFreeObjectVisible = false;
-            this.isObjectSelectVisible = false;
+            this.isForListVisible = true;
+            this.isFreeObjectVisible = this.isSecretary() ? true : false;
+            this.isObjectSelectVisible = this.isSecretary() ? false : true;
             this.isInstruction = false;
+            this.objectsList = this.lastObjectList;
             this.toList.next(this.practicianFullToList);
             break;
           case SendType.INSTRUCTION:
             this.isTypesVisible = true;
             this.isCCListVisible = false;
+            this.isForListVisible = false;
             this.isFreeObjectVisible = false;
             this.isObjectSelectVisible = true;
-            this.isInstruction = true;
+            this.isInstruction = this.isSecretary() ? false : true;
             this.objectsList = this.instructionObjectsList;
             this.toList.next([this.practicianTLSGroup]);
             break;
@@ -748,4 +754,17 @@ export class SendMessageComponent implements OnInit {
         }
       );
   }
+
+  private isSecretary(): boolean {
+    return this.role && this.role == "SECRETARY" || false;
+  }
+
+  private isPractician(): boolean {
+    return this.role && this.role == "PRACTICIAN" || false;
+  }
+
+  private isOtherObject(): boolean {
+    return this.objectsList && this.objectsList.findIndex(obj => obj.id == 0 && obj.title == "Autre") !== -1 || false;
+  }
+
 }
