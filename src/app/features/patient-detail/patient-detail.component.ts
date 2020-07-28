@@ -56,7 +56,6 @@ export class PatientDetailComponent implements OnInit {
   linkedPatientList = [];
   userRole: string;
   isPatientFile = false;
-  @Output("sentInvitation") sentInvitation = new EventEmitter<boolean>();
   private readonly notifier: NotifierService;
   avatars: {
     doctor: string;
@@ -248,9 +247,6 @@ export class PatientDetailComponent implements OnInit {
     if (res) {
       this.bottomText =
         res?.firstName + " " + res?.lastName;
-      if (res.invitationStatus == "SENT") {
-        this.sentInvitation.emit(true);
-      }
       this.notifMessage = this.patientService.messages.edit_info_success;
       this.notifier.show({
         message: this.notifMessage,
@@ -259,7 +255,6 @@ export class PatientDetailComponent implements OnInit {
       });
       this.submitted = false;
     } else {
-      this.sentInvitation.emit(false);
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
         message: this.notifMessage,
@@ -272,7 +267,6 @@ export class PatientDetailComponent implements OnInit {
 
   handleError = (err) => {
     if (err && err.error && err.error.apierror) {
-      this.sentInvitation.emit(false);
       this.notifMessage = err.error.apierror.message;
       this.notifier.show({
         message: this.notifMessage,
@@ -280,8 +274,6 @@ export class PatientDetailComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
     } else {
-
-      this.sentInvitation.emit(false);
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
         message: this.notifMessage,
