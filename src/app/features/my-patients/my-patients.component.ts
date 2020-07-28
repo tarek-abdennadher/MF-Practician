@@ -6,13 +6,8 @@ import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-/**
- * AutoComplete Default Sample
- */
-import { enableRipple } from "@syncfusion/ej2-base";
-enableRipple(true);
 
-import { AutoComplete } from "@syncfusion/ej2-dropdowns";
+
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
@@ -42,7 +37,6 @@ export class MyPatientsComponent implements OnInit {
   listLength = 0;
   scroll = false;
   public searchForm: FormGroup;
-  atcObj: AutoComplete = new AutoComplete();
   mesCategories = [];
   public filterPatientsForm: FormGroup;
   avatars: {
@@ -569,5 +563,8 @@ export class MyPatientsComponent implements OnInit {
   resetList() {
     this.pageNo = 0;
     this.filter();
+  }
+  addPatient() {
+    this.router.navigate(["ajout-patient"]);
   }
 }

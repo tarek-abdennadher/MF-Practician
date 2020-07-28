@@ -423,10 +423,12 @@ export class MessagingListService {
     );
   }
 
-  public getMessagesByPatientFile(patientFileId: number) {
+  public getMessagesByPatientFile(patientFileId: number, pageNo, order: OrderDirection = OrderDirection.DESC) {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + "ByPatientFile/" + patientFileId
+      this.globalService.url.messages + "ByPatientFile/" + patientFileId, {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 }
