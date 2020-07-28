@@ -6,13 +6,8 @@ import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-/**
- * AutoComplete Default Sample
- */
-import { enableRipple } from "@syncfusion/ej2-base";
-enableRipple(true);
 
-import { AutoComplete } from "@syncfusion/ej2-dropdowns";
+
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
@@ -42,7 +37,6 @@ export class MyPatientsComponent implements OnInit {
   listLength = 0;
   scroll = false;
   public searchForm: FormGroup;
-  atcObj: AutoComplete = new AutoComplete();
   mesCategories = [];
   public filterPatientsForm: FormGroup;
   avatars: {
@@ -53,8 +47,6 @@ export class MyPatientsComponent implements OnInit {
     secretary: string;
     user: string;
   };
-  public valueSearch;
-  public valueSearchSelected;
   direction: OrderDirection = OrderDirection.DESC;
 
   constructor(
@@ -69,10 +61,6 @@ export class MyPatientsComponent implements OnInit {
     private featuresService: FeaturesService,
     private categoryService: CategoryService
   ) {
-    this.searchForm = this.formBuilder.group({
-      search: [""],
-    });
-
     this.filterPatientsForm = this.formBuilder.group({
       category: [""],
     });
@@ -90,8 +78,10 @@ export class MyPatientsComponent implements OnInit {
         switch (params["section"]) {
           case "accepted": {
             this.section = "accepted";
+            this.featureService.setActiveChild("patient");
             this.isInvitation = false;
             this.getPatientsOfCurrentParactician(this.pageNo);
+            this.searchPatients()
             break;
           }
           case "pending": {
@@ -147,7 +137,38 @@ export class MyPatientsComponent implements OnInit {
         this.filtredPatients = this.myPatients;
       });
   }
-
+  searchPatients() {
+    this.featureService.getFilteredPatientsSearch().subscribe(res => {
+      if (res == null) {
+        this.filtredPatients = [];
+        this.number = this.filtredPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+      } else if (res?.length > 0) {
+        let patients = [];
+        res.forEach((elm) => {
+          patients.push(
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+          );
+        });
+        this.filtredPatients = patients;
+        this.number = this.filtredPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+      } else {
+        this.filtredPatients = this.myPatients;
+        this.number = this.filtredPatients.length;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.patients
+            : this.globalService.messagesDisplayScreen.patient;
+      }
+    })
+  }
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsOfCurrentParacticianV2(
@@ -344,12 +365,6 @@ export class MyPatientsComponent implements OnInit {
     );
   }
 
-  searchActionClicked() {
-    const filterBy = (<HTMLInputElement>document.getElementById("patients"))
-      .value;
-    this.filtredPatients =
-      filterBy != null ? this.performFilter(filterBy) : this.myPatients;
-  }
 
   writeAction(item) {
     this.router.navigate(["/messagerie-ecrire/"], {
@@ -427,14 +442,6 @@ export class MyPatientsComponent implements OnInit {
         }
       });
   }
-
-  public onFocusInputSearch(value: boolean) {
-    if (value === true && !/\S/.test(this.valueSearch)) {
-      this.valueSearch = null;
-    }
-    this.valueSearchSelected = value;
-  }
-
   refuseAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
@@ -556,5 +563,8 @@ export class MyPatientsComponent implements OnInit {
   resetList() {
     this.pageNo = 0;
     this.filter();
+  }
+  addPatient() {
+    this.router.navigate(["ajout-patient"]);
   }
 }

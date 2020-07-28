@@ -17,6 +17,7 @@ import { MyPatientsService } from '../services/my-patients.service';
 export class MessagingListComponent implements OnInit {
   @Input("isPatientFile") isPatientFile = false;
   @Input("patientId") patientId: number;
+  @Input("patientFileId") patientFileId: number;
   private patientAccountId: number;
   person;
   showAcceptRefuse = true;
@@ -350,23 +351,28 @@ export class MessagingListComponent implements OnInit {
                 : this.globalService.messagesDisplayScreen.newMessage;
           })
         }
-        if (this.patientId != null) {
-          this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
-            this.patientAccountId = res;
-            this.messages = retrievedMess.filter(
-              (message) => message.sender.senderId == this.patientAccountId);
-            this.messages.sort(function (m1, m2) {
-              return (
-                new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-              );
+        if (this.patientFileId) {
+          this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
+            this.messages = res;
+          });
+          if (this.patientId != null) {
+            this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
+              this.patientAccountId = res;
+              this.messages.push(...retrievedMess.filter(
+                (message) => message.sender.senderId == this.patientAccountId));
             });
-            this.itemsList.push(
-              ...this.messages.map((item) => this.parseMessage(item))
+          }
+          this.messages.sort(function (m1, m2) {
+            return (
+              new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
             );
-            this.filtredItemList = this.itemsList;
-            this.number = this.itemsList.length;
-            this.bottomText = this.number > 1 ? this.globalService.messagesDisplayScreen.newMessages : this.globalService.messagesDisplayScreen.newMessage
-          })
+          });
+          this.itemsList.push(
+            ...this.messages.map((item) => this.parseMessage(item))
+          );
+          this.filtredItemList = this.itemsList;
+          this.topText = this.globalService.messagesDisplayScreen.history
+          this.bottomText = ""
         }
         else {
           this.messages = retrievedMess;
@@ -389,31 +395,32 @@ export class MessagingListComponent implements OnInit {
       .subscribe((retrievedMess) => {
         this.listLength = retrievedMess.length
         if (retrievedMess.length > 0) {
-          if (this.patientId != null) {
-            this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
-              this.patientAccountId = res;
-            })
-          }
-          if (this.patientId != null) {
-            this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
-              this.patientAccountId = res;
-              this.messages = retrievedMess.filter(
-                (message) => message.sender.senderId == this.patientAccountId);
-              this.messages.sort(function (m1, m2) {
-                return (
-                  new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-                );
-              });
-              this.itemsList.push(
-                ...this.messages.map((item) => this.parseMessage(item))
+          if (this.patientFileId) {
+            this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
+              this.messages = res;
+            });
+            if (this.patientId != null) {
+              this.patientService.getAccountIdByPatientId(this.patientId).subscribe(res => {
+                this.patientAccountId = res;
+                this.messages.push(...retrievedMess.filter(
+                  (message) => message.sender.senderId == this.patientAccountId));
+              })
+            }
+            this.messages.sort(function (m1, m2) {
+              return (
+                new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
               );
-              this.filtredItemList = this.itemsList;
-              this.number = this.itemsList.length;
-              this.bottomText = this.number > 1 ? this.globalService.messagesDisplayScreen.newMessages : this.globalService.messagesDisplayScreen.newMessage
-            })
+            });
+            this.itemsList.push(
+              ...this.messages.map((item) => this.parseMessage(item))
+            );
+            this.filtredItemList = this.itemsList;
+            this.topText = this.globalService.messagesDisplayScreen.history
+            this.bottomText = ""
           }
 
           else {
+            this.messages = retrievedMess;
             this.messages.sort(function (m1, m2) {
               return (
                 new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()

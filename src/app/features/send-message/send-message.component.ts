@@ -16,6 +16,9 @@ import { NotifierService } from "angular-notifier";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { MyPatientsService } from '../services/my-patients.service';
+import { AccountService } from '../services/account.service';
+import { SendType } from '@app/shared/enmus/send-type';
+import { ObjectsService } from '../services/objects.service';
 
 @Component({
   selector: "app-send-message",
@@ -31,9 +34,9 @@ export class SendMessageComponent implements OnInit {
   user = this.localSt.retrieve("user");
   role = this.localSt.retrieve("role");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
-  toList: Subject<any[]> = new Subject<any[]>();
-  forList: Subject<any[]> = new Subject<any[]>();
-  concernList: Subject<any[]> = new Subject<any[]>();
+  toList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  forList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  concernList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   forFieldList = [];
   selectedObject = new BehaviorSubject<any>(null);
   objectsList = [];
@@ -53,6 +56,21 @@ export class SendMessageComponent implements OnInit {
     { id: 3333, name: "Modifications de plannings", information: "Modifications de plannings", body: "" },
     { id: 4444, name: "Instructions diverses", information: "Instructions diverses", body: "" },
   ];
+  isTypesVisible: boolean = true;
+  isCCListVisible: boolean = true;
+  isForListVisible: boolean = true;
+  isFreeObjectVisible: boolean = false;
+  isObjectSelectVisible: boolean = this.isSecretary() ? false : true;
+  isInstruction: boolean = false;
+  practicianTLSGroup: any = null;
+  lastSendType: any;
+  instructionObjectsList: any;
+  practicianFullToList: any[];
+  sendTypeList = [
+    { id: SendType.MESSAGING, text: "Messagerie" },
+    { id: SendType.SEND_POSTAL, text: "Envoie Postal" }
+  ]
+  lastObjectList: any[];
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService,
@@ -67,11 +85,14 @@ export class SendMessageComponent implements OnInit {
     notifierService: NotifierService,
     private documentService: MyDocumentsService,
     private patientService: MyPatientsService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private accountService: AccountService,
+    private objectsService: ObjectsService,
   ) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
       this.connectedUserType = "MEDICAL";
+      this.getTLSGroupByPracticianId();
     }
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
@@ -351,6 +372,7 @@ export class SendMessageComponent implements OnInit {
         }
       }
     });
+    this.practicianFullToList = myList;
     this.toList.next(myList);
   }
 
@@ -406,7 +428,7 @@ export class SendMessageComponent implements OnInit {
       ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
-    if (message.file !== undefined) {
+    if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
 
@@ -478,13 +500,20 @@ export class SendMessageComponent implements OnInit {
       if (type == "MEDICAL") {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "PRACTICIAN" || item.destination == "OTHER");
       } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
-        this.objectsList = this.practicianObjectList.filter(item => item.destination == "SECRETARY" || item.destination == "OTHER");
+        if (this.isInstruction) {
+          this.objectsList = this.instructionObjectsList;
+        } else {
+          this.objectsList = this.practicianObjectList.filter(item => item.destination == "SECRETARY" || item.destination == "OTHER");
+        }
       } else if (type == "PATIENT") {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "PATIENT" || item.destination == "OTHER");
       } else {
         this.objectsList = this.practicianObjectList.filter(item => item.destination == "OTHER");
       }
-      this.objectsList.push({ "id": 0, "title": "Autre", "name": "Autre", "destination": "Autre" });
+      const objectListContainsOther = this.objectsList.findIndex(obj => obj.id == 0 && obj.title == "Autre") !== -1;
+      if (!objectListContainsOther && !this.isInstruction) {
+        this.objectsList.push({ "id": 0, "title": "Autre", "name": "Autre", "destination": "Autre" })
+      }
       if (this.localSt.retrieve("role") == "SECRETARY" && event.to.length == 1) {
         let selectedPractician = event.to[0].id;
         this.patientService
@@ -527,6 +556,8 @@ export class SendMessageComponent implements OnInit {
           );
 
       }
+
+      this.lastObjectList = this.objectsList;
     }
     else {
       if (this.localSt.retrieve("role") == "SECRETARY" && this.selectedPracticianId == null) {
@@ -541,7 +572,7 @@ export class SendMessageComponent implements OnInit {
     if (selectedObj && selectedObj.title != "autre") {
       const objectDto = {
         senderId: this.featureService.getUserId(),
-        receiverId: item.to[0].id,
+        receiverId: item.to && item.to[0] && item.to[0].id,
         objectId: selectedObj.id
       }
       selectedObj.requestDto = objectDto;
@@ -583,4 +614,157 @@ export class SendMessageComponent implements OnInit {
     this._destroyed$.next();
     this._destroyed$.complete();
   }
+
+
+  getTLSGroupByPracticianId() {
+    return this.accountService
+      .getPracticianTelesecretary()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((group: any) => {
+        if (group && group.group) {
+          this.sendTypeList = [
+            { id: SendType.MESSAGING, text: "Messagerie" },
+            { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
+            { id: SendType.INSTRUCTION, text: "Consignes" },
+          ]
+          const groupValue = group.group;
+          this.getInstructionObjectListByTLSGroupId(groupValue.id);
+          let item = {
+            id: groupValue.accountId,
+            fullName: groupValue.title,
+            isSelected: true,
+            img: null,
+            type: "TELESECRETARYGROUP"
+          }
+          if (groupValue.photoId) {
+            this.documentService.downloadFile(groupValue.photoId).subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  item.img = myReader.result;
+                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                item.img = this.avatars.doctor;
+              }
+            );
+          }
+          this.practicianTLSGroup = item;
+        }
+
+      });
+  }
+  getInstructionObjectListByTLSGroupId(id: any) {
+    this.objectsService.getAllByTLS(id).subscribe(objects => {
+      this.instructionObjectsList = objects.map(e => { return { "id": e.id, "title": e.name, "name": e.name, "destination": "TLS" }; });
+    })
+  }
+
+  typeSelection(item) {
+    if (item !== null && item.type && item.type !== null && item.type.length > 0) {
+      if (this.lastSendType !== item.type[0].id) {
+        this.lastSendType = item.type[0].id;
+        switch (item.type[0].id) {
+          case SendType.MESSAGING:
+            this.isTypesVisible = true;
+            this.isCCListVisible = true;
+            this.isForListVisible = true;
+            this.isFreeObjectVisible = this.isOtherObject() ? true : false;
+            this.isObjectSelectVisible = this.isSecretary() ? false : true;
+            this.isInstruction = false;
+            this.objectsList = this.lastObjectList;
+            this.toList.next(this.practicianFullToList);
+            break;
+          case SendType.SEND_POSTAL:
+            this.isTypesVisible = true;
+            this.isCCListVisible = false;
+            this.isForListVisible = true;
+            this.isFreeObjectVisible = this.isSecretary() ? true : false;
+            this.isObjectSelectVisible = this.isSecretary() ? false : true;
+            this.isInstruction = false;
+            this.objectsList = this.lastObjectList;
+            this.toList.next(this.practicianFullToList);
+            break;
+          case SendType.INSTRUCTION:
+            this.isTypesVisible = true;
+            this.isCCListVisible = false;
+            this.isForListVisible = false;
+            this.isFreeObjectVisible = false;
+            this.isObjectSelectVisible = true;
+            this.isInstruction = this.isSecretary() ? false : true;
+            this.objectsList = this.instructionObjectsList;
+            this.toList.next([this.practicianTLSGroup]);
+            break;
+
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  sendInstruction(message) {
+
+    this.spinner.show();
+    this.uuid = uuid();
+    const newMessage = new Message();
+    message.to.forEach((to) => {
+      newMessage.toReceivers.push({ receiverId: to.id });
+    });
+
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sentForPatientFile: message.for && message.for[0] ? message.for[0].id : null,
+        senderForCivility: message.for && message.for[0] ? message.for[0]?.civility : null,
+        senderForPhotoId: message.for && message.for[0] ? message.for[0]?.photoId : null,
+        senderForfullName: message.for && message.for[0] ? message.for[0]?.fullName : null
+      };
+    }
+    newMessage.sendType = message.type[0].id;
+    message.object != "" &&
+      message.object[0].name.toLowerCase() !=
+      this.globalService.messagesDisplayScreen.other
+      ? (newMessage.object = message.object[0].name)
+      : (newMessage.object = message.freeObject);
+    newMessage.body = message.body;
+
+    this.messageService
+      .sendMessage(newMessage)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (mess) => {
+          this.featureService.sentState.next(true);
+          this.spinner.hide();
+          this.router.navigate(["/messagerie-envoyes"], {
+            queryParams: {
+              status: "sentSuccess",
+            },
+          });
+        },
+        (error) => {
+          this.spinner.hide();
+          this.notifier.show({
+            message: this.globalService.toastrMessages.send_message_error,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+        }
+      );
+  }
+
+  private isSecretary(): boolean {
+    return this.role && this.role == "SECRETARY" || false;
+  }
+
+  private isPractician(): boolean {
+    return this.role && this.role == "PRACTICIAN" || false;
+  }
+
+  private isOtherObject(): boolean {
+    return this.objectsList && this.objectsList.findIndex(obj => obj.id == 0 && obj.title == "Autre") !== -1 || false;
+  }
+
 }

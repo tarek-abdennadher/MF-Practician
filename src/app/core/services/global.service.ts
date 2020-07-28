@@ -78,6 +78,10 @@ export class GlobalService {
     option: this.BASE_URL_CA + "/option",
     practician_object: this.BASE_URL_MA + "/practicianObject",
     documentModel: this.BASE_URL_MA + "/model",
+    instruction: this.BASE_URL_MA + "/instruction",
+    instruction_object: this.BASE_URL_CA + "/instruction-object",
+    instruction_category: this.BASE_URL_CA + "/instruction-category",
+
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
@@ -109,6 +113,7 @@ export class GlobalService {
     newArchivedMessages: "messages non lus",
     attachedPersonnes: "Personnes Rattachées au patient",
     notes: "Mes notes",
+    history: "Historique des messages"
   };
 
   public avatars = {

@@ -34,6 +34,7 @@
     {{ labels.my_secretaries_tab }}
   </a>
   <a
+    *ngIf="showTls"
     mat-tab-link
     [routerLink]="'mon-telesecretariat'"
     routerLinkActive

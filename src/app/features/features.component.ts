@@ -11,13 +11,12 @@ import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
 import { forkJoin, BehaviorSubject } from "rxjs";
-import { PracticianSearch } from "./practician-search/practician-search.model";
-import { PatientSerch, CitySerch } from "./my-patients/my-patients";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { ArchieveMessagesService } from "./archieve-messages/archieve-messages.service";
 import { MessageService } from "./services/message.service";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { MessageArchived } from "./archieve-messages/message-archived";
+import { MyPatientsService } from './services/my-patients.service';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -33,6 +32,7 @@ export class FeaturesComponent implements OnInit {
   inboxNumber: any;
   avatars: any;
   practicians: any;
+  patients: any;
   secretaryIds: any = [];
   public messaging: boolean = true;
   constructor(
@@ -47,7 +47,8 @@ export class FeaturesComponent implements OnInit {
     private documentService: MyDocumentsService,
     private accountService: AccountService,
     private practicianSearchService: PracticianSearchService,
-    private jobTitlePipe: JobtitlePipe
+    private jobTitlePipe: JobtitlePipe,
+    private patientService: MyPatientsService
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -100,6 +101,9 @@ export class FeaturesComponent implements OnInit {
     this.sentMessage();
     this.observeState();
     this.subscribeIsMessaging();
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      this.getPatients();
+    }
   }
 
   observeState() {
@@ -174,11 +178,18 @@ export class FeaturesComponent implements OnInit {
       this.practicians = list;
     });
   }
-
+  getPatients() {
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      this.patientService.getAllPatientFilesByPracticianId(this.featuresService.getUserId()).subscribe((list) => {
+        this.featuresService.setFilteredPatientsSearch(list);
+        this.patients = list;
+      });
+    }
+  }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => {};
+    this.stompClient.debug = () => { };
     const that = this;
     this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
@@ -221,7 +232,7 @@ export class FeaturesComponent implements OnInit {
         let id = ids[i];
         const ws = new SockJS(this.globalService.BASE_URL + "/socket");
         this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => {};
+        this.stompClientList[i].debug = () => { };
         const that = this;
         this.stompClientList[i].connect({}, function (frame) {
           this.subscribe("/topic/notification/" + id, (message) => {
@@ -251,8 +262,8 @@ export class FeaturesComponent implements OnInit {
             id: notif.id,
             sender: notif.jobTitle
               ? this.jobTitlePipe.transform(notif.jobTitle) +
-                " " +
-                notif.senderFullName
+              " " +
+              notif.senderFullName
               : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
@@ -498,6 +509,17 @@ export class FeaturesComponent implements OnInit {
         this.router.navigate(["/mes-contacts-pro"]);
       }
     }
+    else if (this.featuresService.activeChild.getValue() == "patient") {
+      if (event) {
+        let result = this.patients.filter((x) =>
+          x.fullName.toLowerCase().includes(event.toLowerCase())
+        );
+        result = result.length > 0 ? result : null;
+        this.featuresService.setFilteredPatientsSearch(result);
+      } else {
+        this.featuresService.setFilteredPatientsSearch([]);
+      }
+    }
   }
 
   selectNotification(notification) {
@@ -543,6 +565,7 @@ export class FeaturesComponent implements OnInit {
     }
   }
   displayInboxOfPracticiansAction(event) {
+    this.localSt.store("practicianId", event);
     this.router.navigate(["/messagerie/" + event]);
   }
 
@@ -660,18 +683,18 @@ export class FeaturesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-          ? "répondu"
-          : message.toReceivers[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "répondu"
+            : message.toReceivers[0].seen
+              ? "Lu"
+              : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-          ? 100
-          : message.toReceivers[0].seen
-          ? 50
-          : 20,
+            ? 100
+            : message.toReceivers[0].seen
+              ? 50
+              : 20,
     };
     messageSent.users = [];
     message.toReceivers.forEach((r) => {

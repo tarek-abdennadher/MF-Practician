@@ -10,8 +10,9 @@
 <lib-hls-patient-file [imageSource]="imageSource" [practicianImage]="practicianImage"
   [noteimageSource]="noteimageSource" [patient]="patientFile" [categoryList]="categoryList"
   [linkedPatients]="linkedPatients" (submitAction)="submit($event)" (archieveNoteAction)="archieveNote($event)"
-  (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
+  (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole"
+  [sentInvitation]="sentInvitation">
 </lib-hls-patient-file>
 
-<app-messaging-list *ngIf="patientId != null" [isPatientFile]="isPatientFile" [patientId]="patientId">
+<app-messaging-list [isPatientFile]="isPatientFile" [patientId]="patientId" [patientFileId]="patientFileId">
 </app-messaging-list>
