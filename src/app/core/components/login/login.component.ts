@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
 import { LoginService } from "@app/core/services/login.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { GlobalService } from "@app/core/services/global.service";
 import { trimFunction } from '@app/shared/functions/trim';
+import {DOCUMENT} from '@angular/common';
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
     public router: Router,
-    public globalService: GlobalService
+    public globalService: GlobalService,
+    @Inject(DOCUMENT)private document: Document
   ) {
     this.messages = loginService.messages;
     this.url = globalService.url;
@@ -78,6 +80,11 @@ export class LoginComponent implements OnInit {
   forgotPassword() {
     this.errorMessage = "";
     this.successMessage = "";
+    console.log('lool');
     this.router.navigate(["/mot-de-passe-oublie"]);
+  }
+
+  redirectToLoginPatient() {
+    this.document.location.href = this.url.patient_connexion;
   }
 }
