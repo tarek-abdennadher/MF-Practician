@@ -80,7 +80,6 @@ export class LoginComponent implements OnInit {
   forgotPassword() {
     this.errorMessage = "";
     this.successMessage = "";
-    console.log('lool');
     this.router.navigate(["/mot-de-passe-oublie"]);
   }
 
