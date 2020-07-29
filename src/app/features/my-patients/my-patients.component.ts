@@ -471,7 +471,6 @@ export class MyPatientsComponent implements OnInit {
           );
           this.number--;
         }
-        console.log(this.filtredPatients)
       });
   }
 
@@ -540,7 +539,6 @@ export class MyPatientsComponent implements OnInit {
     this.pageNo = 0;
     this.filtredPatients = [];
     this.myPatients = [];
-    console.log(this.filterPatientsForm.value.category);
     if (this.filterPatientsForm.value.category != "") {
       this.getPatientsOfCurrentParacticianByCategory(
         this.pageNo,
