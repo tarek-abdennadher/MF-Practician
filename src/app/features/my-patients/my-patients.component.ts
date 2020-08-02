@@ -87,18 +87,21 @@ export class MyPatientsComponent implements OnInit {
           case "pending": {
             this.section = "pending";
             this.isInvitation = true;
+            this.featureService.setActiveChild(null);
             this.getPendingListRealTime(this.pageNo);
             this.markNotificationsAsSeen();
             break;
           }
           case "prohibit": {
             this.section = "prohibit";
+            this.featureService.setActiveChild(null);
             this.isInvitation = false;
             this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
             break;
           }
           case "archived": {
             this.section = "archived";
+            this.featureService.setActiveChild(null);
             this.isInvitation = false;
             this.getPatientsArchivedOfCurrentParactician(this.pageNo);
             break;
