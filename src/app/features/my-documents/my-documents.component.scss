@@ -1,6 +1,6 @@
 
 .fa-search {
-  background: #ffffff no-repeat scroll 7px 7px;
+  background: no-repeat scroll 7px 7px;
   cursor: pointer;
   font-weight: normal;
   letter-spacing: -0.75px;
@@ -88,7 +88,6 @@
   margin: 10px;
   width: 200px;
   background-color: white;
-  border: 0;
 }
 .p-2 {
   margin-right: 28px;
@@ -96,7 +95,6 @@
 
 select {
   background-color: white;
-  border: thin solid grey;
   border-radius: 4px;
   display: inline-block;
   font: inherit;
