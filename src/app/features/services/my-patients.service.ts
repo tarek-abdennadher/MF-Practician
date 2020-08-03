@@ -243,4 +243,31 @@ export class MyPatientsService {
       this.globalService.url.patientFile + "sendInvitation/" + patientFileId
     );
   }
+
+  deletePatientFile(patientFileId: number) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.patientFile + "delete/" + patientFileId
+    );
+  }
+
+  activatePatientFile(patientFileId: number) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.patientFile + "activate/" + patientFileId
+    );
+  }
+
+  getPatientFilesArchived(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "archived",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
+  }
 }

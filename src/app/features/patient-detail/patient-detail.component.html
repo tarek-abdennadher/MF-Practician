@@ -10,8 +10,7 @@
 <lib-hls-patient-file [imageSource]="imageSource" [practicianImage]="practicianImage"
   [noteimageSource]="noteimageSource" [patient]="patientFile" [categoryList]="categoryList"
   [linkedPatients]="linkedPatients" (submitAction)="submit($event)" (archieveNoteAction)="archieveNote($event)"
-  (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole"
-  [sentInvitation]="sentInvitation">
+  (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
 </lib-hls-patient-file>
 
 <app-messaging-list [isPatientFile]="isPatientFile" [patientId]="patientId" [patientFileId]="patientFileId">
