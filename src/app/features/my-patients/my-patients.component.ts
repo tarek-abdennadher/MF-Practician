@@ -87,18 +87,21 @@ export class MyPatientsComponent implements OnInit {
           case "pending": {
             this.section = "pending";
             this.isInvitation = true;
+            this.featureService.setActiveChild(null);
             this.getPendingListRealTime(this.pageNo);
             this.markNotificationsAsSeen();
             break;
           }
           case "prohibit": {
             this.section = "prohibit";
+            this.featureService.setActiveChild(null);
             this.isInvitation = false;
             this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
             break;
           }
           case "archived": {
             this.section = "archived";
+            this.featureService.setActiveChild(null);
             this.isInvitation = false;
             this.getPatientsArchivedOfCurrentParactician(this.pageNo);
             break;
@@ -279,7 +282,7 @@ export class MyPatientsComponent implements OnInit {
 
   getPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsArchivedOfCurrentParactician(pageNo, this.direction)
+      .getPatientFilesArchived(pageNo, this.direction)
       .subscribe((myPatients) => {
         this.number = myPatients.length;
         this.bottomText =
@@ -288,7 +291,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
         myPatients.forEach((elm) => {
           this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            this.mappingMyPatients(elm, false, true)
           );
         });
         this.filtredPatients = this.myPatients;
@@ -297,13 +300,13 @@ export class MyPatientsComponent implements OnInit {
 
   getNextPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
-      .getPatientsArchivedOfCurrentParactician(pageNo, this.direction)
+      .getPatientFilesArchived(pageNo, this.direction)
       .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
           myPatients.forEach((elm) => {
             this.myPatients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+              this.mappingMyPatients(elm, false, true)
             );
           });
         }
@@ -463,7 +466,7 @@ export class MyPatientsComponent implements OnInit {
 
   archivedAction(item) {
     this.myPatientsService
-      .archivePatient(item.users[0].patientId)
+      .deletePatientFile(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -476,7 +479,7 @@ export class MyPatientsComponent implements OnInit {
 
   activatedAction(item) {
     this.myPatientsService
-      .activatePatient(item.users[0].patientId)
+      .activatePatientFile(item.users[0].id)
       .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -539,7 +542,6 @@ export class MyPatientsComponent implements OnInit {
     this.pageNo = 0;
     this.filtredPatients = [];
     this.myPatients = [];
-    console.log(this.filterPatientsForm.value.category);
     if (this.filterPatientsForm.value.category != "") {
       this.getPatientsOfCurrentParacticianByCategory(
         this.pageNo,

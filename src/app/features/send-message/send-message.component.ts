@@ -35,6 +35,7 @@ export class SendMessageComponent implements OnInit {
   role = this.localSt.retrieve("role");
   connectedUser = this.user?.firstName + " " + this.user?.lastName;
   toList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  ccList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   forList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   concernList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   forFieldList = [];
@@ -688,13 +689,14 @@ export class SendMessageComponent implements OnInit {
             break;
           case SendType.INSTRUCTION:
             this.isTypesVisible = true;
-            this.isCCListVisible = false;
+            this.isCCListVisible = true;
             this.isForListVisible = false;
             this.isFreeObjectVisible = false;
             this.isObjectSelectVisible = true;
             this.isInstruction = this.isSecretary() ? false : true;
             this.objectsList = this.instructionObjectsList;
             this.toList.next([this.practicianTLSGroup]);
+            this.ccList.next(this.practicianFullToList.filter(e => e.id !== this.practicianTLSGroup.id));
             break;
 
           default:
@@ -712,7 +714,11 @@ export class SendMessageComponent implements OnInit {
     message.to.forEach((to) => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
-
+    message.cc
+      ? message.cc.forEach((cc) => {
+        newMessage.ccReceivers.push({ receiverId: cc.id });
+      })
+      : null;
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       newMessage.sender = {
         senderId: this.featureService.getUserId(),
