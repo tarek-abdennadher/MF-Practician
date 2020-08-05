@@ -16,16 +16,16 @@ import { MyDocumentsService } from "@app/features/my-documents/my-documents.serv
 import { HttpResponse } from "@angular/common/http";
 import { FeaturesService } from "@app/features/features.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
-import { CategoryService } from '@app/features/services/category.service';
-import { MyPatientsService } from '@app/features/services/my-patients.service';
-import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
-import { GlobalService } from '@app/core/services/global.service';
+import { CategoryService } from "@app/features/services/category.service";
+import { MyPatientsService } from "@app/features/services/my-patients.service";
+import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
+import { GlobalService } from "@app/core/services/global.service";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
   templateUrl: "./personal-informations.component.html",
   styleUrls: ["./personal-informations.component.scss"],
-  providers: [JobtitlePipe]
+  providers: [JobtitlePipe],
 })
 export class PersonalInformationsComponent implements OnInit {
   @Input("practicianId") practicianId;
@@ -61,7 +61,14 @@ export class PersonalInformationsComponent implements OnInit {
   mesCategories: any = [];
   updateAlert = false;
   jobTitlesList = [];
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -114,7 +121,8 @@ export class PersonalInformationsComponent implements OnInit {
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
         city: new FormControl(null),
-        zipCode: new FormControl(null)
+        zipCode: new FormControl(null),
+        additionalEmail: new FormControl(null),
       });
     } else {
       this.infoForm = new FormGroup({
@@ -198,9 +206,7 @@ export class PersonalInformationsComponent implements OnInit {
           speciality: account.practician.speciality
             ? account.practician.speciality.id
             : null,
-          address: account.practician.address
-            ? account.practician.address
-            : "",
+          address: account.practician.address ? account.practician.address : "",
           additional_address: account.practician.additionalAddress
             ? account.practician.additionalAddress
             : "",
@@ -209,8 +215,12 @@ export class PersonalInformationsComponent implements OnInit {
             ? account.practician.photoId
             : null,
           city: account.practician.city ? account.practician.city : null,
-          zipCode: account.practician.zipCode ? account.practician.zipCode : null
-
+          zipCode: account.practician.zipCode
+            ? account.practician.zipCode
+            : null,
+          additionalEmail: account.practician.additionalEmail
+            ? account.practician.additionalEmail
+            : null,
         });
       } else if (account && account.secretary) {
         this.account = account.secretary;
@@ -265,15 +275,16 @@ export class PersonalInformationsComponent implements OnInit {
           jobTitle: this.infoForm.value.title,
           city: this.infoForm.value.city,
           zipCode: this.infoForm.value.zipCode,
+          additionalEmail: this.infoForm.value.additionalEmail,
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialities.find(
-                (s) => s.id == this.infoForm.value.speciality
-              )
+                  (s) => s.id == this.infoForm.value.speciality
+                )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          photoId: this.account.photoId
+          photoId: this.account.photoId,
         },
       };
     } else {
@@ -304,9 +315,11 @@ export class PersonalInformationsComponent implements OnInit {
         }
       }
       if (this.isPractician) {
-        this.featureService.fullName = `${this.jobTitlePipe.transform(model.practician.jobTitle)} ${model.practician.firstName} ${model.practician.lastName}`
+        this.featureService.fullName = `${this.jobTitlePipe.transform(
+          model.practician.jobTitle
+        )} ${model.practician.firstName} ${model.practician.lastName}`;
       } else {
-        this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`
+        this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`;
       }
     });
   }
@@ -393,7 +406,7 @@ export class PersonalInformationsComponent implements OnInit {
     if (this.isPractician) {
       this.image = this.avatars.doctor;
     } else {
-      this.image = this.avatars.secretary;;
+      this.image = this.avatars.secretary;
     }
     this.account.photoId = null;
     this.hasImage = false;
