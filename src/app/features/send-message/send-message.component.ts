@@ -439,8 +439,8 @@ export class SendMessageComponent implements OnInit {
         formData.append("model", JSON.stringify(newMessage));
         formData.append(
           "file",
-          this.selectedFiles.item(0),
-          this.selectedFiles.item(0).name
+          this.selectedFiles[0],
+          this.selectedFiles[0].name
         );
       }
 
