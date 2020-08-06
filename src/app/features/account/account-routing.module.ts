@@ -8,10 +8,7 @@ import { FacturesComponent } from './factures/factures.component';
 import { StatsComponent } from './stats/stats.component';
 import { CategoryComponent } from './category/category.component';
 import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
-import { MyContactsComponent } from './my-contacts/my-contacts.component';
-import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 import { MyLeavesComponent } from './my-leaves/my-leaves.component';
-import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
 import { PracticianObjectsComponent } from './practician-objects/practician-objects.component';
 import { PracticianObjectDetailComponent } from './practician-objects/practician-object-detail/practician-object-detail.component';
 
@@ -51,8 +48,7 @@ const routes: Routes = [
       },
       {
         path: "mes-conges",
-        component: MyLeavesComponent,
-        canActivate: [MyLeavesGuard]
+        component: MyLeavesComponent
       },
       {
         path: "mes-objets",
