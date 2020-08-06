@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) {}
+  constructor(public router: Router, public globalService: GlobalService) { }
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -76,9 +76,9 @@ export class AccountService {
     date_error: "Veuillez vérifier la date saisie",
     validate: "Enregistrer",
     required: "Le champ est obligatoire",
-    update_leaves_success: "Dates de congés modifiées avec succès",
+    update_leaves_success: "Infromations modifiées avec succès",
     update_leaves_fail:
-      "Erreur survenue lors de la mise à jour des dates de congés.",
+      "Erreur survenue lors de la mise à jour des congés.",
     is_deleted: " Le compte patient a été désactivé  !",
     personal_info: "Informations personnelles",
     cordonnees: "Coordonnées",
@@ -102,6 +102,7 @@ export class AccountService {
     info2:
       "Vous pouvez à partir de cet onglet, définir les catégories des patients",
     resp: "Responsable",
+    activate_auto_resp: "Activer la réponse automatique en cas de congés ?"
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -145,8 +146,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-        "/" +
-        encodeURIComponent(pass)
+      "/" +
+      encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {
@@ -243,15 +244,16 @@ export class AccountService {
       this.globalService.url.option + "/" + id
     );
   }
-  updateLeavesInOptionByPractician(leaveStartDate, leaveEndDate) {
+  updateLeavesInOptionByPractician(activateLeaveAutoMessage: boolean, leaveStartDate, leaveEndDate) {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.option +
-        "/leaves/" +
-        leaveStartDate +
-        "/" +
-        leaveEndDate
-    );
+      "/leaves/" + activateLeaveAutoMessage, {
+      params: {
+        'leaveStartDate': leaveStartDate,
+        'leaveEndDate': leaveEndDate
+      }
+    });
   }
 
   getPracticianObjectList() {

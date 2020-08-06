@@ -1,12 +1,13 @@
 import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from '@angular/core';
 import { AccountService } from '@app/features/services/account.service';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 import { defineLocale, frLocale, isBefore } from "ngx-bootstrap/chronos";
 import { FeaturesService } from '@app/features/features.service';
 import { NotifierService } from 'angular-notifier';
 declare var $: any;
+
 @Component({
   selector: 'app-my-leaves',
   templateUrl: './my-leaves.component.html',
@@ -50,10 +51,12 @@ export class MyLeavesComponent implements OnInit {
 
   initLeaveForm() {
     this.leavesForm = new FormGroup({
-      leaveStartDate: new FormControl(null, Validators.required),
-      leaveEndDate: new FormControl(null, Validators.required)
+      activateLeaveAutoMessage: new FormControl(false),
+      leaveStartDate: new FormControl(null),
+      leaveEndDate: new FormControl(null)
     });
   }
+
   dateChange(date, type) {
     if (type == "start" && date) {
       this.leaveStartDate = new Date(date);
@@ -72,9 +75,11 @@ export class MyLeavesComponent implements OnInit {
   getOptionById() {
     this.service.getOptionById(this.practicianId).subscribe((op) => {
       this.leavesForm.patchValue({
-        leaveStartDate: new Date(op.leaveStartDate),
-        leaveEndDate: new Date(op.leaveEndDate)
+        activateLeaveAutoMessage: op.activateLeaveAutoMessage,
+        leaveStartDate: op.leaveStartDate ? new Date(op.leaveStartDate) : null,
+        leaveEndDate: op.leaveEndDate ? new Date(op.leaveEndDate) : null
       })
+      console.log(this.leavesForm.value)
     });
   }
 
@@ -85,7 +90,8 @@ export class MyLeavesComponent implements OnInit {
     }
     let leaveStartDate = this.leavesForm.value.leaveStartDate;
     let leaveEndDate = this.leavesForm.value.leaveEndDate;
-    this.service.updateLeavesInOptionByPractician(leaveStartDate, leaveEndDate).subscribe((elm) => {
+    let activateLeaveAutoMessage = this.leavesForm.value.activateLeaveAutoMessage;
+    this.service.updateLeavesInOptionByPractician(activateLeaveAutoMessage, leaveStartDate, leaveEndDate).subscribe((elm) => {
       if (elm) {
         this.notifMessage = this.service.messages.update_leaves_success;
         this.notifier.show({

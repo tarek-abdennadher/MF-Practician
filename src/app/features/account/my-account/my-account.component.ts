@@ -16,7 +16,6 @@ export class MyAccountComponent implements OnInit {
   page = "MY_ACCOUNT";
   backButton = true;
   practicianId: number;
-  public showLeaves: boolean = false;
   public showTls: boolean = false;
   constructor(
     private accountService: AccountService,
@@ -44,9 +43,6 @@ export class MyAccountComponent implements OnInit {
 
   getOptionById() {
     this.accountService.getOptionById(this.practicianId).subscribe((op) => {
-      if (op != null && op.activateLeaveAutoMessage) {
-        this.showLeaves = true;
-      }
     });
   }
   getTls() {

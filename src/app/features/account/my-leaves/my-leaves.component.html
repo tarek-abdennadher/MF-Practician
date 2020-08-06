@@ -25,6 +25,12 @@
     <div class="card-body">
         <form [formGroup]="leavesForm">
             <div class="container">
+                <div class="row col-md-12">
+                    <label for="activateLeaveAutoMessage" class=" col-form-label ">
+                        <input type="checkbox" formControlName="activateLeaveAutoMessage" />
+                        {{ messages.activate_auto_resp }}</label>
+                </div>
+                <br>
                 <div class="form-group row">
                     <label for="leaveStartDate" class="col-sm-3 col-form-label">{{
                         messages.start_date_leave
@@ -35,9 +41,6 @@
                             bsDatepicker [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
                         'is-invalid': submitted && f.leaveStartDate.errors
                       }" />
-                        <div *ngIf="submitted && f.leaveStartDate.errors?.required" class="invalid-feedback">
-                            {{ messages.required }}
-                        </div>
                     </div>
 
                 </div>
@@ -51,9 +54,6 @@
                             bsDatepicker [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
                         'is-invalid': submitted && f.leaveEndDate.errors
                       }" />
-                        <div *ngIf="submitted && f.leaveEndDate.errors?.required" class="invalid-feedback">
-                            {{ messages.required }}
-                        </div>
                     </div>
 
                 </div>
