@@ -1,6 +1,7 @@
 export class MessageArchived {
   id: number;
   isSeen: boolean;
+  progress: any;
   users: [
     {
       fullName: string;
