@@ -96,6 +96,20 @@ export class ArchieveMessagesComponent implements OnInit {
             : null,
       },
     ];
+    messageArchived.progress = {
+      name:
+        message.messageStatus == "TREATED"
+          ? "répondu"
+          : message.seen
+          ? "Lu"
+          : "Envoyé",
+      value:
+        message.messageStatus == "TREATED"
+          ? 100
+          : message.seen
+          ? 50
+          : 20,
+    };
     messageArchived.object = {
       name: message.object,
       isImportant: message.importantObject,
