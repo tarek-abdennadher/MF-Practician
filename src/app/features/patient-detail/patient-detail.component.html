@@ -13,5 +13,10 @@
   (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
 </lib-hls-patient-file>
 
-<app-messaging-list [isPatientFile]="isPatientFile" [patientId]="patientId" [patientFileId]="patientFileId">
-</app-messaging-list>
+<lib-hlsLinks [links]="links" [page]="page2" [topText]="topText2" [bottomText]=""></lib-hlsLinks>
+<lib-hlsMessagingList [list]="filtredItemList" [hasPaging]="true" (cardAction)="cardClicked($event)"
+  [imageSource]="imageSource" [hasPaging]="true" (upSortAction)="upSortClicked()" (downSortAction)="downSortClicked()">
+</lib-hlsMessagingList>
+<div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()"></div>
+<mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100"> </mat-progress-spinner>
