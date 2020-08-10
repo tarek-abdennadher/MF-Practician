@@ -25,6 +25,8 @@ import { CategoryService } from "../services/category.service";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { GlobalService } from "@app/core/services/global.service";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { MessagingListService } from '../services/messaging-list.service';
 
 @Component({
   selector: "app-patient-detail",
@@ -40,6 +42,7 @@ export class PatientDetailComponent implements OnInit {
   links = {};
   number = null;
   topText = "Fiche Patient";
+  topText2 = "Historique des échanges";
   bottomText = "";
   backButton = true;
   placement = "right";
@@ -64,7 +67,14 @@ export class PatientDetailComponent implements OnInit {
     man: string;
     secretary: string;
     user: string;
+    tls: string;
   };
+  messages: Array<any> = new Array();
+  pageNo = 0;
+  direction: OrderDirection = OrderDirection.DESC;
+  itemsList: Array<any>;
+  filtredItemList: Array<any> = new Array();
+  page2 = this.globalService.messagesDisplayScreen.inbox;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -79,6 +89,7 @@ export class PatientDetailComponent implements OnInit {
     private localStorage: LocalStorageService,
     notifierService: NotifierService,
     @Inject(LOCALE_ID) public locale: string,
+    private messagesServ: MessagingListService,
     private globalService: GlobalService
   ) {
     defineLocale(this.locale, frLocale);
@@ -106,6 +117,7 @@ export class PatientDetailComponent implements OnInit {
       this.getCategories()
     ).subscribe((res) => { });
     this.featureService.setIsMessaging(false);
+    this.getPatientInbox(this.pageNo);
   }
 
   getPatientFile() {
@@ -343,6 +355,124 @@ export class PatientDetailComponent implements OnInit {
   cancelAction() {
     this._location.back();
   }
+
+  upSortClicked() {
+    this.direction = OrderDirection.ASC;
+    this.resetList();
+  }
+
+  downSortClicked() {
+    this.direction = OrderDirection.DESC;
+    this.resetList();
+  }
+
+  resetList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.filtredItemList = [];
+  }
+
+  cardClicked(item) {
+    this.router.navigate(["/messagerie-lire/" + item.id], {
+      queryParams: {
+        context: "inbox",
+      },
+    });
+  }
+  getPatientInbox(pageNo) {
+    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
+      this.messages = res;
+      this.messages.sort(function (m1, m2) {
+        return (
+          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+      });
+      this.itemsList = this.messages.map((item) => this.parseMessage(item));
+      this.filtredItemList = this.itemsList;
+    });
+  }
+  getPatientNextInbox(pageNo) {
+    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
+      this.messages = res;
+      this.messages.sort(function (m1, m2) {
+        return (
+          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+      });
+      this.itemsList.push(
+        ...this.messages.map((item) => this.parseMessage(item))
+      );
+      this.filtredItemList = this.itemsList;
+    });
+  }
+  parseMessage(message): any {
+    let parsedMessage = {
+      id: message.id,
+      isSeen: message.seenAsReceiver,
+      users: [
+        {
+          id: message.sender.id,
+          fullName: message.sender.fullName,
+          img: this.avatars.user,
+          title: message.sender.jobTitle,
+          civility: message.sender.civility,
+          type:
+            message.sender.role == "PRACTICIAN"
+              ? "MEDICAL"
+              : message.sender.role,
+        },
+      ],
+      object: {
+        name: message.object,
+        isImportant: message.importantObject,
+      },
+      time: message.updatedAt,
+      isImportant: message.important,
+      hasFiles: message.hasFiles,
+      photoId: message.sender.photoId,
+    };
+    if (parsedMessage.photoId) {
+      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            parsedMessage.users[0].img = myReader.result.toString();
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
+    } else {
+      parsedMessage.users.forEach((user) => {
+        if (user.type == "MEDICAL") {
+          user.img = this.avatars.doctor;
+        } else if (user.type == "SECRETARY") {
+          user.img = this.avatars.secretary;
+        } else if (user.type == "TELESECRETARYGROUP") {
+          user.img = this.avatars.tls;
+        } else if (user.type == "PATIENT") {
+          if (user.civility == "M") {
+            user.img = this.avatars.man;
+          } else if (user.civility == "MME") {
+            user.img = this.avatars.women;
+          } else if (user.civility == "CHILD") {
+            user.img = this.avatars.child;
+          }
+        }
+      });
+    }
+    return parsedMessage;
+  }
+
+  onScroll() {
+    if (this.filtredItemList.length > 9) {
+      this.pageNo++;
+      this.getPatientNextInbox(this.pageNo);
+    }
+  }
+
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();
