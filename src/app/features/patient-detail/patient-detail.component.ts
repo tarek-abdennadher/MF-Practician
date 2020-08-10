@@ -75,6 +75,7 @@ export class PatientDetailComponent implements OnInit {
   itemsList: Array<any>;
   filtredItemList: Array<any> = new Array();
   page2 = this.globalService.messagesDisplayScreen.inbox;
+  scroll = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
