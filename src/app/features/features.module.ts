@@ -24,6 +24,7 @@ import { PracticianDetailComponent } from "./practician-detail/practician-detail
 import { HlsPracticianDetailModule } from "hls-practician-detail";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
+import { HlsGenericListModule } from "hls-generic-list";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
@@ -56,39 +57,39 @@ const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
       position: "left",
-      distance: 370,
+      distance: 370
     },
     vertical: {
       position: "top",
-      distance: 90,
-    },
+      distance: 90
+    }
   },
   theme: "material",
   behaviour: {
     autoHide: 2000,
     onClick: false,
     onMouseover: "pauseAutoHide",
-    showDismissButton: false,
+    showDismissButton: false
   },
   animations: {
     enabled: true,
     show: {
       preset: "fade",
       speed: 1500,
-      easing: "ease",
+      easing: "ease"
     },
     hide: {
       preset: "fade",
       speed: 300,
       easing: "ease",
-      offset: 50,
+      offset: 50
     },
     shift: {
       speed: 300,
-      easing: "ease",
+      easing: "ease"
     },
-    overlap: 150,
-  },
+    overlap: 150
+  }
 };
 @NgModule({
   declarations: [
@@ -116,7 +117,7 @@ const notifierOptions: NotifierOptions = {
     CategoryComponent,
     CategoryDetailComponent,
     PracticianObjectsComponent,
-    PracticianObjectDetailComponent,
+    PracticianObjectDetailComponent
   ],
   imports: [
     FormsModule,
@@ -144,8 +145,9 @@ const notifierOptions: NotifierOptions = {
     MatProgressSpinnerModule,
     PipesModule,
     NgApexchartsModule,
+    HlsGenericListModule
   ],
 
-  providers: [MessageService, ContactsService, JobtitlePipe, AccountService],
+  providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
 export class FeaturesModule {}

@@ -1,5 +1,5 @@
 $color-helssy-blue: #1a56a7;
-$color-helssy-grey: #6e819b;
+$color-helssy-grey: #344448;
 $color-white: #ffffff;
 $helssy-grey: #6e819bd4;
 $input-color: #f1f1f1;
@@ -18,11 +18,14 @@ $input-color: #f1f1f1;
     font-size: 17px;
   }
   span {
-    font-size: 17px !important;
-    line-height: 0px !important;
-    letter-spacing: -0.75px;
+    font-family: "Montserrat" !important;
+    font-size: 28px !important;
+    font-weight: 500 !important;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal !important;
+    letter-spacing: normal !important;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
   }
 }
 
