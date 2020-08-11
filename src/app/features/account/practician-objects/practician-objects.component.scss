@@ -9,7 +9,8 @@ $input-color: #f1f1f1;
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
+  font-family: "Montserrat" !important;
+  margin-left: 15px;
   i,
   hr {
     margin-left: 10px;
@@ -18,7 +19,7 @@ $input-color: #f1f1f1;
     font-size: 17px;
   }
   span {
-    font-family: "Montserrat" !important;
+    font-family: "Montserrat-Medium" !important;
     font-size: 28px !important;
     font-weight: 500 !important;
     font-stretch: normal;
@@ -30,11 +31,13 @@ $input-color: #f1f1f1;
 }
 
 .inline {
-  font-family: "Segoe UI";
+  display: flex !important;
+  align-items: center;
+  font-family: "Montserrat";
   text-align: center;
   color: $helssy-grey !important;
   display: inline-block;
-  margin-left: 57px;
+  margin-left: 30px;
   color: $helssy-grey !important;
   text-decoration: none;
   font-size: 10px;
@@ -44,9 +47,11 @@ $input-color: #f1f1f1;
 }
 .fa,
 .far,
-.fal {
-  font-size: 17px;
+.fal,
+.fas {
+  font-size: 23px;
   line-height: 20px;
+  color: $color-helssy-blue;
 }
 #card {
   background-color: white;
@@ -57,8 +62,8 @@ $input-color: #f1f1f1;
 }
 
 .col-form-label {
-  font-size: 15px !important;
-  color: $color-helssy-grey;
-  font-family: "Segoe UI Medium" !important;
-  margin-left: 34px;
+  font-size: 16px !important;
+  color: $color-helssy-blue;
+  font-family: "Montserrat-SemiBold" !important;
+  display: inline-flex;
 }
