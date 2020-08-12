@@ -602,6 +602,8 @@ export class SendMessageComponent implements OnInit {
       }
       //this.selectedObject.next(result);
       //this.openDialog(selectedObj);
+    } else if (selectedObj) {
+      this.selectedObject.next({ id:null, title:"Autre",name : "Autre", body: ""});
     }
   }
 
