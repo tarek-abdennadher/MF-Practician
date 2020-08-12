@@ -47,7 +47,27 @@
   font-weight: normal;
   font-style: normal;
 }
+/*** New fonts Montserrat **/
 
+@font-face {
+  font-family: "Montserrat";
+  src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat-Medium";
+  src: url("./assets/fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Montserrat-SemiBold";
+  src: url("./assets/fonts/Montserrat/Montserrat-SemiBold.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
 // Include the common styles for Angular Material. We include this here so that you only
@@ -55,9 +75,9 @@
 // Be sure that you only ever include this mixin once!
 
 $custom-typography: mat-typography-config(
-  $font-family: "Segoe UI",
+  $font-family: "Montserrat",
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500),
+  $body-1: mat-typography-level(16px, 24px, 500)
 );
 @include mat-base-typography($custom-typography);
 @include mat-checkbox-typography($custom-typography);
@@ -73,11 +93,7 @@ $patient-accent: mat-palette($mat-pink, A200, A100, A400);
 $patient-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$patient-theme: mat-light-theme(
-  $patient-primary,
-  $patient-accent,
-  $patient-warn
-);
+$patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -86,7 +102,7 @@ $patient-theme: mat-light-theme(
 
 /* You can add global styles to this file, and also import other style files */
 html * {
-  font-family: "Segoe UI";
+  font-family: "Montserrat";
 }
 html,
 body {
@@ -102,7 +118,7 @@ body {
 input,
 select,
 textarea {
-  font-family: "Segoe UI" !important;
+  font-family: "Montserrat" !important;
 }
 
 a {
