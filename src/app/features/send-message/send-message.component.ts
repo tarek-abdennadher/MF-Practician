@@ -573,6 +573,7 @@ export class SendMessageComponent implements OnInit {
     if (selectedObj && selectedObj.title != "autre") {
       const objectDto = {
         senderId: this.featureService.getUserId(),
+        sendedForId: item.for && item.for[0] && item.for[0].id,
         receiverId: item.to && item.to[0] && item.to[0].id,
         objectId: selectedObj.id
       }
