@@ -187,7 +187,7 @@ export class ForwardedMessagesComponent implements OnInit {
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "sent",
+        context: "forwarded",
       },
     });
   }
@@ -225,6 +225,7 @@ export class ForwardedMessagesComponent implements OnInit {
           this.filtredItemList = this.filtredItemList.filter(elm => !messagesId.includes(elm.id))
           this.deleteElementsFromInbox(messagesId.slice(0));
           this.featureService.archiveState.next(true);
+          this.featureService.numberOfForwarded = this.featureService.numberOfForwarded - messagesId.length;
         },
         (error) => {
           console.log("We have to find a way to notify user by this error");
@@ -240,6 +241,7 @@ export class ForwardedMessagesComponent implements OnInit {
         this.filtredItemList = this.filtredItemList.filter(elm => messageId != elm.id)
         this.deleteElementsFromInbox([messageId]);
         this.featureService.archiveState.next(true);
+        this.featureService.numberOfForwarded = this.featureService.numberOfForwarded - 1;
       },
       (error) => {
         console.log("We have to find a way to notify user by this error");
