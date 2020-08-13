@@ -57,6 +57,7 @@ export class FeaturesComponent implements OnInit {
   public myPracticians = [];
 
   user = this.localSt.retrieve("user");
+  fullname = this.user['firstName'] + ' ' + this.user['lastName'];
   userRole = this.localSt.retrieve("role");
   role: string =
     this.localSt.retrieve("role") == "SECRETARY" ? "secretary" : "medical";
