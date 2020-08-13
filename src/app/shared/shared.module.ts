@@ -3,18 +3,18 @@ import { CommonModule } from '@angular/common';
 import { IntPhoneComponent } from './components/int-phone/int-phone.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
-import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
-import { CKEditorComponent } from './components/ckeditor/ckeditor.component';
+// import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
+// import { CKEditorComponent } from './components/ckeditor/ckeditor.component';
 
 @NgModule({
-  declarations: [IntPhoneComponent, CKEditorComponent],
+  declarations: [IntPhoneComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     InternationalPhoneNumberModule,
-    CKEditorModule,
+    // CKEditorModule,
   ],
-  exports: [IntPhoneComponent, CKEditorComponent]
+  exports: [IntPhoneComponent]
 })
 export class SharedModule { }
