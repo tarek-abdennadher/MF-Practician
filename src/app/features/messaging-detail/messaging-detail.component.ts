@@ -86,6 +86,15 @@ export class MessagingDetailComponent implements OnInit {
             this.previousURL = "/messagerie-envoyes";
             break;
           }
+          case "forwarded": {
+            this.isFromInbox = false;
+            this.showAcceptRefuse = false;
+            this.hidefrom = true;
+            this.isFromArchive = false;
+            this.sentContext = true;
+            this.previousURL = "/messagerie-transferes";
+            break;
+          }
           case "inbox": {
             this.isFromInbox = false;
             this.IsinboxContext = true;
@@ -602,6 +611,9 @@ export class MessagingDetailComponent implements OnInit {
             status: "archiveSuccess",
           },
         });
+        if (this.previousURL == "/messagerie-transferes") {
+          this.featureService.numberOfForwarded = this.featureService.numberOfForwarded - 1;
+        }
       },
       (error) => {
         this.notifier.show({
