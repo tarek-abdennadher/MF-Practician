@@ -1,11 +1,13 @@
 $input-color: #F1F1F1;
 $color-helssy-blue: #1A56A7;
+$helssy_white: #ffffff;
 .form-control{
-    background: $input-color 0% 0% no-repeat padding-box;
+    background: $helssy_white;
+    border-color: $helssy_white;
     opacity: 1;
     margin:-6px;
-    border-color: $input-color !important;
-    font-family: "Segoe UI";
+    border-color: $input-color;
+    font-family: "Montserrat-Medium";
     font-size:17px ;
     line-height: 24px;
     height: 40px;
@@ -20,49 +22,32 @@ $color-helssy-blue: #1A56A7;
       color: white;
       cursor: pointer;
       font-weight: lighter;
-      background: #41BDDF 0% 0% no-repeat padding-box;
+      background-color: #1a56a7;
+      border-color: #1a56a7;
+      border-radius: 6px;
       border-radius: 5px;
       opacity: 1;
       height: 40px;
       margin-top: -6px;
+      margin-left: -8px;
         }
-        .btn-icon:hover {
-          background-color: RoyalBlue;
-        }
-
         ::ng-deep {
           international-phone-number .form-control {
-                height: 30px !important;
-                border-color: #f1f1f1;
-                background-color:#f1f1f1;
+                height: 30px;
+                border-color:$helssy_white;
+                background-color: $helssy_white;
               }
               international-phone-number .dropdown button.dropbtn.btn,  button.dropbtn.btn:hover{
-                  border-color: #f1f1f1;
-                  background-color:#f1f1f1;
-                  padding: 4px !important;
+                  border-color: $helssy_white;
+                  background-color: $helssy_white;
+                  padding: 6px !important;
                   height: 30px !important;
               }
-              international-phone-number .dropdown button.dropbtn.btn .arrow-down {
-                border-bottom:#f1f1f1;}
-              }
-
-@media only screen and (max-width: 575px) {
-  .mlpl-custom-0 {
-    margin-left: 0;
-    padding-left: unset;
-  }
-}
-
-@media only screen and (max-width: 500px) {
-  .w-xs-custom {
-    max-width: 80%;
-  }
-}
-
+            }
 @media only screen and (max-width: 768px) {
-  .mobile-display-flex {
-    display: flex;
-  }
+ .mobile-display-flex {
+   display: flex;
+ }
   .mobile-display-none {
     display: none;
   }
@@ -84,9 +69,6 @@ $color-helssy-blue: #1A56A7;
   .mobile-display-none {
     display: none;
   }
-  .m-t-xs-6 {
-    margin-top: 6px;
-  }
 }
 
 
@@ -96,9 +78,6 @@ $color-helssy-blue: #1A56A7;
   }
   .mobile-display-none {
     display: none;
-  }
-  .m-t-xs-6 {
-    margin-top: 3px;
   }
 }
 
