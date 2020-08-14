@@ -1,29 +1,36 @@
-<lib-hlsLinks [topText]="topText" [page]="page" [backButton]="backButton" (backButtonAction)="BackButton()">
-</lib-hlsLinks>
-
+<div class="row Mon-compte" id="Mon-compte">
+  {{ labels.my_account }}
+</div>
+<br>
 <a *ngIf="userRole !== 'PRACTICIAN'" [routerLink]="'mes-informations'" routerLinkActive>
 </a>
+<div class="card Rectangle" id="Mes-tabs" *ngIf="userRole == 'PRACTICIAN'">
+  <nav *ngIf="userRole == 'PRACTICIAN'" mat-tab-nav-bar>
+    <a mat-tab-link [routerLink]="'mes-informations'" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+      <i class="fas fa-inbox my-tab-icon"></i>
+      <span class="Mes-informations"> {{ labels.info_tab }}</span>
+    </a>
+    <a mat-tab-link [routerLink]="'mes-secretaires'" routerLinkActive #rlb="routerLinkActive" [active]="rlb.isActive">
+      <i class="far fa-user-nurse my-tab-icon"></i>
+      <span class="Mes-informations"> {{ labels.my_secretaries_tab }}</span>
+    </a>
+    <a *ngIf="showTls" mat-tab-link [routerLink]="'mon-telesecretariat'" routerLinkActive #rlc="routerLinkActive"
+      [active]="rlc.isActive">
+      <i class="far fa-phone-alt my-tab-icon"></i>
+      <span class="Mes-informations"> {{ labels.tele_secretariat_tab }}</span>
 
-<nav *ngIf="userRole == 'PRACTICIAN'" mat-tab-nav-bar>
-  <a mat-tab-link [routerLink]="'mes-informations'" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-    <i class="far fa-cog my-tab-icon"></i> {{ labels.info_tab }}
-  </a>
-  <a mat-tab-link [routerLink]="'mes-secretaires'" routerLinkActive #rlb="routerLinkActive" [active]="rlb.isActive">
-    <i class="far fa-keyboard my-tab-icon"></i>
-    {{ labels.my_secretaries_tab }}
-  </a>
-  <a *ngIf="showTls" mat-tab-link [routerLink]="'mon-telesecretariat'" routerLinkActive #rlc="routerLinkActive"
-    [active]="rlc.isActive">
-    <i class="far fa-user-headset my-tab-icon"></i>
-    {{ labels.tele_secretariat_tab }}
-  </a>
-  <a mat-tab-link [routerLink]="'mes-stats'" routerLinkActive #rlf="routerLinkActive" [active]="rlf.isActive">
-    <i class="far fa-chart-pie-alt my-tab-icon"></i> {{ labels.stats_tab }}
-  </a>
-  <a mat-tab-link [routerLink]="'mes-conges'" routerLinkActive #rlg="routerLinkActive" [active]="rlg.isActive">
-    <i class="far fa-calendar-week my-tab-icon"></i> {{ labels.leaves }}
-  </a>
-</nav>
+    </a>
+    <a mat-tab-link [routerLink]="'mes-stats'" routerLinkActive #rlf="routerLinkActive" [active]="rlf.isActive">
+      <i class="far fa-chart-bar my-tab-icon"></i>
+      <span class="Mes-informations"> {{ labels.stats_tab }}</span>
+    </a>
+    <a mat-tab-link [routerLink]="'mes-conges'" routerLinkActive #rlg="routerLinkActive" [active]="rlg.isActive">
+      <i class="far fa-user-md my-tab-icon"></i>
+      <span class="Mes-informations"> {{ labels.leaves }}</span>
+    </a>
+  </nav>
+</div>
+
 
 <router-outlet></router-outlet>
 

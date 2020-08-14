@@ -23,6 +23,7 @@ import { MyLeavesComponent } from "./my-leaves/my-leaves.component";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { ApxPieComponent } from "./stats/apx-pie/apx-pie.component";
 import { NgApexchartsModule } from "ng-apexcharts";
+import { HlsGenericListModule } from 'hls-generic-list';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -90,6 +91,7 @@ const notifierOptions: NotifierOptions = {
     NotifierModule.withConfig(notifierOptions),
     BsDatepickerModule.forRoot(),
     NgApexchartsModule,
+    HlsGenericListModule
   ],
   providers: [AccountService],
 })

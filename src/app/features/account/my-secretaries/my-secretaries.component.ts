@@ -14,7 +14,7 @@ import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from 'rxjs';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -40,7 +40,7 @@ export class MySecretariesComponent implements OnInit {
   isLabelShow: boolean;
   public otherPhones = FormArray;
   image: string | ArrayBuffer;
-  imageSource ;string;
+  imageSource; string;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
   constructor(
     public router: Router,
@@ -57,7 +57,7 @@ export class MySecretariesComponent implements OnInit {
     this.labels = this.contactsService.messages;
     this.errors = this.accountService.errors;
     this.isLabelShow = false;
-    this.avatars= this.globalService.avatars;
+    this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.secretary;
 
   }
@@ -183,7 +183,7 @@ export class MySecretariesComponent implements OnInit {
       isArchieve: true,
       isImportant: false,
       hasFiles: false,
-      isViewDetail: true,
+      isViewDetail: false,
       isMarkAsSeen: false,
       isChecked: false,
       photoId: sec.photoId,
