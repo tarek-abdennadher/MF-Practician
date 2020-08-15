@@ -5,11 +5,13 @@ import { HlsLinksModule } from "hls-links";
 import { MyDocumentsRoutingModule } from "./my-documents-routing.module";
 import { HlsDocumentsModule } from "hls-documents";
 import { DocumentsListComponent } from "./documents-list/documents-list.component";
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CivilityPipe } from '@app/shared/pipes/civility.pipe';
-import { HlsMessagingListModule } from 'hls-messaging-list';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
+import { HlsMessagingListModule } from "hls-messaging-list";
+import { HlsGenericListLinksModule } from "hls-generic-list-links";
+import { HlsGenericListModule } from "hls-generic-list";
 @NgModule({
   declarations: [MyDocumentsComponent, DocumentsListComponent],
   imports: [
@@ -21,10 +23,10 @@ import { HlsMessagingListModule } from 'hls-messaging-list';
     FormsModule,
     ReactiveFormsModule,
     InfiniteScrollModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    HlsGenericListLinksModule,
+    HlsGenericListModule
   ],
-  providers: [
-    CivilityPipe
-  ]
+  providers: [CivilityPipe]
 })
-export class MyDocumentsModule { }
+export class MyDocumentsModule {}

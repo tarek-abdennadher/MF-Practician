@@ -1,12 +1,4 @@
-<lib-hlsLinks
-  [page]="page"
-  [topText]="topText"
-  [backButton]="backButton"
-  (backButtonAction)="goBack()"
-  [person]="documentsService.person"
->
-</lib-hlsLinks>
-<form
+<!-- <form
   [formGroup]="filterDocumentsForm"
   class="d-flex p-2 flex-row-reverse bd-highlight filter-bloc"
 >
@@ -33,15 +25,29 @@
       >{{ item.firstName }} {{ item.lastName }}</option
     >
   </select>
-</form>
-<lib-hlsMessagingList
-  [list]="itemList"
-  [imageSource]="imageSource"
-  [caller]="'myDocuments'"
-  (downloadAction)="downloadFile($event)"
-  (visualizeAction)="visualizeFile($event)"
-  [isCheckbox]="false"
-></lib-hlsMessagingList>
+</form> -->
+<div class="form-inline">
+  <div class="col-md-5">
+    <lib-hls-generic-list-links
+      [page]="page"
+      [topText]="topText"
+      [backButton]="backButton"
+      (backButtonAction)="goBack()"
+      [person]="documentsService.person"
+    >
+    </lib-hls-generic-list-links>
+    <lib-hls-generic-list
+      [list]="itemList"
+      [imageSource]="imageSource"
+      [caller]="'myDocuments'"
+      (downloadAction)="downloadFile($event)"
+      (visualizeAction)="visualizeFile($event)"
+      [isCheckbox]="false"
+    ></lib-hls-generic-list>
+  </div>
+  <div class="col-md-7"></div>
+</div>
+
 <div
   class="search-results"
   infiniteScroll

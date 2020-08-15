@@ -326,7 +326,6 @@ export class MyPatientsComponent implements OnInit {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      type: "PATIENT",
       civility: patient.civility
     });
     myPatients.photoId = patient.photoId;

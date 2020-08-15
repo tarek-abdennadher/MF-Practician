@@ -1,12 +1,5 @@
-<div class="form-inline col-md-12">
-  <lib-hlsLinks
-    class="col-md-7 padd-right bloc-links"
-    [page]="page"
-    [topText]="topText"
-    [backButton]="backButton"
-    (backButtonAction)="goBack()"
-  >
-  </lib-hlsLinks>
+<!-- <div class="form-inline col-md-12">
+  
   <form [formGroup]="filterDocumentsForm" class="col-md-2">
     <select id="documentType" class="form-control col-md-12 arrows" formControlName="documentType" (change)="filter()">
       <option [value]="''"> Type</option>
@@ -26,14 +19,29 @@
 
     <i (click)="searchAction()" class="fa fa-search"></i>
   </div>
+</div> -->
+
+<div class="form-inline">
+  <div class="col-md-5">
+    <lib-hls-generic-list-links
+      [links]="links"
+      [types]="documentTypes"
+      [page]="page"
+      [topText]="topText"
+      [backButton]="backButton"
+      (backButtonAction)="goBack()"
+      (typeAction)="filter($event)"
+      (searchAction)="searchAction($event)"
+    >
+    </lib-hls-generic-list-links>
+    <lib-hls-generic-list
+      [isCheckbox]="isCheckbox"
+      [list]="itemsList"
+      (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)"
+      [caller]="'myDocuments'"
+      [imageSource]="imageSource"
+    ></lib-hls-generic-list>
+  </div>
+  <div class="col-md-7"></div>
 </div>
-<lib-hlsMessagingList
-  [isCheckbox]="isCheckbox"
-  [list]="itemsList"
-  (cardAction)="cardClicked($event)"
-  (detailAction)="cardClicked($event)"
-  [caller]="'myDocuments'"
-  [imageSource]="imageSource"
-></lib-hlsMessagingList>
-
-
