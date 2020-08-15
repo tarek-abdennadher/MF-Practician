@@ -1,3 +1,4 @@
+<div class="bg-color-grey">
 <lib-hlsNavBar
   [fullName]="featuresService.fullName"
   [imageSource]="featuresService.imageSource"
@@ -23,8 +24,11 @@
   [prohibitNumber]="featuresService.numberOfProhibited"
   [archivedNumber]="featuresService.numberOfArchivedPatient"
   [role]="role"
+  [fullName]="fullname"
+  [imageSource]="featuresService.imageSource"
   (inboxEvent)="displayInboxAction()"
   (sendEvent)="displaySendAction()"
+  (signOut)="signOutAction()"
   (sentEvent)="displaySentAction()"
   (forwardedEvent)="displayForwardedAction()"
   (archieveEvent)="displayArchieveAction()"
@@ -42,3 +46,4 @@
   <router-outlet></router-outlet>
   <app-new-message-mobile *ngIf="messaging === true"></app-new-message-mobile>
 </section>
+</div>

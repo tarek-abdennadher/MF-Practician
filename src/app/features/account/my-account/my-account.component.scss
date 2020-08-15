@@ -1,22 +1,63 @@
+
+$hlessy-dark-grey: #344448;
+$hlessy-blue: #2460b4;
+$helssy_white: #ffffff;
 $color-helssy-grey: #6e819bd4;
-.my-tab-icon {
-  margin-right: 8px;
+
+/* Title */
+.Mon-compte {
+  font-family: "Montserrat-Medium";
+  font-size: 28px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: $hlessy-dark-grey;
 }
+/* Navbar */
+.Rectangle {
+  border-radius: 14px;
+  border-bottom: none;
+  box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
+  background-color: $helssy_white;
+}
+.Mes-informations {
+  font-family: "Montserrat-Medium";
+  font-size: 13px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  text-align: left;
+  color: $hlessy-blue;
+  padding: 18px;
+}
+.my-tab-icon{
+  font-size: 15px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  text-align: left;
+  color: $hlessy-blue;
+  padding: 18px;
+}
+
 a.mat-tab-link {
-  color: $color-helssy-grey;
-  font-size: 17px;
-  font-family: "Segoe UI";
   min-width: 255px;
+
 }
 .link1 {
   color: $color-helssy-grey !important;
   font-size: 14px;
 }
 
-.mat-tab-label {
-  color: $color-helssy-grey !important;
+.mat-tab-label-active.active {
+  color: $hlessy-blue !important;
 }
 
 .actions span{
-  font-family: "Segoe UI Medium" !important;
+  font-family: "Montserrat-Medium" !important;
 }

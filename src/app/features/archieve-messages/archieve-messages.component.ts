@@ -100,13 +100,13 @@ export class ArchieveMessagesComponent implements OnInit {
       name:
         message.messageStatus == "TREATED"
           ? "répondu"
-          : message.seen
+          : message.toReceiversArchived[0].seen
           ? "Lu"
           : "Envoyé",
       value:
         message.messageStatus == "TREATED"
           ? 100
-          : message.seen
+          : message.toReceiversArchived[0].seen
           ? 50
           : 20,
     };

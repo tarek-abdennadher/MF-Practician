@@ -3,18 +3,33 @@
   <br />
   <div class="row">
     <div class=" col-sm-9 col-md-10 form-group title">
-      <hr width="3%" color="#ff0063" align="left" />
-      <i class="far fa-cog my-tab-icon"><span>&nbsp;&nbsp;{{ messages.categories_tab }}</span></i>
+      <span>&nbsp;&nbsp;{{ messages.categories_tab }}</span>
     </div>
-    <a (click)="addAction()" class="inline col-sm-2 col-md-1">
-      <i class="far fa-plus"></i><br /><span>Ajouter</span>
+    <a (click)="addAction()" class="inline col-md-12">
+      <i class="fas fa-plus-circle"></i
+      ><label for="categoryPraticien" class="col-sm-2 col-form-label">{{
+        messages.add_Category
+      }}</label>
     </a>
   </div>
   <br />
-  <div>
-    <lib-hlsMessagingList [list]="itemsList" [isMyPatients]="false" (cardAction)="cardClicked($event)"
-      (detailAction)="cardClicked($event)" (archieveAction)="deleteCategory($event)" [isCheckbox]="false" [caller]="'my_category'"
-      [imageSource]="imageSource">
-    </lib-hlsMessagingList>
-    <br />
+  <div class="form-inline">
+    <div class="col-md-5">
+      <lib-hls-generic-list
+        [list]="itemsList"
+        [isMyPatients]="false"
+        (cardAction)="cardClicked($event)"
+        (detailAction)="cardClicked($event)"
+        (archieveAction)="deleteCategory($event)"
+        [isCheckbox]="false"
+        [caller]="'my_category'"
+        [imageSource]="imageSource"
+      >
+      </lib-hls-generic-list>
+    </div>
+    <div class="col-md-7">
+      <!-- content for object details -->
+    </div>
   </div>
+  <br />
+</div>
