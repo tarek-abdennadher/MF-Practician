@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent } from "ng-apexcharts";
+import { ChartComponent, ApexDataLabels } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -13,7 +13,16 @@ export type ChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
   responsive: ApexResponsive[];
-  labels: any;
+  labels: ApexDataLabels;
+  fill: {
+    colors: ['#1a56a7', '#008fff', '#82f8ff']
+  };
+  colors: ['#1a56a7', '#008fff', '#82f8ff'];
+  legend: {
+    style: {
+      font: ["Montserrat"]
+    }
+  }
 };
 
 @Component({
@@ -36,10 +45,17 @@ export class ApxPieComponent implements OnInit {
     this.chartOptions = {
       series: [0, 0],
       chart: {
-        width: 380,
-        type: "pie",
+        width: 600,
+        type: "donut",
       },
-      labels: ["Chargement..", "Chargement.."],
+      labels: {
+        style: {
+          fontSize: "16px",
+          fontFamily: "Montserrat",
+          fontWeight: "normal",
+          colors: ["4a4a4a"]
+        }
+      },
       responsive: [
         {
           breakpoint: 480,
@@ -61,10 +77,9 @@ export class ApxPieComponent implements OnInit {
       this.chartOptions = {
         series: [...map.values()],
         chart: {
-          width: 480,
-          type: "pie",
+          width: 550,
+          type: "donut",
         },
-        labels: [...map.keys()],
         responsive: [
           {
             breakpoint: 480,
