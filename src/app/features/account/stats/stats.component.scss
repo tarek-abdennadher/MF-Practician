@@ -1,40 +1,23 @@
-$color-helssy-blue: #1a56a7;
-$color-helssy-grey: #6e819bd4;
-$color-white: #ffffff;
-
-.title {
-  color: $color-helssy-grey;
-  font-size: 18px !important;
-  line-height: 0px !important;
-  letter-spacing: -0.75px;
-  color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
-  i,
-  hr {
-    margin-left: 10px;
-  }
-  i {
-    font-size: 17px;
-  }
-  span {
-    font-size: 17px !important;
-    line-height: 0px !important;
-    letter-spacing: -0.75px;
-    color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
-  }
+/* Informations */
+.Rectangle-body {
+  background-color: rgba(243, 243, 243, 0.5);
+  border-radius: 14px;
+  margin-left: 50px;
+  margin-right: 50px ;
+  min-height: 946px;
+}
+.chart {
+border-right: 2px solid #e1e8f3;
+min-height: 946px;
 }
 .chart-title {
-  font-size: 17px !important;
-  line-height: 0px !important;
-  letter-spacing: -0.75px;
-  color: $color-helssy-grey;
-  font-family: "Segoe UI Medium" !important;
+  font-family: Montserrat-Medium;
+  font-size: 30px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.42px;
   text-align: center;
-}
-.chart{
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  border: 1px solid #F1F1F1;
-  border-radius: 5px;
-  opacity: 1;
+  color: #4a4a4a;
 }

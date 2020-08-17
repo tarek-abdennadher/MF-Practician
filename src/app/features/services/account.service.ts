@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) {}
+  constructor(public router: Router, public globalService: GlobalService) { }
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -72,7 +72,7 @@ export class AccountService {
     category: "Catégorie",
     other_phone: "Autre tél",
     start_date_leave: "Date de début des congés",
-    end_date_leave: "Date de fin de congés",
+    end_date_leave: "Date de fin des congés",
     date_error: "Veuillez vérifier la date saisie",
     validate: "Enregistrer",
     required: "Le champ est obligatoire",
@@ -146,8 +146,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-        "/" +
-        encodeURIComponent(pass)
+      "/" +
+      encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {

@@ -1,69 +1,61 @@
-<br />
-<div class="card">
-    <br />
-    <notifier-container></notifier-container>
-    <ng-template #customNotification let-notificationData="notification">
-        <div class="text-center" type="notificationData.type">
-            <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-            &nbsp;<span>{{ notificationData.message }}</span>
-        </div>
-    </ng-template>
-    <div class="col-md-12">
-        <div class="form-group title">
-            <hr width="3%" color="#ff0063" align="left" />
-            <i class="far fa-calendar-week "><span>&nbsp;&nbsp;{{ messages.leaves }}</span></i>
-        </div>
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+    <div class="text-center" type="notificationData.type">
+        <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+        &nbsp;<span>{{ notificationData.message }}</span>
     </div>
-    <br>
-    <a *ngIf="isInvalidDates" id="isInvalidDates" (click)="close()"
-        class="alert alert-danger alert-dismissible fade show pointer" role="alert">
-        {{ messages.date_error }}
-        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </a>
-    <div class="card-body">
-        <form [formGroup]="leavesForm">
-            <div class="container">
-                <div class="row col-md-12">
-                    <label for="activateLeaveAutoMessage" class=" col-form-label ">
-                        <input type="checkbox" formControlName="activateLeaveAutoMessage" />
-                        {{ messages.activate_auto_resp }}</label>
-                </div>
-                <br>
-                <div class="form-group row">
-                    <label for="leaveStartDate" class="col-sm-3 col-form-label">{{
-                        messages.start_date_leave
-                      }}</label>
-                    <div class="col-sm-4">
-                        <input type="text" formControlName="leaveStartDate" class="form-control"
-                            (bsValueChange)="dateChange($event, 'start')" placeholder="{{ messages.start_date_leave }}"
-                            bsDatepicker [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
-                        'is-invalid': submitted && f.leaveStartDate.errors
-                      }" />
-                    </div>
-
-                </div>
-                <div class="form-group row">
-                    <label for="title" class="col-sm-3 col-form-label">{{
-                        messages.end_date_leave
-                      }}</label>
-                    <div class="col-sm-4">
-                        <input type="text" formControlName="leaveEndDate" class="form-control"
-                            (bsValueChange)="dateChange($event, 'end')" placeholder="{{ messages.end_date_leave }}"
-                            bsDatepicker [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
-                        'is-invalid': submitted && f.leaveEndDate.errors
-                      }" />
-                    </div>
-
-                </div>
+</ng-template>
+<div class="card-body Rectangle-body">
+    <div class="row justify-content-center">
+        <a *ngIf="isInvalidDates" id="isInvalidDates" (click)="close()"
+            class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+            {{ messages.date_error }}
+            <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </a>
+    </div>
+    <form [formGroup]="leavesForm" class="Rectangle-inner-body">
+        <br>
+        <div class="row col-12 col-sm-12 justify-content-center">
+            <label for="activateLeaveAutoMessage" class="col-form-label">
+                <input type="checkbox" formControlName="activateLeaveAutoMessage" id="activateLeaveAutoMessage" />
+                &nbsp;&nbsp; {{ messages.activate_auto_resp }}</label>
+        </div>
+        <br>
+        <div class="row justify-content-center">
+            <div for="leaveStartDate" class="col-sm-3 col-form-label">{{
+                messages.start_date_leave
+              }}</div>
+            <div class="col-sm-4">
+                <input type="text" formControlName="leaveStartDate" class="form-control"
+                    (bsValueChange)="dateChange($event, 'start')" placeholder="{{ messages.start_date_leave }}"
+                    bsDatepicker [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
+                'is-invalid': submitted && f.leaveStartDate.errors
+              }" id="leaveStartDate" />
             </div>
-            <br />
-            <div class="row justify-content-center">
-                <button (click)="submit()" type="submit" class="btn btn-primary mr-2">
-                    <i class="fal fa-save">&nbsp;&nbsp; {{ messages.validate }}</i>
+        </div>
+        <br>
+        <div class="row justify-content-center">
+            <div for="title" class="col-sm-3 col-form-label">{{
+                messages.end_date_leave
+              }}</div>
+            <div class="col-sm-4">
+                <input type="text" formControlName="leaveEndDate" class="form-control"
+                    (bsValueChange)="dateChange($event, 'end')" placeholder="{{ messages.end_date_leave }}" bsDatepicker
+                    [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
+                'is-invalid': submitted && f.leaveEndDate.errors
+              }" id="leaveEndDate" />
+            </div>
+        </div>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-sm-7"></div>
+            <div class="col-sm-4">
+                <button type="submit" (click)="submit()" class="btn btn-primary" id="leave-submit-button">
+                    {{ messages.validate }}
                 </button>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>

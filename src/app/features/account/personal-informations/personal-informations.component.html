@@ -175,10 +175,89 @@
         </div>
       </div>
     </form>
+    <br>
+    <!-- Password Form -->
+    <div class=" password">
+      <div class="row justify-content-center">
+        <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
+          class="alert alert-success alert-dismissible fade show pointer" role="alert">
+          {{ messages.edit_password_success }}
+          <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </a>
+        <a *ngIf="showPasswordFailure" id="alertPasswordFailure" (click)="close()"
+          class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+          {{ passwordErrorMessage }}
+          <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </a>
+        <br />
+      </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="resetPasswordSubmit()">
+        <div class="row reset-password col-md-12">
+          {{ messages.reset_pwd }}
+        </div>
+        <br>
+        <div class="row">
+          <div class="col col-12 col-sm-6">
+            <label for="pass" class="col-sm-12 col-form-label">{{
+              messages.new_pwd
+            }}</label>
+            <div class="col-sm-12">
+              <input type="password" autocomplete="new-password" formControlName="new_password" class="form-control"
+                id="pass" [ngClass]="{
+            'is-invalid': passwordSubmitted && f2.new_password.errors
+          }" />
+              <div *ngIf="passwordSubmitted && f2.new_password.errors" class="invalid-feedback">
+                <div *ngIf="f2.new_password.errors.required">
+                  {{ errors.required }}
+                </div>
+                <div *ngIf="f2.new_password.errors.minlength">
+                  {{ errors.min_length }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-12 col-sm-6">
+            <label for="confirmpass" class="col-sm-12 col-form-label">{{
+              messages.confirm_pwd
+            }}</label>
+            <div class="col-sm-12">
+              <input type="password" autocomplete="new-password" class="form-control" formControlName="confirm_password"
+                id="confirmpass" [ngClass]="{
+            'is-invalid':
+              passwordSubmitted && f2.confirm_password.errors
+          }" />
+              <div *ngIf="passwordSubmitted && f2.confirm_password.errors" class="invalid-feedback">
+                <div *ngIf="f2.confirm_password.errors.required">
+                  {{ errors.required }}
+                </div>
+                <div *ngIf="f2.confirm_password.errors.mustMatch">
+                  {{ errors.must_match }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row ml-4">
+          <lib-hls-password-strength id="checkstrength" [passwordToCheck]="passwordForm.value.new_password"
+            (passwordStrength)="passwordValid($event)"></lib-hls-password-strength>
+        </div>
+        <br />
+        <div class="row justify-content-center">
+          <button type="submit" class="btn btn-primary" id="password-submit-button">
+            {{ messages.save }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 <!-- Practician Account -->
-<div class="card-body Rectangle-body" *ngIf="isPractician">
+<div class="card-body Rectangle-body-pract" *ngIf="isPractician">
   <div class="row justify-content-center">
     <a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
       role="alert">
@@ -432,82 +511,83 @@
       </div>
     </div>
   </form>
-</div>
-<!-- Password Form -->
-<div class="card-body Rectangle-body password">
-  <div class="row justify-content-center">
-    <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
-      class="alert alert-success alert-dismissible fade show pointer" role="alert">
-      {{ messages.edit_password_success }}
-      <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </a>
-    <a *ngIf="showPasswordFailure" id="alertPasswordFailure" (click)="close()"
-      class="alert alert-danger alert-dismissible fade show pointer" role="alert">
-      {{ passwordErrorMessage }}
-      <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </a>
-    <br />
-  </div>
-
-  <form [formGroup]="passwordForm" (ngSubmit)="resetPasswordSubmit()">
-    <div class="row reset-password col-md-12">
-      {{ messages.reset_pwd }}
+  <br>
+  <!-- Password Form -->
+  <div class="password">
+    <div class="row justify-content-center">
+      <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
+        class="alert alert-success alert-dismissible fade show pointer" role="alert">
+        {{ messages.edit_password_success }}
+        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </a>
+      <a *ngIf="showPasswordFailure" id="alertPasswordFailure" (click)="close()"
+        class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+        {{ passwordErrorMessage }}
+        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </a>
+      <br />
     </div>
-    <br>
-    <div class="row">
-      <div class="col col-12 col-sm-6">
-        <label for="pass" class="col-sm-12 col-form-label">{{
+
+    <form [formGroup]="passwordForm" (ngSubmit)="resetPasswordSubmit()">
+      <div class="row reset-password col-md-12">
+        {{ messages.reset_pwd }}
+      </div>
+      <br>
+      <div class="row">
+        <div class="col col-12 col-sm-6">
+          <label for="pass" class="col-sm-12 col-form-label">{{
               messages.new_pwd
             }}</label>
-        <div class="col-sm-12">
-          <input type="password" autocomplete="new-password" formControlName="new_password" class="form-control"
-            id="pass" [ngClass]="{
+          <div class="col-sm-12">
+            <input type="password" autocomplete="new-password" formControlName="new_password" class="form-control"
+              id="pass" [ngClass]="{
             'is-invalid': passwordSubmitted && f2.new_password.errors
           }" />
-          <div *ngIf="passwordSubmitted && f2.new_password.errors" class="invalid-feedback">
-            <div *ngIf="f2.new_password.errors.required">
-              {{ errors.required }}
-            </div>
-            <div *ngIf="f2.new_password.errors.minlength">
-              {{ errors.min_length }}
+            <div *ngIf="passwordSubmitted && f2.new_password.errors" class="invalid-feedback">
+              <div *ngIf="f2.new_password.errors.required">
+                {{ errors.required }}
+              </div>
+              <div *ngIf="f2.new_password.errors.minlength">
+                {{ errors.min_length }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col col-12 col-sm-6">
-        <label for="confirmpass" class="col-sm-12 col-form-label">{{
+        <div class="col col-12 col-sm-6">
+          <label for="confirmpass" class="col-sm-12 col-form-label">{{
               messages.confirm_pwd
             }}</label>
-        <div class="col-sm-12">
-          <input type="password" autocomplete="new-password" class="form-control" formControlName="confirm_password"
-            id="confirmpass" [ngClass]="{
+          <div class="col-sm-12">
+            <input type="password" autocomplete="new-password" class="form-control" formControlName="confirm_password"
+              id="confirmpass" [ngClass]="{
             'is-invalid':
               passwordSubmitted && f2.confirm_password.errors
           }" />
-          <div *ngIf="passwordSubmitted && f2.confirm_password.errors" class="invalid-feedback">
-            <div *ngIf="f2.confirm_password.errors.required">
-              {{ errors.required }}
-            </div>
-            <div *ngIf="f2.confirm_password.errors.mustMatch">
-              {{ errors.must_match }}
+            <div *ngIf="passwordSubmitted && f2.confirm_password.errors" class="invalid-feedback">
+              <div *ngIf="f2.confirm_password.errors.required">
+                {{ errors.required }}
+              </div>
+              <div *ngIf="f2.confirm_password.errors.mustMatch">
+                {{ errors.must_match }}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row ml-4">
-      <lib-hls-password-strength id="checkstrength" [passwordToCheck]="passwordForm.value.new_password"
-        (passwordStrength)="passwordValid($event)"></lib-hls-password-strength>
-    </div>
-    <br />
-    <div class="row justify-content-center">
-      <button type="submit" class="btn btn-primary" id="password-submit-button">
-        {{ messages.save }}
-      </button>
-    </div>
-  </form>
+      <div class="row ml-4">
+        <lib-hls-password-strength id="checkstrength" [passwordToCheck]="passwordForm.value.new_password"
+          (passwordStrength)="passwordValid($event)"></lib-hls-password-strength>
+      </div>
+      <br />
+      <div class="row justify-content-center ml-3">
+        <button type="submit" class="btn btn-primary" id="password-submit-button">
+          {{ messages.save }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
