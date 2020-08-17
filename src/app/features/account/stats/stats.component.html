@@ -1,21 +1,13 @@
-<br />
-<div class="card">
-    <br />
-    <div class="col-md-12">
-        <div class="form-group title">
-            <hr width="3%" color="#ff0063" align="left" />
-            <i class="far fa-chart-pie-alt "><span>&nbsp;&nbsp;{{ messages.stats_tab }}</span></i>
-        </div>
-    </div>
-    <br />
+<div class="card-body Rectangle-body">
     <div class="card-body row">
-        <div class=" chart col-6 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center">
             <br>
             <div class="chart-title"> {{ messages.patients }}</div>
             <br>
             <app-apx-pie [stats]="patientMap"></app-apx-pie>
         </div>
-        <div class=" chart col-6 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <br>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center">
             <br>
             <div class="chart-title"> {{ messages.tls }}</div>
             <br>

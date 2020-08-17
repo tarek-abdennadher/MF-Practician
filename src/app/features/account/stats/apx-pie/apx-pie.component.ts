@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent } from "ng-apexcharts";
+import { ChartComponent, ApexLegend } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -14,6 +14,7 @@ export type ChartOptions = {
   chart: ApexChart;
   responsive: ApexResponsive[];
   labels: any;
+  legend: ApexLegend
 };
 
 @Component({
@@ -36,19 +37,25 @@ export class ApxPieComponent implements OnInit {
     this.chartOptions = {
       series: [0, 0],
       chart: {
-        width: 380,
-        type: "pie",
+        width: 200,
+        type: "donut",
       },
       labels: ["Chargement..", "Chargement.."],
+      legend: {
+        floating: true,
+        horizontalAlign: 'center',
+        position: 'bottom',
+        fontSize: '16px',
+        fontFamily: 'Montserrat',
+        fontWeight: 'normal',
+      },
       responsive: [
         {
-          breakpoint: 480,
           options: {
+            breakpoint: 1000,
             chart: {
-              width: 200,
-            },
-            legend: {
-              position: "bottom",
+              width: 100,
+              type: "donut",
             },
           },
         },
@@ -61,19 +68,24 @@ export class ApxPieComponent implements OnInit {
       this.chartOptions = {
         series: [...map.values()],
         chart: {
-          width: 480,
-          type: "pie",
+          width: 430,
+          type: "donut",
+        },
+        legend: {
+          horizontalAlign: 'center',
+          position: 'bottom',
+          fontSize: '14px',
+          fontFamily: 'Montserrat',
+          fontWeight: 'normal'
         },
         labels: [...map.keys()],
         responsive: [
           {
-            breakpoint: 480,
             options: {
+              breakpoint: 1000,
               chart: {
-                width: 200,
-              },
-              legend: {
-                position: "bottom",
+                width: 100,
+                type: "donut",
               },
             },
           },
