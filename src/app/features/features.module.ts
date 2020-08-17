@@ -25,6 +25,7 @@ import { HlsPracticianDetailModule } from "hls-practician-detail";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
+import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
@@ -145,7 +146,8 @@ const notifierOptions: NotifierOptions = {
     MatProgressSpinnerModule,
     PipesModule,
     NgApexchartsModule,
-    HlsGenericListModule
+    HlsGenericListModule,
+    HlsGenericListLinksModule
   ],
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]

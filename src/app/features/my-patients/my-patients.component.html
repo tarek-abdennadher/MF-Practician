@@ -1,43 +1,52 @@
-<div class="form-inline col-md-12">
-  <lib-hlsLinks class=" col-7 col-sm-7 col-md-9 col-lg-10 col-xl-10" [links]="links" [page]="page" [topText]="topText"
-    [bottomText]="bottomText" [number]="number"></lib-hlsLinks>
-  <!-- ========= Mobile Block ============ -->
-  <form *ngIf="section == 'accepted'" class="col-4 show-mobile mt-5" [formGroup]="filterPatientsForm">
-    <select id="documentType" class="form-control" formControlName="category" (change)="filter()">
-      <option [value]="''"> Catégories</option>
-      <option *ngFor="let item of mesCategories" [value]="item.id">{{
-        item.name
-      }}</option>
-    </select>
-  </form>
-  <!-- =================================== -->
-  <form *ngIf="section == 'accepted'" class="col-5 col-sm-5 col-md-3 col-lg-2 col-xl-2 hide-mobile"
-    [formGroup]="filterPatientsForm">
-    <select id="documentType" class="form-control" formControlName="category" (change)="filter()">
-      <option [value]="''"> Catégories</option>
-      <option *ngFor="let item of mesCategories" [value]="item.id">{{
-        item.name
-      }}</option>
-    </select>
-  </form>
+<div class="form-inline">
+  <div class="col-md-5">
+    <lib-hls-generic-list-links
+      [links]="links"
+      [page]="page"
+      [topText]="topText"
+      [bottomText]="bottomText"
+      [number]="number"
+      [addText]="addText"
+      [types]="mesCategories"
+      (addAction)="addPatient()"
+      (typeAction)="listFilter($event)"
+    ></lib-hls-generic-list-links>
+    <lib-hls-generic-list
+      [isCheckbox]="false"
+      [list]="filtredPatients"
+      [imageSource]="imageSource"
+      [isInvitationPending]="isInvitation"
+      [isMyPatients]="isMyPatients"
+      (markAsSeenAction)="writeAction($event)"
+      (writeAction)="writeAction($event)"
+      (prohibitAction)="prohibitAction($event)"
+      (editAction)="editAction($event)"
+      (deleteAction)="deleteAction($event)"
+      (authorizedAction)="authorizeAction($event)"
+      (acceptedAction)="acceptedAction($event)"
+      (refuseAction)="refuseAction($event)"
+      (archivedAction)="archivedAction($event)"
+      (activatedAction)="activatedAction($event)"
+      (cardAction)="cardClicked($event)"
+      (upSortAction)="upSortClicked()"
+      (downSortAction)="downSortClicked()"
+      [hasPaging]="true"
+    ></lib-hls-generic-list>
+  </div>
+  <div class="col-md-7"></div>
 </div>
-<br />
-<div clas="row" *ngIf="section == 'accepted'">
-  <button (click)="addPatient()" mat-icon-button class="icon-button add-button" color="primary">
-    <mat-icon class="add-icon" fontSet="far" fontIcon="fa-plus"></mat-icon>
-  </button>
-</div>
-<br />
-<lib-hlsMessagingList [isCheckbox]="false" [list]="filtredPatients" [imageSource]="imageSource"
-  [isInvitationPending]="isInvitation" [isMyPatients]="isMyPatients" (markAsSeenAction)="writeAction($event)"
-  (writeAction)="writeAction($event)" (prohibitAction)="prohibitAction($event)" (editAction)="editAction($event)"
-  (deleteAction)="deleteAction($event)" (authorizedAction)="authorizeAction($event)"
-  (acceptedAction)="acceptedAction($event)" (refuseAction)="refuseAction($event)"
-  (archivedAction)="archivedAction($event)" (activatedAction)="activatedAction($event)"
-  (cardAction)="cardClicked($event)" (upSortAction)="upSortClicked()" (downSortAction)="downSortClicked()"
-  [hasPaging]="true"></lib-hlsMessagingList>
 
-<div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
-  (scrolled)="onScroll()"></div>
-<mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
+<div
+  class="search-results"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()"
+></div>
+<mat-progress-spinner
+  *ngIf="scroll"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
 </mat-progress-spinner>

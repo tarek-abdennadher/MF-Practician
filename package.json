@@ -37,6 +37,7 @@
     "hls-connexion": "git+ssh://git@bitbucket.org/aymax/hls-connexion.git#develop",
     "hls-documents": "git+ssh://git@bitbucket.org/aymax/hls-documents.git#develop",
     "hls-generic-list": "git+ssh://git@bitbucket.org/aymax/hls-generic-list.git#develop",
+    "hls-generic-list-links": "git+ssh://git@bitbucket.org/aymax/hls-generic-list-links.git#develop",
     "hls-inscription": "git+ssh://git@bitbucket.org/aymax/hls-inscription.git#develop",
     "hls-links": "git+ssh://git@bitbucket.org/aymax/hls-links.git#develop",
     "hls-messaging-detail": "git+ssh://git@bitbucket.org/aymax/hls-messaging-detail.git#develop",
