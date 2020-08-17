@@ -173,7 +173,7 @@ export class MyDocumentsComponent implements OnInit {
     practician.time = null;
     practician.isImportant = false;
     practician.hasFiles = false;
-    practician.isViewDetail = true;
+    practician.isViewDetail = false;
     practician.isChecked = false;
     practician.photoId = detail.photoId;
 
@@ -185,6 +185,7 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   cardClicked(item) {
+    this.documentService.setId(item.id);
     this.router.navigate(["/mes-documents/list/" + item.id], {
       queryParams: {
         type: this.filterDocumentsForm.value.documentType
@@ -193,12 +194,10 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   searchAction(value) {
-    console.log(value);
     if (this.filtredItemsList.length < this.itemsList.length) {
       this.filtredItemsList = this.itemsList;
     }
     this.itemsList = this.filtredItemsList;
-    console.log(this.itemsList);
     this.itemsList = this.itemsList.filter(item =>
       item.users[0].fullName.toLowerCase().includes(value)
     );

@@ -27,25 +27,16 @@
   </select>
 </form> -->
 <div class="form-inline">
-  <div class="col-md-5">
-    <lib-hls-generic-list-links
-      [page]="page"
-      [topText]="topText"
-      [backButton]="backButton"
-      (backButtonAction)="goBack()"
-      [person]="documentsService.person"
-    >
-    </lib-hls-generic-list-links>
-    <lib-hls-generic-list
+  <div class="col-md-12">
+    <lib-hlsMessagingList
       [list]="itemList"
       [imageSource]="imageSource"
       [caller]="'myDocuments'"
       (downloadAction)="downloadFile($event)"
       (visualizeAction)="visualizeFile($event)"
       [isCheckbox]="false"
-    ></lib-hls-generic-list>
+    ></lib-hlsMessagingList>
   </div>
-  <div class="col-md-7"></div>
 </div>
 
 <div

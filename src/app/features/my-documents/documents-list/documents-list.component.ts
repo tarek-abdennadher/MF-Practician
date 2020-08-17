@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnChanges } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MyDocumentsService } from "../my-documents.service";
 import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
@@ -8,12 +8,12 @@ import { observable, forkJoin, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
-import { CivilityPipe } from '@app/shared/pipes/civility.pipe';
+import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
 
 @Component({
   selector: "app-documents-list",
   templateUrl: "./documents-list.component.html",
-  styleUrls: ["./documents-list.component.scss"],
+  styleUrls: ["./documents-list.component.scss"]
 })
 export class DocumentsListComponent implements OnInit {
   idSenderReceiver: any;
@@ -25,7 +25,7 @@ export class DocumentsListComponent implements OnInit {
   observables = [];
   attachementsList: any[];
   itemList = [];
-  imageSource : string;
+  imageSource: string;
   public filterDocumentsForm: FormGroup;
   documentTypes = new Set();
   destinations = new Set();
@@ -35,7 +35,14 @@ export class DocumentsListComponent implements OnInit {
   pageNo = 0;
   listLength = 0;
   scroll = false;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
   constructor(
     private globalService: GlobalService,
     private router: Router,
@@ -48,34 +55,37 @@ export class DocumentsListComponent implements OnInit {
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
-      destination: [""],
+      destination: [""]
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
-
+  realTime() {
+    this.documentsService.getIdObs().subscribe(resp => {
+      this.idSenderReceiver = resp;
+      this.filter();
+    });
+  }
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(params => {
       this.idSenderReceiver = params["id"];
     });
-    this.route.queryParams.subscribe(
-      params => {
-        this.filterDocumentsForm.patchValue({
-          documentType: params["type"],
-        });
-        this.filter();
-      }
-    );
+    this.route.queryParams.subscribe(params => {
+      this.filterDocumentsForm.patchValue({
+        documentType: params["type"]
+      });
+      this.filter();
+    });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);
+    this.realTime();
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
+    this.accountService.getCurrentAccount().subscribe(account => {
       if (account && account.patient) {
         this.account = account.patient;
         this.linkedPatients = this.account.linkedPatients;
-        this.linkedPatients.forEach((patient) => {
+        this.linkedPatients.forEach(patient => {
           this.destinations.add(patient);
         });
       }
@@ -83,54 +93,64 @@ export class DocumentsListComponent implements OnInit {
   }
 
   getAccountDetails(id) {
-    this.accountService.getAccountDetails(id).subscribe((account) => {
+    this.accountService.getAccountDetails(id).subscribe(account => {
       let details = this.getDetailSwitchRole(account);
       if (details.photoId) {
         this.documentsService.downloadFile(details.photoId).subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               if (account.role == "PRACTICIAN") {
                 this.documentsService.person = {
                   fullName: `${details.jobTitle} ${details.fullName}`,
-                  picture: myReader.result,
+                  picture: myReader.result
                 };
               } else {
                 this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: myReader.result,
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${
+                    details.fullName
+                  }`,
+                  picture: myReader.result
                 };
               }
             };
             let ok = myReader.readAsDataURL(response.body);
           },
-          (error) => {
+          error => {
             if (account.role == "PATIENT") {
               if (details.civility == "M") {
                 this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: this.avatars.man,
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${
+                    details.fullName
+                  }`,
+                  picture: this.avatars.man
                 };
               } else if (details.civility == "MME") {
                 this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: this.avatars.women,
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${
+                    details.fullName
+                  }`,
+                  picture: this.avatars.women
                 };
               } else if (details.civility == "CHILD") {
                 this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                  picture: this.avatars.child,
+                  fullName: `${this.civilityPipe.transform(details.civility)} ${
+                    details.fullName
+                  }`,
+                  picture: this.avatars.child
                 };
               }
             } else if (account.role == "PRACTICIAN") {
               this.documentsService.person = {
                 fullName: `${details.jobTitle} ${details.fullName}`,
-                picture: this.avatars.doctor,
+                picture: this.avatars.doctor
               };
             } else if (account.role == "SECRETARY") {
               this.documentsService.person = {
-                fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-                picture: this.avatars.secretary,
+                fullName: `${this.civilityPipe.transform(details.civility)} ${
+                  details.fullName
+                }`,
+                picture: this.avatars.secretary
               };
             }
           }
@@ -139,29 +159,37 @@ export class DocumentsListComponent implements OnInit {
         if (account.role == "PATIENT") {
           if (details.civility == "M") {
             this.documentsService.person = {
-              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: this.avatars.man,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${
+                details.fullName
+              }`,
+              picture: this.avatars.man
             };
           } else if (details.civility == "MME") {
             this.documentsService.person = {
-              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: this.avatars.women,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${
+                details.fullName
+              }`,
+              picture: this.avatars.women
             };
           } else if (details.civility == "CHILD") {
             this.documentsService.person = {
-              fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-              picture: this.avatars.child,
+              fullName: `${this.civilityPipe.transform(details.civility)} ${
+                details.fullName
+              }`,
+              picture: this.avatars.child
             };
           }
         } else if (account.role == "PRACTICIAN") {
           this.documentsService.person = {
             fullName: `${details.jobTitle} ${details.fullName}`,
-            picture: this.avatars.doctor,
+            picture: this.avatars.doctor
           };
         } else if (account.role == "SECRETARY") {
           this.documentsService.person = {
-            fullName: `${this.civilityPipe.transform(details.civility)} ${details.fullName}`,
-            picture: this.avatars.secretary,
+            fullName: `${this.civilityPipe.transform(details.civility)} ${
+              details.fullName
+            }`,
+            picture: this.avatars.secretary
           };
         }
       }
@@ -174,21 +202,21 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsBySenderOrReceiverId(id, pageNo)
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe((nodes) => {
+        forkJoin(this.observables).subscribe(nodes => {
           this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
@@ -196,7 +224,7 @@ export class DocumentsListComponent implements OnInit {
               const extention = splitName[splitName.length - 1];
 
               const attachement = this.attachementsList.find(
-                (x) => x.nodeId == node.entry.id
+                x => x.nodeId == node.entry.id
               );
 
               this.itemList.push(this.parseMessage(attachement, node.entry));
@@ -222,12 +250,12 @@ export class DocumentsListComponent implements OnInit {
           ),
           title: attachement.senderForId
             ? "Pour " + attachement.senderForDetails.fullName
-            : null,
-        },
+            : null
+        }
       ],
       object: {
         name: attachement.object,
-        isImportant: false,
+        isImportant: false
       },
       nodeId: attachement.nodeId,
       time: attachement.updatedAt,
@@ -274,7 +302,7 @@ export class DocumentsListComponent implements OnInit {
   downloadFile(attachement) {
     this.documentsService
       .downloadFile(attachement.nodeId)
-      .subscribe((response) => {
+      .subscribe(response => {
         const blob = new Blob([response.body]);
         const filename = attachement.realName;
         const filenameDisplay = filename;
@@ -308,14 +336,14 @@ export class DocumentsListComponent implements OnInit {
   visualizeFile(attachement) {
     this.documentsService
       .downloadFile(attachement.nodeId)
-      .subscribe((response) => {
+      .subscribe(response => {
         const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
 
         const blob = new Blob([response.body], {
-          type: this.getType(extension),
+          type: this.getType(extension)
         });
 
         let resultname: string;
@@ -342,8 +370,8 @@ export class DocumentsListComponent implements OnInit {
       var win = window.open();
       win.document.write(
         '<iframe src="' +
-        fileURL +
-        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+          fileURL +
+          '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
       );
     }
   }
@@ -357,21 +385,21 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsByObject(id, object, pageNo)
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe((nodes) => {
+        forkJoin(this.observables).subscribe(nodes => {
           this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
@@ -379,7 +407,7 @@ export class DocumentsListComponent implements OnInit {
               const extention = splitName[splitName.length - 1];
 
               const attachement = this.attachementsList.find(
-                (x) => x.nodeId == node.entry.id
+                x => x.nodeId == node.entry.id
               );
 
               this.itemList.push(this.parseMessage(attachement, node.entry));
@@ -394,21 +422,21 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsBySenderForId(id, senderForId, pageNo)
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe((nodes) => {
+        forkJoin(this.observables).subscribe(nodes => {
           this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
@@ -416,7 +444,7 @@ export class DocumentsListComponent implements OnInit {
               const extention = splitName[splitName.length - 1];
 
               const attachement = this.attachementsList.find(
-                (x) => x.nodeId == node.entry.id
+                x => x.nodeId == node.entry.id
               );
 
               this.itemList.push(this.parseMessage(attachement, node.entry));
@@ -432,21 +460,21 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsBySenderForIdAndObject(id, senderForId, object, pageNo)
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe((nodes) => {
+        forkJoin(this.observables).subscribe(nodes => {
           this.scroll = false;
           nodes.forEach((node: any) => {
             if (node.entry) {
@@ -454,7 +482,7 @@ export class DocumentsListComponent implements OnInit {
               const extention = splitName[splitName.length - 1];
 
               const attachement = this.attachementsList.find(
-                (x) => x.nodeId == node.entry.id
+                x => x.nodeId == node.entry.id
               );
               this.itemList.push(this.parseMessage(attachement, node.entry));
             }
