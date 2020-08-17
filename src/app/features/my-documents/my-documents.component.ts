@@ -378,7 +378,6 @@ export class MyDocumentsComponent implements OnInit {
     this.documentService.getAllObjects().subscribe(objects => {
       this.documentTypes.add("Types");
       objects.forEach(this.documentTypes.add, this.documentTypes);
-      // this.documentTypes = objects;
     });
   }
   getPersonalInfo() {
