@@ -1,4 +1,20 @@
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+    <div class="text-center" type="notificationData.type">
+        <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+        &nbsp;<span>{{ notificationData.message }}</span>
+    </div>
+</ng-template>
 <div class="card-body Rectangle-body">
+    <div class="row justify-content-center">
+        <a *ngIf="isInvalidDates" id="isInvalidDates" (click)="close()"
+            class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+            {{ messages.date_error }}
+            <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </a>
+    </div>
     <form [formGroup]="leavesForm" class="Rectangle-inner-body">
         <br>
         <div class="row col-12 col-sm-12 justify-content-center">
