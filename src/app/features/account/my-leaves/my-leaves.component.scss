@@ -13,7 +13,7 @@
 .col-form-label{
   font-family: Montserrat-Medium;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 1000;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
@@ -32,7 +32,7 @@ background-color: #1a56a7 ;
   // Text CSS
   font-family: Montserrat-Medium;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 1000;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
@@ -56,4 +56,40 @@ background-color: #1a56a7 ;
   border-radius: 6px;
   border: solid 1px #f82e6c;
   background-color: #ffffff;
+}
+// placeholder CSS
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
 }

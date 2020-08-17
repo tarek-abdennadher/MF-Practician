@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent, ApexDataLabels } from "ng-apexcharts";
+import { ChartComponent, ApexLegend } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -13,16 +13,8 @@ export type ChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
   responsive: ApexResponsive[];
-  labels: ApexDataLabels;
-  fill: {
-    colors: ['#1a56a7', '#008fff', '#82f8ff']
-  };
-  colors: ['#1a56a7', '#008fff', '#82f8ff'];
-  legend: {
-    style: {
-      font: ["Montserrat"]
-    }
-  }
+  labels: any;
+  legend: ApexLegend
 };
 
 @Component({
@@ -45,26 +37,25 @@ export class ApxPieComponent implements OnInit {
     this.chartOptions = {
       series: [0, 0],
       chart: {
-        width: 600,
+        width: 200,
         type: "donut",
       },
-      labels: {
-        style: {
-          fontSize: "16px",
-          fontFamily: "Montserrat",
-          fontWeight: "normal",
-          colors: ["4a4a4a"]
-        }
+      labels: ["Chargement..", "Chargement.."],
+      legend: {
+        floating: true,
+        horizontalAlign: 'center',
+        position: 'bottom',
+        fontSize: '16px',
+        fontFamily: 'Montserrat',
+        fontWeight: 'normal',
       },
       responsive: [
         {
-          breakpoint: 480,
           options: {
+            breakpoint: 1000,
             chart: {
-              width: 200,
-            },
-            legend: {
-              position: "bottom",
+              width: 100,
+              type: "donut",
             },
           },
         },
@@ -77,18 +68,24 @@ export class ApxPieComponent implements OnInit {
       this.chartOptions = {
         series: [...map.values()],
         chart: {
-          width: 550,
+          width: 430,
           type: "donut",
         },
+        legend: {
+          horizontalAlign: 'center',
+          position: 'bottom',
+          fontSize: '14px',
+          fontFamily: 'Montserrat',
+          fontWeight: 'normal'
+        },
+        labels: [...map.keys()],
         responsive: [
           {
-            breakpoint: 480,
             options: {
+              breakpoint: 1000,
               chart: {
-                width: 200,
-              },
-              legend: {
-                position: "bottom",
+                width: 100,
+                type: "donut",
               },
             },
           },

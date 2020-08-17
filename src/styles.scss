@@ -104,6 +104,16 @@ $patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn
 html * {
   font-family: "Montserrat";
 }
+html,
+body {
+  margin: 0;
+  @media (min-width: 400px) {
+    zoom: 90%;
+  }
+  @media (min-width: 1920px) {
+    zoom: 100%;
+  }
+}
 
 input,
 select,
