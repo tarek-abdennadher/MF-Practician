@@ -1,31 +1,3 @@
-<!-- <form
-  [formGroup]="filterDocumentsForm"
-  class="d-flex p-2 flex-row-reverse bd-highlight filter-bloc"
->
-  <select
-    id="documentType"
-    class="form-control col-md-2 arrows"
-    formControlName="documentType"
-    (change)="filter()"
-  >
-    <option [value]="''"> Type</option>
-    <option *ngFor="let item of documentTypes" [value]="item">{{
-      item
-    }}</option>
-  </select>
-  <select
-    *ngIf="destinations?.size > 0"
-    id="destination"
-    class="form-control col-md-2 arrows"
-    formControlName="destination"
-    (change)="filter()"
-  >
-    <option [value]="''">Moi même </option>
-    <option *ngFor="let item of destinations" [value]="item.id"
-      >{{ item.firstName }} {{ item.lastName }}</option
-    >
-  </select>
-</form> -->
 <div class="form-inline">
   <div class="col-md-12">
     <lib-hlsMessagingList
