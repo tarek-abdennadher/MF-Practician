@@ -376,7 +376,7 @@ export class MyDocumentsComponent implements OnInit {
   }
   getAllObjects() {
     this.documentService.getAllObjects().subscribe(objects => {
-      this.documentTypes.add("Types");
+      this.documentTypes.add("Tout");
       objects.forEach(this.documentTypes.add, this.documentTypes);
     });
   }
@@ -393,21 +393,21 @@ export class MyDocumentsComponent implements OnInit {
   }
   filter(value) {
     this.itemsList = [];
-    if (this.filterDocumentsForm.value.destination != "" && value != "Types") {
+    if (this.filterDocumentsForm.value.destination != "" && value != "Tout") {
       this.getMySendersAndReceiversBySenderForAndObject(
         this.filterDocumentsForm.value.destination,
         value
       );
     } else if (
       this.filterDocumentsForm.value.destination != "" &&
-      value == "Types"
+      value == "Tout"
     ) {
       this.getMySendersAndReceiversBySenderFor(
         this.filterDocumentsForm.value.destination
       );
     } else if (
       this.filterDocumentsForm.value.destination == "" &&
-      value != "Types"
+      value != "Tout"
     ) {
       this.getMySendersAndReceiversByObject(value);
     } else {

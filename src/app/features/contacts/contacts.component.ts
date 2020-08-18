@@ -221,7 +221,7 @@ export class ContactsComponent implements OnInit {
   }
   listFilter(value: string) {
     this.filtredItemsList =
-      value != "categories" ? this.performFilter(value) : this.itemsList;
+      value != "Tout" ? this.performFilter(value) : this.itemsList;
   }
 
   performFilter(filterBy: string) {
@@ -340,7 +340,7 @@ export class ContactsComponent implements OnInit {
       specialitiesList => {
         this.specialities = specialitiesList;
         this.types = this.specialities.map(s => s.name);
-        this.types.unshift("categories");
+        this.types.unshift("Tout");
       },
       error => {
         console.log("en attendant un model de popup à afficher");
