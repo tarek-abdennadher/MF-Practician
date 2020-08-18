@@ -3,7 +3,7 @@
     <div formArrayName="phoneList" *ngFor="let p of phoneList.controls; let i = index">
       <div [formGroupName]="i" class="phoneList">
         <div class="row ml-1 ">
-          <div class="col-6 form-group row mobile-display-none">
+          <div class="col-12 col-sm-12 form-group row mobile-display-none">
             <international-phone-number class="form-control" formControlName="phoneNumber" placeholder="Téléphone"
               [maxlength]="20" [defaultCountry]="phoneList.at(i).get('id') ? '' : 'fr'" [ngClass]="{
                         'is-invalid': submitted && p.controls.phoneNumber.errors
@@ -18,14 +18,15 @@
               {{ errorMessage }}
             </div>
           </div>
-          <div class="ml-3 col-5 mobile-display-none">
+          <div class="col-9 col-sm-10 col-md-10 col-xl-10 col-lg-10 mobile-display-none">
             <input type="text" class="form-control" formControlName="note" placeholder="Préciser..." />
           </div>
-          <div class="col-1 mobile-display-none">
+          <div class="col-2 col-sm-1 col-md-1 col-xl-1 col-lg-1 mobile-display-none phone-mobile">
             <button (click)="removePhone(i)" class="btn btn-xs btn-icon mb-2">
               <i class="far fa-trash-alt"></i>
             </button>
           </div>
+
 
 
           <div class="col-12 col-sm-6 form-group row mobile-display-flex">
@@ -43,15 +44,16 @@
               {{ errorMessage }}
             </div>
           </div>
-          <div class="col-10 col-sm-5 mobile-display-flex ">
+          <div class="col-10 col-sm-5 col-md-5 mobile-display-flex ">
             <input type="text" class="form-control" formControlName="note" placeholder="Préciser..." />
           </div>
-          <div class="col-1 col-sm-1 mobile-display-flex">
+          <div class="col-1 col-sm-1 col-md-1 mobile-display-flex">
             <button (click)="removePhone(i)" class="btn btn-xs btn-icon">
               <i class="far fa-trash-alt"></i>
             </button>
           </div>
         </div>
+
       </div>
     </div>
   </form>

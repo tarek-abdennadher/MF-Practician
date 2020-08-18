@@ -64,7 +64,7 @@ export class AccountService {
     date: "Date (*)",
     website: "Site web",
     my_contacts: "Mes contacts",
-    patients: "Patients",
+    patients: "PATIENTS",
     tls: "TLS",
     leaves: "Mes congés",
     birthday: "Date de naissance",
@@ -102,7 +102,8 @@ export class AccountService {
     info2:
       "Vous pouvez à partir de cet onglet, définir les catégories des patients",
     resp: "Responsable",
-    activate_auto_resp: "Activer la réponse automatique en cas de congés ?"
+    activate_auto_resp: "Activer la réponse automatique en cas de congés ?",
+    sec_detail: "Détails du secrétaire"
   };
   public errors = {
     required: "Le champ est obligatoire",

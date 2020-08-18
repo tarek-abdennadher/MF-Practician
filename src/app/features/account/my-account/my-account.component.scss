@@ -1,6 +1,6 @@
 
 $hlessy-dark-grey: #344448;
-$hlessy-blue: #2460b4;
+$hlessy-blue: #1a56a7;
 $helssy_white: #ffffff;
 $color-helssy-grey: #6e819bd4;
 
@@ -34,7 +34,6 @@ $color-helssy-grey: #6e819bd4;
   letter-spacing: -0.18px;
   text-align: left;
   color: $hlessy-blue;
-  padding: 18px;
 }
 .my-tab-icon{
   font-size: 15px;
@@ -48,8 +47,7 @@ $color-helssy-grey: #6e819bd4;
 }
 
 a.mat-tab-link {
-  min-width: 255px;
-
+  min-width: 230px;
 }
 .link1 {
   color: $color-helssy-grey !important;

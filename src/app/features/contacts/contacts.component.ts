@@ -15,6 +15,7 @@ import { FeaturesService } from "../features.service";
   styleUrls: ["./contacts.component.scss"]
 })
 export class ContactsComponent implements OnInit {
+  selectedSecretary: number = null;
   specialities: Array<Speciality>;
   users: Array<any> = new Array<any>();
   itemsList: Array<any> = new Array<any>();
@@ -288,7 +289,7 @@ export class ContactsComponent implements OnInit {
     ) {
       this.router.navigate(["/praticien-detail/" + item.practicianId]);
     } else if (item.users[0].contactType == "SECRETARY") {
-      this.router.navigate(["/secretaire-detail/" + item.id]);
+      this.selectedSecretary = item.id
     }
   }
   markAsSeenClicked(item) {

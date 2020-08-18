@@ -27,7 +27,6 @@ import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { SendMessageComponent } from "./send-message/send-message.component";
-import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
@@ -107,7 +106,6 @@ const notifierOptions: NotifierOptions = {
     PracticianDetailComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
-    SecretaryDetailComponent,
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
     PatientDetailComponent,
@@ -152,4 +150,4 @@ const notifierOptions: NotifierOptions = {
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
-export class FeaturesModule {}
+export class FeaturesModule { }
