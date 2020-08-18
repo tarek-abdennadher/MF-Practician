@@ -759,4 +759,9 @@ export class MessagingListComponent implements OnInit {
     this.getMyInbox(this.paramsId, this.pageNo);
   }
 
+   public refreshMessagingList() {
+     this.filtredItemList = [];
+     this.ngOnInit();
+   }
+
 }
