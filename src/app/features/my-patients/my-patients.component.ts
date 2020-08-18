@@ -538,14 +538,15 @@ export class MyPatientsComponent implements OnInit {
     this.categoryService.getMyCategories().subscribe(categories => {
       this.mesCategories = categories;
       this.mesCategories = this.mesCategories.map(s => s.name);
-      this.mesCategories.unshift("categories");
+      this.mesCategories.unshift("Tout");
     });
   }
   listFilter(value: string) {
+    console.log(value);
     this.pageNo = 0;
     this.filtredPatients = [];
     this.myPatients = [];
-    if (value != "categories") {
+    if (value != "Tout") {
       this.getPatientsOfCurrentParacticianByCategory(this.pageNo, value);
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
@@ -564,7 +565,7 @@ export class MyPatientsComponent implements OnInit {
 
   resetList() {
     this.pageNo = 0;
-    this.listFilter("categories");
+    this.listFilter("Tout");
   }
   addPatient() {
     this.router.navigate(["ajout-patient"]);
