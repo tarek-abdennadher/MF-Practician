@@ -59,7 +59,6 @@
 @font-face {
   font-family: "Montserrat-Medium";
   src: url("./assets/fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
-  font-weight: normal;
   font-style: normal;
 }
 @font-face {
@@ -101,6 +100,7 @@ $patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn
 @include angular-material-theme($patient-theme);
 
 /* You can add global styles to this file, and also import other style files */
+$helssy-blue: #1a56a7;
 html * {
   font-family: "Montserrat";
 }
@@ -113,6 +113,7 @@ body {
   @media (min-width: 1920px) {
     zoom: 100%;
   }
+  background-color: #fbfbfb;
 }
 
 input,
@@ -306,3 +307,17 @@ a {
   background-color: rgb(66, 134, 244);
 }
 /* ====================================================================== */
+
+.mat-checkbox-ripple .mat-ripple-element,.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: $helssy_blue;
+
+}
+
+.mat-checkbox-inner-container {
+  height: 18px !important;
+  width: 18px !important;
+}
+
+.mat-checkbox-layout {
+ margin-bottom: unset;
+}
