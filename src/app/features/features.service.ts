@@ -277,4 +277,8 @@ export class FeaturesService {
       this.globalService.url.favorite + "count-invitations"
     );
   }
+
+  public firstLetterUpper(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 }
