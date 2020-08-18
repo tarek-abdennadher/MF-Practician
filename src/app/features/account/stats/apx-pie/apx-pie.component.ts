@@ -14,7 +14,8 @@ export type ChartOptions = {
   chart: ApexChart;
   responsive: ApexResponsive[];
   labels: any;
-  legend: ApexLegend
+  legend: ApexLegend,
+  colors: string[];
 };
 
 @Component({
@@ -40,14 +41,18 @@ export class ApxPieComponent implements OnInit {
         width: 200,
         type: "donut",
       },
+      colors: ["#008fff", "#1a56a7", "#82f8ff"],
       labels: ["Chargement..", "Chargement.."],
       legend: {
         floating: true,
-        horizontalAlign: 'center',
+        horizontalAlign: 'left',
         position: 'bottom',
         fontSize: '16px',
         fontFamily: 'Montserrat',
         fontWeight: 'normal',
+        labels: {
+          colors: ["#4a4a4a"]
+        }
       },
       responsive: [
         {
@@ -71,12 +76,16 @@ export class ApxPieComponent implements OnInit {
           width: 430,
           type: "donut",
         },
+        colors: ["#008fff", "#1a56a7", "#82f8ff"],
         legend: {
-          horizontalAlign: 'center',
+          horizontalAlign: 'left',
           position: 'bottom',
           fontSize: '14px',
           fontFamily: 'Montserrat',
-          fontWeight: 'normal'
+          fontWeight: 'normal',
+          labels: {
+            colors: ["#4a4a4a"]
+          }
         },
         labels: [...map.keys()],
         responsive: [

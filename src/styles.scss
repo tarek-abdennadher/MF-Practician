@@ -59,8 +59,9 @@
 @font-face {
   font-family: "Montserrat-Medium";
   src: url("./assets/fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
-  font-weight: normal;
+  font-weight: 1000 !important;
   font-style: normal;
+  font-stretch: normal;
 }
 @font-face {
   font-family: "Montserrat-SemiBold";

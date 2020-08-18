@@ -1,30 +1,17 @@
-<div class="form-inline">
+<div class="row">
   <div class="col-md-5">
-    <lib-hls-generic-list-links
-      [links]="links"
-      [types]="types"
-      [topText]="topText"
-      [addText]="addText"
-      [page]="page"
-      (addAction)="addContact()"
-      (typeAction)="listFilter($event)"
-    >
+    <lib-hls-generic-list-links [links]="links" [types]="types" [topText]="topText" [addText]="addText" [page]="page"
+      (addAction)="addContact()" (typeAction)="listFilter($event)">
     </lib-hls-generic-list-links>
-    <lib-hls-generic-list
-      [list]="filtredItemsList"
-      [isMyPatients]="false"
-      (cardAction)="cardClicked($event)"
-      (detailAction)="cardClicked($event)"
-      (markAsSeenAction)="markAsSeenClicked($event)"
-      (archieveAction)="archieveClicked($event)"
-      (selectItemAction)="selectItem($event)"
-      [imageSource]="imageSource"
-      [isCheckbox]="userRole == 'PRACTICIAN'"
-    >
+    <lib-hls-generic-list [list]="filtredItemsList" [isMyPatients]="false" (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)" (markAsSeenAction)="markAsSeenClicked($event)"
+      (archieveAction)="archieveClicked($event)" (selectItemAction)="selectItem($event)" [imageSource]="imageSource"
+      [isCheckbox]="userRole == 'PRACTICIAN'">
     </lib-hls-generic-list>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-7 mt-2" *ngIf="selectedSecretary !=null">
     <!-- content for object details -->
+    <app-secretary-details [secertaryId]="selectedSecretary"></app-secretary-details>
   </div>
 </div>
 <notifier-container></notifier-container>

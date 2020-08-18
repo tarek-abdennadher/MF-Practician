@@ -64,7 +64,7 @@ export class AccountService {
     date: "Date (*)",
     website: "Site web",
     my_contacts: "Mes contacts",
-    patients: "Patients",
+    patients: "PATIENTS",
     tls: "TLS",
     leaves: "Mes congés",
     birthday: "Date de naissance",
