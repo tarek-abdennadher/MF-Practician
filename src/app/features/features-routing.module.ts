@@ -12,7 +12,6 @@ import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.compo
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
 import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 import { SendMessageComponent } from "./send-message/send-message.component";
-import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
@@ -23,6 +22,7 @@ import { CategoryComponent } from "./account/category/category.component";
 import { CategoryDetailComponent } from "./account/category/category-detail/category-detail.component";
 import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
 import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
+import { SecretaryDetailsComponent } from '@app/shared/components/secretary-details/secretary-details.component';
 
 const routes: Routes = [
   {
@@ -110,10 +110,6 @@ const routes: Routes = [
           ),
       },
       {
-        path: "secretaire-detail/:id",
-        component: SecretaryDetailComponent,
-      },
-      {
         path: "praticien-invitation",
         component: PracticianInvitationComponent,
       },
@@ -142,4 +138,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [MessagingDetailService, MessagingDetailResolve],
 })
-export class FeaturesRoutingModule {}
+export class FeaturesRoutingModule { }
