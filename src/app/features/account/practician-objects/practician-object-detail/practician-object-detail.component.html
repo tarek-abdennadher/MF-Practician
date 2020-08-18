@@ -117,12 +117,12 @@
             messages.content
           }}</label>
           <div class="col-sm-9">
-<!--            <hls-ckeditor-->
-<!--              [ngClass]="{-->
-<!--                'is-invalid': submitted && ctr.content.errors-->
-<!--              }"-->
-<!--              [ctrl]="ctr.content"-->
-<!--            ></hls-ckeditor>-->
+            <hls-ckeditor
+              [ngClass]="{
+                'is-invalid': submitted && ctr.content.errors
+              }"
+              [ctrl]="ctr.content"
+            ></hls-ckeditor>
             <div *ngIf="submitted && ctr.content.errors" class="invalid-feedback">
               <div *ngIf="ctr.content.errors.required">
                 {{ messages.required }}
@@ -178,12 +178,12 @@
             messages.docBody
           }}</label>
           <div class="col-sm-9">
-<!--            <hls-ckeditor-->
-<!--              [ngClass]="{-->
-<!--                'is-invalid': submitted && ctr.docBody.errors-->
-<!--              }"-->
-<!--              [ctrl]="ctr.docBody"-->
-<!--            ></hls-ckeditor>-->
+            <hls-ckeditor
+              [ngClass]="{
+                'is-invalid': submitted && ctr.docBody.errors
+              }"
+              [ctrl]="ctr.docBody"
+            ></hls-ckeditor>
             <div *ngIf="submitted && ctr.docBody.errors" class="invalid-feedback">
               <div *ngIf="ctr.docBody.errors.required">
                 {{ messages.required }}
