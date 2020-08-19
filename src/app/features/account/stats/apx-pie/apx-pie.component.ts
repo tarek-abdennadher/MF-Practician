@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent, ApexLegend } from "ng-apexcharts";
+import { ChartComponent, ApexLegend, ApexFill } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -62,6 +62,8 @@ export class ApxPieComponent implements OnInit {
               width: 100,
               type: "donut",
             },
+            colors: ["#008fff", "#1a56a7", "#82f8ff"]
+
           },
         },
       ],
@@ -96,6 +98,7 @@ export class ApxPieComponent implements OnInit {
                 width: 100,
                 type: "donut",
               },
+              colors: ["#008fff", "#1a56a7", "#82f8ff"],
             },
           },
         ],
