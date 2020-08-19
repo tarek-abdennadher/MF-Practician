@@ -76,12 +76,12 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
   color: white;
   border-color: #41bddf;
-  font-family: "Segoe UI" !important;
+  font-family: "Montserrat" !important;
 }
 .btn-primary {
   background-color: #41bddf !important;
   text-align: center !important;
-  font-family: "Segoe UI" !important;
+  font-family: "Montserrat" !important;
   box-shadow: none;
 }
 .btn-success {
@@ -145,7 +145,7 @@ input[type="file"] {
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
+  font-family: "Montserrat" !important;
   i,
   hr {
     margin-left: 10px;
@@ -158,21 +158,21 @@ input[type="file"] {
     line-height: 0px !important;
     letter-spacing: -0.75px;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
+    font-family: "Montserrat-Medium" !important;
   }
 }
 
 .col-form-label {
   font-size: 15px !important;
   color: $color-helssy-grey;
-  font-family: "Segoe UI Medium" !important;
+  font-family: "Montserrat-Medium" !important;
 }
 
 .phone {
   background: $input-color 0% 0% no-repeat padding-box;
   opacity: 1;
   border-color: $input-color !important;
-  font-family: "Segoe UI";
+  font-family: "Montserrat";
   font-size: 17px;
   line-height: 24px;
   height: 50px;
@@ -249,5 +249,5 @@ input[type="file"] {
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: #6e819bd4;
-  font-family: "Segoe UI Medium" !important;
+  font-family: "Montserrat-Medium" !important;
 }

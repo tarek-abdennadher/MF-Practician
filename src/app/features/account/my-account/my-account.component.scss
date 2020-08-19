@@ -17,6 +17,8 @@ $color-helssy-grey: #5f5f5f;
   line-height: normal;
   letter-spacing: normal;
   color: $hlessy-dark-grey;
+  margin-left: 50px;
+  margin-top: 50px ;
 }
 /* Navbar */
 .Rectangle {
@@ -52,8 +54,11 @@ $color-helssy-grey: #5f5f5f;
 a.mat-tab-link {
   min-width: 230px;
 }
-.mat-tab-label-active.active {
-  color: $hlessy-blue !important;
+.mat-tab-link.mat-focus-indicator.mat-tab-label-active.active {
+  color: $hlessy-blue ;
+}
+.mat-tab-link.mat-focus-indicator{
+  color: $color-helssy-grey;
 }
 
 .actions span{

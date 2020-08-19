@@ -90,7 +90,7 @@
             <div class="col col-12 col-sm-6">
               <div class="col-12 col-form-label">{{   labels.civility}}</div>
               <div class="col-12">
-                <select formControlName="civility" class="custom-select"
+                <select formControlName="civility" class="form-control"
                   [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="sec-civility">
                   <option value="null" disabled="true">{{
                     labels.civility
@@ -341,7 +341,7 @@
           <div class="col col-12 col-sm-4">
             <div class="col-12 col-form-label">{{labels.title}}</div>
             <div class="col-12">
-              <select formControlName="title" class="custom-select"
+              <select formControlName="title" class="form-control"
                 [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="pract-job-title">
                 <option value="null" disabled="true">{{
                 labels.title
@@ -360,7 +360,7 @@
           <div class="col col-12 col-sm-8">
             <div class="col-12 col-form-label">{{labels.speciality}}</div>
             <div class="col-12">
-              <select formControlName="speciality" class="custom-select" [ngClass]="{
+              <select formControlName="speciality" class="form-control" [ngClass]="{
                 'is-invalid': submitted && ctr.speciality.errors
               }" id="pract-speciality">
                 <option value="null" disabled="true">{{
