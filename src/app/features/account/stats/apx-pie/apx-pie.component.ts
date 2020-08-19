@@ -27,6 +27,7 @@ export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
   public emptyData = true;
+  public colors = this.accountService.colors;
   public infoMessage = "Aucune valeur à afficher";
   public chartOptions: Partial<ChartOptions>;
   public messages: any;
@@ -35,13 +36,15 @@ export class ApxPieComponent implements OnInit {
     private featureService: FeaturesService
   ) {
     this.messages = this.accountService.stats;
+  }
+  ngOnInit() {
     this.chartOptions = {
       series: [0, 0],
       chart: {
         width: 200,
         type: "donut",
       },
-      colors: ["#008fff", "#1a56a7", "#82f8ff"],
+      colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
       labels: ["Chargement..", "Chargement.."],
       legend: {
         floating: true,
@@ -62,14 +65,11 @@ export class ApxPieComponent implements OnInit {
               width: 100,
               type: "donut",
             },
-            colors: ["#008fff", "#1a56a7", "#82f8ff"]
-
+            colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
           },
         },
       ],
     };
-  }
-  ngOnInit() {
     this.stats.subscribe((myMap) => {
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
@@ -78,7 +78,7 @@ export class ApxPieComponent implements OnInit {
           width: 430,
           type: "donut",
         },
-        colors: ["#008fff", "#1a56a7", "#82f8ff"],
+        colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
         legend: {
           horizontalAlign: 'left',
           position: 'bottom',
@@ -98,7 +98,7 @@ export class ApxPieComponent implements OnInit {
                 width: 100,
                 type: "donut",
               },
-              colors: ["#008fff", "#1a56a7", "#82f8ff"],
+              colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
             },
           },
         ],
