@@ -117,6 +117,11 @@ export class AccountService {
     patient_m_1: "Messages reçus des patients",
     patient_m_2: "Messages envoyés aux patients"
   };
+  public colors = {
+    blue: "#008fff",
+    light_blue: "#82f8ff",
+    dark_blue: "#1a56a7"
+  };
   updateAccount(account) {
     return this.globalService.call(
       RequestType.PUT,
