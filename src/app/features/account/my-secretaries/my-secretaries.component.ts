@@ -80,7 +80,7 @@ export class MySecretariesComponent implements OnInit {
           type: "SECRETARY",
         },
       ],
-      isArchieve: true,
+      isArchieve: false,
       isImportant: false,
       hasFiles: false,
       isViewDetail: false,
