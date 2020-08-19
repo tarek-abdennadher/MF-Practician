@@ -2,72 +2,28 @@
 // For more information: https://material.angular.io/guide/theming
 @import "~@angular/material/theming";
 // Plus imports for other components in your app.
-
-@font-face {
-  font-family: "Segoe UI Bold";
-  src: url("./assets/fonts/Segoe/Segoe-UI-Bold.ttf");
-}
-
-@font-face {
-  font-family: "Segoe UI Medium";
-  src: url("./assets/fonts/Segoe/Segoe-UI-Medium.ttf");
-}
-
-@font-face {
-  font-family: "Segoe UI ";
-  src: url("./assets/fonts/Segoe/Segoe-UI.TTF");
-}
-
-@font-face {
-  font-family: "Gotham Medium";
-  src: url("./assets/fonts/Gotham-Medium/Gotham-Medium.ttf") format("truetype"),
-    url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff") format("woff"),
-    url("./assets/fonts/Gotham-Medium/Gotham-Medium.woff2") format("woff2"),
-    url("./assets/fonts/Gotham-Medium/Gotham-Medium.eot");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Gotham Bold";
-  src: url("./assets/fonts/Gotham-Bold/Gotham-Bold.ttf") format("truetype"),
-    url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff") format("woff"),
-    url("./assets/fonts/Gotham-Bold/Gotham-Bold.woff2") format("woff2"),
-    url("./assets/fonts/Gotham-Bold/Gotham-Bold.eot");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Gotham";
-  src: url("./assets/fonts/Gotham-Book/Gotham-Book.ttf") format("truetype"),
-    url("./assets/fonts/Gotham-Book/Gotham-Book.woff") format("woff"),
-    url("./assets/fonts/Gotham-Book/Gotham-Book.woff2") format("woff2"),
-    url("./assets/fonts/Gotham-Book/Gotham-Book.eot");
-  font-weight: normal;
-  font-style: normal;
-}
 /*** New fonts Montserrat **/
-
 @font-face {
   font-family: "Montserrat";
   src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
-
 @font-face {
   font-family: "Montserrat-Medium";
   src: url("./assets/fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
+  font-weight: 1000 !important;
   font-style: normal;
-  font-weight: 1000;
   font-stretch: normal;
+
 }
 @font-face {
   font-family: "Montserrat-SemiBold";
   src: url("./assets/fonts/Montserrat/Montserrat-SemiBold.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+}
+@font-face {
+  font-family: "Montserrat-Bold";
+  src: url("./assets/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
 }
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
@@ -103,8 +59,9 @@ $patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn
 
 /* You can add global styles to this file, and also import other style files */
 $helssy-blue: #1a56a7;
+
 html * {
-  font-family: "Montserrat";
+  font-family: Montserrat;
 }
 html,
 body {
@@ -117,7 +74,6 @@ body {
   }
   background-color: #fbfbfb;
 }
-
 input,
 select,
 textarea {

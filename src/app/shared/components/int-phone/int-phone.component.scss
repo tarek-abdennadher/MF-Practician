@@ -42,35 +42,9 @@ $helssy_white: #ffffff;
                   height: 30px !important;
               }
             }
-@media only screen and (max-width: 768px) {
- .mobile-display-flex {
-   display: flex;
- }
-  .mobile-display-none {
-    display: none;
-  }
-}
-
-@media only screen and (min-width: 1475px) {
-  .mobile-display-flex {
-    display: none;
-  }
-  .mobile-display-none {
-    display: flex;
-  }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 1474px) {
-  .mobile-display-flex {
-    display: flex;
-  }
-  .mobile-display-none {
-    display: none;
-  }
-}
 
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 575px) {
   .mobile-display-flex {
     display: flex;
   }
@@ -78,11 +52,11 @@ $helssy_white: #ffffff;
     display: none;
   }
     .phone-mobile{
-      margin-left: 3px;
+      margin-left: -25px;
     }
 }
 
-@media only screen and (min-width: 401px) and (max-width: 767px) {
+@media only screen and (min-width: 576px){
   .mobile-display-flex {
     display: none;
   }
@@ -90,7 +64,7 @@ $helssy_white: #ffffff;
     display: flex;
   }
     .phone-mobile{
-      margin-left: 8px;
+      margin-left: -1px;
     }
 }
 
