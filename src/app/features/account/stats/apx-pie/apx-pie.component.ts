@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent } from "ng-apexcharts";
+import { ChartComponent, ApexLegend, ApexFill } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -14,6 +14,8 @@ export type ChartOptions = {
   chart: ApexChart;
   responsive: ApexResponsive[];
   labels: any;
+  legend: ApexLegend,
+  colors: string[];
 };
 
 @Component({
@@ -25,6 +27,7 @@ export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
   public emptyData = true;
+  public colors = this.accountService.colors;
   public infoMessage = "Aucune valeur à afficher";
   public chartOptions: Partial<ChartOptions>;
   public messages: any;
@@ -33,48 +36,69 @@ export class ApxPieComponent implements OnInit {
     private featureService: FeaturesService
   ) {
     this.messages = this.accountService.stats;
+  }
+  ngOnInit() {
     this.chartOptions = {
       series: [0, 0],
       chart: {
-        width: 380,
-        type: "pie",
+        width: 200,
+        type: "donut",
       },
+      colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
       labels: ["Chargement..", "Chargement.."],
+      legend: {
+        floating: true,
+        horizontalAlign: 'left',
+        position: 'bottom',
+        fontSize: '16px',
+        fontFamily: 'Montserrat',
+        fontWeight: 'normal',
+        labels: {
+          colors: ["#4a4a4a"]
+        }
+      },
       responsive: [
         {
-          breakpoint: 480,
           options: {
+            breakpoint: 1000,
             chart: {
-              width: 200,
+              width: 100,
+              type: "donut",
             },
-            legend: {
-              position: "bottom",
-            },
+            colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
           },
         },
       ],
     };
-  }
-  ngOnInit() {
     this.stats.subscribe((myMap) => {
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
         series: [...map.values()],
         chart: {
-          width: 480,
-          type: "pie",
+          width: 430,
+          type: "donut",
+        },
+        colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
+        legend: {
+          horizontalAlign: 'left',
+          position: 'bottom',
+          fontSize: '14px',
+          fontFamily: 'Montserrat',
+          fontWeight: 'normal',
+          labels: {
+            colors: ["#4a4a4a"]
+          }
         },
         labels: [...map.keys()],
         responsive: [
           {
-            breakpoint: 480,
             options: {
+              breakpoint: 1000,
               chart: {
-                width: 200,
+                width: 100,
+                type: "donut",
               },
-              legend: {
-                position: "bottom",
-              },
+              colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
             },
           },
         ],

@@ -16,7 +16,7 @@
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
       <div class="container">
         <div class="row">
-          <div class="col">
+          <div class="col-md-12 col-lg">
             <div class="form-group row">
               <label for="type_contact" class="col-sm-3 col-form-label">{{labels.type_contact}}</label>
               <div class="col-sm-9 ">
@@ -37,7 +37,7 @@
               </div>
             </div>
           </div>
-          <div class="col">
+          <div class="col-md-12 col-lg">
             <div class="form-group row">
               <label for="facility_name" class="col-sm-3 col-form-label">{{
                 labels.facility_name
@@ -51,7 +51,7 @@
         </div>
 
         <div class="row">
-          <div class="col">
+          <div class="col-md-12 col-lg">
             <div class="form-group row">
               <label for="title" class="col-sm-3 col-form-label">{{
                 labels.title
@@ -73,13 +73,13 @@
               </div>
             </div>
           </div>
-          <div class="col">
+          <div class="col-md-12 col-lg">
             <div class="form-group row">
               <label for="speciality" class="col-sm-3 col-form-label">{{
                 labels.speciality
               }}</label>
               <div class="col-sm-9">
-                <select formControlName="speciality" class="civility custom-select" [ngClass]="{
+                <select formControlName="speciality" class="form-control" [ngClass]="{
                     'is-invalid': submitted && ctr.speciality.errors
                   }" id="speciality">
                   <option value="null" disabled="true">{{
@@ -99,7 +99,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col-md-12 col-lg">
             <div class="form-group row">
               <label for="last_name" class="col-sm-3 col-form-label">{{
                 labels.last_name
@@ -148,7 +148,7 @@
             </div>
           </div>
 
-          <div class="col">
+          <div class="col-md-12 col-lg">
             <div class="form-group row">
               <label for="email" class="col-sm-3 col-form-label">{{
                 labels.email_input
@@ -160,7 +160,7 @@
 
             <div class="form-group row">
               <label for="phone" class="col-sm-3 col-form-label">{{labels.phone}}</label>
-              <div class="col-sm-8">
+              <div class="col-11 col-sm-8 col-lg">
                 <international-phone-number class="form-control phone" id="phone" formControlName="phone"
                   placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
                   [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors}">
@@ -169,7 +169,7 @@
                   {{ labels.phone_invalid }}
                 </div>
               </div>
-              <div class="col-sm-1">
+              <div class="col-1 pl-0 pl-sm-3">
                 <button (click)="addPhone()" class="btn btn-xs btn-icon">
                   <i class="far fa-plus"></i>
                 </button>
@@ -179,7 +179,7 @@
               <label *ngIf="isLabelShow" for="other_phone" class="col-sm-3 col-form-label">{{
           labels.other_phone
         }}</label>
-              <div id="otherPhone" class="col-sm-9">
+              <div id="otherPhone" class="col-12 col-sm">
                 <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" [addnewPhone]="addnewPhone"
                   (validPhones)="submitPhones($event)">
                 </int-phone>

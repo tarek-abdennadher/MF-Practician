@@ -1,4 +1,4 @@
-$color-helssy-blue: #41bddf;
+$color-helssy-blue: #1a56a7;
 .form-control {
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #eaeaea;
@@ -66,7 +66,14 @@ $color-helssy-blue: #41bddf;
   z-index: 2;
   color: red;
 }
-
+.fa,
+.far,
+.fal,
+.fas {
+  font-size: 23px;
+  line-height: 20px;
+  color: $color-helssy-blue;
+}
 .fa-search {
   cursor: pointer;
   font-weight: normal;
@@ -82,7 +89,12 @@ $color-helssy-blue: #41bddf;
   color: #acb6c3;
   opacity: 1;
 }
-
+.col-form-label {
+  font-size: 16px !important;
+  color: $color-helssy-blue;
+  font-family: "Montserrat-SemiBold" !important;
+  display: inline-flex;
+}
 ::ng-deep .e-input-group:not(.e-success):not(.e-warning):not(.e-error),
 .e-input-group.e-control-wrapper {
   border: none;
@@ -90,9 +102,13 @@ $color-helssy-blue: #41bddf;
 }
 
 ::ng-deep .e-input-focus {
-   padding-right: 0 !important;
+  padding-right: 0 !important;
 }
-
+.inline {
+  display: flex !important;
+  align-items: center;
+  cursor: pointer;
+}
 .form-inline .form-control {
   display: inline-block !important;
   width: 100%;
@@ -136,11 +152,11 @@ $color-helssy-blue: #41bddf;
   margin-right: 30px !important;
   margin-left: 20px !important;
 }
-::ng-deep .icon-button.add-button:focus{
+::ng-deep .icon-button.add-button:focus {
   outline: 1px solid $color-helssy-blue !important;
   color: $color-helssy-blue !important;
 }
-::ng-deep .icon-button.add-button{
+::ng-deep .icon-button.add-button {
   color: $color-helssy-blue !important;
   background-color: white;
 }

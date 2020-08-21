@@ -439,8 +439,8 @@ export class SendMessageComponent implements OnInit {
         formData.append("model", JSON.stringify(newMessage));
         formData.append(
           "file",
-          this.selectedFiles.item(0),
-          this.selectedFiles.item(0).name
+          this.selectedFiles[0],
+          this.selectedFiles[0].name
         );
       }
 
@@ -573,6 +573,7 @@ export class SendMessageComponent implements OnInit {
     if (selectedObj && selectedObj.title != "autre") {
       const objectDto = {
         senderId: this.featureService.getUserId(),
+        sendedForId: item.for && item.for[0] && item.for[0].id,
         receiverId: item.to && item.to[0] && item.to[0].id,
         objectId: selectedObj.id
       }
@@ -602,6 +603,8 @@ export class SendMessageComponent implements OnInit {
       }
       //this.selectedObject.next(result);
       //this.openDialog(selectedObj);
+    } else if (selectedObj) {
+      this.selectedObject.next({ id:null, title:"Autre",name : "Autre", body: ""});
     }
   }
 

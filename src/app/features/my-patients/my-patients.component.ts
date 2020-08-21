@@ -7,17 +7,17 @@ import { DialogService } from "../services/dialog.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 
-
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
-  styleUrls: ["./my-patients.component.scss"],
+  styleUrls: ["./my-patients.component.scss"]
 })
 export class MyPatientsComponent implements OnInit {
-  links = {};
+  links = { isAdd: true, isTypeFilter: false };
+  addText = "Ajouter un patient";
   imageSource: string;
   myPatients = [];
   filtredPatients = [];
@@ -38,6 +38,7 @@ export class MyPatientsComponent implements OnInit {
   scroll = false;
   public searchForm: FormGroup;
   mesCategories = [];
+  categs = [];
   public filterPatientsForm: FormGroup;
   avatars: {
     doctor: string;
@@ -62,14 +63,14 @@ export class MyPatientsComponent implements OnInit {
     private categoryService: CategoryService
   ) {
     this.filterPatientsForm = this.formBuilder.group({
-      category: [""],
+      category: [""]
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       this.pageNo = 0;
       this.myPatients = [];
       this.filtredPatients = [];
@@ -77,14 +78,18 @@ export class MyPatientsComponent implements OnInit {
       if (params["section"]) {
         switch (params["section"]) {
           case "accepted": {
+            this.links.isTypeFilter = true;
+            this.links.isAdd = true;
             this.section = "accepted";
             this.featureService.setActiveChild("patient");
             this.isInvitation = false;
             this.getPatientsOfCurrentParactician(this.pageNo);
-            this.searchPatients()
+            this.searchPatients();
             break;
           }
           case "pending": {
+            this.links.isTypeFilter = false;
+            this.links.isAdd = false;
             this.section = "pending";
             this.isInvitation = true;
             this.featureService.setActiveChild(null);
@@ -93,6 +98,8 @@ export class MyPatientsComponent implements OnInit {
             break;
           }
           case "prohibit": {
+            this.links.isTypeFilter = false;
+            this.links.isAdd = false;
             this.section = "prohibit";
             this.featureService.setActiveChild(null);
             this.isInvitation = false;
@@ -100,6 +107,8 @@ export class MyPatientsComponent implements OnInit {
             break;
           }
           case "archived": {
+            this.links.isTypeFilter = false;
+            this.links.isAdd = false;
             this.section = "archived";
             this.featureService.setActiveChild(null);
             this.isInvitation = false;
@@ -113,9 +122,9 @@ export class MyPatientsComponent implements OnInit {
   }
 
   markNotificationsAsSeen() {
-    this.featureService.markReceivedNotifAsSeen().subscribe((resp) => {
+    this.featureService.markReceivedNotifAsSeen().subscribe(resp => {
       this.featureService.listNotifications = this.featureService.listNotifications.filter(
-        (notif) => notif.messageId != null
+        notif => notif.messageId != null
       );
     });
   }
@@ -126,13 +135,13 @@ export class MyPatientsComponent implements OnInit {
         pageNo,
         this.direction
       )
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
-        myPatients.forEach((elm) => {
+        myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -151,7 +160,7 @@ export class MyPatientsComponent implements OnInit {
             : this.globalService.messagesDisplayScreen.patient;
       } else if (res?.length > 0) {
         let patients = [];
-        res.forEach((elm) => {
+        res.forEach(elm => {
           patients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -170,7 +179,7 @@ export class MyPatientsComponent implements OnInit {
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
       }
-    })
+    });
   }
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
@@ -179,10 +188,10 @@ export class MyPatientsComponent implements OnInit {
         pageNo,
         this.direction
       )
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach((elm) => {
+          myPatients.forEach(elm => {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
@@ -195,16 +204,16 @@ export class MyPatientsComponent implements OnInit {
     this.myPatientsService
       .getPatientsOfCurrentParacticianByCategory(
         pageNo,
-        categoryId,
+        this.categs.find(e => e.name == categoryId).id,
         this.direction
       )
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
-        myPatients.forEach((elm) => {
+        myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -216,13 +225,13 @@ export class MyPatientsComponent implements OnInit {
   getPatientsProhibitedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
-        myPatients.forEach((elm) => {
+        myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -234,10 +243,10 @@ export class MyPatientsComponent implements OnInit {
   getNextPatientsProhibitedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach((elm) => {
+          myPatients.forEach(elm => {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
@@ -249,14 +258,14 @@ export class MyPatientsComponent implements OnInit {
   getPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
         this.myPatients = [];
-        myPatients.forEach((elm) => {
+        myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -268,10 +277,10 @@ export class MyPatientsComponent implements OnInit {
   getNextPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach((elm) => {
+          myPatients.forEach(elm => {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
@@ -283,16 +292,14 @@ export class MyPatientsComponent implements OnInit {
   getPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
         this.bottomText =
           this.number > 1
             ? this.globalService.messagesDisplayScreen.patients
             : this.globalService.messagesDisplayScreen.patient;
-        myPatients.forEach((elm) => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, false, true)
-          );
+        myPatients.forEach(elm => {
+          this.myPatients.push(this.mappingMyPatients(elm, false, true));
         });
         this.filtredPatients = this.myPatients;
       });
@@ -301,13 +308,11 @@ export class MyPatientsComponent implements OnInit {
   getNextPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach((elm) => {
-            this.myPatients.push(
-              this.mappingMyPatients(elm, false, true)
-            );
+          myPatients.forEach(elm => {
+            this.myPatients.push(this.mappingMyPatients(elm, false, true));
           });
         }
       });
@@ -322,32 +327,31 @@ export class MyPatientsComponent implements OnInit {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      type: "PATIENT",
-      civility: patient.civility,
+      civility: patient.civility
     });
     myPatients.photoId = patient.photoId;
-    myPatients.isMarkAsSeen = patient.patient ? true : false;
+    myPatients.isMarkAsSeen = false;
     myPatients.isSeen = true;
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
     if (myPatients.photoId) {
-      myPatients.users.forEach((user) => {
+      myPatients.users.forEach(user => {
         this.documentService.downloadFile(myPatients.photoId).subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               user.img = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           },
-          (error) => {
+          error => {
             user.img = this.avatars.user;
           }
         );
       });
     } else {
-      myPatients.users.forEach((user) => {
+      myPatients.users.forEach(user => {
         if (user.civility == "M") {
           user.img = this.avatars.man;
         } else if (user.civility == "MME") {
@@ -363,26 +367,25 @@ export class MyPatientsComponent implements OnInit {
   performFilter(filterBy) {
     filterBy = filterBy.toLowerCase();
     return this.myPatients.filter(
-      (patient) =>
+      patient =>
         patient.users[0].fullName.toLowerCase().indexOf(filterBy) !== -1
     );
   }
 
-
   writeAction(item) {
     this.router.navigate(["/messagerie-ecrire/"], {
       queryParams: {
-        id: item.users[0].accountId,
-      },
+        id: item.users[0].accountId
+      }
     });
   }
   prohibitAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
@@ -398,13 +401,13 @@ export class MyPatientsComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.myPatientsService
             .deletePatientFromMyPatients(item.users[0].id)
-            .subscribe((resp) => {
+            .subscribe(resp => {
               this.filtredPatients = this.filtredPatients.filter(
-                (elm) => elm.users[0].id != item.users[0].id
+                elm => elm.users[0].id != item.users[0].id
               );
               this.number--;
             });
@@ -414,10 +417,10 @@ export class MyPatientsComponent implements OnInit {
   authorizeAction(item) {
     this.myPatientsService
       .authorizePatient(item.users[0].patientId)
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
         }
         this.number--;
@@ -427,38 +430,38 @@ export class MyPatientsComponent implements OnInit {
   acceptedAction(item) {
     this.myPatientsService
       .acceptPatientInvitation(item.users[0].patientId)
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => notif.senderId != item.users[0].accountId
+            notif => notif.senderId != item.users[0].accountId
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe((resp) => { });
+            .subscribe(resp => {});
         }
       });
   }
   refuseAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => notif.senderId != item.users[0].accountId
+            notif => notif.senderId != item.users[0].accountId
           );
         }
       });
@@ -467,10 +470,10 @@ export class MyPatientsComponent implements OnInit {
   archivedAction(item) {
     this.myPatientsService
       .deletePatientFile(item.users[0].id)
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
@@ -480,10 +483,10 @@ export class MyPatientsComponent implements OnInit {
   activatedAction(item) {
     this.myPatientsService
       .activatePatientFile(item.users[0].id)
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
@@ -493,7 +496,7 @@ export class MyPatientsComponent implements OnInit {
   getPendingListRealTime(pageNo) {
     this.number = 0;
     this.bottomText = this.globalService.messagesDisplayScreen.patient;
-    this.featureService.getNumberOfPendingObs().subscribe((resp) => {
+    this.featureService.getNumberOfPendingObs().subscribe(resp => {
       if (
         this.featureService.getNumberOfPendingValue() != this.myPatients.length
       ) {
@@ -533,20 +536,19 @@ export class MyPatientsComponent implements OnInit {
     }
   }
   getMyCategories() {
-    this.categoryService.getMyCategories().subscribe((categories) => {
+    this.categoryService.getMyCategories().subscribe(categories => {
+      this.categs = categories;
       this.mesCategories = categories;
+      this.mesCategories = this.mesCategories.map(s => s.name);
+      this.mesCategories.unshift("Tout");
     });
   }
-
-  filter() {
+  listFilter(value: string) {
     this.pageNo = 0;
     this.filtredPatients = [];
     this.myPatients = [];
-    if (this.filterPatientsForm.value.category != "") {
-      this.getPatientsOfCurrentParacticianByCategory(
-        this.pageNo,
-        this.filterPatientsForm.value.category
-      );
+    if (value != "Tout") {
+      this.getPatientsOfCurrentParacticianByCategory(this.pageNo, value);
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
     }
@@ -564,7 +566,7 @@ export class MyPatientsComponent implements OnInit {
 
   resetList() {
     this.pageNo = 0;
-    this.filter();
+    this.listFilter("Tout");
   }
   addPatient() {
     this.router.navigate(["ajout-patient"]);

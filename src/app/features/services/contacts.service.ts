@@ -38,9 +38,11 @@ export class ContactsService {
     delete_sec_title: "Supprimer une secrétaire",
     birth_date: "Date de naissance (*)",
     phone_error: "      Veuillez vérifier les téléphones saisis",
-    note:" Note"
+    note: " Note",
+    additionalEmail: "Email secondaire",
+    category: "Nom de la catégorie "
   };
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService) { }
 
   getContactsPro() {
     return this.globalService.call(
@@ -107,7 +109,9 @@ export class ContactsService {
   getAllContactsPracticianWithAditionalPatient(patientId): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.contact_pro + "/contacts-practician/additionalId/"+patientId
+      this.globalService.url.contact_pro +
+      "/contacts-practician/additionalId/" +
+      patientId
     );
   }
 }

@@ -1,14 +1,15 @@
-#chart {
-  max-width: 380px;
-  margin: 35px auto;
-  padding: 0;
-}
+
 .info {
+  font-family: Montserrat;
   text-align: center;
-  vertical-align: middle;
-  font-size: 15px !important;
-  line-height: 0px !important;
-  letter-spacing: -0.75px;
-  color: #6e819bd4;
-  font-family: "Segoe UI Medium" !important;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.23px;
+  color: #4a4a4a;
+}
+.chart{
+  max-width: 760px;
 }

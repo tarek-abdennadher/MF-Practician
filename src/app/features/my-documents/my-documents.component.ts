@@ -12,13 +12,13 @@ enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { PatientSerch } from "../my-patients/my-patients";
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { AccountService } from '../services/account.service';
-import { FeaturesService } from '../features.service';
+import { FormGroup, FormBuilder } from "@angular/forms";
+import { AccountService } from "../services/account.service";
+import { FeaturesService } from "../features.service";
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
-  styleUrls: ["./my-documents.component.scss"],
+  styleUrls: ["./my-documents.component.scss"]
 })
 export class MyDocumentsComponent implements OnInit {
   attachements = [];
@@ -26,13 +26,24 @@ export class MyDocumentsComponent implements OnInit {
   topText = this.globalService.messagesDisplayScreen.documents;
 
   backButton = true;
-
+  links = {
+    isTypeFilter: true,
+    isSearch: true
+  };
   isCheckbox: boolean = false;
   itemsList = [];
   filtredItemsList = [];
-  imageSource : string;
+  imageSource: string;
   search: string;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
 
   public filterDocumentsForm: FormGroup;
 
@@ -49,13 +60,13 @@ export class MyDocumentsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
     private accountService: AccountService,
-    private featureService : FeaturesService
+    private featureService: FeaturesService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
-      destination: [""],
+      destination: [""]
     });
   }
 
@@ -70,35 +81,35 @@ export class MyDocumentsComponent implements OnInit {
   getMySendersAndReceivers() {
     this.mydocumentsService
       .getMySendersAndeceiversDetails()
-      .subscribe((sendersAndReceivers) => {
-        sendersAndReceivers.forEach((element) => {
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
 
-        this.itemsList.forEach((item) => {
+        this.itemsList.forEach(item => {
           if (item.photoId) {
-            item.users.forEach((user) => {
+            item.users.forEach(user => {
               this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   user.img = this.avatars.user;
                 }
               );
             });
           } else {
-            item.users.forEach((user) => {
+            item.users.forEach(user => {
               if (user.type == "MEDICAL") {
                 user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
                 user.img = this.avatars.secretary;
-              }else if (user.type == "TELESECRETARYGROUP") {
+              } else if (user.type == "TELESECRETARYGROUP") {
                 user.img = this.avatars.tls;
               } else if (user.type == "PATIENT") {
                 if (user.civility == "M") {
@@ -113,7 +124,7 @@ export class MyDocumentsComponent implements OnInit {
           }
         });
         const myPatients = [];
-        this.itemsList.forEach((p) => {
+        this.itemsList.forEach(p => {
           const patient = new PatientSerch();
           patient.fullName = p.users[0].fullName;
           patient.photoId = p.photoId;
@@ -151,18 +162,18 @@ export class MyDocumentsComponent implements OnInit {
           senderAndReceiver.role == "PRACTICIAN"
             ? "MEDICAL"
             : senderAndReceiver.role,
-        civility: senderAndReceiver.role ? detail.civility : null,
-      },
+        civility: senderAndReceiver.role ? detail.civility : null
+      }
     ];
     practician.object = {
-      name: detail.address?detail.address:"",
+      name: detail.address ? detail.address : "",
       isImportant: false,
-      isLocalisation: detail.address ? true : false,
+      isLocalisation: detail.address ? true : false
     };
     practician.time = null;
     practician.isImportant = false;
     practician.hasFiles = false;
-    practician.isViewDetail = true;
+    practician.isViewDetail = false;
     practician.isChecked = false;
     practician.photoId = detail.photoId;
 
@@ -174,37 +185,36 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/mes-documents/list/" + item.id],{
+    this.documentService.setId(item.id);
+    this.router.navigate(["/mes-documents/list/" + item.id], {
       queryParams: {
         type: this.filterDocumentsForm.value.documentType
-      },
+      }
     });
   }
 
-  searchAction() {
+  searchAction(value) {
     if (this.filtredItemsList.length < this.itemsList.length) {
       this.filtredItemsList = this.itemsList;
     }
     this.itemsList = this.filtredItemsList;
-    this.itemsList = this.itemsList.filter((item) =>
-      item.users[0].fullName
-        .toLowerCase()
-        .includes((<HTMLInputElement>document.getElementById("patients")).value)
+    this.itemsList = this.itemsList.filter(item =>
+      item.users[0].fullName.toLowerCase().includes(value)
     );
   }
 
   searchAutoComplete(myPatients) {
-    myPatients.forEach((user) => {
+    myPatients.forEach(user => {
       if (user.photoId) {
         this.documentService.downloadFile(user.photoId).subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               user.img = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           },
-          (error) => {
+          error => {
             user.img = this.avatars.user;
           }
         );
@@ -216,47 +226,47 @@ export class MyDocumentsComponent implements OnInit {
       itemTemplate:
         "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
         '<span class="country"> ${fullName} </span>',
-      placeholder: "Nom, prénom",
+      placeholder: "Recherche par nom ...",
       popupHeight: "450px",
       highlight: true,
       suggestionCount: 5,
       noRecordsTemplate: "Aucune données trouvé",
-      sortOrder: "Ascending",
+      sortOrder: "Ascending"
     });
     atcObj.appendTo("#patients");
     atcObj.showSpinner();
   }
-  getMySendersAndReceiversBySenderForAndObject(senderFor,object){
+  getMySendersAndReceiversBySenderForAndObject(senderFor, object) {
     this.mydocumentsService
-      .getMySendersAndreceiversDetailsBySenderForIdAndObject(senderFor,object)
-      .subscribe((sendersAndReceivers) => {
-        sendersAndReceivers.forEach((element) => {
+      .getMySendersAndreceiversDetailsBySenderForIdAndObject(senderFor, object)
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
-        this.itemsList.forEach((item) => {
+        this.itemsList.forEach(item => {
           if (item.photoId) {
-            item.users.forEach((user) => {
+            item.users.forEach(user => {
               this.documentService.downloadFile(item.photoId).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   user.img = "assets/imgs/user.png";
                 }
               );
             });
           } else {
-            item.users.forEach((user) => {
+            item.users.forEach(user => {
               if (user.type == "MEDICAL") {
                 user.img = this.avatars.doctor;
               } else if (user.type == "SECRETARY") {
                 user.img = this.avatars.secretary;
-              }else if (user.type == "TELESECRETARYGROUP") {
+              } else if (user.type == "TELESECRETARYGROUP") {
                 user.img = this.avatars.tls;
               } else if (user.type == "PATIENT") {
                 if (user.civility == "M") {
@@ -272,138 +282,134 @@ export class MyDocumentsComponent implements OnInit {
         });
       });
   }
-  getMySendersAndReceiversBySenderFor(senderFor){
+  getMySendersAndReceiversBySenderFor(senderFor) {
     this.mydocumentsService
-    .getMySendersAndreceiversDetailsBySenderForId(senderFor)
-    .subscribe((sendersAndReceivers) => {
-      sendersAndReceivers.forEach((element) => {
-        let senderAndReceiver = this.mappingSendersAndReceivers(element);
-        this.itemsList.push(senderAndReceiver);
-      });
-      this.itemsList.forEach((item) => {
-        if (item.photoId) {
-          item.users.forEach((user) => {
-            this.documentService.downloadFile(item.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                user.img = "assets/imgs/user.png";
+      .getMySendersAndreceiversDetailsBySenderForId(senderFor)
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
+          let senderAndReceiver = this.mappingSendersAndReceivers(element);
+          this.itemsList.push(senderAndReceiver);
+        });
+        this.itemsList.forEach(item => {
+          if (item.photoId) {
+            item.users.forEach(user => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                response => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = e => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                error => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          } else {
+            item.users.forEach(user => {
+              if (user.type == "MEDICAL") {
+                user.img = this.avatars.doctor;
+              } else if (user.type == "SECRETARY") {
+                user.img = this.avatars.secretary;
+              } else if (user.type == "TELESECRETARYGROUP") {
+                user.img = this.avatars.tls;
+              } else if (user.type == "PATIENT") {
+                if (user.civility == "M") {
+                  user.img = this.avatars.man;
+                } else if (user.civility == "MME") {
+                  user.img = this.avatars.women;
+                } else if (user.civility == "CHILD") {
+                  user.img = this.avatars.child;
+                }
               }
-            );
-          });
-        } else {
-          item.users.forEach((user) => {
-            if (user.type == "MEDICAL") {
-              user.img = this.avatars.doctor;
-            } else if (user.type == "SECRETARY") {
-              user.img = this.avatars.secretary;
-            }else if (user.type == "TELESECRETARYGROUP") {
-              user.img = this.avatars.tls;
-            } else if (user.type == "PATIENT") {
-              if (user.civility == "M") {
-                user.img = this.avatars.man;
-              } else if (user.civility == "MME") {
-                user.img = this.avatars.women;
-              } else if (user.civility == "CHILD") {
-                user.img = this.avatars.child;
-              }
-            }
-          });
-        }
+            });
+          }
+        });
       });
-    });
   }
-  getMySendersAndReceiversByObject(object){
+  getMySendersAndReceiversByObject(object) {
     this.mydocumentsService
-    .getMySendersAndreceiversDetailsByObject(object)
-    .subscribe((sendersAndReceivers) => {
-      sendersAndReceivers.forEach((element) => {
-        let senderAndReceiver = this.mappingSendersAndReceivers(element);
-        this.itemsList.push(senderAndReceiver);
-      });
-      this.itemsList.forEach((item) => {
-        if (item.photoId) {
-          item.users.forEach((user) => {
-            this.documentService.downloadFile(item.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                user.img = "assets/imgs/user.png";
+      .getMySendersAndreceiversDetailsByObject(object)
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
+          let senderAndReceiver = this.mappingSendersAndReceivers(element);
+          this.itemsList.push(senderAndReceiver);
+        });
+        this.itemsList.forEach(item => {
+          if (item.photoId) {
+            item.users.forEach(user => {
+              this.documentService.downloadFile(item.photoId).subscribe(
+                response => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = e => {
+                    user.img = myReader.result;
+                  };
+                  let ok = myReader.readAsDataURL(response.body);
+                },
+                error => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+          } else {
+            item.users.forEach(user => {
+              if (user.type == "MEDICAL") {
+                user.img = this.avatars.doctor;
+              } else if (user.type == "SECRETARY") {
+                user.img = this.avatars.secretary;
+              } else if (user.type == "TELESECRETARYGROUP") {
+                user.img = this.avatars.tls;
+              } else if (user.type == "PATIENT") {
+                if (user.civility == "M") {
+                  user.img = this.avatars.man;
+                } else if (user.civility == "MME") {
+                  user.img = this.avatars.women;
+                } else if (user.civility == "CHILD") {
+                  user.img = this.avatars.child;
+                }
               }
-            );
-          });
-        } else {
-          item.users.forEach((user) => {
-            if (user.type == "MEDICAL") {
-              user.img = this.avatars.doctor;
-            } else if (user.type == "SECRETARY") {
-              user.img = this.avatars.secretary;
-            }else if (user.type == "TELESECRETARYGROUP") {
-              user.img = this.avatars.tls;
-            } else if (user.type == "PATIENT") {
-              if (user.civility == "M") {
-                user.img = this.avatars.man;
-              } else if (user.civility == "MME") {
-                user.img = this.avatars.women;
-              } else if (user.civility == "CHILD") {
-                user.img = this.avatars.child;
-              }
-            }
-          });
-        }
+            });
+          }
+        });
       });
-    });
   }
-  getAllObjects(){
+  getAllObjects() {
     this.documentService.getAllObjects().subscribe(objects => {
-      this.documentTypes = objects;
-    })
+      this.documentTypes.add("Tout");
+      objects.forEach(this.documentTypes.add, this.documentTypes);
+    });
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
+    this.accountService.getCurrentAccount().subscribe(account => {
       if (account && account.patient) {
         this.account = account.patient;
         this.linkedPatients = this.account.linkedPatients;
-        this.linkedPatients.forEach((patient) => {
+        this.linkedPatients.forEach(patient => {
           this.destinations.add(patient);
         });
       }
     });
   }
-  filter() {
+  filter(value) {
     this.itemsList = [];
-    if (
-      this.filterDocumentsForm.value.destination != "" &&
-      this.filterDocumentsForm.value.documentType != ""
-    ) {
+    if (this.filterDocumentsForm.value.destination != "" && value != "Tout") {
       this.getMySendersAndReceiversBySenderForAndObject(
         this.filterDocumentsForm.value.destination,
-        this.filterDocumentsForm.value.documentType
+        value
       );
     } else if (
       this.filterDocumentsForm.value.destination != "" &&
-      this.filterDocumentsForm.value.documentType == ""
+      value == "Tout"
     ) {
       this.getMySendersAndReceiversBySenderFor(
         this.filterDocumentsForm.value.destination
       );
     } else if (
       this.filterDocumentsForm.value.destination == "" &&
-      this.filterDocumentsForm.value.documentType != ""
+      value != "Tout"
     ) {
-      this.getMySendersAndReceiversByObject(
-        this.filterDocumentsForm.value.documentType
-      );
+      this.getMySendersAndReceiversByObject(value);
     } else {
       this.getMySendersAndReceivers();
     }

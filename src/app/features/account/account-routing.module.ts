@@ -6,14 +6,7 @@ import { MySecretariesComponent } from './my-secretaries/my-secretaries.componen
 import { TeleSecretariesComponent } from './tele-secretaries/tele-secretaries.component';
 import { FacturesComponent } from './factures/factures.component';
 import { StatsComponent } from './stats/stats.component';
-import { CategoryComponent } from './category/category.component';
-import { CategoryDetailComponent } from './category/category-detail/category-detail.component';
-import { MyContactsComponent } from './my-contacts/my-contacts.component';
-import { MyContactDetailComponent } from './my-contacts/my-contact-detail/my-contact-detail.component';
 import { MyLeavesComponent } from './my-leaves/my-leaves.component';
-import { MyLeavesGuard } from './my-leaves/my-leaves.guard';
-import { PracticianObjectsComponent } from './practician-objects/practician-objects.component';
-import { PracticianObjectDetailComponent } from './practician-objects/practician-object-detail/practician-object-detail.component';
 
 const routes: Routes = [
   {
@@ -42,25 +35,8 @@ const routes: Routes = [
         component: StatsComponent
       },
       {
-        path: "mes-categories",
-        component: CategoryComponent
-      },
-      {
-        path: "mes-categories/:id",
-        component: CategoryDetailComponent
-      },
-      {
         path: "mes-conges",
-        component: MyLeavesComponent,
-        canActivate: [MyLeavesGuard]
-      },
-      {
-        path: "mes-objets",
-        component: PracticianObjectsComponent
-      },
-      {
-        path: "mes-objets/:id",
-        component: PracticianObjectDetailComponent
+        component: MyLeavesComponent
       }
     ]
   }

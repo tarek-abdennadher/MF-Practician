@@ -1,20 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import {
-  FormGroup,
   FormBuilder,
-  FormControl,
-  Validators,
-  FormArray,
 } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { DialogService } from "@app/features/services/dialog.service";
-import { emailValidator } from "@app/core/Validators/email.validator";
-import { Subject } from 'rxjs';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
@@ -22,7 +16,7 @@ declare var $: any;
   styleUrls: ["./my-secretaries.component.scss"],
 })
 export class MySecretariesComponent implements OnInit {
-  selectedSecretary: any;
+  selectedSecretary: number = null;
   isList = true;
   isEdit: boolean;
   users: Array<any>;
@@ -32,16 +26,11 @@ export class MySecretariesComponent implements OnInit {
   public labels: any;
   public errors: any;
   submitted = false;
-  showAlert = false;
-  hasImage = false;
-  public infoForm: FormGroup;
-  public phoneForm: FormGroup;
-  itemsList: Array<any> = [];
   isLabelShow: boolean;
-  public otherPhones = FormArray;
   image: string | ArrayBuffer;
-  imageSource ;string;
+  imageSource; string;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  itemsList: Array<any> = [];
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -57,106 +46,17 @@ export class MySecretariesComponent implements OnInit {
     this.labels = this.contactsService.messages;
     this.errors = this.accountService.errors;
     this.isLabelShow = false;
-    this.avatars= this.globalService.avatars;
+    this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.secretary;
 
   }
 
-  get ctr() {
-    return this.infoForm.controls;
-  }
-  get phoneList() {
-    return <FormArray>this.infoForm.get("otherPhones");
-  }
   ngOnInit(): void {
-    this.initInfoForm();
     this.getMySecretaries();
     this.featureService.setIsMessaging(false);
   }
 
-  initInfoForm() {
-    this.infoForm = new FormGroup({
-      id: new FormControl(null),
-      sec_id: new FormControl(null),
-      last_name: new FormControl(null, Validators.required),
-      first_name: new FormControl(null, Validators.required),
-      email: new FormControl(null, {
-        validators: [Validators.required, emailValidator],
-      }),
-      civility: new FormControl(null, Validators.required),
-      phone: new FormControl(null, Validators.required),
-      picture: new FormControl(null),
-      otherPhones: this.formBuilder.array([])
-    });
-  }
-  updatePhone(p): FormGroup {
-    return this.formBuilder.group({
-      id: [p.id ? p.id : null],
-      phoneNumber: [p.phoneNumber ? p.phoneNumber : ""],
-      note: [p.note ? p.note : null]
-    });
-  }
-  close() {
-    this.showAlert = false;
-  }
-  addSecretaryButton() {
-    this.infoForm.reset();
-    this.initInfoForm();
-    this.isEdit = false;
-    this.isList = !this.isList;
-  }
-  cancelAddSecretaryButton() {
-    this.isList = true;
-  }
-  submit() {
-    this.submitted = true;
-    if (this.infoForm.invalid) {
-      return;
-    }
 
-    if (!this.isEdit) {
-      const model = {
-        email: this.infoForm.value.email,
-        phoneNumber: this.infoForm.value.phone,
-        firstName: this.infoForm.value.first_name,
-        lastName: this.infoForm.value.last_name,
-        photoId: this.infoForm.value.picture,
-        civility: this.infoForm.value.civility,
-      };
-      this.accountService.addSecretary(model).subscribe((res) => {
-        this.showAlert = true;
-        this.initInfoForm();
-        $(".alert").alert();
-        this.submitted = false;
-        this.isList = true;
-        this.getMySecretaries();
-      });
-    } else {
-      const model = {
-        id: this.infoForm.value.id,
-        email: this.infoForm.value.email,
-        phoneNumber: this.infoForm.value.phone,
-        secretary: {
-          id: this.infoForm.value.sec_id,
-          firstName: this.infoForm.value.first_name,
-          lastName: this.infoForm.value.last_name,
-          photoId: this.infoForm.value.picture,
-          civility: this.infoForm.value.civility,
-        },
-      };
-      this.accountService.updateSecretaryAccount(model).subscribe((res) => {
-        this.showAlert = true;
-        this.initInfoForm();
-        $(".alert").alert();
-        this.submitted = false;
-        this.isList = true;
-        this.getMySecretaries();
-      });
-    }
-  }
-  return() {
-    this.router.navigate(["/messagerie"]);
-  }
   getMySecretaries() {
     this.accountService.getMySecretaries().subscribe(
       (contacts) => {
@@ -180,10 +80,10 @@ export class MySecretariesComponent implements OnInit {
           type: "SECRETARY",
         },
       ],
-      isArchieve: true,
+      isArchieve: false,
       isImportant: false,
       hasFiles: false,
-      isViewDetail: true,
+      isViewDetail: false,
       isMarkAsSeen: false,
       isChecked: false,
       photoId: sec.photoId,
@@ -222,52 +122,6 @@ export class MySecretariesComponent implements OnInit {
     );
   }
   cardClicked(item) {
-    this.accountService.getAccountById(item.id).subscribe((value) => {
-      this.selectedSecretary = value;
-      if (value.secretary.photoId) {
-        this.hasImage = true;
-        this.getPictureProfile(value.secretary.photoId);
-      }
-      if (this.selectedSecretary?.otherPhones && this.selectedSecretary?.otherPhones.length != 0) {
-        this.isLabelShow = true;
-        this.selectedSecretary.otherPhones.forEach(p =>
-          this.phoneList.push(this.updatePhone(p)));
-      }
-      this.infoForm.patchValue({
-        id: value.id,
-        sec_id: value.secretary ? value.secretary.id : null,
-        last_name: value.secretary ? value.secretary.lastName : "",
-        first_name: value.secretary ? value.secretary.firstName : "",
-        email: value.email,
-        civility: value.secretary ? value.secretary.civility : null,
-        phone: value.phoneNumber,
-        picture: value.secretary ? value.secretary.photoId : null,
-        otherPhones: value.secretary.otherPhones ? this.phoneList : []
-      });
-      this.infoForm.disable();
-      this.isEdit = true;
-      this.isList = false;
-    });
-  }
-  selectItem(event) { }
-  deleteActionClicked() { }
-
-  deleteSecretary(item) {
-    this.selectedSecretary = item;
-    this.dialogService
-      .openConfirmDialog(
-        this.labels.delete_sec_confirm,
-        this.labels.delete_sec_title
-      )
-      .afterClosed()
-      .subscribe((res) => {
-        if (res) {
-          this.accountService
-            .detachSecretaryFronAccount(this.selectedSecretary.id)
-            .subscribe((resp) => {
-              this.getMySecretaries();
-            });
-        }
-      });
+    this.selectedSecretary = item.id;
   }
 }

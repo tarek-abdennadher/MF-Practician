@@ -1,5 +1,5 @@
 $color-helssy-blue: #1a56a7;
-$color-helssy-grey: #6e819b;
+$color-helssy-grey: #344448;
 $color-white: #ffffff;
 $helssy-grey: #6e819bd4;
 $input-color: #f1f1f1;
@@ -9,7 +9,8 @@ $input-color: #f1f1f1;
   line-height: 0px !important;
   letter-spacing: -0.75px;
   color: $color-helssy-grey;
-  font-family: "Segoe UI" !important;
+  font-family: "Montserrat" !important;
+  margin-left: 15px;
   i,
   hr {
     margin-left: 10px;
@@ -18,32 +19,38 @@ $input-color: #f1f1f1;
     font-size: 17px;
   }
   span {
-    font-size: 17px !important;
-    line-height: 0px !important;
-    letter-spacing: -0.75px;
+    font-family: "Montserrat-Medium" !important;
+    font-size: 28px !important;
+    font-weight: 500 !important;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal !important;
+    letter-spacing: normal !important;
     color: $color-helssy-grey;
-    font-family: "Segoe UI Medium" !important;
   }
 }
 
 .inline {
-  font-family: "Segoe UI";
+  display: flex !important;
+  align-items: center;
+  font-family: "Montserrat";
   text-align: center;
   color: $helssy-grey !important;
   display: inline-block;
-  margin-right: 50px;
+  margin-left: 30px;
   color: $helssy-grey !important;
   text-decoration: none;
   font-size: 10px;
   line-height: 14px;
   cursor: pointer;
-  padding-top: 26px;
 }
 .fa,
 .far,
-.fal {
-  font-size: 17px;
+.fal,
+.fas {
+  font-size: 23px;
   line-height: 20px;
+  color: $color-helssy-blue;
 }
 #card {
   background-color: white;
@@ -51,4 +58,11 @@ $input-color: #f1f1f1;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
   border: none !important;
+}
+
+.col-form-label {
+  font-size: 16px !important;
+  color: $color-helssy-blue;
+  font-family: "Montserrat-SemiBold" !important;
+  display: inline-flex;
 }

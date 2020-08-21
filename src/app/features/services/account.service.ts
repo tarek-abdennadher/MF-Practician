@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) {}
+  constructor(public router: Router, public globalService: GlobalService) { }
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -50,6 +50,7 @@ export class AccountService {
     factures_tab: "Mes factures",
     stats_tab: "Mes stats",
     categories_tab: "Mes catégories",
+    categories: "Catégories",
     add_secretary: "Ajouter secrétaire",
     add_secretary_success: "Secrétaire ajoutée avec succès",
     my_secretaries: "Mes Secrétaires",
@@ -64,7 +65,7 @@ export class AccountService {
     date: "Date (*)",
     website: "Site web",
     my_contacts: "Mes contacts",
-    patients: "Patients",
+    patients: "PATIENTS",
     tls: "TLS",
     leaves: "Mes congés",
     birthday: "Date de naissance",
@@ -72,13 +73,12 @@ export class AccountService {
     category: "Catégorie",
     other_phone: "Autre tél",
     start_date_leave: "Date de début des congés",
-    end_date_leave: "Date de fin de congés",
+    end_date_leave: "Date de fin des congés",
     date_error: "Veuillez vérifier la date saisie",
     validate: "Enregistrer",
     required: "Le champ est obligatoire",
-    update_leaves_success: "Dates de congés modifiées avec succès",
-    update_leaves_fail:
-      "Erreur survenue lors de la mise à jour des dates de congés.",
+    update_leaves_success: "Infromations modifiées avec succès",
+    update_leaves_fail: "Erreur survenue lors de la mise à jour des congés.",
     is_deleted: " Le compte patient a été désactivé  !",
     personal_info: "Informations personnelles",
     cordonnees: "Coordonnées",
@@ -99,21 +99,29 @@ export class AccountService {
     info:
       "Vous pouvez à partir de cet onglet, définir tous vos types objets qui vous servirons lors de la rédaction d'un message.",
     add_Object: "Ajouter un objet",
+    add_Category: "Ajouter une catégorie",
     info2:
       "Vous pouvez à partir de cet onglet, définir les catégories des patients",
     resp: "Responsable",
+    activate_auto_resp: "Activer la réponse automatique en cas de congés ?",
+    sec_detail: "Détails du secrétaire"
   };
   public errors = {
     required: "Le champ est obligatoire",
     invalid_format: "Le format saisi est invalide",
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
-    invalid_phone: "Le numéro de téléphone saisi est invalide",
+    invalid_phone: "Le numéro de téléphone saisi est invalide"
   };
   public stats = {
     patient_title: "Patients",
     patient_m_1: "Messages reçus des patients",
-    patient_m_2: "Messages envoyés aux patients",
+    patient_m_2: "Messages envoyés aux patients"
+  };
+  public colors = {
+    blue: "#008fff",
+    light_blue: "#82f8ff",
+    dark_blue: "#1a56a7"
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -145,8 +153,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-        "/" +
-        encodeURIComponent(pass)
+      "/" +
+      encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {
@@ -243,14 +251,20 @@ export class AccountService {
       this.globalService.url.option + "/" + id
     );
   }
-  updateLeavesInOptionByPractician(leaveStartDate, leaveEndDate) {
+  updateLeavesInOptionByPractician(
+    activateLeaveAutoMessage: boolean,
+    leaveStartDate,
+    leaveEndDate
+  ) {
     return this.globalService.call(
       RequestType.PUT,
-      this.globalService.url.option +
-        "/leaves/" +
-        leaveStartDate +
-        "/" +
-        leaveEndDate
+      this.globalService.url.option + "/leaves/" + activateLeaveAutoMessage,
+      {
+        params: {
+          leaveStartDate: leaveStartDate,
+          leaveEndDate: leaveEndDate
+        }
+      }
     );
   }
 
