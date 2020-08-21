@@ -33,7 +33,7 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyCategories();
-    // Scroll to top only when navigating to a different component
+    // update categories after detail view
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
