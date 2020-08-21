@@ -50,6 +50,7 @@ export class AccountService {
     factures_tab: "Mes factures",
     stats_tab: "Mes stats",
     categories_tab: "Mes catégories",
+    categories: "Catégories",
     add_secretary: "Ajouter secrétaire",
     add_secretary_success: "Secrétaire ajoutée avec succès",
     my_secretaries: "Mes Secrétaires",

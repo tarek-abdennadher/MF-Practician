@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewChecked, AfterContentChecked } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { CategoryService } from "@app/features/services/category.service";
 import { GlobalService } from '@app/core/services/global.service';
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from '@app/features/features.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: "app-category",
@@ -13,8 +14,9 @@ import {FeaturesService} from '@app/features/features.service';
 export class CategoryComponent implements OnInit {
   public messages: any;
   itemsList = [];
-  imageSource : string;
+  imageSource: string;
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  private componentBeforeNavigation = null;
 
   constructor(
     public accountService: AccountService,
@@ -31,11 +33,19 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyCategories();
+    // Scroll to top only when navigating to a different component
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      let currentRoute = this.route;
+      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+      this.getMyCategories();
+    });
     this.featureService.setIsMessaging(false);
   }
 
   cardClicked(category) {
-    this.router.navigate([`${category.id}`], { relativeTo: this.route });
+    this.router.navigate(["mes-categories/" + `${category.id}`]);
   }
 
   deleteCategory(category) {
@@ -47,10 +57,11 @@ export class CategoryComponent implements OnInit {
   }
 
   addAction() {
-    this.router.navigate([`add`], { relativeTo: this.route });
+    this.router.navigate(["mes-categories/add"]);
   }
 
   getMyCategories() {
+    this.itemsList = [];
     this.categoryService.getMyCategories().subscribe((categories) => {
       categories.forEach((category) => {
         this.itemsList.push({
