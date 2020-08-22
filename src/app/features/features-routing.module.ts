@@ -18,8 +18,6 @@ import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
-import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
-import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
 const routes: Routes = [
   {
     path: "",
@@ -115,11 +113,7 @@ const routes: Routes = [
       },
       {
         path: "mes-objets",
-        component: PracticianObjectsComponent,
-      },
-      {
-        path: "mes-objets/:id",
-        component: PracticianObjectDetailComponent,
+        loadChildren: () => import("./my-objects/my-objects.module").then((m) => m.MyObjectsModule),
       },
     ],
   },

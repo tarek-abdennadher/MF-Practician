@@ -47,8 +47,6 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
-import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
-import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
 import { AccountService } from "./services/account.service";
 
 const notifierOptions: NotifierOptions = {
@@ -110,9 +108,7 @@ const notifierOptions: NotifierOptions = {
     PersonalInformationsComponent,
     MatPatientFileDialogComponent,
     AddPatientComponent,
-    NewMessageMobileComponent,
-    PracticianObjectsComponent,
-    PracticianObjectDetailComponent
+    NewMessageMobileComponent
   ],
   imports: [
     FormsModule,
