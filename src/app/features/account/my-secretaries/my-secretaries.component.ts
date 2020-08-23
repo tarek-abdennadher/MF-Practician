@@ -16,7 +16,6 @@ declare var $: any;
   styleUrls: ["./my-secretaries.component.scss"],
 })
 export class MySecretariesComponent implements OnInit {
-  selectedSecretary: number = null;
   isList = true;
   isEdit: boolean;
   users: Array<any>;
@@ -122,6 +121,6 @@ export class MySecretariesComponent implements OnInit {
     );
   }
   cardClicked(item) {
-    this.selectedSecretary = item.id;
+    this.router.navigate(["compte/mes-secretaires/secretaire-detail/" + item.id]);
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { AccountService } from '@app/features/services/account.service';
 import { ContactsService } from '@app/features/services/contacts.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
 import { FeaturesService } from '@app/features/features.service';
@@ -14,7 +14,6 @@ import { FeaturesService } from '@app/features/features.service';
 })
 export class SecretaryDetailsComponent implements OnInit {
   public infoForm: FormGroup;
-  @Input("secertaryId") secertaryId: number = null;
   public messages: any;
   public labels: any;
   isPractician = true;
@@ -28,6 +27,7 @@ export class SecretaryDetailsComponent implements OnInit {
     private accountService: AccountService,
     private contactsService: ContactsService,
     public router: Router,
+    private route: ActivatedRoute,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
@@ -43,7 +43,9 @@ export class SecretaryDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSecretary(this.secertaryId);
+    this.route.params.subscribe((params) => {
+      this.getSecretary(params["id"]);
+    });
     this.featureService.setIsMessaging(false);
   }
   initInfoForm() {
