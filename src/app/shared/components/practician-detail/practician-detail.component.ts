@@ -1,12 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { PracticianDetailService } from "./practician-detail.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import * as jwt_decode from "jwt-decode";
 import { LocalStorageService } from "ngx-webstorage";
-import { Location } from "@angular/common";
-import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from '@app/core/services/global.service';
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from '@app/features/features.service';
+import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -16,11 +14,6 @@ export class PracticianDetailComponent implements OnInit {
   practician: any;
   imageSource: string;
   public isFavorite: boolean = false;
-  page = "MY_PRACTICIANS";
-  number = null;
-  topText = "Détails du praticien";
-  bottomText = "";
-  backButton = true;
   isPractician = true;
   links = {};
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
@@ -29,7 +22,6 @@ export class PracticianDetailComponent implements OnInit {
     private router: Router,
     private practicianDetailService: PracticianDetailService,
     private localSt: LocalStorageService,
-    private _location: Location,
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
     private globalService: GlobalService
@@ -50,7 +42,6 @@ export class PracticianDetailComponent implements OnInit {
     this.practicianDetailService
       .getPracticiansById(id)
       .subscribe((response) => {
-        this.bottomText = response.fullName;
         this.practician = response;
         if (this.practician.photoId) {
           this.documentService.downloadFile(this.practician.photoId).subscribe(
@@ -101,8 +92,5 @@ export class PracticianDetailComponent implements OnInit {
         id: item.accountId,
       },
     });
-  }
-  BackButton() {
-    this._location.back();
   }
 }

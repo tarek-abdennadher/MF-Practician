@@ -16,12 +16,8 @@ import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
 import { HlsMessagingListModule } from "hls-messaging-list";
-import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactsService } from "./services/contacts.service";
-import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
-import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
-import { HlsPracticianDetailModule } from "hls-practician-detail";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
@@ -96,10 +92,7 @@ const notifierOptions: NotifierOptions = {
     ForwardedMessagesComponent,
     MessagingReplyComponent,
     MyPatientsComponent,
-    ContactsComponent,
-    ContactDetailComponent,
     PracticianSearchComponent,
-    PracticianDetailComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
     MatConfirmDialogComponent,
@@ -122,12 +115,10 @@ const notifierOptions: NotifierOptions = {
     HlsLinksModule,
     HlsMessagingListModule,
     HlsSearchModule,
-    HlsPracticianDetailModule,
     HlsSendMessageModule,
     MatDialogModule,
     MatIconModule,
     NgxSpinnerModule,
-    InternationalPhoneNumberModule,
     SharedModule,
     BsDatepickerModule.forRoot(),
     HlsPasswordStrengthModule,

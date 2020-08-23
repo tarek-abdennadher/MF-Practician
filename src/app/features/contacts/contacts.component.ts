@@ -282,14 +282,14 @@ export class ContactsComponent implements OnInit {
 
   cardClicked(item) {
     if (item.users[0].contactType == "CONTACT") {
-      this.router.navigate(["/contact-detail/" + item.id]);
+      this.router.navigate(["mes-contacts-pro/contact-detail/" + item.id]);
     } else if (
       item.users[0].contactType == "MEDICAL" ||
       item.users[0].contactType == "CABINET"
     ) {
-      this.router.navigate(["/praticien-detail/" + item.practicianId]);
+      this.router.navigate(["mes-contacts-pro/praticien-detail/" + item.practicianId]);
     } else if (item.users[0].contactType == "SECRETARY") {
-      this.selectedSecretary = item.id
+      this.router.navigate(["mes-contacts-pro/secretaire-detail/" + item.id]);
     }
   }
   markAsSeenClicked(item) {
