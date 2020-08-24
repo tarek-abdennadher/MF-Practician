@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ContactsService } from "../services/contacts.service";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { AccountService } from "../services/account.service";
@@ -9,12 +9,14 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
+import { filter } from 'rxjs/operators';
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
   styleUrls: ["./contacts.component.scss"]
 })
 export class ContactsComponent implements OnInit {
+  selectedSecretary: number = null;
   specialities: Array<Speciality>;
   users: Array<any> = new Array<any>();
   itemsList: Array<any> = new Array<any>();
@@ -88,6 +90,18 @@ export class ContactsComponent implements OnInit {
     } else if (this.userRole == "SECRETARY") {
       this.getAllContactsForSecretary();
     }
+    // update categories after detail view
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      let currentRoute = this.route;
+      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+      if (this.userRole == "PRACTICIAN") {
+        this.getAllContacts();
+      } else if (this.userRole == "SECRETARY") {
+        this.getAllContactsForSecretary();
+      }
+    });
     this.featureService.setIsMessaging(false);
   }
   getAllContactsForSecretary() {
@@ -281,14 +295,14 @@ export class ContactsComponent implements OnInit {
 
   cardClicked(item) {
     if (item.users[0].contactType == "CONTACT") {
-      this.router.navigate(["/contact-detail/" + item.id]);
+      this.router.navigate(["mes-contacts-pro/contact-detail/" + item.id]);
     } else if (
       item.users[0].contactType == "MEDICAL" ||
       item.users[0].contactType == "CABINET"
     ) {
-      this.router.navigate(["/praticien-detail/" + item.practicianId]);
+      this.router.navigate(["mes-contacts-pro/praticien-detail/" + item.practicianId]);
     } else if (item.users[0].contactType == "SECRETARY") {
-      this.router.navigate(["/secretaire-detail/" + item.id]);
+      this.router.navigate(["mes-contacts-pro/secretaire-detail/" + item.id]);
     }
   }
   markAsSeenClicked(item) {
@@ -347,7 +361,7 @@ export class ContactsComponent implements OnInit {
     );
   }
   addContact() {
-    this.router.navigate(["/contact-detail/add"]);
+    this.router.navigate(["mes-contacts-pro/contact-detail/add"]);
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);

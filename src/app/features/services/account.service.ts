@@ -50,6 +50,7 @@ export class AccountService {
     factures_tab: "Mes factures",
     stats_tab: "Mes stats",
     categories_tab: "Mes catégories",
+    categories: "Catégories",
     add_secretary: "Ajouter secrétaire",
     add_secretary_success: "Secrétaire ajoutée avec succès",
     my_secretaries: "Mes Secrétaires",
@@ -64,7 +65,7 @@ export class AccountService {
     date: "Date (*)",
     website: "Site web",
     my_contacts: "Mes contacts",
-    patients: "Patients",
+    patients: "PATIENTS",
     tls: "TLS",
     leaves: "Mes congés",
     birthday: "Date de naissance",
@@ -102,7 +103,8 @@ export class AccountService {
     info2:
       "Vous pouvez à partir de cet onglet, définir les catégories des patients",
     resp: "Responsable",
-    activate_auto_resp: "Activer la réponse automatique en cas de congés ?"
+    activate_auto_resp: "Activer la réponse automatique en cas de congés ?",
+    sec_detail: "Détails du secrétaire"
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -115,6 +117,11 @@ export class AccountService {
     patient_title: "Patients",
     patient_m_1: "Messages reçus des patients",
     patient_m_2: "Messages envoyés aux patients"
+  };
+  public colors = {
+    blue: "#008fff",
+    light_blue: "#82f8ff",
+    dark_blue: "#1a56a7"
   };
   updateAccount(account) {
     return this.globalService.call(

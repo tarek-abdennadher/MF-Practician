@@ -12,7 +12,7 @@ $color-helssy-white: #ffffff;
   font-size: 15px !important;
   color: $color-helssy-grey;
   letter-spacing: -0.66px;
-  font-family: "Segoe UI Medium" !important;
+  font-family: "Montserrat-Medium" !important;
   text-align: left;
 }
 .image-container {
@@ -72,7 +72,7 @@ $color-helssy-white: #ffffff;
   background: #e9ecef 0% 0% no-repeat padding-box;
   opacity: 1;
   border: 1px solid #ced4da;
-  font-family: "Segoe UI";
+  font-family: "Montserrat";
   font-size: 17px;
   line-height: 24px;
   height: 40px;
@@ -84,7 +84,7 @@ $color-helssy-white: #ffffff;
   margin-top: -1rem;
 }
 .bg-danger {
-  background: linear-gradient(103deg, #f82e6c, #8c1bab 98%) !important;
+  background: #ff0063 0% 0% no-repeat padding-box !important;
   border-radius: 23px 23px 0px 0px !important;
   opacity: 1 !important;
 }
@@ -92,7 +92,7 @@ $color-helssy-white: #ffffff;
   width: 40px;
   height: 39px;
   border-radius: 20px;
-  background: linear-gradient(103deg, #f82e6c, #8c1bab 98%) !important;
+  background: #ff0063 0% 0% no-repeat padding-box !important;
   border-style: solid;
   color: #ffffff;
   text-align: center;
@@ -123,7 +123,7 @@ i.close {
   opacity: 1;
 }
 .practician {
-  font-family: "Segoe UI";
+  font-family: "Montserrat";
   text-align: left;
   font-size: 17px;
   line-height: 14px;
@@ -131,7 +131,7 @@ i.close {
   color: #6e819b;
 }
 .speciality {
-  font-family: "Segoe UI";
+  font-family: "Montserrat";
   text-align: left;
   font-weight: bold;
   font-size: 10px;

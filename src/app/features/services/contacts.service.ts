@@ -40,8 +40,10 @@ export class ContactsService {
     phone_error: "      Veuillez vérifier les téléphones saisis",
     note: " Note",
     additionalEmail: "Email secondaire",
+    category: "Nom de la catégorie ",
+    contact_pro: "Fiche contact Pro"
   };
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService) { }
 
   getContactsPro() {
     return this.globalService.call(
@@ -109,8 +111,8 @@ export class ContactsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.contact_pro +
-        "/contacts-practician/additionalId/" +
-        patientId
+      "/contacts-practician/additionalId/" +
+      patientId
     );
   }
 }

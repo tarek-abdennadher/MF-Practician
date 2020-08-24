@@ -7,7 +7,7 @@ import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from "rxjs";
 import { AccountService } from '@app/features/services/account.service';
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from '@app/features/features.service';
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -43,7 +43,6 @@ export class ContactDetailComponent implements OnInit {
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
-    this.initForm();
     this.isLabelShow = false;
   }
 
@@ -51,6 +50,7 @@ export class ContactDetailComponent implements OnInit {
     this.getjobTitles();
     this.route.params.subscribe((params) => {
       this.param = params["id"];
+      this.initForm();
       if (this.param != "add") {
         this.getContact(this.param);
       }
@@ -175,8 +175,8 @@ export class ContactDetailComponent implements OnInit {
     }
   }
 
-  BackButton() {
-    this._location.back();
+  cancel() {
+    this.router.navigate(["/mes-contacts-pro"]);
   }
 
   // Other phones list

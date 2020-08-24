@@ -5,25 +5,17 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
-import { ContactsComponent } from "./contacts/contacts.component";
-import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
-import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
 import { SendMessageComponent } from "./send-message/send-message.component";
-import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
-import { CategoryComponent } from "./account/category/category.component";
-import { CategoryDetailComponent } from "./account/category/category-detail/category-detail.component";
-import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
-import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
-
+import { PracticianDetailComponent } from '@app/shared/components/practician-detail/practician-detail.component';
 const routes: Routes = [
   {
     path: "",
@@ -56,11 +48,10 @@ const routes: Routes = [
       },
       {
         path: "mes-contacts-pro",
-        component: ContactsComponent,
-      },
-      {
-        path: "contact-detail/:id",
-        component: ContactDetailComponent,
+        loadChildren: () =>
+          import("./contacts/contacts.module").then(
+            (m) => m.ContactsModule
+          ),
       },
       {
         path: "messagerie-repondre/:id",
@@ -110,28 +101,16 @@ const routes: Routes = [
           ),
       },
       {
-        path: "secretaire-detail/:id",
-        component: SecretaryDetailComponent,
-      },
-      {
         path: "praticien-invitation",
         component: PracticianInvitationComponent,
       },
       {
         path: "mes-categories",
-        component: CategoryComponent,
-      },
-      {
-        path: "mes-categories/:id",
-        component: CategoryDetailComponent,
+        loadChildren: () => import("./category/category.module").then((m) => m.CategoryModule),
       },
       {
         path: "mes-objets",
-        component: PracticianObjectsComponent,
-      },
-      {
-        path: "mes-objets/:id",
-        component: PracticianObjectDetailComponent,
+        loadChildren: () => import("./my-objects/my-objects.module").then((m) => m.MyObjectsModule),
       },
     ],
   },
@@ -142,4 +121,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [MessagingDetailService, MessagingDetailResolve],
 })
-export class FeaturesRoutingModule {}
+export class FeaturesRoutingModule { }

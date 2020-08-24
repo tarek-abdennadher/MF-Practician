@@ -1,26 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from "@angular/forms";
-import { AccountService } from "../services/account.service";
-import { ContactsService } from "../services/contacts.service";
-import {ActivatedRoute, Router} from '@angular/router';
-import { Location } from "@angular/common";
-import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { AccountService } from '@app/features/services/account.service';
+import { ContactsService } from '@app/features/services/contacts.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 import { GlobalService } from '@app/core/services/global.service';
-import {FeaturesService} from '@app/features/features.service';
+import { FeaturesService } from '@app/features/features.service';
+
 @Component({
-  selector: "app-secretary-detail",
-  templateUrl: "./secretary-detail.component.html",
-  styleUrls: ["./secretary-detail.component.scss"],
+  selector: 'app-secretary-details',
+  templateUrl: './secretary-details.component.html',
+  styleUrls: ['./secretary-details.component.scss']
 })
-export class SecretaryDetailComponent implements OnInit {
+export class SecretaryDetailsComponent implements OnInit {
   public infoForm: FormGroup;
   public messages: any;
   public labels: any;
-  page = "SECRETARIES";
-  number = null;
-  topText = "Détails du secrétaire";
-  bottomText = "";
-  backButton = true;
   isPractician = true;
   links = {};
   selectedSecretary: any;
@@ -31,12 +26,11 @@ export class SecretaryDetailComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private contactsService: ContactsService,
-    private route: ActivatedRoute,
     public router: Router,
-    private _location: Location,
+    private route: ActivatedRoute,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
-    private globalService:GlobalService,
+    private globalService: GlobalService,
     private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
@@ -100,12 +94,8 @@ export class SecretaryDetailComponent implements OnInit {
         picture: value.secretary ? value.secretary.photoId : null,
         otherPhones: value.secretary.otherPhones ? this.phoneList : []
       });
-      this.bottomText = value.secretary.firstName + " " + value.secretary.lastName;
       this.infoForm.disable();
     });
-  }
-  BackButton() {
-    this._location.back();
   }
   // initialise profile picture
   getPictureProfile(nodeId) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input, Output } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -13,7 +13,6 @@ declare var $: any;
 })
 export class CategoryDetailComponent implements OnInit {
   public messages: any;
-  itemsList = [];
   showAlert = false;
   failureAlert = false;
   public labels: any;

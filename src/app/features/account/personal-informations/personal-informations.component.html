@@ -1,23 +1,56 @@
 <!-- Secretary Account -->
 <div *ngIf="!isPractician" class="row justify-content-center">
-  <a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
-    role="alert">
+  <a
+    *ngIf="showAlert"
+    id="alert"
+    (click)="close()"
+    class="alert alert-success alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.edit_info_success }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
-  <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
-    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+  <a
+    *ngIf="failureAlert"
+    id="FailureAlert"
+    (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.phone_error }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
-  <a *ngIf="updateAlert" id="FailureAlert" (click)="close()"
-    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+  <a
+    *ngIf="updateAlert"
+    id="FailureAlert"
+    (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.update_error }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
@@ -25,25 +58,34 @@
 <div *ngIf="!isPractician" class="card Rectangle" id="Mes-tabs">
   <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
     <i class="fas fa-inbox fa-icon"></i>
-    <span class="Mes-informations">{{ messages.my_info }}
-    </span>
+    <span class="Mes-informations">{{ messages.my_info }} </span>
   </div>
   <!-- Personal Information Form -->
   <div class="card-body Rectangle-body">
     <form [formGroup]="infoForm">
-      <br>
+      <br />
       <div class="row">
         <!-- Profile Picture -->
         <div class="col-12 col-sm-2 image-container text-center">
-          <img [src]="image ? image : 'assets/imgs/user.png'" alt="Profile" [ngClass]="{ 'border-avatar': !hasImage }"
-            class="profile-picture" />
+          <img
+            [src]="image ? image : 'assets/imgs/user.png'"
+            alt="Profile"
+            [ngClass]="{ 'border-avatar': !hasImage }"
+            class="profile-picture"
+          />
           <div class="middle-sec">
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons">
+            <div
+              class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons"
+            >
               <div class="row">
                 <label for="file-upload">
                   <i class="far fa-cog fa-lg image-icon">&nbsp; </i>
                 </label>
-                <input id="sec-file-upload" type="file" (change)="selectFileToUpload($event)" />
+                <input
+                  id="sec-file-upload"
+                  type="file"
+                  (change)="selectFileToUpload($event)"
+                />
               </div>
               <div class="row mt-1">
                 <a (click)="deletePicture()" id="sec-delete-picture">
@@ -57,12 +99,23 @@
           <div class="row">
             <!-- Last name -->
             <div class="col col-12 col-sm-6">
-              <div class="col-12 col-sm-12 col-form-label">{{ labels.last_name}}</div>
+              <div class="col-12 col-sm-12 col-form-label">
+                {{ labels.last_name }}
+              </div>
               <div class="col-12 col-sm-12">
-                <input type="text" formControlName="last_name" class="form-control" id="sec-last-name" [ngClass]="{
-                  'is-invalid': submitted && ctr.last_name.errors
-                }" />
-                <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+                <input
+                  type="text"
+                  formControlName="last_name"
+                  class="form-control"
+                  id="sec-last-name"
+                  [ngClass]="{
+                    'is-invalid': submitted && ctr.last_name.errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.last_name.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.last_name.errors.required">
                     {{ labels.required }}
                   </div>
@@ -71,12 +124,21 @@
             </div>
             <!-- First name -->
             <div class="col col-12 col-sm-6">
-              <div class="col-12 col-form-label">{{labels.first_name}}</div>
+              <div class="col-12 col-form-label">{{ labels.first_name }}</div>
               <div class="col-12">
-                <input type="text" formControlName="first_name" class="form-control" id="sec-first-name" [ngClass]="{
-                  'is-invalid': submitted && ctr.first_name.errors
-                }" />
-                <div *ngIf="submitted && ctr.first_name.errors" class="invalid-feedback">
+                <input
+                  type="text"
+                  formControlName="first_name"
+                  class="form-control"
+                  id="sec-first-name"
+                  [ngClass]="{
+                    'is-invalid': submitted && ctr.first_name.errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.first_name.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.first_name.errors.required">
                     {{ labels.required }}
                   </div>
@@ -84,21 +146,28 @@
               </div>
             </div>
           </div>
-          <br>
+          <br />
           <div class="row">
             <!-- Civility -->
             <div class="col col-12 col-sm-6">
-              <div class="col-12 col-form-label">{{   labels.civility}}</div>
+              <div class="col-12 col-form-label">{{ labels.civility }}</div>
               <div class="col-12">
-                <select formControlName="civility" class="custom-select"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }" id="sec-civility">
+                <select
+                  formControlName="civility"
+                  class="form-control"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
+                  id="sec-civility"
+                >
                   <option value="null" disabled="true">{{
                     labels.civility
                   }}</option>
                   <option value="M">M</option>
                   <option value="MME">Mme</option>
                 </select>
-                <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && ctr.civility.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.civility.errors.required">
                     {{ labels.required }}
                   </div>
@@ -106,18 +175,27 @@
               </div>
             </div>
           </div>
-          <br>
+          <br />
           <!-- Phone number -->
           <div class="row">
             <div class="col col-12">
-              <div class=" col-12 col-form-label">{{labels.phone}}</div>
+              <div class="col-12 col-form-label">{{ labels.phone }}</div>
               <div class="col-12 row">
                 <div class="col-10 col-sm-10">
-                  <international-phone-number class="form-control phone" id="sec-phone" formControlName="phone"
-                    placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
-                    [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }">
+                  <international-phone-number
+                    class="form-control phone"
+                    id="sec-phone"
+                    formControlName="phone"
+                    placeholder="Téléphone"
+                    [maxlength]="20"
+                    [defaultCountry]=""
+                    [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }"
+                  >
                   </international-phone-number>
-                  <div *ngIf="submitted && ctr.phone.errors" class="invalid-feedback">
+                  <div
+                    *ngIf="submitted && ctr.phone.errors"
+                    class="invalid-feedback"
+                  >
                     <div *ngIf="ctr.phone.errors.required">
                       {{ labels.required }}
                     </div>
@@ -127,35 +205,55 @@
                   </div>
                 </div>
                 <div class="col-1 col-sm-2">
-                  <button (click)="addPhone()" class="btn btn-xs btn-icon" id="add-phone-button">
+                  <button
+                    (click)="addPhone()"
+                    class="btn btn-xs btn-icon"
+                    id="add-phone-button"
+                  >
                     <i class="far fa-plus"></i>
                   </button>
                 </div>
               </div>
             </div>
           </div>
-          <br>
+          <br />
           <div class="row">
-            <div class="col ">
+            <div class="col">
               <!-- Other Phones -->
-              <div *ngIf="isLabelShow" class="col-12 col-form-label">{{labels.other_phone}}</div>
+              <div *ngIf="isLabelShow" class="col-12 col-form-label">
+                {{ labels.other_phone }}
+              </div>
               <div class="col-12 col-sm-11">
-                <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" [addnewPhone]="addnewPhone"
-                  id="sec-other-phones" (validPhones)="submitPhones($event)">
+                <int-phone
+                  [editList]="otherPhones"
+                  (phones)="getPhoneList($event)"
+                  [addnewPhone]="addnewPhone"
+                  id="sec-other-phones"
+                  (validPhones)="submitPhones($event)"
+                >
                 </int-phone>
               </div>
             </div>
           </div>
-          <br *ngIf="isLabelShow">
+          <br *ngIf="isLabelShow" />
           <!-- Email -->
           <div class="row">
             <div class="col col-12">
-              <div class=" col-12 col-form-label">{{labels.email_input}}</div>
+              <div class="col-12 col-form-label">{{ labels.email_input }}</div>
               <div class="col-12 row">
                 <div class="col-12 col-sm-12 col-md-10">
-                  <input disabled type="text" formControlName="email" class="form-control" id="sec-email"
-                    [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }" />
-                  <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                  <input
+                    disabled
+                    type="text"
+                    formControlName="email"
+                    class="form-control"
+                    id="sec-email"
+                    [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.email.errors"
+                    class="invalid-feedback"
+                  >
                     <div *ngIf="ctr.email.errors.required">
                       {{ labels.required }}
                     </div>
@@ -164,32 +262,74 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-sm-12 col-md-2 ">
-                  <button (click)="submit()" type="submit" class="btn btn-primary" id="sec-info-submit-button">
+                <div
+                  class="col-sm-2 col-md-2 col-lg-2 col-xl-2 d-none d-sm-none d-md-block"
+                >
+                  <button
+                    (click)="submit()"
+                    type="submit"
+                    class="btn btn-primary"
+                    id="sec-info-submit-button"
+                  >
                     {{ messages.save }}
                   </button>
                 </div>
               </div>
             </div>
           </div>
+          <br />
+          <div class="row d-md-none d-lg-none d-xl-none">
+            <div class="col-12 col-sm-12 text-center">
+              <button
+                (click)="submit()"
+                type="submit"
+                class="btn btn-primary"
+                id="sec-info-submit-button"
+              >
+                {{ messages.save }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </form>
-    <br>
+    <br />
     <!-- Password Form -->
-    <div class=" password">
+    <div class="password">
       <div class="row justify-content-center">
-        <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
-          class="alert alert-success alert-dismissible fade show pointer" role="alert">
+        <a
+          *ngIf="showPasswordSuccess"
+          id="alertPasswordSuccess"
+          (click)="close()"
+          class="alert alert-success alert-dismissible fade show pointer"
+          role="alert"
+        >
           {{ messages.edit_password_success }}
-          <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+          <button
+            type="button"
+            (click)="close()"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </a>
-        <a *ngIf="showPasswordFailure" id="alertPasswordFailure" (click)="close()"
-          class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+        <a
+          *ngIf="showPasswordFailure"
+          id="alertPasswordFailure"
+          (click)="close()"
+          class="alert alert-danger alert-dismissible fade show pointer"
+          role="alert"
+        >
           {{ passwordErrorMessage }}
-          <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+          <button
+            type="button"
+            (click)="close()"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </a>
@@ -200,18 +340,27 @@
         <div class="row reset-password col-md-12">
           {{ messages.reset_pwd }}
         </div>
-        <br>
+        <br />
         <div class="row">
           <div class="col col-12 col-sm-6">
             <label for="pass" class="col-sm-12 col-form-label">{{
               messages.new_pwd
             }}</label>
             <div class="col-sm-12">
-              <input type="password" autocomplete="new-password" formControlName="new_password" class="form-control"
-                id="pass" [ngClass]="{
-            'is-invalid': passwordSubmitted && f2.new_password.errors
-          }" />
-              <div *ngIf="passwordSubmitted && f2.new_password.errors" class="invalid-feedback">
+              <input
+                type="password"
+                autocomplete="new-password"
+                formControlName="new_password"
+                class="form-control"
+                id="pass"
+                [ngClass]="{
+                  'is-invalid': passwordSubmitted && f2.new_password.errors
+                }"
+              />
+              <div
+                *ngIf="passwordSubmitted && f2.new_password.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="f2.new_password.errors.required">
                   {{ errors.required }}
                 </div>
@@ -226,12 +375,20 @@
               messages.confirm_pwd
             }}</label>
             <div class="col-sm-12">
-              <input type="password" autocomplete="new-password" class="form-control" formControlName="confirm_password"
-                id="confirmpass" [ngClass]="{
-            'is-invalid':
-              passwordSubmitted && f2.confirm_password.errors
-          }" />
-              <div *ngIf="passwordSubmitted && f2.confirm_password.errors" class="invalid-feedback">
+              <input
+                type="password"
+                autocomplete="new-password"
+                class="form-control"
+                formControlName="confirm_password"
+                id="confirmpass"
+                [ngClass]="{
+                  'is-invalid': passwordSubmitted && f2.confirm_password.errors
+                }"
+              />
+              <div
+                *ngIf="passwordSubmitted && f2.confirm_password.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="f2.confirm_password.errors.required">
                   {{ errors.required }}
                 </div>
@@ -243,12 +400,19 @@
           </div>
         </div>
         <div class="row ml-4">
-          <lib-hls-password-strength id="checkstrength" [passwordToCheck]="passwordForm.value.new_password"
-            (passwordStrength)="passwordValid($event)"></lib-hls-password-strength>
+          <lib-hls-password-strength
+            id="checkstrength"
+            [passwordToCheck]="passwordForm.value.new_password"
+            (passwordStrength)="passwordValid($event)"
+          ></lib-hls-password-strength>
         </div>
         <br />
         <div class="row justify-content-center">
-          <button type="submit" class="btn btn-primary" id="password-submit-button">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="password-submit-button"
+          >
             {{ messages.save }}
           </button>
         </div>
@@ -259,42 +423,86 @@
 <!-- Practician Account -->
 <div class="card-body Rectangle-body-pract" *ngIf="isPractician">
   <div class="row justify-content-center">
-    <a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
-      role="alert">
+    <a
+      *ngIf="showAlert"
+      id="alert"
+      (click)="close()"
+      class="alert alert-success alert-dismissible fade show pointer"
+      role="alert"
+    >
       {{ messages.edit_info_success }}
-      <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <button
+        type="button"
+        (click)="close()"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </a>
-    <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
-      class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+    <a
+      *ngIf="failureAlert"
+      id="FailureAlert"
+      (click)="close()"
+      class="alert alert-danger alert-dismissible fade show pointer"
+      role="alert"
+    >
       {{ messages.phone_error }}
-      <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <button
+        type="button"
+        (click)="close()"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </a>
-    <a *ngIf="updateAlert" id="FailureAlert" (click)="close()"
-      class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+    <a
+      *ngIf="updateAlert"
+      id="FailureAlert"
+      (click)="close()"
+      class="alert alert-danger alert-dismissible fade show pointer"
+      role="alert"
+    >
       {{ messages.update_error }}
-      <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+      <button
+        type="button"
+        (click)="close()"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </a>
   </div>
   <form [formGroup]="infoForm">
-    <br>
+    <br />
     <div class="row">
       <!-- Profile Picture -->
       <div class="col-12 col-sm-2 image-container text-center">
-        <img id="pract-picture" [src]="image ? image : 'assets/imgs/user.png'" alt="Profile"
-          [ngClass]="{ 'border-avatar': !hasImage }" class="profile-picture" />
+        <img
+          id="pract-picture"
+          [src]="image ? image : 'assets/imgs/user.png'"
+          alt="Profile"
+          [ngClass]="{ 'border-avatar': !hasImage }"
+          class="profile-picture"
+        />
         <div class="middle">
-          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons">
+          <div
+            class="col-sm-12 col-md-12 col-lg-12 col-xl-12 align-self-center image-buttons"
+          >
             <div class="row">
               <label for="file-upload">
                 <i class="far fa-cog fa-lg image-icon">&nbsp; </i>
               </label>
-              <input id="file-upload" type="file" (change)="selectFileToUpload($event)" />
+              <input
+                id="file-upload"
+                type="file"
+                (change)="selectFileToUpload($event)"
+              />
             </div>
             <div class="row mt-1">
               <a (click)="deletePicture()" id="delete-picture-button">
@@ -308,12 +516,23 @@
         <div class="row">
           <!-- Last name -->
           <div class="col col-12 col-sm-6">
-            <div class="col-12 col-sm-12 col-form-label">{{ labels.last_name}}</div>
+            <div class="col-12 col-sm-12 col-form-label">
+              {{ labels.last_name }}
+            </div>
             <div class="col-12 col-sm-12">
-              <input type="text" formControlName="last_name" class="form-control" id="pract-last-name" [ngClass]="{
-                'is-invalid': submitted && ctr.last_name.errors
-              }" />
-              <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+              <input
+                type="text"
+                formControlName="last_name"
+                class="form-control"
+                id="pract-last-name"
+                [ngClass]="{
+                  'is-invalid': submitted && ctr.last_name.errors
+                }"
+              />
+              <div
+                *ngIf="submitted && ctr.last_name.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="ctr.last_name.errors.required">
                   {{ labels.required }}
                 </div>
@@ -322,12 +541,21 @@
           </div>
           <!-- First name -->
           <div class="col col-12 col-sm-6">
-            <div class="col-12 col-form-label">{{labels.first_name}}</div>
+            <div class="col-12 col-form-label">{{ labels.first_name }}</div>
             <div class="col-12">
-              <input type="text" formControlName="first_name" class="form-control" id="pract-first-name" [ngClass]="{
-                'is-invalid': submitted && ctr.first_name.errors
-              }" />
-              <div *ngIf="submitted && ctr.first_name.errors" class="invalid-feedback">
+              <input
+                type="text"
+                formControlName="first_name"
+                class="form-control"
+                id="pract-first-name"
+                [ngClass]="{
+                  'is-invalid': submitted && ctr.first_name.errors
+                }"
+              />
+              <div
+                *ngIf="submitted && ctr.first_name.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="ctr.first_name.errors.required">
                   {{ labels.required }}
                 </div>
@@ -335,21 +563,27 @@
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <div class="row">
           <!-- Job Title -->
           <div class="col col-12 col-sm-4">
-            <div class="col-12 col-form-label">{{labels.title}}</div>
+            <div class="col-12 col-form-label">{{ labels.title }}</div>
             <div class="col-12">
-              <select formControlName="title" class="custom-select"
-                [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="pract-job-title">
-                <option value="null" disabled="true">{{
-                labels.title
-              }}</option>
-                <option *ngFor="let item of jobTitlesList" value="{{ item }}">{{ item | JobTitle }}
+              <select
+                formControlName="title"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }"
+                id="pract-job-title"
+              >
+                <option value="null" disabled="true">{{ labels.title }}</option>
+                <option *ngFor="let item of jobTitlesList" value="{{ item }}"
+                  >{{ item | JobTitle }}
                 </option>
               </select>
-              <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
+              <div
+                *ngIf="submitted && ctr.title.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="ctr.title.errors.required">
                   {{ labels.required }}
                 </div>
@@ -358,19 +592,35 @@
           </div>
           <!-- Speciality -->
           <div class="col col-12 col-sm-8">
-            <div class="col-12 col-form-label">{{labels.speciality}}</div>
+            <div class="col-12 col-form-label">{{ labels.speciality }}</div>
             <div class="col-12">
-              <select formControlName="speciality" class="custom-select" [ngClass]="{
-                'is-invalid': submitted && ctr.speciality.errors
-              }" id="pract-speciality">
+              <select
+                formControlName="speciality"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': submitted && ctr.speciality.errors
+                }"
+                id="pract-speciality"
+              >
                 <option value="null" disabled="true">{{
-                labels.speciality
-              }}</option>
+                  labels.speciality
+                }}</option>
+                <option
+                  *ngIf="
+                    account && account.speciality && account.speciality.deleted
+                  "
+                  [value]="account.speciality.id"
+                  disabled="true"
+                  >{{ account.speciality.name }}</option
+                >
                 <option *ngFor="let s of specialities" [value]="s.id">{{
-                s.name
-              }}</option>
+                  s.name
+                }}</option>
               </select>
-              <div *ngIf="submitted && ctr.speciality.errors" class="invalid-feedback">
+              <div
+                *ngIf="submitted && ctr.speciality.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="ctr.speciality.errors.required">
                   {{ labels.required }}
                 </div>
@@ -378,15 +628,23 @@
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <!-- Address -->
         <div class="row">
           <div class="col">
             <div class="col-12 col-form-label">{{ labels.address }} (*)</div>
             <div class="col-12">
-              <input type="text" formControlName="address" class="form-control" id="pract-address"
-                [ngClass]="{ 'is-invalid': submitted && ctr.address.errors }" />
-              <div *ngIf="submitted && ctr.address.errors" class="invalid-feedback">
+              <input
+                type="text"
+                formControlName="address"
+                class="form-control"
+                id="pract-address"
+                [ngClass]="{ 'is-invalid': submitted && ctr.address.errors }"
+              />
+              <div
+                *ngIf="submitted && ctr.address.errors"
+                class="invalid-feedback"
+              >
                 <div *ngIf="ctr.address.errors.required">
                   {{ labels.required }}
                 </div>
@@ -394,46 +652,71 @@
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <!-- Additional Address -->
         <div class="row">
           <div class="col">
-            <div class="col-12 col-form-label">{{labels.additional_address}}</div>
+            <div class="col-12 col-form-label">
+              {{ labels.additional_address }}
+            </div>
             <div class="col-12">
-              <input type="text" formControlName="additional_address" class="form-control"
-                id="pract-additional_address" />
+              <input
+                type="text"
+                formControlName="additional_address"
+                class="form-control"
+                id="pract-additional_address"
+              />
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <div class="row">
           <!-- Zipcode -->
           <div class="col-12 col-sm-3">
-            <div class="col-12 col-form-label">{{messages._zip_code}}</div>
+            <div class="col-12 col-form-label">{{ messages._zip_code }}</div>
             <div class="col-12">
-              <input type="text" formControlName="zipCode" class="form-control" id="pract-zipCode" />
+              <input
+                type="text"
+                formControlName="zipCode"
+                class="form-control"
+                id="pract-zipCode"
+              />
             </div>
           </div>
           <!-- City -->
           <div class="col-12 col-sm-8">
-            <div class="col-12 col-form-label">{{messages._city}}</div>
+            <div class="col-12 col-form-label">{{ messages._city }}</div>
             <div class="col-12 col-sm-10">
-              <input type="text" formControlName="city" class="form-control" id="pract-City" />
+              <input
+                type="text"
+                formControlName="city"
+                class="form-control"
+                id="pract-City"
+              />
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <!-- Phone number -->
         <div class="row">
           <div class="col col-12">
-            <div class=" col-12 col-form-label">{{labels.phone}}</div>
+            <div class="col-12 col-form-label">{{ labels.phone }}</div>
             <div class="col-12 row">
               <div class="col-10 col-sm-10">
-                <international-phone-number class="form-control phone" id="sec-phone" formControlName="phone"
-                  placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
-                  [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }">
+                <international-phone-number
+                  class="form-control phone"
+                  id="sec-phone"
+                  formControlName="phone"
+                  placeholder="Téléphone"
+                  [maxlength]="20"
+                  [defaultCountry]=""
+                  [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }"
+                >
                 </international-phone-number>
-                <div *ngIf="submitted && ctr.phone.errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && ctr.phone.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.phone.errors.required">
                     {{ labels.required }}
                   </div>
@@ -443,35 +726,55 @@
                 </div>
               </div>
               <div class="col-1 col-sm-2">
-                <button (click)="addPhone()" class="btn btn-xs btn-icon" id="add-phone-button">
+                <button
+                  (click)="addPhone()"
+                  class="btn btn-xs btn-icon"
+                  id="add-phone-button"
+                >
                   <i class="far fa-plus"></i>
                 </button>
               </div>
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <div class="row">
-          <div class="col ">
+          <div class="col">
             <!-- Other Phones -->
-            <div *ngIf="isLabelShow" class="col-12 col-form-label">{{labels.other_phone}}</div>
+            <div *ngIf="isLabelShow" class="col-12 col-form-label">
+              {{ labels.other_phone }}
+            </div>
             <div class="col-12 col-sm-11">
-              <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" [addnewPhone]="addnewPhone"
-                id="sec-other-phones" (validPhones)="submitPhones($event)">
+              <int-phone
+                [editList]="otherPhones"
+                (phones)="getPhoneList($event)"
+                [addnewPhone]="addnewPhone"
+                id="sec-other-phones"
+                (validPhones)="submitPhones($event)"
+              >
               </int-phone>
             </div>
           </div>
         </div>
-        <br *ngIf="isLabelShow">
+        <br *ngIf="isLabelShow" />
         <!-- Email -->
         <div class="row">
           <div class="col col-12">
-            <div class=" col-12 col-form-label">{{labels.email_input}}</div>
+            <div class="col-12 col-form-label">{{ labels.email_input }}</div>
             <div class="col-12 row">
               <div class="col-12 col-sm-12 col-md-10">
-                <input disabled type="text" formControlName="email" class="form-control" id="pract-email"
-                  [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }" />
-                <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                <input
+                  disabled
+                  type="text"
+                  formControlName="email"
+                  class="form-control"
+                  id="pract-email"
+                  [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }"
+                />
+                <div
+                  *ngIf="submitted && ctr.email.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.email.errors.required">
                     {{ labels.required }}
                   </div>
@@ -483,49 +786,101 @@
             </div>
           </div>
         </div>
-        <br>
+        <br />
         <!-- Secondary Email -->
         <div class="row">
           <div class="col col-12">
-            <div class=" col-12 col-form-label">{{labels.additionalEmail}}</div>
+            <div class="col-12 col-form-label">
+              {{ labels.additionalEmail }}
+            </div>
             <div class="col-12 row">
               <div class="col-12 col-sm-12 col-md-10">
-                <input type="text" formControlName="additionalEmail" class="form-control" id="pract-additionalEmail"
+                <input
+                  type="text"
+                  formControlName="additionalEmail"
+                  class="form-control"
+                  id="pract-additionalEmail"
                   [ngClass]="{
                     'is-invalid': submitted && ctr.additionalEmail.errors
-                  }" />
-                <div *ngIf="submitted && ctr.additionalEmail.errors" class="invalid-feedback">
+                  }"
+                />
+                <div
+                  *ngIf="submitted && ctr.additionalEmail.errors"
+                  class="invalid-feedback"
+                >
                   <div *ngIf="ctr.additionalEmail.errors.email">
                     {{ labels.email_invalid_format }}
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-12 col-md-2 ">
-                <button (click)="submit()" type="submit" class="btn btn-primary" id="pract-info-submit-button">
+              <div
+                class="col-sm-2 col-md-2 col-lg-2 col-xl-2 d-none d-sm-none d-md-block"
+              >
+                <button
+                  (click)="submit()"
+                  type="submit"
+                  class="btn btn-primary"
+                  id="pract-info-submit-button"
+                >
                   {{ messages.save }}
                 </button>
               </div>
             </div>
           </div>
         </div>
+        <br />
+        <div class="row d-md-none d-lg-none d-xl-none">
+          <div class="col-12 col-sm-12 text-center">
+            <button
+              (click)="submit()"
+              type="submit"
+              class="btn btn-primary"
+              id="pract-info-submit-button"
+            >
+              {{ messages.save }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </form>
-  <br>
+  <br />
   <!-- Password Form -->
   <div class="password">
     <div class="row justify-content-center">
-      <a *ngIf="showPasswordSuccess" id="alertPasswordSuccess" (click)="close()"
-        class="alert alert-success alert-dismissible fade show pointer" role="alert">
+      <a
+        *ngIf="showPasswordSuccess"
+        id="alertPasswordSuccess"
+        (click)="close()"
+        class="alert alert-success alert-dismissible fade show pointer"
+        role="alert"
+      >
         {{ messages.edit_password_success }}
-        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+        <button
+          type="button"
+          (click)="close()"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </a>
-      <a *ngIf="showPasswordFailure" id="alertPasswordFailure" (click)="close()"
-        class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+      <a
+        *ngIf="showPasswordFailure"
+        id="alertPasswordFailure"
+        (click)="close()"
+        class="alert alert-danger alert-dismissible fade show pointer"
+        role="alert"
+      >
         {{ passwordErrorMessage }}
-        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+        <button
+          type="button"
+          (click)="close()"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </a>
@@ -536,18 +891,27 @@
       <div class="row reset-password col-md-12">
         {{ messages.reset_pwd }}
       </div>
-      <br>
+      <br />
       <div class="row">
         <div class="col col-12 col-sm-6">
           <label for="pass" class="col-sm-12 col-form-label">{{
-              messages.new_pwd
-            }}</label>
+            messages.new_pwd
+          }}</label>
           <div class="col-sm-12">
-            <input type="password" autocomplete="new-password" formControlName="new_password" class="form-control"
-              id="pass" [ngClass]="{
-            'is-invalid': passwordSubmitted && f2.new_password.errors
-          }" />
-            <div *ngIf="passwordSubmitted && f2.new_password.errors" class="invalid-feedback">
+            <input
+              type="password"
+              autocomplete="new-password"
+              formControlName="new_password"
+              class="form-control"
+              id="pass"
+              [ngClass]="{
+                'is-invalid': passwordSubmitted && f2.new_password.errors
+              }"
+            />
+            <div
+              *ngIf="passwordSubmitted && f2.new_password.errors"
+              class="invalid-feedback"
+            >
               <div *ngIf="f2.new_password.errors.required">
                 {{ errors.required }}
               </div>
@@ -559,15 +923,23 @@
         </div>
         <div class="col col-12 col-sm-6">
           <label for="confirmpass" class="col-sm-12 col-form-label">{{
-              messages.confirm_pwd
-            }}</label>
+            messages.confirm_pwd
+          }}</label>
           <div class="col-sm-12">
-            <input type="password" autocomplete="new-password" class="form-control" formControlName="confirm_password"
-              id="confirmpass" [ngClass]="{
-            'is-invalid':
-              passwordSubmitted && f2.confirm_password.errors
-          }" />
-            <div *ngIf="passwordSubmitted && f2.confirm_password.errors" class="invalid-feedback">
+            <input
+              type="password"
+              autocomplete="new-password"
+              class="form-control"
+              formControlName="confirm_password"
+              id="confirmpass"
+              [ngClass]="{
+                'is-invalid': passwordSubmitted && f2.confirm_password.errors
+              }"
+            />
+            <div
+              *ngIf="passwordSubmitted && f2.confirm_password.errors"
+              class="invalid-feedback"
+            >
               <div *ngIf="f2.confirm_password.errors.required">
                 {{ errors.required }}
               </div>
@@ -578,13 +950,27 @@
           </div>
         </div>
       </div>
-      <div class="row ml-4">
-        <lib-hls-password-strength id="checkstrength" [passwordToCheck]="passwordForm.value.new_password"
-          (passwordStrength)="passwordValid($event)"></lib-hls-password-strength>
+      <div class="row d-none d-sm-block ml-4">
+        <lib-hls-password-strength
+          id="checkstrength"
+          [passwordToCheck]="passwordForm.value.new_password"
+          (passwordStrength)="passwordValid($event)"
+        ></lib-hls-password-strength>
+      </div>
+      <div class="row d-sm-none d-md-none d-lg-none d-xl-none">
+        <lib-hls-password-strength
+          id="checkstrength"
+          [passwordToCheck]="passwordForm.value.new_password"
+          (passwordStrength)="passwordValid($event)"
+        ></lib-hls-password-strength>
       </div>
       <br />
       <div class="row justify-content-center ml-3">
-        <button type="submit" class="btn btn-primary" id="password-submit-button">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          id="password-submit-button"
+        >
           {{ messages.save }}
         </button>
       </div>

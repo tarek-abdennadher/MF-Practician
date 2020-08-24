@@ -1,0 +1,125 @@
+<div class="card Rectangle" id="object-tabs">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <i class="fas fa-info-circle fa-icon"></i>
+        <span class="Mes-informations">{{ messages.my_object }}
+        </span>
+    </div>
+    <!-- Objects Form -->
+    <div class="card-body Rectangle-body">
+        <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
+            <div class="row">
+                <div class="col col-12 col-sm-5">
+                    <div for="prohibitPatient" class="col-sm-12 col-form-label">{{ messages.cible}}</div>
+                    <div class="col-sm-12">
+                        <select formControlName="destination" class="form-control" id="destination">
+                            <option [value]="null" disabled="true" [selected]="true">{{messages.cible}}</option>
+                            <option [value]="'PRACTICIAN'">{{ messages.practician}}</option>
+                            <option [value]="'SECRETARY'">{{messages.secretary_tls}}</option>
+                            <option [value]="'PATIENT'">{{messages.patient}}</option>
+                            <option [value]="'OTHER'">{{messages.other}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col col-12 col-sm-7">
+                    <div for="object" class="col-sm-3 col-form-label">{{
+                        messages.object
+                      }}</div>
+                    <div class="col-sm-12">
+                        <input type="text" formControlName="object" class="form-control m-w-300" id="object" [ngClass]="{
+                          'is-invalid': submitted && ctr.object.errors
+                        }" />
+                        <div *ngIf="submitted && ctr.object.errors" class="invalid-feedback">
+                            <div *ngIf="ctr.object.errors.required">
+                                {{ messages.required }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div class="row">
+                <div class="col col-12">
+                    <div for="content" class="col-sm-12 col-form-label">{{
+                        messages.content}}
+                    </div>
+                    <div class="col-12 col-sm-12">
+                        <hls-ckeditor [ngClass]="{
+                          'is-invalid': submitted && ctr.content.errors
+                        }" [ctrl]="ctr.content" id="message-content"></hls-ckeditor>
+                        <div *ngIf="submitted && ctr.content.errors" class="invalid-feedback">
+                            <div *ngIf="ctr.content.errors.required">
+                                {{ messages.required }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div class="row">
+                <div class="col col-12">
+                    <label for="allowDocument" class="col-sm-12 col-form-label form-inline">{{
+                        messages.allowDocument
+                      }} &nbsp;&nbsp;
+                        <input formControlName="allowDocument" id="allowDocument" value="false" type="checkbox"
+                            (change)="setRequiredValidatorDocument()" />
+                    </label>
+                </div>
+
+            </div>
+            <br>
+            <div class="row">
+                <div class="col col-12">
+                    <div for="documentModelId" class="col-sm-12 col-form-label">{{
+                        messages.docModel
+                      }}
+                    </div>
+                    <div class="col-sm-8 ">
+                        <select formControlName="documentModelId" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && ctr.documentModelId.errors }" id="documentModelId">
+                            <option [value]="" disabled="true" [selected]="true">{{messages.title}}</option>
+                            <option *ngFor="let item of documentModelList" [value]="item.id">{{item.title}}</option>
+                        </select>
+                        <div *ngIf="submitted && ctr.documentModelId.errors" class="invalid-feedback">
+                            <div *ngIf="ctr.documentModelId.errors.required">
+                                {{ messages.required }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <br>
+            <div class="row">
+                <div class="col col-12">
+                    <div for="docBody" class="col-sm-12 col-form-label">{{
+                        messages.docBody
+                      }}
+                    </div>
+                    <div class="col-sm-12">
+                        <hls-ckeditor [ngClass]="{
+                            'is-invalid': submitted && ctr.docBody.errors
+                          }" [ctrl]="ctr.docBody" id="doc-body"></hls-ckeditor>
+                        <div *ngIf="submitted && ctr.docBody.errors" class="invalid-feedback">
+                            <div *ngIf="ctr.docBody.errors.required">
+                                {{ messages.required }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <button (click)="submit()" type="submit" class="btn btn-primary mr-3 mb-2"
+                    id="submit-button">{{ messages.save }}
+                </button>
+                <button (click)="cancel()" class="btn btn-cancel" id="cancel-button">
+                    {{ messages.cancel }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,19 +1,20 @@
-import { Component, OnInit } from "@angular/core";
-import { AccountService } from "@app/features/services/account.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import { CategoryService } from "@app/features/services/category.service";
+import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { CategoryService } from '../services/category.service';
+import { FeaturesService } from '../features.service';
 import { GlobalService } from '@app/core/services/global.service';
-import {FeaturesService} from '@app/features/features.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
-  selector: "app-practician-objects",
-  templateUrl: "./practician-objects.component.html",
-  styleUrls: ["./practician-objects.component.scss"],
+  selector: 'app-my-objects',
+  templateUrl: './my-objects.component.html',
+  styleUrls: ['./my-objects.component.scss']
 })
-export class PracticianObjectsComponent implements OnInit {
+export class MyObjectsComponent implements OnInit {
   public messages: any;
   itemsList = [];
-  imageSource : string;
+  imageSource: string;
   selectedObject: any;
   searchList = [];
   avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
@@ -35,6 +36,14 @@ export class PracticianObjectsComponent implements OnInit {
   ngOnInit(): void {
     this.getMyObject();
     this.getSearchList();
+    // update categories after detail view
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      let currentRoute = this.route;
+      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+      this.getMyObject();
+    });
     this.featureService.setIsMessaging(false);
   }
 
@@ -47,7 +56,7 @@ export class PracticianObjectsComponent implements OnInit {
   }
 
   cardClicked(object) {
-    this.router.navigate([`${object.id}`], { relativeTo: this.route });
+    this.router.navigate(["mes-objets/" + `${object.id}`]);
   }
 
   deleteCategory(object) {
@@ -58,7 +67,7 @@ export class PracticianObjectsComponent implements OnInit {
   }
 
   addAction() {
-    this.router.navigate([`add`], { relativeTo: this.route });
+    this.router.navigate(["mes-objets/add"]);
   }
 
   onChange(item) {
@@ -72,6 +81,7 @@ export class PracticianObjectsComponent implements OnInit {
   }
 
   getMyObject() {
+    this.itemsList = [];
     this.accountService.getPracticianObjectList().subscribe((categories) => {
       categories.forEach((res) => {
         this.itemsList.push({

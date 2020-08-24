@@ -70,12 +70,10 @@ export class FeaturesComponent implements OnInit {
   private stompClientList = [];
 
   ngOnInit(): void {
-    this.featuresService.fullName =
-      this.jobTitlePipe.transform(this.user.jobTitle) +
-      " " +
-      this.user?.firstName +
-      " " +
-      this.user?.lastName;
+    let firstNameRefactored = this.featuresService.firstLetterUpper(this.user?.firstName);
+    let lastNameRefactored = this.user?.lastName.toUpperCase();
+    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) +  " " + firstNameRefactored + " " + lastNameRefactored;
+    this.fullname = this.featuresService.fullName;
     this.featuresService.getNumberOfInbox().subscribe((val) => {
       this.inboxNumber = val;
     });

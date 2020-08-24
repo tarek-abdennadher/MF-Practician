@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent, ApexLegend } from "ng-apexcharts";
+import { ChartComponent, ApexLegend, ApexFill } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -14,7 +14,8 @@ export type ChartOptions = {
   chart: ApexChart;
   responsive: ApexResponsive[];
   labels: any;
-  legend: ApexLegend
+  legend: ApexLegend,
+  colors: string[];
 };
 
 @Component({
@@ -26,6 +27,7 @@ export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
   public emptyData = true;
+  public colors = this.accountService.colors;
   public infoMessage = "Aucune valeur à afficher";
   public chartOptions: Partial<ChartOptions>;
   public messages: any;
@@ -34,20 +36,26 @@ export class ApxPieComponent implements OnInit {
     private featureService: FeaturesService
   ) {
     this.messages = this.accountService.stats;
+  }
+  ngOnInit() {
     this.chartOptions = {
       series: [0, 0],
       chart: {
         width: 200,
         type: "donut",
       },
+      colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
       labels: ["Chargement..", "Chargement.."],
       legend: {
         floating: true,
-        horizontalAlign: 'center',
+        horizontalAlign: 'left',
         position: 'bottom',
         fontSize: '16px',
         fontFamily: 'Montserrat',
         fontWeight: 'normal',
+        labels: {
+          colors: ["#4a4a4a"]
+        }
       },
       responsive: [
         {
@@ -57,12 +65,11 @@ export class ApxPieComponent implements OnInit {
               width: 100,
               type: "donut",
             },
+            colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
           },
         },
       ],
     };
-  }
-  ngOnInit() {
     this.stats.subscribe((myMap) => {
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
@@ -71,12 +78,16 @@ export class ApxPieComponent implements OnInit {
           width: 430,
           type: "donut",
         },
+        colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
         legend: {
-          horizontalAlign: 'center',
+          horizontalAlign: 'left',
           position: 'bottom',
           fontSize: '14px',
           fontFamily: 'Montserrat',
-          fontWeight: 'normal'
+          fontWeight: 'normal',
+          labels: {
+            colors: ["#4a4a4a"]
+          }
         },
         labels: [...map.keys()],
         responsive: [
@@ -87,6 +98,7 @@ export class ApxPieComponent implements OnInit {
                 width: 100,
                 type: "donut",
               },
+              colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
             },
           },
         ],

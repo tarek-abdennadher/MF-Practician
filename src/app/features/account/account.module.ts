@@ -91,7 +91,7 @@ const notifierOptions: NotifierOptions = {
     NotifierModule.withConfig(notifierOptions),
     BsDatepickerModule.forRoot(),
     NgApexchartsModule,
-    HlsGenericListModule
+    HlsGenericListModule,
   ],
   providers: [AccountService],
 })

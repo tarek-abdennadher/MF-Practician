@@ -16,18 +16,13 @@ import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
 import { HlsMessagingListModule } from "hls-messaging-list";
-import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactsService } from "./services/contacts.service";
-import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
-import { PracticianDetailComponent } from "./practician-detail/practician-detail.component";
-import { HlsPracticianDetailModule } from "hls-practician-detail";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { SendMessageComponent } from "./send-message/send-message.component";
-import { SecretaryDetailComponent } from "./secretary-detail/secretary-detail.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
@@ -48,11 +43,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
-import { CategoryComponent } from "./account/category/category.component";
-import { CategoryDetailComponent } from "./account/category/category-detail/category-detail.component";
-import { PracticianObjectsComponent } from "./account/practician-objects/practician-objects.component";
-import { PracticianObjectDetailComponent } from "./account/practician-objects/practician-object-detail/practician-object-detail.component";
 import { AccountService } from "./services/account.service";
+import {SharedMaterialModule} from '@app/shared-material/shared-material.module';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -101,24 +93,16 @@ const notifierOptions: NotifierOptions = {
     ForwardedMessagesComponent,
     MessagingReplyComponent,
     MyPatientsComponent,
-    ContactsComponent,
-    ContactDetailComponent,
     PracticianSearchComponent,
-    PracticianDetailComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
-    SecretaryDetailComponent,
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
     PatientDetailComponent,
     PersonalInformationsComponent,
     MatPatientFileDialogComponent,
     AddPatientComponent,
-    NewMessageMobileComponent,
-    CategoryComponent,
-    CategoryDetailComponent,
-    PracticianObjectsComponent,
-    PracticianObjectDetailComponent
+    NewMessageMobileComponent
   ],
   imports: [
     FormsModule,
@@ -132,12 +116,10 @@ const notifierOptions: NotifierOptions = {
     HlsLinksModule,
     HlsMessagingListModule,
     HlsSearchModule,
-    HlsPracticianDetailModule,
     HlsSendMessageModule,
     MatDialogModule,
     MatIconModule,
     NgxSpinnerModule,
-    InternationalPhoneNumberModule,
     SharedModule,
     BsDatepickerModule.forRoot(),
     HlsPasswordStrengthModule,
@@ -147,9 +129,10 @@ const notifierOptions: NotifierOptions = {
     PipesModule,
     NgApexchartsModule,
     HlsGenericListModule,
-    HlsGenericListLinksModule
+    HlsGenericListLinksModule,
+    SharedMaterialModule
   ],
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
-export class FeaturesModule {}
+export class FeaturesModule { }
