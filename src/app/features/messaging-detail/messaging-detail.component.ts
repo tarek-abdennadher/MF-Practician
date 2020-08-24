@@ -522,7 +522,6 @@ export class MessagingDetailComponent implements OnInit {
               this.messagingDetail.sender.concernsImg = this.avatars.child;
             }
           }
-          console.log(this.messagingDetail.parent);
         });
     }
   }
