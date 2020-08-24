@@ -40,7 +40,8 @@ export class ContactsService {
     phone_error: "      Veuillez vérifier les téléphones saisis",
     note: " Note",
     additionalEmail: "Email secondaire",
-    category: "Nom de la catégorie "
+    category: "Nom de la catégorie ",
+    contact_pro: "Fiche contact Pro"
   };
   constructor(private globalService: GlobalService) { }
 
