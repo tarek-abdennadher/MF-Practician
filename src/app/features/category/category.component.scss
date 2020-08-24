@@ -53,11 +53,11 @@ $input-color: #f1f1f1;
   color: $color-helssy-blue;
 }
 #card {
-  background-color: white;
   border: 0;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
   border: none !important;
+  background-color: transparent !important;
 }
 
 .col-form-label {

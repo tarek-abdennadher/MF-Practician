@@ -54,7 +54,7 @@ $input-color: #f1f1f1;
   color: $color-helssy-blue;
 }
 #card {
-  background-color: white;
+  background-color: transparent !important;
   border: 0;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;

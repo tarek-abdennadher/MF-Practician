@@ -10,13 +10,13 @@ import { takeUntil } from "rxjs/operators";
 import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
-import { DialogService } from '../services/dialog.service';
-import { AccountService } from '../services/account.service';
-import { MyPatientsService } from '../services/my-patients.service';
+import { DialogService } from "../services/dialog.service";
+import { AccountService } from "../services/account.service";
+import { MyPatientsService } from "../services/my-patients.service";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
-  styleUrls: ["./messaging-detail.component.scss"],
+  styleUrls: ["./messaging-detail.component.scss"]
 })
 export class MessagingDetailComponent implements OnInit {
   private _destroyed$ = new Subject();
@@ -53,7 +53,15 @@ export class MessagingDetailComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   sentContext = false;
   attachements: string[] = [];
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
   showRefuseForTls: boolean;
   constructor(
     private _location: Location,
@@ -74,7 +82,7 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       if (params["context"]) {
         switch (params["context"]) {
           case "sent": {
@@ -123,7 +131,7 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     });
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(params => {
       this.idMessage = params["id"];
       this.getMessageDetailById(this.idMessage);
     });
@@ -135,7 +143,7 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessageArchivedById(id)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((message) => {
+        .subscribe(message => {
           this.getAttachements(message.nodesId);
           message.sender = message.senderArchived;
           message.toReceivers = message.toReceiversArchived;
@@ -147,7 +155,7 @@ export class MessagingDetailComponent implements OnInit {
           this.links = {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
-            isAddNote: true,
+            isAddNote: true
           };
           if (
             this.messagingDetail.sender.senderId ==
@@ -155,17 +163,17 @@ export class MessagingDetailComponent implements OnInit {
           ) {
             this.isFromInbox = false;
           }
-          this.messagingDetail.toReceivers.forEach((receiver) => {
+          this.messagingDetail.toReceivers.forEach(receiver => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
@@ -187,17 +195,17 @@ export class MessagingDetailComponent implements OnInit {
               }
             }
           });
-          this.messagingDetail.ccReceivers.forEach((receiver) => {
+          this.messagingDetail.ccReceivers.forEach(receiver => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
@@ -223,36 +231,33 @@ export class MessagingDetailComponent implements OnInit {
             this.documentService
               .downloadFile(this.messagingDetail.sender.photoId)
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     this.messagingDetail.sender.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   this.messagingDetail.sender.img = this.avatars.user;
                 }
               );
           } else {
             if (this.messagingDetail.sender.role == "PRACTICIAN") {
-              this.messagingDetail.sender.img =
-                this.avatars.doctor;
+              this.messagingDetail.sender.img = this.avatars.doctor;
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
-              this.messagingDetail.sender.img =
-                this.avatars.secretary;
-            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
+              this.messagingDetail.sender.img = this.avatars.secretary;
+            } else if (
+              this.messagingDetail.sender.role == "TELESECRETARYGROUP"
+            ) {
               this.messagingDetail.sender.img = this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
-                this.messagingDetail.sender.img =
-                  this.avatars.man;
+                this.messagingDetail.sender.img = this.avatars.man;
               } else if (this.messagingDetail.sender.civility == "MME") {
-                this.messagingDetail.sender.img =
-                  this.avatars.women;
+                this.messagingDetail.sender.img = this.avatars.women;
               } else if (this.messagingDetail.sender.civility == "CHILD") {
-                this.messagingDetail.sender.img =
-                  this.avatars.child;
+                this.messagingDetail.sender.img = this.avatars.child;
               }
             }
           }
@@ -260,79 +265,80 @@ export class MessagingDetailComponent implements OnInit {
             this.documentService
               .downloadFile(this.messagingDetail.sender.senderForPhotoId)
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     this.messagingDetail.sender.forImg = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   this.messagingDetail.sender.forImg = this.avatars.user;
                 }
               );
           } else {
             if (this.messagingDetail.sender.senderForCivility == "M") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.man;
+              this.messagingDetail.sender.forImg = this.avatars.man;
             } else if (this.messagingDetail.sender.senderForCivility == "MME") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.women;
-            } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.child;
+              this.messagingDetail.sender.forImg = this.avatars.women;
+            } else if (
+              this.messagingDetail.sender.senderForCivility == "CHILD"
+            ) {
+              this.messagingDetail.sender.forImg = this.avatars.child;
             } else {
-              this.messagingDetail.sender.forImg =
-                this.avatars.doctor;
+              this.messagingDetail.sender.forImg = this.avatars.doctor;
             }
-
           }
           if (this.messagingDetail.sender.concernsPhotoId) {
             this.documentService
               .downloadFile(this.messagingDetail.sender.concernsPhotoId)
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     this.messagingDetail.sender.concernsImg = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   if (this.messagingDetail.sender.concernsCivility == "M") {
-                    this.messagingDetail.sender.concernsImg =
-                      this.avatars.man;
-                  } else if (this.messagingDetail.sender.concernsCivility == "MME") {
-                    this.messagingDetail.sender.concernsImg =
-                      this.avatars.women;
-                  } else if (this.messagingDetail.sender.concernsCivility == "CHILD") {
-                    this.messagingDetail.sender.concernsImg =
-                      this.avatars.child;
+                    this.messagingDetail.sender.concernsImg = this.avatars.man;
+                  } else if (
+                    this.messagingDetail.sender.concernsCivility == "MME"
+                  ) {
+                    this.messagingDetail.sender.concernsImg = this.avatars.women;
+                  } else if (
+                    this.messagingDetail.sender.concernsCivility == "CHILD"
+                  ) {
+                    this.messagingDetail.sender.concernsImg = this.avatars.child;
                   }
                 }
               );
           } else {
             if (this.messagingDetail.sender.concernsCivility == "M") {
-              this.messagingDetail.sender.concernsImg =
-                this.avatars.man;
+              this.messagingDetail.sender.concernsImg = this.avatars.man;
             } else if (this.messagingDetail.sender.concernsCivility == "MME") {
-              this.messagingDetail.sender.concernsImg =
-                this.avatars.women;
-            } else if (this.messagingDetail.sender.concernsCivility == "CHILD") {
-              this.messagingDetail.sender.concernsImg =
-                this.avatars.child;
+              this.messagingDetail.sender.concernsImg = this.avatars.women;
+            } else if (
+              this.messagingDetail.sender.concernsCivility == "CHILD"
+            ) {
+              this.messagingDetail.sender.concernsImg = this.avatars.child;
             }
           }
         });
     } else {
       this.messagingDetailService
         .getMessagingDetailById(id)
-        .subscribe((message) => {
-          this.showRefuseForTls = ((message.sender.role == 'TELESECRETARYGROUP' ||
-            message.sender.role == 'TELESECRETARYGROUP') &&
-            message.requestTypeId != null && message.requestTitleId != null);
-          this.showAcceptRefuse = ((message.sender.role == 'PATIENT') &&
-            message.requestTypeId != null && message.requestTitleId != null);
+        .subscribe(message => {
+          this.showRefuseForTls =
+            (message.sender.role == "TELESECRETARYGROUP" ||
+              message.sender.role == "TELESECRETARYGROUP") &&
+            message.requestTypeId != null &&
+            message.requestTitleId != null;
+          this.showAcceptRefuse =
+            message.sender.role == "PATIENT" &&
+            message.requestTypeId != null &&
+            message.requestTitleId != null;
           this.getAttachements(message.nodesId);
           this.senderRolePatient =
             this.sentContext && message.toReceivers.length == 1
@@ -344,26 +350,27 @@ export class MessagingDetailComponent implements OnInit {
           this.links = {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
-            isAddNote: true,
+            isAddNote: true
           };
           const filtredReceivers = this.messagingDetail.toReceivers.filter(
-            (to) => to.receiverId != this.featureService.getUserId()
+            to => to.receiverId != this.featureService.getUserId()
           );
           if (filtredReceivers.length > 0) {
             this.hideTo = false;
             this.messagingDetail.toReceivers = filtredReceivers;
           }
-          this.messagingDetail.toReceivers.forEach((receiver) => {
+          this.setParentImg(this.messagingDetail.parent);
+          this.messagingDetail.toReceivers.forEach(receiver => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
@@ -385,17 +392,17 @@ export class MessagingDetailComponent implements OnInit {
               }
             }
           });
-          this.messagingDetail.ccReceivers.forEach((receiver) => {
+          this.messagingDetail.ccReceivers.forEach(receiver => {
             if (receiver.photoId) {
               this.documentService.downloadFile(receiver.photoId).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
@@ -421,37 +428,33 @@ export class MessagingDetailComponent implements OnInit {
             this.documentService
               .downloadFile(this.messagingDetail.sender.photoId)
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     this.messagingDetail.sender.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   this.messagingDetail.sender.img = this.avatars.user;
                 }
               );
           } else {
             if (this.messagingDetail.sender.role == "PRACTICIAN") {
-              this.messagingDetail.sender.img =
-                this.avatars.doctor;
+              this.messagingDetail.sender.img = this.avatars.doctor;
             } else if (this.messagingDetail.sender.role == "SECRETARY") {
-              this.messagingDetail.sender.img =
-                this.avatars.secretary;
-            } else if (this.messagingDetail.sender.role == "TELESECRETARYGROUP") {
-              this.messagingDetail.sender.img =
-                this.avatars.tls;
+              this.messagingDetail.sender.img = this.avatars.secretary;
+            } else if (
+              this.messagingDetail.sender.role == "TELESECRETARYGROUP"
+            ) {
+              this.messagingDetail.sender.img = this.avatars.tls;
             } else if (this.messagingDetail.sender.role == "PATIENT") {
               if (this.messagingDetail.sender.civility == "M") {
-                this.messagingDetail.sender.img =
-                  this.avatars.man;
+                this.messagingDetail.sender.img = this.avatars.man;
               } else if (this.messagingDetail.sender.civility == "MME") {
-                this.messagingDetail.sender.img =
-                  this.avatars.women;
+                this.messagingDetail.sender.img = this.avatars.women;
               } else if (this.messagingDetail.sender.civility == "CHILD") {
-                this.messagingDetail.sender.img =
-                  this.avatars.child;
+                this.messagingDetail.sender.img = this.avatars.child;
               }
             }
           }
@@ -459,92 +462,122 @@ export class MessagingDetailComponent implements OnInit {
             this.documentService
               .downloadFile(this.messagingDetail.sender.senderForPhotoId)
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     this.messagingDetail.sender.forImg = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   this.messagingDetail.sender.forImg = this.avatars.user;
                 }
               );
           } else {
-
             if (this.messagingDetail.sender.senderForCivility == "M") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.man;
+              this.messagingDetail.sender.forImg = this.avatars.man;
             } else if (this.messagingDetail.sender.senderForCivility == "MME") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.women;
-            } else if (this.messagingDetail.sender.senderForCivility == "CHILD") {
-              this.messagingDetail.sender.forImg =
-                this.avatars.child;
+              this.messagingDetail.sender.forImg = this.avatars.women;
+            } else if (
+              this.messagingDetail.sender.senderForCivility == "CHILD"
+            ) {
+              this.messagingDetail.sender.forImg = this.avatars.child;
             } else {
-              this.messagingDetail.sender.forImg =
-                this.avatars.doctor;
+              this.messagingDetail.sender.forImg = this.avatars.doctor;
             }
           }
           if (this.messagingDetail.sender.concernsPhotoId) {
             this.documentService
               .downloadFile(this.messagingDetail.sender.concernsPhotoId)
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     this.messagingDetail.sender.concernsImg = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   if (this.messagingDetail.sender.concernsCivility == "M") {
-                    this.messagingDetail.sender.concernsImg =
-                      this.avatars.man;
-                  } else if (this.messagingDetail.sender.concernsCivility == "MME") {
-                    this.messagingDetail.sender.concernsImg =
-                      this.avatars.women;
-                  } else if (this.messagingDetail.sender.concernsCivility == "CHILD") {
-                    this.messagingDetail.sender.concernsImg =
-                      this.avatars.child;
+                    this.messagingDetail.sender.concernsImg = this.avatars.man;
+                  } else if (
+                    this.messagingDetail.sender.concernsCivility == "MME"
+                  ) {
+                    this.messagingDetail.sender.concernsImg = this.avatars.women;
+                  } else if (
+                    this.messagingDetail.sender.concernsCivility == "CHILD"
+                  ) {
+                    this.messagingDetail.sender.concernsImg = this.avatars.child;
                   }
                 }
               );
           } else {
             if (this.messagingDetail.sender.concernsCivility == "M") {
-              this.messagingDetail.sender.concernsImg =
-                this.avatars.man;
+              this.messagingDetail.sender.concernsImg = this.avatars.man;
             } else if (this.messagingDetail.sender.concernsCivility == "MME") {
-              this.messagingDetail.sender.concernsImg =
-                this.avatars.women;
-            } else if (this.messagingDetail.sender.concernsCivility == "CHILD") {
-              this.messagingDetail.sender.concernsImg =
-                this.avatars.child;
+              this.messagingDetail.sender.concernsImg = this.avatars.women;
+            } else if (
+              this.messagingDetail.sender.concernsCivility == "CHILD"
+            ) {
+              this.messagingDetail.sender.concernsImg = this.avatars.child;
             }
           }
         });
     }
   }
-
+  setParentImg(parent) {
+    if (parent != null) {
+      if (parent.sender.photoId) {
+        this.documentService.downloadFile(parent.sender.photoId).subscribe(
+          response => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = e => {
+              parent.sender.img = myReader.result;
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          },
+          error => {
+            parent.sender.img = this.avatars.user;
+          }
+        );
+      } else {
+        if (parent.sender.role == "PRACTICIAN") {
+          parent.sender.img = this.avatars.doctor;
+        } else if (parent.sender.role == "SECRETARY") {
+          parent.sender.img = this.avatars.secretary;
+        } else if (parent.sender.role == "TELESECRETARYGROUP") {
+          parent.sender.img = this.avatars.tls;
+        } else if (parent.sender.role == "PATIENT") {
+          if (parent.sender.civility == "M") {
+            parent.sender.img = this.avatars.man;
+          } else if (parent.sender.civility == "MME") {
+            parent.sender.img = this.avatars.women;
+          } else if (parent.sender.civility == "CHILD") {
+            parent.sender.img = this.avatars.child;
+          }
+        }
+      }
+      this.setParentImg(parent.parent);
+    }
+  }
   hideShowReplyBtn(message) {
     this.messagingDetailService
       .patientsProhibitedByCurrentPractician()
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.patientsId = resp;
-        this.collectedIds = message.toReceivers.map((r) => r.receiverId);
+        this.collectedIds = message.toReceivers.map(r => r.receiverId);
         if (message.ccReceivers.length > 0) {
-          this.collectedIds.push(message.ccReceivers.map((r) => r.receiverId));
+          this.collectedIds.push(message.ccReceivers.map(r => r.receiverId));
         }
         this.collectedIds.push(message.sender.senderId);
         if (this.patientsId.length > 0) {
           this.prohibited =
-            typeof this.collectedIds.find((elm) =>
+            typeof this.collectedIds.find(elm =>
               this.patientsId.includes(elm)
             ) != "undefined";
         }
       });
   }
-
 
   replyAction() {
     this.router.navigate(["/messagerie-repondre/", this.idMessage]);
@@ -561,7 +594,7 @@ export class MessagingDetailComponent implements OnInit {
   acceptAction() {
     this.router.navigate(["/messagerie-repondre/", this.idMessage], {
       queryParams: {
-        status: "accept",
+        status: "accept"
       }
     });
   }
@@ -569,8 +602,8 @@ export class MessagingDetailComponent implements OnInit {
   refuseAction() {
     this.router.navigate(["/messagerie-repondre/", this.idMessage], {
       queryParams: {
-        status: "refus",
-      },
+        status: "refus"
+      }
     });
   }
 
@@ -581,21 +614,21 @@ export class MessagingDetailComponent implements OnInit {
       .markMessageAsImportant(ids)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (message) => {
+        message => {
           this.links.isImportant = false;
           this.notifier.show({
             message: this.globalService.toastrMessages
               .mark_important_message_success,
             type: "info",
-            template: this.customNotificationTmpl,
+            template: this.customNotificationTmpl
           });
         },
-        (error) => {
+        error => {
           this.notifier.show({
             message: this.globalService.toastrMessages
               .mark_important_message_error,
             type: "error",
-            template: this.customNotificationTmpl,
+            template: this.customNotificationTmpl
           });
         }
       );
@@ -605,21 +638,22 @@ export class MessagingDetailComponent implements OnInit {
     let ids = [];
     ids.push(this.idMessage);
     this.messagingDetailService.markMessageAsArchived(ids).subscribe(
-      (resp) => {
+      resp => {
         this.router.navigate([this.previousURL], {
           queryParams: {
-            status: "archiveSuccess",
-          },
+            status: "archiveSuccess"
+          }
         });
         if (this.previousURL == "/messagerie-transferes") {
-          this.featureService.numberOfForwarded = this.featureService.numberOfForwarded - 1;
+          this.featureService.numberOfForwarded =
+            this.featureService.numberOfForwarded - 1;
         }
       },
-      (error) => {
+      error => {
         this.notifier.show({
           message: this.globalService.toastrMessages.archived_message_error,
           type: "error",
-          template: this.customNotificationTmpl,
+          template: this.customNotificationTmpl
         });
       }
     );
@@ -630,15 +664,15 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   download(nodesId: Array<string>) {
-    nodesId.forEach((nodeId) => {
+    nodesId.forEach(nodeId => {
       var nodeDetails;
       this.documentService
         .getNodeDetailsFromAlfresco(nodeId)
-        .subscribe((node) => {
+        .subscribe(node => {
           nodeDetails = node;
         });
 
-      this.documentService.downloadFile(nodeId).subscribe((response) => {
+      this.documentService.downloadFile(nodeId).subscribe(response => {
         const blob = new Blob([response.body]);
         const filename = nodeDetails.entry.name;
         const filenameDisplay = filename;
@@ -664,11 +698,11 @@ export class MessagingDetailComponent implements OnInit {
 
   getAttachements(nodesId: string[]) {
     if (nodesId) {
-      nodesId.forEach((id) => {
+      nodesId.forEach(id => {
         this.documentService
           .getNodeDetailsFromAlfresco(id)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((node) => {
+          .subscribe(node => {
             this.attachements.push(node.entry.name);
           });
       });
@@ -682,18 +716,20 @@ export class MessagingDetailComponent implements OnInit {
         patientId: idAccount,
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN"
-      }
+      };
       this.getPatientFile(info);
     } else {
-      if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
+      if (
+        this.featureService.selectedPracticianId == null ||
+        this.featureService.selectedPracticianId == 0
+      ) {
         if (this.messagingDetail.sender.role == "PRACTICIAN") {
           this.practicianId = this.messagingDetail.sender.senderId;
-        }
-        else {
+        } else {
           this.practicianId = this.localSt.retrieve("practicianId");
         }
       } else {
-        this.practicianId = this.featureService.selectedPracticianId
+        this.practicianId = this.featureService.selectedPracticianId;
       }
 
       this.patientService.getAccountIdByPatientId(idAccount).subscribe(res => {
@@ -701,10 +737,9 @@ export class MessagingDetailComponent implements OnInit {
           patientId: res ? res : idAccount,
           practicianId: this.practicianId,
           userRole: "SECRETARY"
-        }
+        };
         this.getPatientFile(info);
-      })
-
+      });
     }
   }
   // Display patient file using patient file id
@@ -714,26 +749,26 @@ export class MessagingDetailComponent implements OnInit {
         patientFileId: patientFileId,
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN"
-      }
+      };
       this.getPatientFile(info);
-    }
-    else {
-      if (this.featureService.selectedPracticianId == null || this.featureService.selectedPracticianId == 0) {
+    } else {
+      if (
+        this.featureService.selectedPracticianId == null ||
+        this.featureService.selectedPracticianId == 0
+      ) {
         this.practicianId = this.messagingDetail.sender.senderId;
-      }
-      else {
-        this.practicianId = this.featureService.selectedPracticianId
+      } else {
+        this.practicianId = this.featureService.selectedPracticianId;
       }
       let info = {
         patientFileId: patientFileId,
         practicianId: this.practicianId,
         userRole: "SECRETARY"
-      }
+      };
       this.getPatientFile(info);
     }
   }
   getPatientFile(info) {
     this.dialogService.openPatientFile("Fiche Patient", info);
   }
-
 }
