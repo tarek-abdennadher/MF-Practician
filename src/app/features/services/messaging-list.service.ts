@@ -397,6 +397,21 @@ export class MessagingListService {
       ids
     );
   }
+
+  public markMessagesListAsNotSeen(ids: number[]): Observable<boolean> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.receiver + "markMessageNotSeen/all",
+      ids
+    );
+  }
+
+  public uncheckMessages(messagesList) {
+    for (let message of messagesList) {
+      message.isChecked = false;
+    }
+  }
+
   public markMessageListAsSeenByReceiverId(
     ids: number[],
     idReciever: number
@@ -415,12 +430,12 @@ export class MessagingListService {
     );
   }
 
-  public markMessageListAsImportant(ids: number[]): Observable<boolean> {
-    return this.globalService.call(
-      RequestType.POST,
-      this.globalService.url.messages + "important/all",
-      ids
-    );
+  changeFlagImportant(obsList, ids) {
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id)) {
+        elm.isImportant = true;
+      }
+    });
   }
 
   public getMessagesByPatientFile(patientFileId: number, pageNo, order: OrderDirection = OrderDirection.DESC) {
@@ -430,5 +445,46 @@ export class MessagingListService {
       params: { 'pageNo': pageNo, 'order': order }
     }
     );
+  }
+
+  public markMessageAsImportant(ids: number[]): Observable<boolean> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages + "important/all",
+      ids
+    );
+  }
+
+  public checkSeenMessagingList(messagesList) {
+    for (let message of messagesList) {
+      if (message.isSeen) {
+        message.isChecked = true;
+      }
+      else {
+        message.isChecked = false;
+      }
+    }
+  }
+
+  public checkNotSeenMessagingList(messagesList) {
+    for (let message of messagesList) {
+      if (!message.isSeen) {
+        message.isChecked = true;
+      }
+      else {
+        message.isChecked = false;
+      }
+    }
+  }
+
+  public checkImportantMessagingList(messagesList) {
+    for (let message of messagesList) {
+      if (message.isImportant) {
+        message.isChecked = true;
+      }
+      else {
+        message.isChecked = false;
+      }
+    }
   }
 }
