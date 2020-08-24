@@ -348,7 +348,7 @@ export class ContactsComponent implements OnInit {
     );
   }
   addContact() {
-    this.router.navigate(["/contact-detail/add"]);
+    this.router.navigate(["/mes-contacts-pro/contact-detail/add"]);
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
