@@ -171,8 +171,53 @@ export class FeaturesService {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
       }
-    })
+    });
     obsList.next(val);
+  }
+
+  markAsSeenById(obsList, ids) {
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id)) {
+        elm.isSeen = true;
+        this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
+      }
+    });
+  }
+
+  markAsNotSeenById(obsList, ids) {
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id)) {
+        elm.isSeen = false;
+        this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
+      }
+    });
+  }
+
+  removeNotificationByIdMessage(ids) {
+    let i = 0;
+    let copyListNotifications = [... this.listNotifications];
+    for (let elm of this.listNotifications) {
+      if (ids.includes(elm.messageId)) {
+        copyListNotifications.splice(i, 1);
+      }
+      else {
+           i++;
+      }
+    }
+    this.listNotifications = copyListNotifications;
+  }
+
+  addNotificationByIdMessage(obsList, ids) {
+    console.log(this.listNotifications, "listeee");
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id)) {
+        let notif = {civility: elm.users[0].civility, id: elm.users[0].id, messageId: elm.id, photoId: elm.photoId,
+          picture: elm.users[0].img, role: elm.users[0].type, sender: elm.users[0].fullName, type: 'MESSAGE' };
+        this.listNotifications.push(notif);
+        console.log(this.listNotifications, "eleeeem");
+
+      }
+    });
   }
 
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
