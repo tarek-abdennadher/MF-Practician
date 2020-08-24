@@ -133,3 +133,27 @@
     }
   }
 }
+.custom-card-message {
+  padding: unset;
+  background-color: rgba(243, 243, 243, 0.5);
+}
+.number {
+  display: inline-block;
+  padding-top: 4px;
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  background-image: linear-gradient(135deg,#f82e6c,#8c1bab 98%);
+  width: 23px;
+  height: 23px;
+  color: #fff;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  margin-left: 16px;
+}
