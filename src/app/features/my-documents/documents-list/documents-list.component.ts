@@ -241,10 +241,7 @@ export class DocumentsListComponent implements OnInit {
       users: [
         {
           id: attachement.senderId,
-          fullName:
-            node.name.length < 30
-              ? node.name
-              : node.name.substring(0, 30) + "...",
+          fullName: null,
           img: this.getImageSwitchExtention(
             node.name.substring(dotIndex + 1, node.name.length)
           ),
@@ -254,7 +251,10 @@ export class DocumentsListComponent implements OnInit {
         }
       ],
       object: {
-        name: attachement.object,
+        name:
+          node.name.length < 30
+            ? node.name
+            : node.name.substring(0, 30) + "...",
         isImportant: false
       },
       nodeId: attachement.nodeId,

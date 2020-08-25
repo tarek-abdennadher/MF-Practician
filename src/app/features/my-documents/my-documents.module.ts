@@ -12,6 +12,7 @@ import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
 import { HlsMessagingListModule } from "hls-messaging-list";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { HlsGenericListModule } from "hls-generic-list";
+import { HlsDocumentGridModule } from "hls-document-grid";
 @NgModule({
   declarations: [MyDocumentsComponent, DocumentsListComponent],
   imports: [
@@ -25,7 +26,8 @@ import { HlsGenericListModule } from "hls-generic-list";
     InfiniteScrollModule,
     MatProgressSpinnerModule,
     HlsGenericListLinksModule,
-    HlsGenericListModule
+    HlsGenericListModule,
+    HlsDocumentGridModule
   ],
   providers: [CivilityPipe]
 })
