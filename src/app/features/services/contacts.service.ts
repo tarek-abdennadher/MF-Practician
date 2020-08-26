@@ -41,7 +41,8 @@ export class ContactsService {
     note: " Note",
     additionalEmail: "Email secondaire",
     category: "Nom de la catégorie ",
-    contact_pro: "Fiche contact Pro"
+    contact_pro: "Fiche contact Pro",
+    category_name: "Nom de la catégorie (*)"
   };
   constructor(private globalService: GlobalService) { }
 
