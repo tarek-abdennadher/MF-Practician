@@ -177,7 +177,7 @@ export class FeaturesService {
 
   markAsSeenById(obsList, ids) {
     obsList.forEach(elm => {
-      if (ids.includes(elm.id)) {
+      if (ids.includes(elm.id) && !elm.isSeen) {
         elm.isSeen = true;
         this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
       }
@@ -186,7 +186,7 @@ export class FeaturesService {
 
   markAsNotSeenById(obsList, ids) {
     obsList.forEach(elm => {
-      if (ids.includes(elm.id)) {
+      if (ids.includes(elm.id) && elm.isSeen) {
         elm.isSeen = false;
         this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
       }
@@ -208,14 +208,11 @@ export class FeaturesService {
   }
 
   addNotificationByIdMessage(obsList, ids) {
-    console.log(this.listNotifications, "listeee");
     obsList.forEach(elm => {
       if (ids.includes(elm.id)) {
         let notif = {civility: elm.users[0].civility, id: elm.users[0].id, messageId: elm.id, photoId: elm.photoId,
           picture: elm.users[0].img, role: elm.users[0].type, sender: elm.users[0].fullName, type: 'MESSAGE' };
         this.listNotifications.push(notif);
-        console.log(this.listNotifications, "eleeeem");
-
       }
     });
   }
