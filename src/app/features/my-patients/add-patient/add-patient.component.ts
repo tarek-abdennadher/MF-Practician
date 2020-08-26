@@ -25,11 +25,6 @@ export class AddPatientComponent implements OnInit {
   noteimageSource: string;
   page = "Fiche_Patient";
   notifMessage = "";
-  links = {};
-  number = null;
-  topText = "Fiche Patient";
-  bottomText = "";
-  backButton = true;
   placement = "right";
   practicianId: number;
   patientId: number;

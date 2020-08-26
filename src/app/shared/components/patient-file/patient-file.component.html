@@ -1,0 +1,245 @@
+<div class="card rectangle-custom">
+    <div class="card-body custom-card-message">
+        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)">
+            <mat-tab label="Informations">
+                <ng-template mat-tab-label id="info-tab">
+                    <i class="fas fa-info my-tab-icon pr-custom-11px"></i>
+                    <span> {{labels.info}}</span>
+                </ng-template>
+                <!-- Patient File information -->
+                <div class="card-body">
+                    <form [formGroup]="personalInfoForm">
+                        <div class="row">
+                            <div class="col-12 col-sm-3">
+                                <!-- civility Field -->
+                                <label for="civility"
+                                    class="col-12 col-sm-12 col-form-label">{{ labels.civility }}</label>
+                                <div class="col-12 col-sm-12">
+                                    <select (change)="changeMaidenName()" formControlName="civility" id="civility"
+                                        class="form-control" [ngClass]="{
+                      'is-invalid': submitted && ctr.civility.errors
+                    }">
+                                        <option value="null" disabled="true" [selected]="true">{{ labels.civility }}
+                                        </option>
+                                        <option value="M">M</option>
+                                        <option value="MME">Mme</option>
+                                        <option value="CHILD">Enfant</option>
+                                    </select>
+                                    <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
+                                        <div *ngIf="ctr.civility.errors.required">
+                                            {{ errors.required }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <!-- last name Field -->
+                                <label for="last_name"
+                                    class="col-12 col-sm-12 col-form-label">{{ labels.last_name }}</label>
+                                <div class="col-12 col-sm-12">
+                                    <input type="text" formControlName="lastName" id="last-name"
+                                        [ngClass]="{ 'is-invalid': submitted && ctr.lastName.errors }"
+                                        class="form-control" id="lastName" />
+                                    <div *ngIf="submitted && ctr.lastName.errors" class="invalid-feedback">
+                                        <div *ngIf="ctr.lastName.errors.required">
+                                            {{ errors.required }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-5">
+                                <!-- first name Field -->
+                                <label for="firstName"
+                                    class="col-12 col-sm-12  col-form-label">{{ labels.first_name }}</label>
+                                <div class="col-12 col-sm-12">
+                                    <input [ngClass]="{
+                      'is-invalid': submitted && ctr.firstName.errors
+                    }" type="text" formControlName="firstName" class="form-control" id="first-name" />
+                                    <div *ngIf="submitted && ctr.firstName.errors" class="invalid-feedback">
+                                        <div *ngIf="ctr.firstName.errors.required">
+                                            {{ errors.required }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- maidenName  Field -->
+                        <div class="row" *ngIf="displayMaidenName">
+                            <div class="col">
+                                <label for="maidenName"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.maiden_name }}</label>
+                                <div class="col-12">
+                                    <input type="text" formControlName="maidenName" class="form-control"
+                                        id="maidenName" />
+                                </div>
+                            </div>
+                        </div>
+                        <br *ngIf="displayMaidenName">
+                        <div class="row">
+                            <div class="col-12 col-sm-5">
+                                <label for="birthday"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.birthday }}</label>
+                                <div class="col-12">
+                                    <input type="text" formControlName="birthday" class="form-control"
+                                        placeholder="{{ labels.birth_date }}" bsDatepicker [maxDate]="maxDatecheck()"
+                                        [placement]="placement" [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+                                        [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }" />
+                                    <div *ngIf="submitted && ctr.birthday.errors" class="text-danger">
+                                        <div *ngIf="ctr.birthday.errors.required">
+                                            {{ errors.required }}
+                                        </div>
+                                    </div>
+                                    <div *ngIf="isFutureDate" class="text-danger">
+                                        <div>
+                                            {{ errors.futureDate }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Email Field -->
+                            <div class="col-12 col-sm-7">
+                                <label for="email"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._email_address }}
+                                    (*)</label>
+                                <div class="col-12">
+                                    <input type="text" formControlName="email" class="form-control" id="email"
+                                        [ngClass]="{ 'is-invalid': submitted && personalInfoForm.errors }" />
+                                    <div *ngIf="personalInfoForm.errors?.requiredValidator" class="invalid-feedback">
+                                        {{ errors.required }}
+                                    </div>
+                                    <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                                        <div *ngIf="ctr.email.errors.email">
+                                            {{ errors.email_invalid_format }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br>
+                        <!-- Phone number -->
+                        <div class="row">
+                            <div class="col col-12">
+                                <div class="col-12 col-form-label">{{ labels.phone }}</div>
+                                <div class="col-12 row">
+                                    <div class="col-10 col-sm-11">
+                                        <international-phone-number *ngIf="!isAdd" class="form-control" id="phoneNumber"
+                                            formControlName="phoneNumber" placeholder="Téléphone ou fixe *"
+                                            [maxlength]="20" name="phoneNumber" [defaultCountry]=" '' " [ngClass]="{
+                                          'is-invalid': submitted && personalInfoForm.errors
+                                        }">
+                                        </international-phone-number>
+                                        <international-phone-number *ngIf="isAdd" class="form-control" id="phoneNumber"
+                                            formControlName="phoneNumber" placeholder="Téléphone ou fixe *"
+                                            [maxlength]="20" name="phoneNumber" [defaultCountry]="'fr'" [ngClass]="{
+                                        'is-invalid': submitted && personalInfoForm.errors
+                                      }">
+                                        </international-phone-number>
+                                        <div *ngIf="personalInfoForm.errors?.requiredValidator"
+                                            class="invalid-feedback">
+                                            {{ errors.required }}
+                                        </div>
+                                        <div *ngIf="ctr.phoneNumber.invalid && ctr.phoneNumber.touched"
+                                            class="invalid-feedback">
+                                            {{ errors.invalid_phone }}
+                                        </div>
+                                    </div>
+                                    <div class="col-1 col-sm-1">
+                                        <button (click)="addPhone()" class="btn btn-xs btn-icon" id="add-phone-button">
+                                            <i class="far fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col col-12">
+                                <!-- Other Phones -->
+                                <div *ngIf="isLabelShow" class="col-12 col-form-label">
+                                    {{ labels.other_phone }}
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                    <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)"
+                                        [addnewPhone]="addnewPhone" (validPhones)="submitPhones($event)"
+                                        id="other-phones">
+                                    </int-phone>
+                                </div>
+                            </div>
+                        </div>
+                        <br *ngIf="isLabelShow" />
+                        <!-- address Field -->
+                        <div class=" row">
+                            <div class="col">
+                                <label for="address"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._address }}</label>
+                                <div class="col-12">
+                                    <input type="text" formControlName="address" class="form-control" id="address" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <br>
+                        <!-- additional address Field -->
+                        <div class=" row">
+                            <div class="col">
+                                <label for="additionalAddress"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.additional_address }}</label>
+                                <div class="col-12 col-sm-12">
+                                    <input type="text" formControlName="additionalAddress" class="form-control"
+                                        id="additionalAddress" />
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12 col-sm-5">
+                                <!-- zipcode Field -->
+                                <label for="zipCode"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._zip_code }}</label>
+                                <div class="col-12">
+                                    <input type="text" formControlName="zipCode" class="form-control" id="zipCode" />
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-7">
+                                <!-- city Field -->
+                                <label for="city"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._city }}</label>
+                                <div class="col-12">
+                                    <input type="text" formControlName="city" class="form-control" id="city" />
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div *ngIf="displayInvite " class="row send-invitation">
+                            <button type="submit" class="btn btn-success" id="send-invitation-button"
+                                (click)="onInvitationClicked()">
+                                {{ labels.invite_patient }}
+                            </button>
+                            <br><br>
+                            <div class="row invitation-text">
+                                {{ labels.send_invitation }}
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </mat-tab>
+            <mat-tab label="Notes">
+                <ng-template mat-tab-label>
+                    <i class="fas fa-notes-medical my-tab-icon pr-custom-11px"></i>
+                    <span>{{labels.notes}}</span>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Historique">
+                <ng-template mat-tab-label>
+                    <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
+                    {{labels.history}}
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

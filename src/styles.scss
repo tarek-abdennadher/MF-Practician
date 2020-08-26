@@ -25,6 +25,11 @@
   font-family: "Montserrat-Bold";
   src: url("./assets/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
 }
+@font-face {
+  font-family: "Montserrat-Italic";
+  src: url("./assets/fonts/Montserrat/Montserrat-Italic.ttf") format("truetype");
+}
+
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
 // Include the common styles for Angular Material. We include this here so that you only
@@ -76,7 +81,13 @@ body {
 input,
 select,
 textarea {
-  font-family: "Montserrat" !important;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
 }
 
 a {

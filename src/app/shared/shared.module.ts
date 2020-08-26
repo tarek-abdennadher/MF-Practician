@@ -8,17 +8,22 @@ import { CKEditorComponent } from './components/ckeditor/ckeditor.component';
 import { SecretaryDetailsComponent } from './components/secretary-details/secretary-details.component';
 import { PracticianDetailComponent } from './components/practician-detail/practician-detail.component';
 import { HlsPracticianDetailModule } from "hls-practician-detail";
+import { PatientFileComponent } from './components/patient-file/patient-file.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
-  declarations: [IntPhoneComponent, CKEditorComponent, SecretaryDetailsComponent, PracticianDetailComponent],
+  declarations: [IntPhoneComponent, CKEditorComponent, SecretaryDetailsComponent, PracticianDetailComponent, PatientFileComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     InternationalPhoneNumberModule,
     CKEditorModule,
-    HlsPracticianDetailModule
+    HlsPracticianDetailModule,
+    MatTabsModule,
+    BsDatepickerModule.forRoot(),
   ],
-  exports: [IntPhoneComponent, CKEditorComponent, SecretaryDetailsComponent, PracticianDetailComponent]
+  exports: [IntPhoneComponent, CKEditorComponent, SecretaryDetailsComponent, PracticianDetailComponent, PatientFileComponent]
 })
 export class SharedModule { }

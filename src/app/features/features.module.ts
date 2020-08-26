@@ -12,7 +12,6 @@ import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.co
 import { HlsLinksModule } from "hls-links";
 import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { HlsSearchModule } from "hls-search";
-import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
 import { HlsMessagingListModule } from "hls-messaging-list";
@@ -27,7 +26,6 @@ import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dial
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
-import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
@@ -44,7 +42,7 @@ import { AddPatientComponent } from "./my-patients/add-patient/add-patient.compo
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
-import {SharedMaterialModule} from '@app/shared-material/shared-material.module';
+import { SharedMaterialModule } from '@app/shared-material/shared-material.module';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -92,13 +90,11 @@ const notifierOptions: NotifierOptions = {
     SentMessagesComponent,
     ForwardedMessagesComponent,
     MessagingReplyComponent,
-    MyPatientsComponent,
     PracticianSearchComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
-    PatientDetailComponent,
     PersonalInformationsComponent,
     MatPatientFileDialogComponent,
     AddPatientComponent,

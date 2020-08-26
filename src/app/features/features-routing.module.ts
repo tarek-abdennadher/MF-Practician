@@ -3,19 +3,17 @@ import { Routes, RouterModule } from "@angular/router";
 import { FeaturesComponent } from "./features.component";
 import { MessagingListComponent } from "./messaging-list/messaging-list.component";
 import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
-import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
-import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
-import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { PracticianDetailComponent } from '@app/shared/components/practician-detail/practician-detail.component';
+import { PatientFileComponent } from '@app/shared/components/patient-file/patient-file.component';
 const routes: Routes = [
   {
     path: "",
@@ -35,8 +33,11 @@ const routes: Routes = [
         component: MessagingDetailComponent,
       },
       {
-        path: "mes-patients",
-        component: MyPatientsComponent,
+        path: "mes-patients/:section",
+        loadChildren: () =>
+          import("./my-patients/my-patients.module").then(
+            (m) => m.MyPatientsModule
+          ),
       },
       {
         path: "messagerie-envoyes",
@@ -67,18 +68,6 @@ const routes: Routes = [
       {
         path: "praticien-detail/:id",
         component: PracticianDetailComponent,
-      },
-      {
-        path: "fiche-patient/:idAccount",
-        component: PatientDetailComponent,
-      },
-      {
-        path: "ajout-patient",
-        component: AddPatientComponent,
-      },
-      {
-        path: "fiche-patient/:idAccount/:idPractician",
-        component: PatientDetailComponent,
       },
       {
         path: "messagerie-archives",

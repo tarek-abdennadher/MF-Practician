@@ -70,7 +70,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.pageNo = 0;
       this.myPatients = [];
       this.filtredPatients = [];
@@ -444,7 +444,7 @@ export class MyPatientsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe(resp => {});
+            .subscribe(resp => { });
         }
       });
   }
@@ -506,7 +506,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
+    this.router.navigate([item.users[0].id], { relativeTo: this.route });
   }
 
   onScroll() {
@@ -569,6 +569,6 @@ export class MyPatientsComponent implements OnInit {
     this.listFilter("Tout");
   }
   addPatient() {
-    this.router.navigate(["ajout-patient"]);
+    this.router.navigate(["ajout-patient"], { relativeTo: this.route });
   }
 }

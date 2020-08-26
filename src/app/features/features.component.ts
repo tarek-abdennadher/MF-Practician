@@ -72,7 +72,7 @@ export class FeaturesComponent implements OnInit {
   ngOnInit(): void {
     let firstNameRefactored = this.featuresService.firstLetterUpper(this.user?.firstName);
     let lastNameRefactored = this.user?.lastName.toUpperCase();
-    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) +  " " + firstNameRefactored + " " + lastNameRefactored;
+    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) + " " + firstNameRefactored + " " + lastNameRefactored;
     this.fullname = this.featuresService.fullName;
     this.featuresService.getNumberOfInbox().subscribe((val) => {
       this.inboxNumber = val;
@@ -371,12 +371,9 @@ export class FeaturesComponent implements OnInit {
   displayArchieveAction() {
     this.router.navigate(["/messagerie-archives"]);
   }
+
   displayMyPatientsAction(event) {
-    this.router.navigate(["/mes-patients"], {
-      queryParams: {
-        section: event,
-      },
-    });
+    this.router.navigate(["/mes-patients/" + event]);
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/favorites"]);

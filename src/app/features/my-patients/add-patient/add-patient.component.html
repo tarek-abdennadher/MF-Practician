@@ -1,5 +1,3 @@
-<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
-  [backButton]="backButton" (backButtonAction)="goBack()"></lib-hlsLinks>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
@@ -7,9 +5,9 @@
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
-<lib-hls-patient-file [isAdd]="true" [imageSource]="imageSource" [practicianImage]="practicianImage"
+<app-patient-file [isAdd]="true" [imageSource]="imageSource" [practicianImage]="practicianImage"
   [noteimageSource]="noteimageSource" [patient]="patientFile" [categoryList]="categoryList"
   [linkedPatients]="linkedPatients" (submitAction)="submit($event)" (archieveNoteAction)="archieveNote($event)"
   (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
-</lib-hls-patient-file>
+</app-patient-file>
 <br />
