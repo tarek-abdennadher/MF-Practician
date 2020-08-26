@@ -3,9 +3,13 @@
   (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
   (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
   (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
-  (filterAction)="filterActionClicked($event)"></lib-hlsLinks>
+  (filterAction)="filterActionClicked($event)" (refreshMessagingListAction)="refreshMessagingList()"></lib-hlsLinks>
+<div class="card rectangle-custom">
+  <div class="card-body custom-card-message">
 <lib-hlsMessagingList [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
   (cardAction)="cardClicked($event)" [imageSource]="imageSource"></lib-hlsMessagingList>
+  </div>
+</div>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">

@@ -26,6 +26,10 @@ export class ArchieveMessagesComponent implements OnInit {
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
+  links = {
+    isRefresh: true,
+    isPagination: true
+  };
   filtredItemList = [];
   pageNo = 0;
   scroll = false;
@@ -242,5 +246,12 @@ export class ArchieveMessagesComponent implements OnInit {
     this.pageNo = 0;
     this.itemsList = [];
     this.getMyMessagesArchived(this.pageNo);
+  }
+
+  refreshMessagingList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.ngOnInit();
   }
 }
