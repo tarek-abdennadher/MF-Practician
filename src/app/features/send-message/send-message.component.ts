@@ -120,12 +120,10 @@ export class SendMessageComponent implements OnInit {
     private accountService: AccountService,
     private objectsService: ObjectsService
   ) {
+    this.sendPostal = false;
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.connectedUser = "Dr " + this.connectedUser;
       this.connectedUserType = "MEDICAL";
-      this.featureService
-        .checkIfSendPostalEnabled()
-        .subscribe((result) => (this.sendPostal = result));
       this.getTLSGroupByPracticianId();
     }
     this.route.queryParams.subscribe((params) => {
@@ -138,6 +136,7 @@ export class SendMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.sendPostal = false;
     if (this.user?.photoId) {
       this.documentService.downloadFile(this.user?.photoId).subscribe(
         (response) => {
@@ -419,12 +418,15 @@ export class SendMessageComponent implements OnInit {
 
   sendMessage(message) {
     if (message.type[0].id == SendType.SEND_POSTAL) {
-      if (this.sendPostal) {
-        this.send(message);
-      } else {
-        this.messageInHold = message;
-        $("#firstModal").modal("toggle");
-      }
+      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
+        this.sendPostal = result;
+        if (this.sendPostal) {
+          this.send(message);
+        } else {
+          this.messageInHold = message;
+          $("#firstModal").modal("toggle");
+        }
+      });
     } else {
       this.send(message);
     }
@@ -893,7 +895,7 @@ export class SendMessageComponent implements OnInit {
   activateSenPostalOption() {
     if (this.addOptionConfirmed) {
       this.featureService.activateSendPostal().subscribe((res) => {
-        this.sendPostal = res;
+        this.sendPostal = true;
         $("#confirmModal").modal("hide");
         $("#successModal").modal("toggle");
       });
