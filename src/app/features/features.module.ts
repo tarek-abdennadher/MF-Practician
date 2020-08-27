@@ -21,6 +21,7 @@ import { PracticianSearchComponent } from "./practician-search/practician-search
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
+import { HlsNewMessageDetailModule } from "hls-new-message-detail";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
@@ -44,7 +45,7 @@ import { AddPatientComponent } from "./my-patients/add-patient/add-patient.compo
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
-import {SharedMaterialModule} from '@app/shared-material/shared-material.module';
+import { SharedMaterialModule } from "@app/shared-material/shared-material.module";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -88,10 +89,8 @@ const notifierOptions: NotifierOptions = {
   declarations: [
     FeaturesComponent,
     MessagingListComponent,
-    MessagingDetailComponent,
     SentMessagesComponent,
     ForwardedMessagesComponent,
-    MessagingReplyComponent,
     MyPatientsComponent,
     PracticianSearchComponent,
     SendMessageComponent,
@@ -130,9 +129,10 @@ const notifierOptions: NotifierOptions = {
     NgApexchartsModule,
     HlsGenericListModule,
     HlsGenericListLinksModule,
-    SharedMaterialModule
+    SharedMaterialModule,
+    HlsNewMessageDetailModule
   ],
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
-export class FeaturesModule { }
+export class FeaturesModule {}

@@ -15,7 +15,7 @@ import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
-import { PracticianDetailComponent } from '@app/shared/components/practician-detail/practician-detail.component';
+import { PracticianDetailComponent } from "@app/shared/components/practician-detail/practician-detail.component";
 const routes: Routes = [
   {
     path: "",
@@ -24,101 +24,97 @@ const routes: Routes = [
       { path: "", redirectTo: "messagerie", pathMatch: "full" },
       {
         path: "messagerie",
-        component: MessagingListComponent,
+        component: MessagingListComponent
       },
       {
         path: "messagerie/:id",
-        component: MessagingListComponent,
+        component: MessagingListComponent
       },
       {
         path: "messagerie-lire/:id",
-        component: MessagingDetailComponent,
+        loadChildren: () =>
+          import("./messaging-detail/messaging-detail.module").then(
+            m => m.MessageDetailModule
+          )
       },
       {
         path: "mes-patients",
-        component: MyPatientsComponent,
+        component: MyPatientsComponent
       },
       {
         path: "messagerie-envoyes",
-        component: SentMessagesComponent,
+        component: SentMessagesComponent
       },
       {
         path: "messagerie-transferes",
-        component: ForwardedMessagesComponent,
+        component: ForwardedMessagesComponent
       },
       {
         path: "mes-contacts-pro",
         loadChildren: () =>
-          import("./contacts/contacts.module").then(
-            (m) => m.ContactsModule
-          ),
-      },
-      {
-        path: "messagerie-repondre/:id",
-        component: MessagingReplyComponent,
-        resolve: {
-          messagingdetail: MessagingDetailResolve,
-        },
+          import("./contacts/contacts.module").then(m => m.ContactsModule)
       },
       {
         path: "praticien-recherche",
-        component: PracticianSearchComponent,
+        component: PracticianSearchComponent
       },
       {
         path: "praticien-detail/:id",
-        component: PracticianDetailComponent,
+        component: PracticianDetailComponent
       },
       {
         path: "fiche-patient/:idAccount",
-        component: PatientDetailComponent,
+        component: PatientDetailComponent
       },
       {
         path: "ajout-patient",
-        component: AddPatientComponent,
+        component: AddPatientComponent
       },
       {
         path: "fiche-patient/:idAccount/:idPractician",
-        component: PatientDetailComponent,
+        component: PatientDetailComponent
       },
       {
         path: "messagerie-archives",
-        component: ArchieveMessagesComponent,
+        component: ArchieveMessagesComponent
       },
       {
         path: "compte",
         loadChildren: () =>
-          import("./account/account.module").then((m) => m.AccountModule),
+          import("./account/account.module").then(m => m.AccountModule)
       },
       {
         path: "messagerie-ecrire",
-        component: SendMessageComponent,
+        component: SendMessageComponent
       },
       {
         path: "mes-documents",
         loadChildren: () =>
           import("./my-documents/my-documents.module").then(
-            (m) => m.MyDocumentsModule
-          ),
+            m => m.MyDocumentsModule
+          )
       },
       {
         path: "praticien-invitation",
-        component: PracticianInvitationComponent,
+        component: PracticianInvitationComponent
       },
       {
         path: "mes-categories",
-        loadChildren: () => import("./category/category.module").then((m) => m.CategoryModule),
+        loadChildren: () =>
+          import("./category/category.module").then(m => m.CategoryModule)
       },
       {
         path: "mes-objets",
-        loadChildren: () => import("./my-objects/my-objects.module").then((m) => m.MyObjectsModule),
-      },
-    ],
-  },
+        loadChildren: () =>
+          import("./my-objects/my-objects.module").then(m => m.MyObjectsModule)
+      }
+    ]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [MessagingDetailService, MessagingDetailResolve],
+  providers: [MessagingDetailService, MessagingDetailResolve]
 })
-export class FeaturesRoutingModule { }
+export class FeaturesRoutingModule {}

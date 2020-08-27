@@ -12,12 +12,12 @@ import { takeUntil } from "rxjs/operators";
 import { Subject, BehaviorSubject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
 import { LocalStorageService } from "ngx-webstorage";
-import { MyDocumentsService } from '../my-documents/my-documents.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
-  styleUrls: ["./messaging-reply.component.scss"],
+  styleUrls: ["./messaging-reply.component.scss"]
 })
 export class MessagingReplyComponent implements OnInit {
   isMyMessage = false;
@@ -26,7 +26,7 @@ export class MessagingReplyComponent implements OnInit {
   imageSource: string;
   isFromInbox = true;
   senderRolePatient = true;
-  showRefuseForTls : boolean;
+  showRefuseForTls: boolean;
   messagingDetail: any;
   idMessage: number;
   bodyObs = new BehaviorSubject(null);
@@ -47,7 +47,15 @@ export class MessagingReplyComponent implements OnInit {
   forwardedResponse = false;
   objectsList = [];
   toList = new BehaviorSubject(null);
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
   constructor(
     private _location: Location,
     private featureService: FeaturesService,
@@ -61,52 +69,57 @@ export class MessagingReplyComponent implements OnInit {
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private spinner: NgxSpinnerService
-
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
-
+  realTime() {
+    this.messagingDetailService.getIdObs().subscribe(resp => {
+      this.route.queryParams.subscribe(params => {
+        this.forwardedResponse = false;
+        this.acceptResponse = false;
+        this.refuseResponse = false;
+        if (params["status"] && params["status"] == "refus") {
+          this.refuseResponse = true;
+        } else if (params["status"] && params["status"] == "accept") {
+          this.acceptResponse = true;
+        } else if (params["context"] && params["context"] == "forward") {
+          this.forwardedResponse = true;
+          this.getForwardToList();
+        }
+      });
+      this.route.params.subscribe(params => {
+        this.idMessage = params["id"];
+        this.messagingDetail = this.route.snapshot.data.messagingdetail;
+        this.getMessageDetailById(this.idMessage);
+      });
+      this.featureService.setIsMessaging(true);
+    });
+  }
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      if (params["status"] && params["status"] == "refus") {
-        this.refuseResponse = true;
-      } else if(params["status"] && params["status"] == "accept") {
-        this.acceptResponse = true
-      } else if (params["context"] && params["context"] == "forward") {
-        this.forwardedResponse = true;
-        this.getForwardToList();
-      }
-    });
-    this.route.params.subscribe((params) => {
-      this.idMessage = params["id"];
-      this.messagingDetail = this.route.snapshot.data.messagingdetail;
-      this.getMessageDetailById(this.idMessage);
-    });
-    this.featureService.setIsMessaging(true);
+    this.realTime();
   }
 
   getForwardToList() {
     this.messagingDetailService
-      .getTlsSecretaryList().pipe(takeUntil(this._destroyed$))
+      .getTlsSecretaryList()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(list => {
-        list.forEach((receiver) => {
+        list.forEach(receiver => {
           this.loadPhoto(receiver);
         });
         this.toList.next(list);
-      })
-    }
-
+      });
+  }
 
   getMessageDetailById(id) {
     this.messagingDetailService
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((message) => {
+      .subscribe(message => {
         console.log(this.showRefuseForTls);
-        message.toReceivers.forEach((element) => {
+        message.toReceivers.forEach(element => {
           if (element.receiverId == this.featureService.getUserId()) {
             this.isMyMessage = true;
           }
@@ -115,10 +128,10 @@ export class MessagingReplyComponent implements OnInit {
         message.hasFiles = false;
         message.body = "";
         this.messagingDetail = message;
-        this.messagingDetail.toReceivers.forEach((receiver) => {
+        this.messagingDetail.toReceivers.forEach(receiver => {
           this.loadPhoto(receiver);
         });
-        this.messagingDetail.ccReceivers.forEach((receiver) => {
+        this.messagingDetail.ccReceivers.forEach(receiver => {
           this.loadPhoto(receiver);
         });
         this.loadPhoto(this.messagingDetail.sender);
@@ -128,26 +141,24 @@ export class MessagingReplyComponent implements OnInit {
 
   loadPhoto(user) {
     if (user.photoId) {
-      this.documentService
-        .downloadFile(user.photoId)
-        .subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              user.img = myReader.result;
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            user.img = this.avatars.user;
-          }
-        );
-    }else{
+      this.documentService.downloadFile(user.photoId).subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            user.img = myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        error => {
+          user.img = this.avatars.user;
+        }
+      );
+    } else {
       if (user.role == "PRACTICIAN") {
         user.img = this.avatars.doctor;
       } else if (user.role == "SECRETARY") {
         user.img = this.avatars.secretary;
-      }else if (user.role == "TELESECRETARYGROUP") {
+      } else if (user.role == "TELESECRETARYGROUP") {
         user.img = this.avatars.tls;
       } else if (user.role == "PATIENT") {
         if (user.civility == "M") {
@@ -166,36 +177,33 @@ export class MessagingReplyComponent implements OnInit {
       this.documentService
         .downloadFile(message.sender.senderForPhotoId)
         .subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               message.sender.forImg = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           },
-          (error) => {
+          error => {
             message.sender.forImg = this.avatars.user;
           }
         );
     } else {
-        if (message.sender.senderForCivility == "M") {
-          message.sender.forImg =
-            this.avatars.man;
-        } else if (message.sender.senderForCivility == "MME") {
-          message.sender.forImg =
-            this.avatars.women;
-        } else if (message.sender.senderForCivility == "CHILD") {
-          message.sender.forImg =
-            this.avatars.child;
-        }
+      if (message.sender.senderForCivility == "M") {
+        message.sender.forImg = this.avatars.man;
+      } else if (message.sender.senderForCivility == "MME") {
+        message.sender.forImg = this.avatars.women;
+      } else if (message.sender.senderForCivility == "CHILD") {
+        message.sender.forImg = this.avatars.child;
       }
+    }
   }
 
   getAllRefuseTypes() {
     return this.refuseTypeService
       .getAllRefuseTypes()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((refuseTypes) => {
+      .subscribe(refuseTypes => {
         this.objectsList = refuseTypes;
       });
   }
@@ -203,7 +211,7 @@ export class MessagingReplyComponent implements OnInit {
   getResponseBody(message) {
     if (this.isMyMessage && message.requestTypeId && message.requestTitleId) {
       let requestDto;
-      if (message.sender.role == 'PATIENT') {
+      if (message.sender.role == "PATIENT") {
         requestDto = {
           patientId: message.sender.senderId,
           patientForId: message.sender.sendedForId,
@@ -211,8 +219,11 @@ export class MessagingReplyComponent implements OnInit {
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
           websiteOrigin: "PATIENT"
-        }
-      } else if (message.sender.role == "TELESECRETARYGROUP" || message.sender.role == "SUPERVISOR") {
+        };
+      } else if (
+        message.sender.role == "TELESECRETARYGROUP" ||
+        message.sender.role == "SUPERVISOR"
+      ) {
         requestDto = {
           patientId: message.sender.sendedForId,
           patientForId: null,
@@ -220,23 +231,29 @@ export class MessagingReplyComponent implements OnInit {
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
           websiteOrigin: "TLS"
-        }
+        };
       }
       if (this.refuseResponse) {
-        this.messagingDetailService.getRefuseRequest(requestDto).subscribe(resp => {
-          this.bodyObs.next(resp.body);
-        })
+        this.messagingDetailService
+          .getRefuseRequest(requestDto)
+          .subscribe(resp => {
+            this.bodyObs.next(resp.body);
+          });
       }
       if (this.acceptResponse) {
-        this.messagingDetailService.getAcceptRequest(requestDto).subscribe(resp => {
-          this.bodyObs.next(resp.body);
-        })
+        this.messagingDetailService
+          .getAcceptRequest(requestDto)
+          .subscribe(resp => {
+            this.bodyObs.next(resp.body);
+          });
       }
       if (this.forwardedResponse) {
         requestDto.websiteOrigin = "TLS";
-        this.messagingDetailService.getAcceptRequest(requestDto).subscribe(resp => {
-          this.bodyObs.next(resp.body);
-        })
+        this.messagingDetailService
+          .getAcceptRequest(requestDto)
+          .subscribe(resp => {
+            this.bodyObs.next(resp.body);
+          });
       }
     }
   }
@@ -247,7 +264,7 @@ export class MessagingReplyComponent implements OnInit {
     const parent = new MessageParent();
     parent.id = message.id;
     parent.messageStatus = "TREATED";
-    delete message.sender.img
+    delete message.sender.img;
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
@@ -272,14 +289,13 @@ export class MessagingReplyComponent implements OnInit {
     };
     if (this.forwardedResponse) {
       replyMessage.toReceivers = [
-        { receiverId: message.trReceiver[0].id, seen: 0 },
+        { receiverId: message.trReceiver[0].id, seen: 0 }
       ];
     } else {
       replyMessage.toReceivers = [
-        { receiverId: message.sender.senderId, seen: 0 },
+        { receiverId: message.sender.senderId, seen: 0 }
       ];
     }
-
 
     if (message.file !== undefined) {
       this.selectedFiles = message.file;
@@ -298,23 +314,24 @@ export class MessagingReplyComponent implements OnInit {
         .replyMessageWithFile(formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (message) => {
+          message => {
             if (this.forwardedResponse) {
-              this.featureService.numberOfForwarded = this.featureService.numberOfForwarded + 1;
+              this.featureService.numberOfForwarded =
+                this.featureService.numberOfForwarded + 1;
             }
             this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
-                status: "sentSuccess",
-              },
+                status: "sentSuccess"
+              }
             });
           },
-          (error) => {
+          error => {
             this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
-              template: this.customNotificationTmpl,
+              template: this.customNotificationTmpl
             });
           }
         );
@@ -323,23 +340,24 @@ export class MessagingReplyComponent implements OnInit {
         .replyMessage(replyMessage)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (message) => {
+          message => {
             if (this.forwardedResponse) {
-              this.featureService.numberOfForwarded = this.featureService.numberOfForwarded + 1;
+              this.featureService.numberOfForwarded =
+                this.featureService.numberOfForwarded + 1;
             }
             this.spinner.hide();
             this.router.navigate(["/messagerie"], {
               queryParams: {
-                status: "sentSuccess",
-              },
+                status: "sentSuccess"
+              }
             });
           },
-          (error) => {
+          error => {
             this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
-              template: this.customNotificationTmpl,
+              template: this.customNotificationTmpl
             });
           }
         );

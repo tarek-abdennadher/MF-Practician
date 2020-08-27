@@ -74,7 +74,6 @@ export class DocumentsListComponent implements OnInit {
       this.filterDocumentsForm.patchValue({
         documentType: params["type"]
       });
-      this.filter();
     });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);

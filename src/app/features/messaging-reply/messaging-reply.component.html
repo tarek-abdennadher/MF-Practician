@@ -1,15 +1,7 @@
-<lib-hlsLinks
-  [page]="page"
-  [topText]="topText"
-  [bottomText]="''"
-  [number]="number"
-  [backButton]="backButton"
-  (backButtonAction)="goToBack()"
-></lib-hlsLinks>
-<lib-hlsMessagingDetail
+<lib-hls-new-message-detail
   [imageSource]="imageSource"
   [messagingDetail]="messagingDetail"
-  [body]= "bodyObs"
+  [body]="bodyObs"
   [role]="role"
   [isReply]="true"
   [senderRolePatient]="messagingDetail.sender.role == 'PATIENT'"
@@ -18,7 +10,7 @@
   [refuseResponse]="false"
   [forwardedResponse]="forwardedResponse"
   (sendAction)="replyMessage($event)"
-></lib-hlsMessagingDetail>
+></lib-hls-new-message-detail>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
@@ -29,7 +21,8 @@
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
   <div class="card" id="card-gif">
     <div class="card-body">
-      <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'">
-      <p class="loading">Envoi du message en cours...</p>    </div>
+      <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'" />
+      <p class="loading">Envoi du message en cours...</p>
+    </div>
   </div>
 </ngx-spinner>
