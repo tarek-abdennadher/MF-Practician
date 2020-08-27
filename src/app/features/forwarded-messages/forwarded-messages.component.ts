@@ -22,6 +22,8 @@ export class ForwardedMessagesComponent implements OnInit {
     isAllSelect: true,
     isFilter: false,
     isArchieve: true,
+    isPagination: true,
+    isRefresh: true
   };
   page = "INBOX";
   number = 0;
@@ -290,5 +292,11 @@ export class ForwardedMessagesComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
+  }
+
+  refreshMessagingList() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.ngOnInit();
   }
 }
