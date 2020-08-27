@@ -25,7 +25,14 @@ export class FeaturesService {
   currentSearch = this.searchSource.asObservable();
   initialSearch = false;
   public fullName: string;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
 
   public searchInboxFiltered = new BehaviorSubject([]);
   public searchInbox = new BehaviorSubject([]);
@@ -47,14 +54,12 @@ export class FeaturesService {
 
   public isMessaging = new BehaviorSubject<boolean>(false);
 
-
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
   getNumberOfPendingObs() {
     return this._numberOfPending.asObservable();
@@ -167,7 +172,7 @@ export class FeaturesService {
 
   markAsSeen(obsList, ids) {
     let val = obsList.getValue();
-    val.forEach(elm => {
+    val.forEach((elm) => {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
       }
@@ -176,7 +181,7 @@ export class FeaturesService {
   }
 
   markAsSeenById(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
         this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
@@ -185,7 +190,7 @@ export class FeaturesService {
   }
 
   markAsNotSeenById(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id)) {
         elm.isSeen = false;
         this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
@@ -195,13 +200,12 @@ export class FeaturesService {
 
   removeNotificationByIdMessage(ids) {
     let i = 0;
-    let copyListNotifications = [... this.listNotifications];
+    let copyListNotifications = [...this.listNotifications];
     for (let elm of this.listNotifications) {
       if (ids.includes(elm.messageId)) {
         copyListNotifications.splice(i, 1);
-      }
-      else {
-           i++;
+      } else {
+        i++;
       }
     }
     this.listNotifications = copyListNotifications;
@@ -209,13 +213,20 @@ export class FeaturesService {
 
   addNotificationByIdMessage(obsList, ids) {
     console.log(this.listNotifications, "listeee");
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id)) {
-        let notif = {civility: elm.users[0].civility, id: elm.users[0].id, messageId: elm.id, photoId: elm.photoId,
-          picture: elm.users[0].img, role: elm.users[0].type, sender: elm.users[0].fullName, type: 'MESSAGE' };
+        let notif = {
+          civility: elm.users[0].civility,
+          id: elm.users[0].id,
+          messageId: elm.id,
+          photoId: elm.photoId,
+          picture: elm.users[0].img,
+          role: elm.users[0].type,
+          sender: elm.users[0].fullName,
+          type: "MESSAGE",
+        };
         this.listNotifications.push(notif);
         console.log(this.listNotifications, "eleeeem");
-
       }
     });
   }
@@ -246,9 +257,9 @@ export class FeaturesService {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.BASE_URL_MA +
-      "/notifications/" +
-      notidId +
-      "/markAsSeen"
+        "/notifications/" +
+        notidId +
+        "/markAsSeen"
     );
   }
 
@@ -256,16 +267,16 @@ export class FeaturesService {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.BASE_URL_MA +
-      "/notifications/" +
-      senderId +
-      "/INVITATION/markAsSeen"
+        "/notifications/" +
+        senderId +
+        "/INVITATION/markAsSeen"
     );
   }
   markReceivedNotifAsSeen() {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.BASE_URL_MA +
-      "/notifications/markAsSeenByType/INVITATION"
+        "/notifications/markAsSeenByType/INVITATION"
     );
   }
 
@@ -324,6 +335,18 @@ export class FeaturesService {
   }
 
   public firstLetterUpper(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  checkIfSendPostalEnabled() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.option + "/check-postal/" + this.getUserId()
+    );
+  }
+  activateSendPostal() {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.option + "/activate-postal/" + this.getUserId()
+    );
   }
 }
