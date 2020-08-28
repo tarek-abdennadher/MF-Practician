@@ -9,7 +9,8 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
-import { filter } from 'rxjs/operators';
+import { filter } from "rxjs/operators";
+import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
@@ -52,7 +53,8 @@ export class ContactsComponent implements OnInit {
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private globalService: GlobalService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private sanitizer: DomSanitizer
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -91,17 +93,17 @@ export class ContactsComponent implements OnInit {
       this.getAllContactsForSecretary();
     }
     // update categories after detail view
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      let currentRoute = this.route;
-      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-      if (this.userRole == "PRACTICIAN") {
-        this.getAllContacts();
-      } else if (this.userRole == "SECRETARY") {
-        this.getAllContactsForSecretary();
-      }
-    });
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        let currentRoute = this.route;
+        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        if (this.userRole == "PRACTICIAN") {
+          this.getAllContacts();
+        } else if (this.userRole == "SECRETARY") {
+          this.getAllContactsForSecretary();
+        }
+      });
     this.featureService.setIsMessaging(false);
   }
   getAllContactsForSecretary() {
@@ -138,18 +140,25 @@ export class ContactsComponent implements OnInit {
         this.itemsList.forEach(item => {
           if (item.photoId) {
             item.users.forEach(user => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                response => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = e => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                error => {
-                  user.img = this.avatars.user;
-                }
-              );
+              this.documentService
+                .getDefaultImageEntity(
+                  user.id,
+                  user.contactType == "CONTACT" ? "CONTACT" : "ACCOUNT"
+                )
+                .subscribe(
+                  response => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = e => {
+                      user.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    };
+                    let ok = myReader.readAsDataURL(response);
+                  },
+                  error => {
+                    user.img = this.avatars.user;
+                  }
+                );
             });
           } else {
             item.users.forEach(user => {
@@ -199,32 +208,27 @@ export class ContactsComponent implements OnInit {
         });
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach(item => {
-          if (item.photoId) {
-            item.users.forEach(user => {
-              this.documentService.downloadFile(item.photoId).subscribe(
+          item.users.forEach(user => {
+            this.documentService
+              .getDefaultImageEntity(
+                user.id,
+                user.contactType == "CONTACT" ? "CONTACT" : "ACCOUNT"
+              )
+              .subscribe(
                 response => {
                   let myReader: FileReader = new FileReader();
                   myReader.onloadend = e => {
-                    user.img = myReader.result;
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
                   };
-                  let ok = myReader.readAsDataURL(response.body);
+                  let ok = myReader.readAsDataURL(response);
                 },
                 error => {
                   user.img = this.avatars.user;
                 }
               );
-            });
-          } else {
-            item.users.forEach(user => {
-              if (user.contactType == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.contactType == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              } else {
-                user.img = this.avatars.doctor;
-              }
-            });
-          }
+          });
         });
       },
       error => {
@@ -300,7 +304,9 @@ export class ContactsComponent implements OnInit {
       item.users[0].contactType == "MEDICAL" ||
       item.users[0].contactType == "CABINET"
     ) {
-      this.router.navigate(["mes-contacts-pro/praticien-detail/" + item.practicianId]);
+      this.router.navigate([
+        "mes-contacts-pro/praticien-detail/" + item.practicianId
+      ]);
     } else if (item.users[0].contactType == "SECRETARY") {
       this.router.navigate(["mes-contacts-pro/secretaire-detail/" + item.id]);
     }

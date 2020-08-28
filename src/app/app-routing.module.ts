@@ -9,28 +9,28 @@ export const routes: Routes = [
   { path: "", redirectTo: "", pathMatch: "full" },
   {
     path: "connexion",
-    component: LoginComponent,
+    component: LoginComponent
   },
   {
     path: "inscription",
-    loadChildren: "./core/components/register/register.module#RegisterModule",
+    loadChildren: "./core/components/register/register.module#RegisterModule"
   },
   {
     path: "mot-de-passe-oublie",
-    component: ResetPasswordComponent,
+    component: ResetPasswordComponent
   },
   {
     path: "mot-de-passe-reinitialisation",
-    component: ChangePasswordComponent,
+    component: ChangePasswordComponent
   },
   {
     path: "",
     loadChildren: "./features/features.module#FeaturesModule",
-    canActivateChild: [AuthGuard],
-  },
+    canActivateChild: [AuthGuard]
+  }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}

@@ -15,6 +15,8 @@ import { PatientSerch } from "../my-patients/my-patients";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { FeaturesService } from "../features.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { Observable } from "rxjs";
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
@@ -52,6 +54,8 @@ export class MyDocumentsComponent implements OnInit {
 
   account: any;
   linkedPatients: any;
+  imageObs: any;
+
   constructor(
     private mydocumentsService: MyDocumentsService,
     private globalService: GlobalService,
@@ -60,7 +64,8 @@ export class MyDocumentsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
     private accountService: AccountService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private sanitizer: DomSanitizer
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -86,50 +91,33 @@ export class MyDocumentsComponent implements OnInit {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
-
-        this.itemsList.forEach(item => {
-          if (item.photoId) {
-            item.users.forEach(user => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                response => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = e => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                error => {
-                  user.img = this.avatars.user;
-                }
-              );
-            });
-          } else {
-            item.users.forEach(user => {
-              if (user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              } else if (user.type == "TELESECRETARYGROUP") {
-                user.img = this.avatars.tls;
-              } else if (user.type == "PATIENT") {
-                if (user.civility == "M") {
-                  user.img = this.avatars.man;
-                } else if (user.civility == "MME") {
-                  user.img = this.avatars.women;
-                } else if (user.civility == "CHILD") {
-                  user.img = this.avatars.child;
-                }
-              }
-            });
-          }
-        });
         const myPatients = [];
-        this.itemsList.forEach(p => {
-          const patient = new PatientSerch();
-          patient.fullName = p.users[0].fullName;
-          patient.photoId = p.photoId;
-          myPatients.push(patient);
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
+            this.documentService.getDefaultImage(item.id).subscribe(
+              response => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = e => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                console.log("ok");
+                const patient = new PatientSerch();
+                patient.fullName = item.users[0].fullName;
+                patient.img = user.img;
+                patient.id = item.id;
+                patient.photoId = item.photoId;
+                myPatients.push(patient);
+                let ok = myReader.readAsDataURL(response);
+              },
+              error => {
+                user.img = this.avatars.user;
+              }
+            );
+          });
         });
+        console.log(myPatients);
         this.searchAutoComplete(myPatients);
       });
   }
@@ -204,22 +192,29 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   searchAutoComplete(myPatients) {
-    myPatients.forEach(user => {
-      if (user.photoId) {
-        this.documentService.downloadFile(user.photoId).subscribe(
-          response => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              user.img = myReader.result;
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          error => {
-            user.img = this.avatars.user;
-          }
-        );
-      }
-    });
+    // console.log(myPatients);
+    // myPatients.forEach(user => {
+    //   // console.log(user);
+    //   this.documentService.getDefaultImage(user.id).subscribe(
+    //     response => {
+    //       let myReader: FileReader = new FileReader();
+    //       myReader.onloadend = e => {
+    //         // console.log(
+    //         //   this.sanitizer.bypassSecurityTrustUrl(myReader.result as string)
+    //         // );
+    //         user.img = this.sanitizer.bypassSecurityTrustUrl(
+    //           myReader.result as string
+    //         );
+    //       };
+    //       let ok = myReader.readAsDataURL(response);
+    //       console.log("ok");
+    //     },
+    //     error => {
+    //       console.log("no");
+    //       user.img = this.avatars.user;
+    //     }
+    //   );
+    // });
     let atcObj: AutoComplete = new AutoComplete({
       dataSource: myPatients,
       fields: { value: "fullName" },
@@ -233,6 +228,7 @@ export class MyDocumentsComponent implements OnInit {
       noRecordsTemplate: "Aucune données trouvé",
       sortOrder: "Ascending"
     });
+    console.log("done");
     atcObj.appendTo("#patients");
     atcObj.showSpinner();
   }
@@ -245,40 +241,22 @@ export class MyDocumentsComponent implements OnInit {
           this.itemsList.push(senderAndReceiver);
         });
         this.itemsList.forEach(item => {
-          if (item.photoId) {
-            item.users.forEach(user => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                response => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = e => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                error => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          } else {
-            item.users.forEach(user => {
-              if (user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              } else if (user.type == "TELESECRETARYGROUP") {
-                user.img = this.avatars.tls;
-              } else if (user.type == "PATIENT") {
-                if (user.civility == "M") {
-                  user.img = this.avatars.man;
-                } else if (user.civility == "MME") {
-                  user.img = this.avatars.women;
-                } else if (user.civility == "CHILD") {
-                  user.img = this.avatars.child;
-                }
+          item.users.forEach(user => {
+            this.documentService.getDefaultImage(item.id).subscribe(
+              response => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = e => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              error => {
+                user.img = "assets/imgs/user.png";
               }
-            });
-          }
+            );
+          });
         });
       });
   }
@@ -291,40 +269,22 @@ export class MyDocumentsComponent implements OnInit {
           this.itemsList.push(senderAndReceiver);
         });
         this.itemsList.forEach(item => {
-          if (item.photoId) {
-            item.users.forEach(user => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                response => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = e => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                error => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          } else {
-            item.users.forEach(user => {
-              if (user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              } else if (user.type == "TELESECRETARYGROUP") {
-                user.img = this.avatars.tls;
-              } else if (user.type == "PATIENT") {
-                if (user.civility == "M") {
-                  user.img = this.avatars.man;
-                } else if (user.civility == "MME") {
-                  user.img = this.avatars.women;
-                } else if (user.civility == "CHILD") {
-                  user.img = this.avatars.child;
-                }
+          item.users.forEach(user => {
+            this.documentService.getDefaultImage(item.id).subscribe(
+              response => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = e => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              error => {
+                user.img = "assets/imgs/user.png";
               }
-            });
-          }
+            );
+          });
         });
       });
   }
@@ -337,40 +297,22 @@ export class MyDocumentsComponent implements OnInit {
           this.itemsList.push(senderAndReceiver);
         });
         this.itemsList.forEach(item => {
-          if (item.photoId) {
-            item.users.forEach(user => {
-              this.documentService.downloadFile(item.photoId).subscribe(
-                response => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = e => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                error => {
-                  user.img = "assets/imgs/user.png";
-                }
-              );
-            });
-          } else {
-            item.users.forEach(user => {
-              if (user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              } else if (user.type == "TELESECRETARYGROUP") {
-                user.img = this.avatars.tls;
-              } else if (user.type == "PATIENT") {
-                if (user.civility == "M") {
-                  user.img = this.avatars.man;
-                } else if (user.civility == "MME") {
-                  user.img = this.avatars.women;
-                } else if (user.civility == "CHILD") {
-                  user.img = this.avatars.child;
-                }
+          item.users.forEach(user => {
+            this.documentService.getDefaultImage(item.id).subscribe(
+              response => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = e => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              error => {
+                user.img = "assets/imgs/user.png";
               }
-            });
-          }
+            );
+          });
         });
       });
   }

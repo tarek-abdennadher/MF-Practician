@@ -14,6 +14,7 @@ import { RefuseTypeService } from "../services/refuse-type.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
@@ -68,7 +69,8 @@ export class MessagingReplyComponent implements OnInit {
     private refuseTypeService: RefuseTypeService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private sanitizer: DomSanitizer
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -140,63 +142,37 @@ export class MessagingReplyComponent implements OnInit {
   }
 
   loadPhoto(user) {
-    if (user.photoId) {
-      this.documentService.downloadFile(user.photoId).subscribe(
-        response => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
-            user.img = myReader.result;
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        error => {
-          user.img = this.avatars.user;
-        }
-      );
-    } else {
-      if (user.role == "PRACTICIAN") {
-        user.img = this.avatars.doctor;
-      } else if (user.role == "SECRETARY") {
-        user.img = this.avatars.secretary;
-      } else if (user.role == "TELESECRETARYGROUP") {
-        user.img = this.avatars.tls;
-      } else if (user.role == "PATIENT") {
-        if (user.civility == "M") {
-          user.img = this.avatars.man;
-        } else if (user.civility == "MME") {
-          user.img = this.avatars.women;
-        } else if (user.civility == "CHILD") {
-          user.img = this.avatars.child;
-        }
+    this.documentService.getDefaultImage(user.id).subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        user.img = this.avatars.user;
       }
-    }
+    );
   }
 
   loadSenderForPhoto(message) {
-    if (message.sender.senderForPhotoId) {
-      this.documentService
-        .downloadFile(message.sender.senderForPhotoId)
-        .subscribe(
-          response => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              message.sender.forImg = myReader.result;
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          error => {
-            message.sender.forImg = this.avatars.user;
-          }
-        );
-    } else {
-      if (message.sender.senderForCivility == "M") {
-        message.sender.forImg = this.avatars.man;
-      } else if (message.sender.senderForCivility == "MME") {
-        message.sender.forImg = this.avatars.women;
-      } else if (message.sender.senderForCivility == "CHILD") {
-        message.sender.forImg = this.avatars.child;
+    this.documentService.getDefaultImage(message.sender.senderForId).subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          message.sender.forImg = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        message.sender.forImg = this.avatars.user;
       }
-    }
+    );
   }
 
   getAllRefuseTypes() {
