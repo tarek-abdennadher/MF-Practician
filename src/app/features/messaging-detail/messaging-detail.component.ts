@@ -580,31 +580,56 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   replyAction() {
-    this.router.navigate(["/messagerie-repondre/", this.idMessage]);
+    this.messagingDetailService.setId(this.idMessage);
+    this.router.navigate([
+      "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
+      this.idMessage
+    ]);
   }
 
   forwardAction() {
-    this.router.navigate(["/messagerie-repondre/", this.idMessage], {
-      queryParams: {
-        context: "forward"
+    this.messagingDetailService.setId(this.idMessage);
+    this.router.navigate(
+      [
+        "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
+        this.idMessage
+      ],
+      {
+        queryParams: {
+          context: "forward"
+        }
       }
-    });
+    );
   }
 
   acceptAction() {
-    this.router.navigate(["/messagerie-repondre/", this.idMessage], {
-      queryParams: {
-        status: "accept"
+    this.messagingDetailService.setId(this.idMessage);
+    this.router.navigate(
+      [
+        "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
+        this.idMessage
+      ],
+      {
+        queryParams: {
+          status: "accept"
+        }
       }
-    });
+    );
   }
 
   refuseAction() {
-    this.router.navigate(["/messagerie-repondre/", this.idMessage], {
-      queryParams: {
-        status: "refus"
+    this.messagingDetailService.setId(this.idMessage);
+    this.router.navigate(
+      [
+        "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
+        this.idMessage
+      ],
+      {
+        queryParams: {
+          status: "refus"
+        }
       }
-    });
+    );
   }
 
   importantAction() {

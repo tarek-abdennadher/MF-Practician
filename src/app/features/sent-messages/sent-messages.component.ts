@@ -21,7 +21,9 @@ export class SentMessagesComponent implements OnInit {
   links = {
     isAllSelect: true,
     isFilter: true,
+    isRefresh: true,
     isArchieve: true,
+    isPagination: true
   };
   page = "INBOX";
   number = 0;
@@ -289,5 +291,11 @@ export class SentMessagesComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
+  }
+
+  refreshMessagingList() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.ngOnInit();
   }
 }

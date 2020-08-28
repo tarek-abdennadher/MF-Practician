@@ -39,6 +39,10 @@ export class MessagingListComponent implements OnInit {
     isArchieve: true,
     isImportant: false,
     isFilter: true,
+    isMenuDisplay: true,
+    isAllSelectCarret: true,
+    isRefresh: true,
+    isPagination: true
   };
   page = "INBOX";
   number: number;
@@ -139,6 +143,10 @@ export class MessagingListComponent implements OnInit {
             isArchieve: false,
             isImportant: false,
             isFilter: false,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
           })
           : (this.links = {
             isAllSelect: true,
@@ -147,6 +155,10 @@ export class MessagingListComponent implements OnInit {
             isArchieve: false,
             isImportant: false,
             isFilter: true,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
           });
         this.paramsId = this.featureService.selectedPracticianId;
         this.getMyInbox(this.featureService.selectedPracticianId, this.pageNo);
@@ -168,6 +180,10 @@ export class MessagingListComponent implements OnInit {
             isArchieve: true,
             isImportant: false,
             isFilter: false,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
           })
           : (this.links = {
             isAllSelect: true,
@@ -176,6 +192,10 @@ export class MessagingListComponent implements OnInit {
             isArchieve: true,
             isImportant: false,
             isFilter: true,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
           });
         this.isPatientFile
           ? (this.topText = "Historique des échanges")

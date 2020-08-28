@@ -8,9 +8,7 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
-import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
-import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { HlsSearchModule } from "hls-search";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
@@ -20,6 +18,7 @@ import { PracticianSearchComponent } from "./practician-search/practician-search
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
+import { HlsNewMessageDetailModule } from "hls-new-message-detail";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
@@ -40,7 +39,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
-import { SharedMaterialModule } from '@app/shared-material/shared-material.module';
+import { SharedMaterialModule } from "@app/shared-material/shared-material.module";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -84,10 +83,8 @@ const notifierOptions: NotifierOptions = {
   declarations: [
     FeaturesComponent,
     MessagingListComponent,
-    MessagingDetailComponent,
     SentMessagesComponent,
     ForwardedMessagesComponent,
-    MessagingReplyComponent,
     PracticianSearchComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
@@ -122,7 +119,8 @@ const notifierOptions: NotifierOptions = {
     NgApexchartsModule,
     HlsGenericListModule,
     HlsGenericListLinksModule,
-    SharedMaterialModule
+    SharedMaterialModule,
+    HlsNewMessageDetailModule
   ],
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]

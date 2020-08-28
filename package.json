@@ -44,6 +44,7 @@
     "hls-messaging-detail": "git+ssh://git@bitbucket.org/aymax/hls-messaging-detail.git#develop",
     "hls-messaging-list": "git+ssh://git@bitbucket.org/aymax/hls-messaging-list.git#develop",
     "hls-nav-bar": "git+ssh://git@bitbucket.org/aymax/hls-nav-bar.git#develop",
+    "hls-new-message-detail": "git+ssh://git@bitbucket.org/aymax/hls-new-message-detail.git#develop",
     "hls-password-strength": "git+ssh://git@bitbucket.org/aymax/hls-password-strength.git#develop",
     "hls-practician-detail": "git+ssh://git@bitbucket.org/aymax/hls-practician-detail.git#develop",
     "hls-search": "git+ssh://git@bitbucket.org/aymax/hls-search.git#develop",

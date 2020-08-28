@@ -5,7 +5,11 @@
   [number]="number"
   [backButton]="backButton"
   (backButtonAction)="BackButton()"
+  [links]="links"
+  (refreshMessagingListAction)="refreshMessagingList()"
 ></lib-hlsLinks>
+<div class="card rectangle-custom">
+  <div class="card-body custom-card-message">
 <lib-hlsMessagingList
   [list]="filtredItemList"
   (cardAction)="cardClicked($event)"
@@ -16,7 +20,8 @@
   (downSortAction)="downSortClicked()"
   [caller]="'archieve'"
 ></lib-hlsMessagingList>
-
+  </div>
+</div>
 <div
       class="search-results"
       infiniteScroll
