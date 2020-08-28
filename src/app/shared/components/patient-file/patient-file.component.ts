@@ -430,22 +430,12 @@ export class PatientFileComponent implements OnInit {
     this.isPhonesValid = event;
   }
 
-  onInvitationClicked() {
-    this.personalInfoForm.patchValue({
-      invitationStatus: "NOT_SENT"
-    });
-    this.displayInvite = false;
+  onCheckboxChange($event) {
+    if ($event.target.checked) {
+      this.personalInfoForm.patchValue({
+        invitationStatus: "NOT_SENT"
+      });
+    }
   }
 
-  public selectedTab($event) {
-    if ($event.index === 0) {
-      console.log("info")
-    }
-    else if ($event.index === 1) {
-      console.log("notes")
-    }
-    else if ($event.index === 2) {
-      console.log("history")
-    }
-  }
 }

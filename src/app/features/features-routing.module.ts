@@ -13,7 +13,6 @@ import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { PracticianDetailComponent } from '@app/shared/components/practician-detail/practician-detail.component';
-import { PatientFileComponent } from '@app/shared/components/patient-file/patient-file.component';
 const routes: Routes = [
   {
     path: "",
@@ -31,13 +30,6 @@ const routes: Routes = [
       {
         path: "messagerie-lire/:id",
         component: MessagingDetailComponent,
-      },
-      {
-        path: "mes-patients/:section",
-        loadChildren: () =>
-          import("./my-patients/my-patients.module").then(
-            (m) => m.MyPatientsModule
-          ),
       },
       {
         path: "messagerie-envoyes",
@@ -100,6 +92,13 @@ const routes: Routes = [
       {
         path: "mes-objets",
         loadChildren: () => import("./my-objects/my-objects.module").then((m) => m.MyObjectsModule),
+      },
+      {
+        path: "mes-patients/:section",
+        loadChildren: () =>
+          import("./my-patients/my-patients.module").then(
+            (m) => m.MyPatientsModule
+          ),
       },
     ],
   },

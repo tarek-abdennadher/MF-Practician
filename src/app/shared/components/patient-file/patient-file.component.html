@@ -1,6 +1,6 @@
 <div class="card rectangle-custom">
     <div class="card-body custom-card-message">
-        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)">
+        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'">
             <mat-tab label="Informations">
                 <ng-template mat-tab-label id="info-tab">
                     <i class="fas fa-info my-tab-icon pr-custom-11px"></i>
@@ -85,12 +85,12 @@
                                         placeholder="{{ labels.birth_date }}" bsDatepicker [maxDate]="maxDatecheck()"
                                         [placement]="placement" [bsConfig]="{ containerClass: 'theme-dark-blue' }"
                                         [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }" />
-                                    <div *ngIf="submitted && ctr.birthday.errors" class="text-danger">
+                                    <div *ngIf="submitted && ctr.birthday.errors" class="invalid-feedback">
                                         <div *ngIf="ctr.birthday.errors.required">
                                             {{ errors.required }}
                                         </div>
                                     </div>
-                                    <div *ngIf="isFutureDate" class="text-danger">
+                                    <div *ngIf="isFutureDate" class="invalid-feedback">
                                         <div>
                                             {{ errors.futureDate }}
                                         </div>
@@ -214,27 +214,65 @@
                         </div>
                         <br>
                         <div *ngIf="displayInvite " class="row send-invitation">
-                            <button type="submit" class="btn btn-success" id="send-invitation-button"
-                                (click)="onInvitationClicked()">
-                                {{ labels.invite_patient }}
+                            <label for="invitationStatus" class=" invitation-text  ">
+                                <input type="checkbox" formControlName="invitationStatus"
+                                    (change)="onCheckboxChange($event)" />&nbsp;&nbsp;
+                                {{ labels.send_invitation }}</label>
+                            <br>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button type="submit" class="btn btn-primary mr-3" id="submit-info-button"
+                                (click)="patientSubmit()">{{ labels.save }}
                             </button>
-                            <br><br>
-                            <div class="row invitation-text">
-                                {{ labels.send_invitation }}
-                            </div>
+                            <button (click)="cancelActionClicked()" class="btn btn-cancel" id="cancel-button">
+                                {{ labels.cancel }}
+                            </button>
                         </div>
                     </form>
-
                 </div>
 
             </mat-tab>
-            <mat-tab label="Notes">
+            <mat-tab label="Notes" *ngIf="!isAdd">
                 <ng-template mat-tab-label>
                     <i class="fas fa-notes-medical my-tab-icon pr-custom-11px"></i>
                     <span>{{labels.notes}}</span>
                 </ng-template>
+                <!-- Notes -->
+                <div class="card-body">
+                    <div class="row">
+                        <button class="btn btn-success ml-3" (click)="addNote()">
+                            <i class="far fa-plus"></i>&nbsp;&nbsp;{{ labels.add_note }}
+                        </button>
+                    </div>
+                    <br>
+                    <div class="card-deck">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural
+                                    lead-in to additional content. This content is a little bit longer.</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This card has supporting text below as a natural lead-in to
+                                    additional content.</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural
+                                    lead-in to additional content. This card has even longer content than the first to
+                                    show that equal height action.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </mat-tab>
-            <mat-tab label="Historique">
+            <mat-tab label="Historique" *ngIf="!isAdd">
                 <ng-template mat-tab-label>
                     <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
                     {{labels.history}}

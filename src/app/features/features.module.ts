@@ -35,10 +35,8 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { PipesModule } from "@app/shared/pipes/pipes.module";
-import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
@@ -96,8 +94,6 @@ const notifierOptions: NotifierOptions = {
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
     PersonalInformationsComponent,
-    MatPatientFileDialogComponent,
-    AddPatientComponent,
     NewMessageMobileComponent
   ],
   imports: [

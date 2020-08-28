@@ -850,9 +850,7 @@ export class FeaturesComponent implements OnInit {
     });
     return archivedMessage;
   }
-  addPatient() {
-    this.router.navigate(["ajout-patient"]);
-  }
+
   myObjects() {
     this.router.navigate(["mes-objets"]);
   }

@@ -769,6 +769,6 @@ export class MessagingDetailComponent implements OnInit {
     }
   }
   getPatientFile(info) {
-    this.dialogService.openPatientFile("Fiche Patient", info);
+    // this.dialogService.openPatientFile("Fiche Patient", info);
   }
 }

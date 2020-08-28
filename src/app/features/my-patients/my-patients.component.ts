@@ -1,21 +1,22 @@
-import { Component, OnInit } from "@angular/core";
-import { MyPatientsService } from "../services/my-patients.service";
-import { MyPatients, PatientSerch } from "./my-patients";
-import { Router, ActivatedRoute } from "@angular/router";
-import { GlobalService } from "@app/core/services/global.service";
-import { DialogService } from "../services/dialog.service";
-import { FeaturesService } from "../features.service";
-import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { GlobalService } from '@app/core/services/global.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MyPatientsService } from '../services/my-patients.service';
+import { DialogService } from '../services/dialog.service';
+import { FeaturesService } from '../features.service';
+import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { CategoryService } from '../services/category.service';
+import { MyPatients } from '@app/shared/models/my-patients';
 
-import { FormGroup, FormBuilder } from "@angular/forms";
-import { CategoryService } from "../services/category.service";
-import { OrderDirection } from "@app/shared/enmus/order-direction";
 @Component({
-  selector: "app-my-patients",
-  templateUrl: "./my-patients.component.html",
-  styleUrls: ["./my-patients.component.scss"]
+  selector: 'app-my-patients',
+  templateUrl: './my-patients.component.html',
+  styleUrls: ['./my-patients.component.scss']
 })
 export class MyPatientsComponent implements OnInit {
+
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -506,7 +507,12 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate([item.users[0].id], { relativeTo: this.route });
+    this.router.navigate(["fiche-patient"], {
+      queryParams: {
+        id: item.users[0].id,
+      },
+      relativeTo: this.route
+    });
   }
 
   onScroll() {
@@ -571,4 +577,5 @@ export class MyPatientsComponent implements OnInit {
   addPatient() {
     this.router.navigate(["ajout-patient"], { relativeTo: this.route });
   }
+
 }

@@ -1,23 +1,22 @@
-import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from "@angular/core";
-import { Subject, forkJoin } from "rxjs";
-import { PatientFile } from "@app/shared/models/patient-file";
-import { NotifierService } from "angular-notifier";
-import { Router } from "@angular/router";
-import { FeaturesService } from "@app/features/features.service";
-import { AccountService } from "@app/features/services/account.service";
-import { BsLocaleService } from "ngx-bootstrap/datepicker";
-import { MyPatientsService } from "@app/features/services/my-patients.service";
-import { CategoryService } from "@app/features/services/category.service";
+import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from '@angular/core';
+import { Subject, forkJoin } from 'rxjs';
+import { PatientFile } from '@app/shared/models/patient-file';
+import { NotifierService } from 'angular-notifier';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FeaturesService } from '@app/features/features.service';
+import { AccountService } from '@app/features/services/account.service';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { MyPatientsService } from '@app/features/services/my-patients.service';
+import { CategoryService } from '@app/features/services/category.service';
+import { LocalStorageService } from 'ngx-webstorage';
+import { GlobalService } from '@app/core/services/global.service';
+import { defineLocale, frLocale } from 'ngx-bootstrap/chronos';
+import { takeUntil, tap } from 'rxjs/operators';
 
-import { LocalStorageService } from "ngx-webstorage";
-import { GlobalService } from "@app/core/services/global.service";
-import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
-import { takeUntil, tap } from "rxjs/operators";
-import { Location } from "@angular/common";
 @Component({
-  selector: "app-add-patient",
-  templateUrl: "./add-patient.component.html",
-  styleUrls: ["./add-patient.component.scss"],
+  selector: 'app-add-patient',
+  templateUrl: './add-patient.component.html',
+  styleUrls: ['./add-patient.component.scss']
 })
 export class AddPatientComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -47,14 +46,15 @@ export class AddPatientComponent implements OnInit {
     secretary: string;
     user: string;
   };
+
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private featureService: FeaturesService,
     private accountService: AccountService,
     private localeService: BsLocaleService,
     private patientService: MyPatientsService,
     private categoryService: CategoryService,
-    private _location: Location,
     private localStorage: LocalStorageService,
     notifierService: NotifierService,
     @Inject(LOCALE_ID) public locale: string,
@@ -105,11 +105,7 @@ export class AddPatientComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
-      this.router.navigate(["/mes-patients"], {
-        queryParams: {
-          section: "accepted",
-        },
-      });
+      this.router.navigate(["/mes-patients/accepted"],);
     } else {
       this.notifMessage = this.patientService.errors.failed_add;
       this.notifier.show({
@@ -140,14 +136,13 @@ export class AddPatientComponent implements OnInit {
   };
   submitNote(model) { }
   archieveNote(noteId) { }
-  goBack() {
-    this._location.back();
-  }
+
   cancelAction() {
-    this._location.back();
+    this.router.navigate(["."], { relativeTo: this.route.parent });
   }
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
   }
+
 }

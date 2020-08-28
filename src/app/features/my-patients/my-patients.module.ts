@@ -1,62 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MyPatientsRoutingModule } from './my-patients-routing.module';
-import { HlsGenericListModule } from 'hls-generic-list';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { HlsGenericListLinksModule } from 'hls-generic-list-links';
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { NotifierOptions, NotifierModule } from 'angular-notifier';
 import { MyPatientsComponent } from './my-patients.component';
+import { HlsGenericListModule } from 'hls-generic-list';
+import { HlsGenericListLinksModule } from 'hls-generic-list-links';
+import { AddPatientComponent } from './add-patient/add-patient.component';
+import { PatientDetailComponent } from './add-patient/patient-detail/patient-detail.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '@app/shared/shared.module';
-const notifierOptions: NotifierOptions = {
-  position: {
-    horizontal: {
-      position: "left",
-      distance: 370
-    },
-    vertical: {
-      position: "top",
-      distance: 90
-    }
-  },
-  theme: "material",
-  behaviour: {
-    autoHide: 2000,
-    onClick: false,
-    onMouseover: "pauseAutoHide",
-    showDismissButton: false
-  },
-  animations: {
-    enabled: true,
-    show: {
-      preset: "fade",
-      speed: 1500,
-      easing: "ease"
-    },
-    hide: {
-      preset: "fade",
-      speed: 300,
-      easing: "ease",
-      offset: 50
-    },
-    shift: {
-      speed: 300,
-      easing: "ease"
-    },
-    overlap: 150
-  }
-};
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+
 @NgModule({
-  declarations: [MyPatientsComponent],
+  declarations: [MyPatientsComponent, AddPatientComponent, PatientDetailComponent],
   imports: [
     CommonModule,
-    MyPatientsRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
     HlsGenericListModule,
-    InfiniteScrollModule,
     HlsGenericListLinksModule,
     MatProgressSpinnerModule,
+    InfiniteScrollModule,
     SharedModule,
-    NotifierModule.withConfig(notifierOptions),
+    MyPatientsRoutingModule,
   ]
 })
 export class MyPatientsModule { }

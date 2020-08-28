@@ -100,7 +100,7 @@ $color-helssy-grey: #6e819bd4;
     background-color: #1a56a7;
   }
   .send-invitation{
-  margin-left: 15px;
+  padding-left: 15px;
   }
   .invitation-text{
   font-family: Montserrat-Italic;
@@ -111,4 +111,46 @@ $color-helssy-grey: #6e819bd4;
   line-height: normal;
   letter-spacing: -0.15px;
   color: rgba(101, 101, 101, 0.8);
+  padding-left: 15px;
+}
+.btn.btn-primary{
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border-color: transparent;
+  background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
+}
+.btn.btn-cancel{
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: rgba(248, 46, 108, 0.9);
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border: solid 1px #f82e6c;
+}
+input[type="checkbox"]{
+  width: 15px;
+  height: 15px;
+  border-radius: 1px;
+  border: solid 2px rgba(64, 73, 83, 0.5);
+}
+input[type="checkbox"]:checked, input[type="checkbox"]:focus {
+background-color: #1a56a7 ;
+border-radius: 1px;
+border: solid 2px rgba(64, 73, 83, 0.5);
 }

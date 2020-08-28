@@ -11,10 +11,10 @@ import { enableRipple } from "@syncfusion/ej2-base";
 enableRipple(true);
 
 import { AutoComplete } from "@syncfusion/ej2-dropdowns";
-import { PatientSerch } from "../my-patients/my-patients";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { FeaturesService } from "../features.service";
+import { PatientSerch } from '@app/shared/models/my-patients';
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
