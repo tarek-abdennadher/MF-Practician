@@ -8,11 +8,8 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
-import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
-import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { HlsSearchModule } from "hls-search";
-import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
 import { HlsMessagingListModule } from "hls-messaging-list";
@@ -28,7 +25,6 @@ import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dial
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
-import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
@@ -38,10 +34,8 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { PipesModule } from "@app/shared/pipes/pipes.module";
-import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
@@ -91,16 +85,12 @@ const notifierOptions: NotifierOptions = {
     MessagingListComponent,
     SentMessagesComponent,
     ForwardedMessagesComponent,
-    MyPatientsComponent,
     PracticianSearchComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
-    PatientDetailComponent,
     PersonalInformationsComponent,
-    MatPatientFileDialogComponent,
-    AddPatientComponent,
     NewMessageMobileComponent
   ],
   imports: [
@@ -135,4 +125,4 @@ const notifierOptions: NotifierOptions = {
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
-export class FeaturesModule {}
+export class FeaturesModule { }

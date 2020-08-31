@@ -199,9 +199,9 @@ export class FeaturesComponent implements OnInit {
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => {};
+    this.stompClient.debug = () => { };
     const that = this;
-    this.stompClient.connect({}, function(frame) {
+    this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
         message => {
@@ -242,9 +242,9 @@ export class FeaturesComponent implements OnInit {
         let id = ids[i];
         const ws = new SockJS(this.globalService.BASE_URL + "/socket");
         this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => {};
+        this.stompClientList[i].debug = () => { };
         const that = this;
-        this.stompClientList[i].connect({}, function(frame) {
+        this.stompClientList[i].connect({}, function (frame) {
           this.subscribe("/topic/notification/" + id, message => {
             if (message.body) {
               let notification = JSON.parse(message.body);
@@ -272,8 +272,8 @@ export class FeaturesComponent implements OnInit {
             id: notif.id,
             sender: notif.jobTitle
               ? this.jobTitlePipe.transform(notif.jobTitle) +
-                " " +
-                notif.senderFullName
+              " " +
+              notif.senderFullName
               : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
@@ -382,12 +382,9 @@ export class FeaturesComponent implements OnInit {
   displayArchieveAction() {
     this.router.navigate(["/messagerie-archives"]);
   }
+
   displayMyPatientsAction(event) {
-    this.router.navigate(["/mes-patients"], {
-      queryParams: {
-        section: event
-      }
-    });
+    this.router.navigate(["/mes-patients/" + event]);
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/favorites"]);
@@ -688,18 +685,18 @@ export class FeaturesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-          ? "répondu"
-          : message.toReceivers[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "répondu"
+            : message.toReceivers[0].seen
+              ? "Lu"
+              : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-          ? 100
-          : message.toReceivers[0].seen
-          ? 50
-          : 20
+            ? 100
+            : message.toReceivers[0].seen
+              ? 50
+              : 20
     };
     messageSent.users = [];
     message.toReceivers.forEach(r => {
@@ -860,9 +857,7 @@ export class FeaturesComponent implements OnInit {
     });
     return archivedMessage;
   }
-  addPatient() {
-    this.router.navigate(["ajout-patient"]);
-  }
+
   myObjects() {
     this.router.navigate(["mes-objets"]);
   }

@@ -92,18 +92,18 @@ export class ContactsComponent implements OnInit {
     } else if (this.userRole == "SECRETARY") {
       this.getAllContactsForSecretary();
     }
-    // update categories after detail view
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        if (this.userRole == "PRACTICIAN") {
-          this.getAllContacts();
-        } else if (this.userRole == "SECRETARY") {
-          this.getAllContactsForSecretary();
-        }
-      });
+    // update contacts after detail view
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      let currentRoute = this.route;
+      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+      if (this.userRole == "PRACTICIAN") {
+        this.getAllContacts();
+      } else if (this.userRole == "SECRETARY") {
+        this.getAllContactsForSecretary();
+      }
+    });
     this.featureService.setIsMessaging(false);
   }
   getAllContactsForSecretary() {

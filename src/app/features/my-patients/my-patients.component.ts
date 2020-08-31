@@ -1,22 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { MyPatientsService } from "../services/my-patients.service";
-import { MyPatients, PatientSerch } from "./my-patients";
-import { Router, ActivatedRoute } from "@angular/router";
-import { GlobalService } from "@app/core/services/global.service";
-import { DialogService } from "../services/dialog.service";
-import { FeaturesService } from "../features.service";
-import { MyDocumentsService } from "../my-documents/my-documents.service";
-
-import { FormGroup, FormBuilder } from "@angular/forms";
-import { CategoryService } from "../services/category.service";
-import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { GlobalService } from '@app/core/services/global.service';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { MyPatientsService } from '../services/my-patients.service';
+import { DialogService } from '../services/dialog.service';
+import { FeaturesService } from '../features.service';
+import { MyDocumentsService } from '../my-documents/my-documents.service';
+import { CategoryService } from '../services/category.service';
+import { MyPatients } from '@app/shared/models/my-patients';
+import { filter } from 'rxjs/operators';
 import { DomSanitizer } from "@angular/platform-browser";
 @Component({
-  selector: "app-my-patients",
-  templateUrl: "./my-patients.component.html",
-  styleUrls: ["./my-patients.component.scss"]
+  selector: 'app-my-patients',
+  templateUrl: './my-patients.component.html',
+  styleUrls: ['./my-patients.component.scss']
 })
 export class MyPatientsComponent implements OnInit {
+
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -71,7 +72,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.pageNo = 0;
       this.myPatients = [];
       this.filtredPatients = [];
@@ -79,47 +80,58 @@ export class MyPatientsComponent implements OnInit {
       if (params["section"]) {
         switch (params["section"]) {
           case "accepted": {
-            this.links.isTypeFilter = true;
-            this.links.isAdd = true;
-            this.section = "accepted";
-            this.featureService.setActiveChild("patient");
-            this.isInvitation = false;
-            this.getPatientsOfCurrentParactician(this.pageNo);
-            this.searchPatients();
+            this.initPatients();
             break;
           }
           case "pending": {
-            this.links.isTypeFilter = false;
-            this.links.isAdd = false;
-            this.section = "pending";
-            this.isInvitation = true;
-            this.featureService.setActiveChild(null);
-            this.getPendingListRealTime(this.pageNo);
-            this.markNotificationsAsSeen();
+            this.initPendingPatients();
             break;
           }
           case "prohibit": {
-            this.links.isTypeFilter = false;
-            this.links.isAdd = false;
-            this.section = "prohibit";
-            this.featureService.setActiveChild(null);
-            this.isInvitation = false;
-            this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+            this.initProhibitedPatients();
             break;
           }
           case "archived": {
-            this.links.isTypeFilter = false;
-            this.links.isAdd = false;
-            this.section = "archived";
-            this.featureService.setActiveChild(null);
-            this.isInvitation = false;
-            this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+            this.initArchivedPatients();
             break;
           }
         }
       }
     });
-    this.featureService.setIsMessaging(false);
+  }
+  initPatients() {
+    this.links.isTypeFilter = true;
+    this.links.isAdd = true;
+    this.section = "accepted";
+    this.featureService.setActiveChild("patient");
+    this.isInvitation = false;
+    this.getPatientsOfCurrentParactician(this.pageNo);
+    this.searchPatients();
+  }
+  initPendingPatients() {
+    this.links.isTypeFilter = false;
+    this.links.isAdd = false;
+    this.section = "pending";
+    this.isInvitation = true;
+    this.featureService.setActiveChild(null);
+    this.getPendingListRealTime(this.pageNo);
+    this.markNotificationsAsSeen();
+  }
+  initProhibitedPatients() {
+    this.links.isTypeFilter = false;
+    this.links.isAdd = false;
+    this.section = "prohibit";
+    this.featureService.setActiveChild(null);
+    this.isInvitation = false;
+    this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+  }
+  initArchivedPatients() {
+    this.links.isTypeFilter = false;
+    this.links.isAdd = false;
+    this.section = "archived";
+    this.featureService.setActiveChild(null);
+    this.isInvitation = false;
+    this.getPatientsArchivedOfCurrentParactician(this.pageNo);
   }
 
   markNotificationsAsSeen() {
@@ -130,6 +142,8 @@ export class MyPatientsComponent implements OnInit {
     });
   }
   getPatientsOfCurrentParactician(pageNo) {
+    this.myPatients = [];
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientsOfCurrentParacticianV2(
         this.featureService.getUserId(),
@@ -224,6 +238,8 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsProhibitedOfCurrentParactician(pageNo) {
+    this.myPatients = [];
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
       .subscribe(myPatients => {
@@ -257,6 +273,8 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsPendingOfCurrentParactician(pageNo) {
+    this.myPatients = [];
+    this.filtredPatients = [];
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
       .subscribe(myPatients => {
@@ -291,6 +309,8 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsArchivedOfCurrentParactician(pageNo) {
+    this.myPatients = [];
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
       .subscribe(myPatients => {
@@ -438,7 +458,7 @@ export class MyPatientsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe(resp => {});
+            .subscribe(resp => { });
         }
       });
   }
@@ -500,7 +520,12 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
+    this.router.navigate(["fiche-patient"], {
+      queryParams: {
+        id: item.users[0].id,
+      },
+      relativeTo: this.route
+    });
   }
 
   onScroll() {
@@ -563,6 +588,7 @@ export class MyPatientsComponent implements OnInit {
     this.listFilter("Tout");
   }
   addPatient() {
-    this.router.navigate(["ajout-patient"]);
+    this.router.navigate(["ajout-patient"], { relativeTo: this.route });
   }
+
 }
