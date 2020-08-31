@@ -17,8 +17,8 @@
                                 <div class="col-12 col-sm-12">
                                     <select (change)="changeMaidenName()" formControlName="civility" id="civility"
                                         class="form-control" [ngClass]="{
-                      'is-invalid': submitted && ctr.civility.errors
-                    }">
+                            'is-invalid': submitted && ctr.civility.errors
+                            }">
                                         <option value="null" disabled="true" [selected]="true">{{ labels.civility }}
                                         </option>
                                         <option value="M">M</option>
@@ -53,8 +53,8 @@
                                     class="col-12 col-sm-12  col-form-label">{{ labels.first_name }}</label>
                                 <div class="col-12 col-sm-12">
                                     <input [ngClass]="{
-                      'is-invalid': submitted && ctr.firstName.errors
-                    }" type="text" formControlName="firstName" class="form-control" id="first-name" />
+                               'is-invalid': submitted && ctr.firstName.errors
+                               }" type="text" formControlName="firstName" class="form-control" id="first-name" />
                                     <div *ngIf="submitted && ctr.firstName.errors" class="invalid-feedback">
                                         <div *ngIf="ctr.firstName.errors.required">
                                             {{ errors.required }}
@@ -96,7 +96,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <!-- Email Field -->
                             <div class="col-12 col-sm-7">
@@ -116,7 +115,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <br>
                         <!-- Phone number -->
@@ -128,14 +126,14 @@
                                         <international-phone-number *ngIf="!isAdd" class="form-control" id="phoneNumber"
                                             formControlName="phoneNumber" placeholder="Téléphone ou fixe *"
                                             [maxlength]="20" name="phoneNumber" [defaultCountry]=" '' " [ngClass]="{
-                                          'is-invalid': submitted && personalInfoForm.errors
-                                        }">
+                               'is-invalid': submitted && personalInfoForm.errors
+                               }">
                                         </international-phone-number>
                                         <international-phone-number *ngIf="isAdd" class="form-control" id="phoneNumber"
                                             formControlName="phoneNumber" placeholder="Téléphone ou fixe *"
                                             [maxlength]="20" name="phoneNumber" [defaultCountry]="'fr'" [ngClass]="{
-                                        'is-invalid': submitted && personalInfoForm.errors
-                                      }">
+                               'is-invalid': submitted && personalInfoForm.errors
+                               }">
                                         </international-phone-number>
                                         <div *ngIf="personalInfoForm.errors?.requiredValidator"
                                             class="invalid-feedback">
@@ -179,7 +177,6 @@
                                     <input type="text" formControlName="address" class="form-control" id="address" />
                                 </div>
                             </div>
-
                         </div>
                         <br>
                         <!-- additional address Field -->
@@ -214,7 +211,6 @@
                         </div>
                         <br>
                         <div>
-
                         </div>
                         <div *ngIf="displayInvite " class="row send-invitation">
                             <label for="invitationStatus" class=" invitation-text  ">
@@ -232,6 +228,173 @@
                             </button>
                         </div>
                     </form>
+                    <br>
+                    <!-- Linked Patients -->
+                    <div class="card-body" *ngIf="!isAdd && personalInfoForm.value.patientId != null">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <i class="far fa-user-plus fa-icon"></i>
+                            <span class="Mes-informations">{{ labels.attached_info }}
+                            </span>
+                        </div>
+                        <br />
+                        <div *ngIf="!isList" class="card-body Rectangle-body">
+                            <div class="col-md-12">
+                                <form [formGroup]="attachedInfoForm">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-2">
+                                            <div class="col-12 col-sm-2 image-container-attached text-center">
+                                                <img [src]="attachedImageSource" class="profile-picture" />
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-10">
+                                            <div class="row">
+                                                <!-- Last name -->
+                                                <div class="col col-12 col-sm-6 ">
+                                                    <label class="col-12 col-form-label">{{ labels.last_name}}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="lastName"
+                                                            class="form-control" id="attached-last-name" />
+                                                    </div>
+                                                </div>
+                                                <!-- First name -->
+                                                <div class="col col-12 col-sm-6 ">
+                                                    <label class="col-12 col-form-label">{{labels.first_name }}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="firstName"
+                                                            class="form-control" id="attached-frist-name" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <!-- Civility -->
+                                                <div class="col col-12 col-sm-6">
+                                                    <div class="col-12 col-form-label">{{labels.civility}}</div>
+                                                    <div class="col-12">
+                                                        <input formControlName="civility" class="form-control"
+                                                            id="attached-civility" />
+                                                    </div>
+                                                </div>
+                                                <!-- Birthdate -->
+                                                <div class="col col-12 col-sm-6">
+                                                    <div class="col-12 col-form-label">{{labels.birthday}}</div>
+                                                    <div class="col-12 input-icons">
+                                                        <i class="fa fa-calendar icon"></i>
+                                                        <input type="text" formControlName="birthday"
+                                                            class="calender form-control"
+                                                            placeholder="{{ attachedInfoForm.controls.birthday.value }}"
+                                                            bsDatepicker
+                                                            [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+                                                            id="attached-birthdate" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <!-- Maiden name -->
+                                            <div class="row" *ngIf="displayMaidenName">
+                                                <div class="col col-12 col-sm-12">
+                                                    <label
+                                                        class="col-12 col-form-label">{{ labels.maiden_name }}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="maidenName"
+                                                            class="form-control" id="attached-maiden-name" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br *ngIf="displayMaidenName">
+                                            <div class="row">
+                                                <!-- Correspondance field -->
+                                                <div class="col col-12 col-sm-12">
+                                                    <label
+                                                        class="col-12 col-form-label">{{ labels.correspondence }}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="correspondence"
+                                                            class="form-control" id="attached-correspondance" />
+                                                    </div>
+                                                </div>
+                                                <!-- Other Corresspondance field -->
+                                                <div class="col col-12 col-sm-6" *ngIf="displayOtherCorrespondence">
+                                                    <label for="otherCorrespondence"
+                                                        class="col-12 col-form-label">{{ labels.otherCorrespondence }}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="otherCorrespondence"
+                                                            class="form-control" id="attached-otherCorrespondence" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <!-- Address -->
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="col-12 col-form-label">{{ labels._address }}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="address"
+                                                            class="form-control" id="attached-address" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <!-- Additional Address -->
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label
+                                                        class="col-12 col-form-label">{{ labels.additional_address }}</label>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="additionalAddress"
+                                                            class="form-control" id="attached-additionalAddress" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <!-- Zipcode -->
+                                                <div class="col-12 col-sm-4">
+                                                    <div class="col-12 col-form-label">{{ labels._zip_code }}</div>
+                                                    <div class="col-12">
+                                                        <input type="text" formControlName="zipCode"
+                                                            class="form-control" id="attached-zipCode" />
+                                                    </div>
+                                                </div>
+                                                <!-- City -->
+                                                <div class="col-12 col-sm-8">
+                                                    <div class="col-12 col-form-label">{{ labels._city }}</div>
+                                                    <div class="col-12 col-sm-12">
+                                                        <input type="text" formControlName="city" class="form-control"
+                                                            id="attached-city" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <!-- Phone number -->
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div class=" col-12 col-form-label">{{ labels.phone }}</div>
+                                                    <div class="col-12">
+                                                        <international-phone-number class="form-control disabled"
+                                                            formControlName="phoneNumber" [defaultCountry]="'fr'"
+                                                            placeholder="Téléphone ou fixe *" name="phoneNumber"
+                                                            id="attached-phone-number">
+                                                        </international-phone-number>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <button (click)="cancel()" class="btn btn-cancel" id="cancel-add-button">
+                                            {{ labels.cancel }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <br />
+                        <lib-hls-generic-list [isCheckbox]="false" [list]="attachedPatients" [imageSource]="imageSource"
+                            (cardAction)="cardClicked($event)" (detailAction)="cardClicked($event)">
+                        </lib-hls-generic-list>
+                    </div>
                 </div>
             </mat-tab>
             <!-- Notes -->
@@ -257,11 +420,11 @@
                                         <i class="fa fa-calendar icon"></i>
                                         <input type="text" formControlName="date" class="calender form-control"
                                             bsDatepicker [bsConfig]="{
-                                              containerClass: 'theme-dark-blue',
-                                              dateInputFormat: 'DD/MM/YYYY'
-                                            }" [ngClass]="{
-                                              'is-invalid': noteSubmitted && f.date.errors
-                                            }" />
+          containerClass: 'theme-dark-blue',
+          dateInputFormat: 'DD/MM/YYYY'
+          }" [ngClass]="{
+          'is-invalid': noteSubmitted && f.date.errors
+          }" />
                                         <div *ngIf="noteSubmitted && f.date.errors" class="invalid-feedback">
                                             <div *ngIf="f.date.errors.required">
                                                 {{ errors.required }}
@@ -269,7 +432,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-12 ">
@@ -277,14 +439,13 @@
                                     <label for="value" class="col-12 col-form-label">{{ labels.note_value }}</label>
                                     <div class="col-12">
                                         <textarea type="text" formControlName="value" class="form-control" [ngClass]="{
-                                          'is-invalid': noteSubmitted && f.value.errors
-                                        }">
-                                      </textarea>
+             'is-invalid': noteSubmitted && f.value.errors
+             }">
+          </textarea>
                                         <div *ngIf="noteSubmitted && f.value.errors" class="invalid-feedback">
                                             <div *ngIf="f.value.errors.required">
                                                 {{ errors.required }}
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>

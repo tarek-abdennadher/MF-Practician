@@ -90,7 +90,7 @@ export class ContactsComponent implements OnInit {
     } else if (this.userRole == "SECRETARY") {
       this.getAllContactsForSecretary();
     }
-    // update categories after detail view
+    // update contacts after detail view
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {

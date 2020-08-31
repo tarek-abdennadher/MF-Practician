@@ -1,5 +1,5 @@
 <app-patient-file [imageSource]="imageSource" [practicianImage]="practicianImage" [noteimageSource]="noteimageSource"
     [patient]="patientFile" [categoryList]="categoryList" (submitAction)="submit($event)"
-    (archieveNoteAction)="archieveNote($event)" (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()"
-    [userRole]="userRole">
+    (archieveNoteAction)="archieveNote($event)" [linkedPatients]="linkedPatients"
+    (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
 </app-patient-file>

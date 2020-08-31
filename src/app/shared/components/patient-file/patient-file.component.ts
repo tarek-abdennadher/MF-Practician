@@ -65,6 +65,8 @@ export class PatientFileComponent implements OnInit {
   @Input() isAdd: boolean = false;
   /* Patient file information */
   @Input("patient") patient = new Subject();
+  /* Linked patients information */
+  @Input("linkedPatients") linkedPatients = new Subject<[]>();
   /* Category List */
   @Input("categoryList") categoryList = new Subject<[]>();
   /* Outputs */
@@ -124,6 +126,11 @@ export class PatientFileComponent implements OnInit {
       if (val) {
         this.info = val;
         this.getPersonalInformation(val);
+      }
+    });
+    this.linkedPatients.subscribe((res) => {
+      if (res) {
+        this.attachedPatients = res;
       }
     });
   }

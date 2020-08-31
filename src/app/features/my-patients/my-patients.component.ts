@@ -72,18 +72,41 @@ export class MyPatientsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initPatients();
-    // update patients after detail view
+    // update patient files after detail view
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       let currentRoute = this.route;
       while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-      this.initPatients();
+      if (this.section) {
+        switch (this.section) {
+          case "accepted": {
+            this.myPatients = [];
+            this.filtredPatients = [];
+            this.initPatients();
+            break;
+          }
+          case "pending": {
+            this.myPatients = [];
+            this.filtredPatients = [];
+            this.initPendingPatients();
+            break;
+          }
+          case "prohibit": {
+            this.myPatients = [];
+            this.filtredPatients = [];
+            this.initProhibitedPatients();
+            break;
+          }
+          case "archived": {
+            this.myPatients = [];
+            this.filtredPatients = [];
+            this.initArchivedPatients();
+            break;
+          }
+        }
+      }
     });
-    this.featureService.setIsMessaging(false);
-  }
-  initPatients() {
     this.route.params.subscribe(params => {
       this.pageNo = 0;
       this.myPatients = [];
@@ -92,46 +115,58 @@ export class MyPatientsComponent implements OnInit {
       if (params["section"]) {
         switch (params["section"]) {
           case "accepted": {
-            this.links.isTypeFilter = true;
-            this.links.isAdd = true;
-            this.section = "accepted";
-            this.featureService.setActiveChild("patient");
-            this.isInvitation = false;
-            this.getPatientsOfCurrentParactician(this.pageNo);
-            this.searchPatients();
+            this.initPatients();
             break;
           }
           case "pending": {
-            this.links.isTypeFilter = false;
-            this.links.isAdd = false;
-            this.section = "pending";
-            this.isInvitation = true;
-            this.featureService.setActiveChild(null);
-            this.getPendingListRealTime(this.pageNo);
-            this.markNotificationsAsSeen();
+            this.initPendingPatients();
             break;
           }
           case "prohibit": {
-            this.links.isTypeFilter = false;
-            this.links.isAdd = false;
-            this.section = "prohibit";
-            this.featureService.setActiveChild(null);
-            this.isInvitation = false;
-            this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+            this.initProhibitedPatients();
             break;
           }
           case "archived": {
-            this.links.isTypeFilter = false;
-            this.links.isAdd = false;
-            this.section = "archived";
-            this.featureService.setActiveChild(null);
-            this.isInvitation = false;
-            this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+            this.initArchivedPatients();
             break;
           }
         }
       }
     });
+  }
+  initPatients() {
+    this.links.isTypeFilter = true;
+    this.links.isAdd = true;
+    this.section = "accepted";
+    this.featureService.setActiveChild("patient");
+    this.isInvitation = false;
+    this.getPatientsOfCurrentParactician(this.pageNo);
+    this.searchPatients();
+  }
+  initPendingPatients() {
+    this.links.isTypeFilter = false;
+    this.links.isAdd = false;
+    this.section = "pending";
+    this.isInvitation = true;
+    this.featureService.setActiveChild(null);
+    this.getPendingListRealTime(this.pageNo);
+    this.markNotificationsAsSeen();
+  }
+  initProhibitedPatients() {
+    this.links.isTypeFilter = false;
+    this.links.isAdd = false;
+    this.section = "prohibit";
+    this.featureService.setActiveChild(null);
+    this.isInvitation = false;
+    this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+  }
+  initArchivedPatients() {
+    this.links.isTypeFilter = false;
+    this.links.isAdd = false;
+    this.section = "archived";
+    this.featureService.setActiveChild(null);
+    this.isInvitation = false;
+    this.getPatientsArchivedOfCurrentParactician(this.pageNo);
   }
 
   markNotificationsAsSeen() {
@@ -142,6 +177,7 @@ export class MyPatientsComponent implements OnInit {
     });
   }
   getPatientsOfCurrentParactician(pageNo) {
+    this.myPatients = [];
     this.filtredPatients = [];
     this.myPatientsService
       .getPatientsOfCurrentParacticianV2(
@@ -237,6 +273,8 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsProhibitedOfCurrentParactician(pageNo) {
+    this.myPatients = [];
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
       .subscribe(myPatients => {
@@ -270,6 +308,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsPendingOfCurrentParactician(pageNo) {
+    this.myPatients = [];
     this.filtredPatients = [];
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
@@ -305,6 +344,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsArchivedOfCurrentParactician(pageNo) {
+    this.myPatients = [];
     this.filtredPatients = [];
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
