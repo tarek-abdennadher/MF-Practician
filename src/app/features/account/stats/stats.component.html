@@ -1,17 +1,21 @@
 <div class="card-body Rectangle-body">
-    <div class="card-body row">
-        <div class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center">
-            <br>
-            <div class="chart-title"> {{ messages.patients }}</div>
-            <br>
-            <app-apx-pie [stats]="patientMap"></app-apx-pie>
-        </div>
-        <br>
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center">
-            <br>
-            <div class="chart-title"> {{ messages.tls }}</div>
-            <br>
-            <app-apx-pie [stats]="tlsMap"></app-apx-pie>
-        </div>
+  <div class="card-body row">
+    <div
+      class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center"
+    >
+      <br />
+      <div class="chart-title">{{ messages.received }}</div>
+      <br />
+      <app-apx-pie [stats]="receivedMap"></app-apx-pie>
     </div>
+    <br />
+    <div
+      class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center"
+    >
+      <br />
+      <div class="chart-title">{{ messages.sent }}</div>
+      <br />
+      <app-apx-pie [stats]="sentMap"></app-apx-pie>
+    </div>
+  </div>
 </div>
