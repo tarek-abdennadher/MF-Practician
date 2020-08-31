@@ -10,6 +10,7 @@ export class MessageArchived {
       type: string;
       photoId: string;
       civility: string;
+      id: number;
     }
   ];
   object: {

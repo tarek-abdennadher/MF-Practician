@@ -10,6 +10,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { CategoryService } from "../services/category.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -49,7 +50,6 @@ export class MyPatientsComponent implements OnInit {
     user: string;
   };
   direction: OrderDirection = OrderDirection.DESC;
-
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
@@ -60,7 +60,8 @@ export class MyPatientsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
     private featuresService: FeaturesService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private sanitizer: DomSanitizer
   ) {
     this.filterPatientsForm = this.formBuilder.group({
       category: [""]
@@ -335,32 +336,25 @@ export class MyPatientsComponent implements OnInit {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
-    if (myPatients.photoId) {
-      myPatients.users.forEach(user => {
-        this.documentService.downloadFile(myPatients.photoId).subscribe(
+    myPatients.users.forEach(user => {
+      this.documentService
+        .getDefaultImageEntity(user.id, "PATIENT_FILE")
+        .subscribe(
           response => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              user.img = myReader.result;
+              user.img = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
             };
-            let ok = myReader.readAsDataURL(response.body);
+            let ok = myReader.readAsDataURL(response);
           },
           error => {
             user.img = this.avatars.user;
           }
         );
-      });
-    } else {
-      myPatients.users.forEach(user => {
-        if (user.civility == "M") {
-          user.img = this.avatars.man;
-        } else if (user.civility == "MME") {
-          user.img = this.avatars.women;
-        } else if (user.civility == "CHILD") {
-          user.img = this.avatars.child;
-        }
-      });
-    }
+    });
+
     return myPatients;
   }
 
