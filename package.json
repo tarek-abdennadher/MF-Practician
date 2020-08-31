@@ -49,6 +49,7 @@
     "hls-search": "git+ssh://git@bitbucket.org/aymax/hls-search.git#develop",
     "hls-send-message": "git+ssh://git@bitbucket.org/aymax/hls-send-message.git#develop",
     "hls-side-bar": "git+ssh://git@bitbucket.org/aymax/hls-side-bar.git#develop",
+    "hls-ckeditor": "git+ssh://git@bitbucket.org/aymax/hls-ckeditor.git#develop",
     "install": "^0.13.0",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",

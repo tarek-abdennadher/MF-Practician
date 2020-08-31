@@ -621,6 +621,7 @@ export class SendMessageComponent implements OnInit {
 
 
   getTLSGroupByPracticianId() {
+    console.log("group")
     return this.accountService
       .getPracticianTelesecretary()
       .pipe(takeUntil(this._destroyed$))

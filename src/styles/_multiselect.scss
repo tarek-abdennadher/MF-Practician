@@ -1,0 +1,203 @@
+$helssy-grey: #6e819bd4;
+$color-grey: #707070;
+$input-color: #f1f1f1;
+$border-color: #eaeaea;
+$blue-helssy-hover: rgb(52, 165, 196);
+$input-color-hover: #d8d6d6;
+$blue-helssy: #1a56a7;
+
+#to-dropdown,
+#for-dropdown,
+#objects-dropdown,
+#cc-dropdown {
+  .dropdown-list ul li {
+    display: flex !important;
+  }
+  angular2-multiselect .c-btn {
+  }
+  .selected-list .c-btn {
+    width: initial;
+    height: 18px;
+    font-size: 14px;
+    font-weight: 1000;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 0.07px;
+    text-align: center;
+    color: rgba(26, 86, 167, 0.7);
+    border: 0;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+  }
+
+  .selected-list .c-list .c-token {
+    height: 34px;
+    line-height: 25px;
+    border-radius: 4px !important;
+    background-color: unset !important;
+  }
+
+  .selected-list .c-list .c-token .c-label {
+    height: 18px;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 1000;
+    font-stretch: normal;
+    font-style: normal;
+    letter-spacing: normal;
+    color: #5e5e5e !important;  }
+
+  .selected-list .c-list :hover {
+    cursor: pointer !important;
+    background-color: unset !important;
+  }
+
+  .pure-checkbox input[type="checkbox"]:checked + label:before {
+    background: $blue-helssy !important;
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+  }
+
+  .selected-list .countplaceholder {
+    top: 57% !important;
+  }
+
+  .clear-all {
+    top: 53% !important;
+    display: none;
+  }
+  .list-filter .c-search {
+    top: 4px !important;
+  }
+  .dropdown-list {
+    position: absolute;
+    width: 101.6% !important;
+    bottom: initial !important;
+  }
+  .arrow-2 {
+    border-bottom: none !important;
+  }
+  .arrow-down {
+    top: 0 !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+  }
+  .selected-list .c-list .c-token .c-remove {
+    margin-top: -2px !important;
+  }
+
+  .single-select-mode .pure-checkbox input[type="checkbox"] + label:after {
+    border-color: #ffffff !important;
+  }
+  .dropdown-list ul {
+    max-height: 200px !important;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 1000;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.18px;
+    color: #2460b4 !important;
+  }
+  .dropdown-list.animated.fadeIn {
+    top: 25px !important;
+  }
+
+  ::placeholder {
+    color: $blue-helssy;
+  }
+}
+
+#type-dropdown{
+  .selected-list .c-btn {
+    border: 0;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+  }
+  .selected-list .c-list .c-token {
+    height: 34px;
+    line-height: 25px;
+    border-radius: 4px !important;
+    background-color: rgba(80, 227, 194, 0.2) !important;
+  }
+  .selected-list .c-list .c-token .c-label {
+    height: 18px;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    letter-spacing: 0.07px;
+    text-align: center;
+    color: #40b49a;
+  }
+
+    .selected-list .c-list :hover {
+      cursor: pointer !important;
+      background-color: rgba(80, 227, 194, 0.2) !important;
+    }
+
+    .pure-checkbox input[type="checkbox"]:checked + label:before {
+      background: $blue-helssy !important;
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
+    }
+
+    .selected-list .countplaceholder {
+      top: 57% !important;
+    }
+
+    .clear-all {
+      top: 53% !important;
+      display: none;
+    }
+    .list-filter .c-search {
+      top: 4px !important;
+    }
+    .dropdown-list {
+      position: absolute;
+      width: 101.6% !important;
+      bottom: initial !important;
+    }
+    .arrow-2 {
+      border-bottom: none !important;
+    }
+    .arrow-down {
+      top: 0 !important;
+      -webkit-transform: none !important;
+      transform: none !important;
+    }
+    .selected-list .c-list .c-token .c-remove {
+      margin-top: -2px !important;
+    }
+
+    .single-select-mode .pure-checkbox input[type="checkbox"] + label:after {
+      border-color: #ffffff !important;
+    }
+    .dropdown-list ul {
+      max-height: 200px !important;
+      font-family: Montserrat;
+      font-size: 14px;
+      font-weight: 1000;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: -0.18px;
+      color: #2460b4 !important;
+    }
+    .dropdown-list.animated.fadeIn {
+      top: 25px !important;
+    }
+
+    ::placeholder {
+      color: $blue-helssy;
+    }
+
+}
+

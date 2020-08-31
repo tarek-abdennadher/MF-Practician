@@ -45,16 +45,20 @@ import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobi
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
 import {SharedMaterialModule} from '@app/shared-material/shared-material.module';
+import { NewMessageComponent } from './new-message/new-message.component';
+import { NewMessageWidgetComponent } from './new-message-widget/new-message-widget.component';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { HlsCkeditorModule } from 'hls-ckeditor';
 
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
-      position: "left",
-      distance: 370
+      position: "right",
+      distance: 20
     },
     vertical: {
-      position: "top",
-      distance: 90
+      position: "bottom",
+      distance: 150
     }
   },
   theme: "material",
@@ -102,7 +106,9 @@ const notifierOptions: NotifierOptions = {
     PersonalInformationsComponent,
     MatPatientFileDialogComponent,
     AddPatientComponent,
-    NewMessageMobileComponent
+    NewMessageMobileComponent,
+    NewMessageWidgetComponent,
+    NewMessageComponent
   ],
   imports: [
     FormsModule,
@@ -130,7 +136,9 @@ const notifierOptions: NotifierOptions = {
     NgApexchartsModule,
     HlsGenericListModule,
     HlsGenericListLinksModule,
-    SharedMaterialModule
+    SharedMaterialModule,
+    AngularMultiSelectModule,
+    HlsCkeditorModule
   ],
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
