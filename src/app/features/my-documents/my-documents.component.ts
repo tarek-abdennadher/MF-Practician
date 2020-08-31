@@ -51,7 +51,7 @@ export class MyDocumentsComponent implements OnInit {
 
   destinations = new Set();
   documentTypes = new Set();
-
+  myPatients = [];
   account: any;
   linkedPatients: any;
   imageObs: any;
@@ -91,7 +91,6 @@ export class MyDocumentsComponent implements OnInit {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
-        const myPatients = [];
         this.itemsList.forEach(item => {
           item.users.forEach(user => {
             this.documentService.getDefaultImage(item.id).subscribe(
@@ -101,14 +100,15 @@ export class MyDocumentsComponent implements OnInit {
                   user.img = this.sanitizer.bypassSecurityTrustUrl(
                     myReader.result as string
                   );
+                  const patient = new PatientSerch();
+                  patient.fullName = user.fullName;
+                  patient.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                  patient.id = item.id;
+                  patient.photoId = item.photoId;
+                  this.myPatients.push(patient);
                 };
-                console.log("ok");
-                const patient = new PatientSerch();
-                patient.fullName = item.users[0].fullName;
-                patient.img = user.img;
-                patient.id = item.id;
-                patient.photoId = item.photoId;
-                myPatients.push(patient);
                 let ok = myReader.readAsDataURL(response);
               },
               error => {
@@ -117,8 +117,7 @@ export class MyDocumentsComponent implements OnInit {
             );
           });
         });
-        console.log(myPatients);
-        this.searchAutoComplete(myPatients);
+        this.searchAutoComplete(this.myPatients);
       });
   }
   getDetailSwitchRole(senderDetail) {
@@ -131,6 +130,12 @@ export class MyDocumentsComponent implements OnInit {
         return senderDetail.secretary;
       case "TELESECRETARYGROUP":
         return senderDetail.telesecretaryGroup;
+      case "OPERATOR":
+        return senderDetail.telesecretary;
+      case "SUPERVISOR":
+        return senderDetail.telesecretary;
+      case "SUPER_SUPERVISOR":
+        return senderDetail.telesecretary;
       default:
         return null;
     }
@@ -141,6 +146,7 @@ export class MyDocumentsComponent implements OnInit {
     const detail = this.getDetailSwitchRole(senderAndReceiver);
     practician.id = senderAndReceiver.id;
     practician.isSeen = true;
+    console.log(detail);
     practician.users = [
       {
         fullName: detail.fullName,
@@ -192,34 +198,11 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   searchAutoComplete(myPatients) {
-    // console.log(myPatients);
-    // myPatients.forEach(user => {
-    //   // console.log(user);
-    //   this.documentService.getDefaultImage(user.id).subscribe(
-    //     response => {
-    //       let myReader: FileReader = new FileReader();
-    //       myReader.onloadend = e => {
-    //         // console.log(
-    //         //   this.sanitizer.bypassSecurityTrustUrl(myReader.result as string)
-    //         // );
-    //         user.img = this.sanitizer.bypassSecurityTrustUrl(
-    //           myReader.result as string
-    //         );
-    //       };
-    //       let ok = myReader.readAsDataURL(response);
-    //       console.log("ok");
-    //     },
-    //     error => {
-    //       console.log("no");
-    //       user.img = this.avatars.user;
-    //     }
-    //   );
-    // });
     let atcObj: AutoComplete = new AutoComplete({
       dataSource: myPatients,
       fields: { value: "fullName" },
       itemTemplate:
-        "<div><img src=${img} style='height:2rem;   border-radius: 50%;'></img>" +
+        "<div><img src=${img.changingThisBreaksApplicationSecurity} style='height:2rem; width:2rem;   border-radius: 50%;'></img>" +
         '<span class="country"> ${fullName} </span>',
       placeholder: "Recherche par nom ...",
       popupHeight: "450px",
