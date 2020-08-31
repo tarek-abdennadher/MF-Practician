@@ -5,7 +5,6 @@
 export const environment = {
   production: false,
   BASE_END_POINT: "http://localhost:8765",
-  // BASE_END_POINT: "http://51.178.83.124:8765",
   PATIENT_SITE: "http://localhost:4200",
   SHOWCASE_SITE: "https://helssy.aymax.fr/contact/"
 };
