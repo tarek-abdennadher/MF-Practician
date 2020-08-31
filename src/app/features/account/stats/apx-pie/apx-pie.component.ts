@@ -14,7 +14,7 @@ export type ChartOptions = {
   chart: ApexChart;
   responsive: ApexResponsive[];
   labels: any;
-  legend: ApexLegend,
+  legend: ApexLegend;
   colors: string[];
 };
 
@@ -44,18 +44,23 @@ export class ApxPieComponent implements OnInit {
         width: 200,
         type: "donut",
       },
-      colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
+      colors: [
+        this.colors.blue,
+        this.colors.dark_blue,
+        this.colors.light_blue,
+        this.colors.light_steel_blue,
+      ],
       labels: ["Chargement..", "Chargement.."],
       legend: {
         floating: true,
-        horizontalAlign: 'left',
-        position: 'bottom',
-        fontSize: '16px',
-        fontFamily: 'Montserrat',
-        fontWeight: 'normal',
+        horizontalAlign: "left",
+        position: "bottom",
+        fontSize: "16px",
+        fontFamily: "Montserrat",
+        fontWeight: "normal",
         labels: {
-          colors: ["#4a4a4a"]
-        }
+          colors: ["#4a4a4a"],
+        },
       },
       responsive: [
         {
@@ -65,7 +70,12 @@ export class ApxPieComponent implements OnInit {
               width: 100,
               type: "donut",
             },
-            colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
+            colors: [
+              this.colors.blue,
+              this.colors.dark_blue,
+              this.colors.light_blue,
+              this.colors.light_steel_blue,
+            ],
           },
         },
       ],
@@ -78,16 +88,21 @@ export class ApxPieComponent implements OnInit {
           width: 430,
           type: "donut",
         },
-        colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
+        colors: [
+          this.colors.blue,
+          this.colors.dark_blue,
+          this.colors.light_blue,
+          this.colors.light_steel_blue,
+        ],
         legend: {
-          horizontalAlign: 'left',
-          position: 'bottom',
-          fontSize: '14px',
-          fontFamily: 'Montserrat',
-          fontWeight: 'normal',
+          horizontalAlign: "left",
+          position: "bottom",
+          fontSize: "14px",
+          fontFamily: "Montserrat",
+          fontWeight: "normal",
           labels: {
-            colors: ["#4a4a4a"]
-          }
+            colors: ["#4a4a4a"],
+          },
         },
         labels: [...map.keys()],
         responsive: [
@@ -98,7 +113,12 @@ export class ApxPieComponent implements OnInit {
                 width: 100,
                 type: "donut",
               },
-              colors: [this.colors.blue, this.colors.dark_blue, this.colors.light_blue],
+              colors: [
+                this.colors.blue,
+                this.colors.dark_blue,
+                this.colors.light_blue,
+                this.colors.light_steel_blue,
+              ],
             },
           },
         ],
