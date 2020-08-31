@@ -72,41 +72,6 @@ export class MyPatientsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // update patient files after detail view
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      let currentRoute = this.route;
-      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-      if (this.section) {
-        switch (this.section) {
-          case "accepted": {
-            this.myPatients = [];
-            this.filtredPatients = [];
-            this.initPatients();
-            break;
-          }
-          case "pending": {
-            this.myPatients = [];
-            this.filtredPatients = [];
-            this.initPendingPatients();
-            break;
-          }
-          case "prohibit": {
-            this.myPatients = [];
-            this.filtredPatients = [];
-            this.initProhibitedPatients();
-            break;
-          }
-          case "archived": {
-            this.myPatients = [];
-            this.filtredPatients = [];
-            this.initArchivedPatients();
-            break;
-          }
-        }
-      }
-    });
     this.route.params.subscribe(params => {
       this.pageNo = 0;
       this.myPatients = [];

@@ -210,8 +210,21 @@
                             </div>
                         </div>
                         <br>
-                        <div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="category"
+                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.category }}</label>
+                                <div class="col-12 col-sm-12">
+                                    <select formControlName="category" class="form-control" id="category">
+                                        <option *ngFor="let item of categories" value="{{ item.id }}" [selected]="
+                                            personalInfoForm.controls.category.value == item.id
+                                          ">{{ item.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+                        <br>
                         <div *ngIf="displayInvite " class="row send-invitation">
                             <label for="invitationStatus" class=" invitation-text  ">
                                 <input type="checkbox" formControlName="invitationStatus"
