@@ -1,19 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  FormBuilder,
-} from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { DialogService } from "@app/features/services/dialog.service";
-import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
-import { GlobalService } from '@app/core/services/global.service';
-import { FeaturesService } from '@app/features/features.service';
+import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
+import { GlobalService } from "@app/core/services/global.service";
+import { FeaturesService } from "@app/features/features.service";
+import { DomSanitizer } from "@angular/platform-browser";
 declare var $: any;
 @Component({
   selector: "app-my-secretaries",
   templateUrl: "./my-secretaries.component.html",
-  styleUrls: ["./my-secretaries.component.scss"],
+  styleUrls: ["./my-secretaries.component.scss"]
 })
 export class MySecretariesComponent implements OnInit {
   isList = true;
@@ -27,8 +26,16 @@ export class MySecretariesComponent implements OnInit {
   submitted = false;
   isLabelShow: boolean;
   image: string | ArrayBuffer;
-  imageSource; string;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  imageSource;
+  string;
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
   itemsList: Array<any> = [];
   constructor(
     public router: Router,
@@ -39,7 +46,7 @@ export class MySecretariesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
     private featureService: FeaturesService,
-
+    private sanitizer: DomSanitizer
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -47,7 +54,6 @@ export class MySecretariesComponent implements OnInit {
     this.isLabelShow = false;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.secretary;
-
   }
 
   ngOnInit(): void {
@@ -55,14 +61,13 @@ export class MySecretariesComponent implements OnInit {
     this.featureService.setIsMessaging(false);
   }
 
-
   getMySecretaries() {
     this.accountService.getMySecretaries().subscribe(
-      (contacts) => {
+      contacts => {
         this.users = contacts;
-        this.itemsList = this.users.map((elm) => this.parseSec(elm));
+        this.itemsList = this.users.map(elm => this.parseSec(elm));
       },
-      (error) => {
+      error => {
         console.log("error");
       }
     );
@@ -75,9 +80,9 @@ export class MySecretariesComponent implements OnInit {
         {
           id: sec.id,
           fullName: sec.fullName,
-          img: this.avatars.secretary,
-          type: "SECRETARY",
-        },
+          img: null,
+          type: "SECRETARY"
+        }
       ],
       isArchieve: false,
       isImportant: false,
@@ -85,42 +90,44 @@ export class MySecretariesComponent implements OnInit {
       isViewDetail: false,
       isMarkAsSeen: false,
       isChecked: false,
-      photoId: sec.photoId,
+      photoId: sec.photoId
     };
-    if (parsedSec.photoId) {
-      parsedSec.users.forEach((user) => {
-        this.documentService.downloadFile(parsedSec.photoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              user.img = myReader.result.toString();
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            user.img = this.avatars.secretary;
-          }
-        );
-      });
-    }
+    parsedSec.users.forEach(user => {
+      this.documentService.getDefaultImage(parsedSec.id).subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            user.img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          user.img = this.avatars.secretary;
+        }
+      );
+    });
     return parsedSec;
   }
   // initialise profile picture
   getPictureProfile(nodeId) {
     this.documentService.downloadFile(nodeId).subscribe(
-      (response) => {
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
+        myReader.onloadend = e => {
           this.image = myReader.result;
         };
         let ok = myReader.readAsDataURL(response.body);
       },
-      (error) => {
+      error => {
         this.image = this.avatars.secretary;
       }
     );
   }
   cardClicked(item) {
-    this.router.navigate(["compte/mes-secretaires/secretaire-detail/" + item.id]);
+    this.router.navigate([
+      "compte/mes-secretaires/secretaire-detail/" + item.id
+    ]);
   }
 }
