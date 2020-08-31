@@ -120,7 +120,6 @@ export class MessagingReplyComponent implements OnInit {
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(message => {
-        console.log(this.showRefuseForTls);
         message.toReceivers.forEach(element => {
           if (element.receiverId == this.featureService.getUserId()) {
             this.isMyMessage = true;

@@ -643,13 +643,15 @@ export class FeaturesComponent implements OnInit {
       photoId: message.sender.photoId
     };
     if (parsedMessage.photoId) {
-      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
+      this.documentService.downloadFile(message.sender.senderId).subscribe(
         response => {
           let myReader: FileReader = new FileReader();
           myReader.onloadend = e => {
-            parsedMessage.users[0].img = myReader.result.toString();
+            parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
           };
-          let ok = myReader.readAsDataURL(response.body);
+          let ok = myReader.readAsDataURL(response);
         },
         error => {
           parsedMessage.users[0].img = this.avatars.user;

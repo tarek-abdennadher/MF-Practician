@@ -146,7 +146,6 @@ export class MyDocumentsComponent implements OnInit {
     const detail = this.getDetailSwitchRole(senderAndReceiver);
     practician.id = senderAndReceiver.id;
     practician.isSeen = true;
-    console.log(detail);
     practician.users = [
       {
         fullName: detail.fullName,
@@ -211,7 +210,6 @@ export class MyDocumentsComponent implements OnInit {
       noRecordsTemplate: "Aucune données trouvé",
       sortOrder: "Ascending"
     });
-    console.log("done");
     atcObj.appendTo("#patients");
     atcObj.showSpinner();
   }

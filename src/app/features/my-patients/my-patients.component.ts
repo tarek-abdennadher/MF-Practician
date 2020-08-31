@@ -343,7 +343,6 @@ export class MyPatientsComponent implements OnInit {
           response => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              console.log(response);
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
