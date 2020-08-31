@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from "@angular/core";
+import {Component, OnInit, ViewChild, Input, HostListener} from '@angular/core';
 import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
@@ -9,6 +9,7 @@ import {BehaviorSubject, Subject} from 'rxjs';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { MyPatientsService } from '../services/my-patients.service';
 import {takeUntil} from 'rxjs/operators';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 
 @Component({
   selector: "app-messaging-list",
@@ -21,6 +22,7 @@ export class MessagingListComponent implements OnInit {
   @Input("patientFileId") patientFileId: number;
   private patientAccountId: number;
   private _destroyed$ = new Subject();
+  public selectedTabIndex = 0;
   person;
   showAcceptRefuse = true;
   isMyInbox = true;
@@ -233,6 +235,7 @@ export class MessagingListComponent implements OnInit {
       }
     });
     this.featureService.setIsMessaging(true);
+    this.displayListMessagesBySizeScreen();
   }
 
   cardClicked(item) {
@@ -341,7 +344,6 @@ export class MessagingListComponent implements OnInit {
     }
   }
   filterActionClicked(event) {
-    console.log('hahahahahahaha');
     this.filtredItemList =
       event == "all"
         ? this.itemsList
@@ -873,5 +875,22 @@ export class MessagingListComponent implements OnInit {
     else if ($event.index === 3) {
       this.filterActionClicked('doctor');
     }
-}
+
+  }
+
+  private displayListMessagesBySizeScreen() {
+    let innerWidth = window.innerWidth;
+    if (innerWidth < 769) {
+      this.filterActionClicked('all');
+      this.selectedTabIndex = 0;
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private onResizeScreen() {
+    if (window.innerWidth < 769) {
+      this.filterActionClicked('all');
+      this.selectedTabIndex = 0;
+    }
+  }
 }
