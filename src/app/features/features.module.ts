@@ -8,11 +8,8 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HlsMessagingDetailModule } from "hls-messaging-detail";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
-import { MessagingDetailComponent } from "./messaging-detail/messaging-detail.component";
 import { HlsLinksModule } from "hls-links";
-import { MessagingReplyComponent } from "./messaging-reply/messaging-reply.component";
 import { HlsSearchModule } from "hls-search";
-import { MyPatientsComponent } from "./my-patients/my-patients.component";
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { MessageService } from "./services/message.service";
 import { HlsMessagingListModule } from "hls-messaging-list";
@@ -21,13 +18,13 @@ import { PracticianSearchComponent } from "./practician-search/practician-search
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
+import { HlsNewMessageDetailModule } from "hls-new-message-detail";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { SendMessageComponent } from "./send-message/send-message.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
-import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
@@ -37,16 +34,14 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { PipesModule } from "@app/shared/pipes/pipes.module";
-import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { AddPatientComponent } from "./my-patients/add-patient/add-patient.component";
 import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobile.component";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
-import {SharedMaterialModule} from '@app/shared-material/shared-material.module';
-import { NewMessageComponent } from './new-message/new-message.component';
+import { SharedMaterialModule } from "@app/shared-material/shared-material.module";
 import { NewMessageWidgetComponent } from './new-message-widget/new-message-widget.component';
+import { NewMessageComponent } from './new-message/new-message.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { HlsCkeditorModule } from 'hls-ckeditor';
 
@@ -92,20 +87,14 @@ const notifierOptions: NotifierOptions = {
   declarations: [
     FeaturesComponent,
     MessagingListComponent,
-    MessagingDetailComponent,
     SentMessagesComponent,
     ForwardedMessagesComponent,
-    MessagingReplyComponent,
-    MyPatientsComponent,
     PracticianSearchComponent,
     SendMessageComponent,
     ArchieveMessagesComponent,
     MatConfirmDialogComponent,
     PracticianInvitationComponent,
-    PatientDetailComponent,
     PersonalInformationsComponent,
-    MatPatientFileDialogComponent,
-    AddPatientComponent,
     NewMessageMobileComponent,
     NewMessageWidgetComponent,
     NewMessageComponent
@@ -137,6 +126,7 @@ const notifierOptions: NotifierOptions = {
     HlsGenericListModule,
     HlsGenericListLinksModule,
     SharedMaterialModule,
+    HlsNewMessageDetailModule,
     AngularMultiSelectModule,
     HlsCkeditorModule
   ],

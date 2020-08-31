@@ -15,10 +15,9 @@
     (forwardedEvent)="displayForwardedAction()" (archieveEvent)="displayArchieveAction()"
     (myPatientsEvent)="displayMyPatientsAction($event)" (myProContactsEvent)="displayMyMedicalsAction()"
     (myMedicalsEvent)="displayMyProContactsAction()" (myDocumentsEvent)="displayMyDocumentsAction()"
-    (helpEvent)="displayHelpAction()" (addPatientEvent)="addPatient()" (mycategoriesEvent)="myCategories()"
-    (myObjectsEvent)="myObjects()"></lib-hlsSideBar>
+    (helpEvent)="displayHelpAction()" (mycategoriesEvent)="myCategories()" (myObjectsEvent)="myObjects()">
+  </lib-hlsSideBar>
   <app-new-message-widget></app-new-message-widget>
-
   <section class="main-container" [ngClass]="{ collapsed: collapedSideBar }">
     <!-- components will be implemented here -->
     <router-outlet></router-outlet>

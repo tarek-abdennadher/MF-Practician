@@ -22,7 +22,7 @@
 
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
-    <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)">
+    <mat-tab-group class="links" mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)" [(selectedIndex)]="selectedTabIndex">
       <mat-tab label="TousMessages" >
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
@@ -77,7 +77,7 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Praticients">
+      <mat-tab label="Praticiens">
         <ng-template mat-tab-label>
           <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
           Praticients
@@ -96,6 +96,19 @@
         ></lib-hlsMessagingList>
       </mat-tab>
     </mat-tab-group>
+
+    <lib-hlsMessagingList class="mobile-links"
+      [list]="filtredItemList"
+      [hasPaging]="true"
+      (cardAction)="cardClicked($event)"
+      (markAsSeenAction)="markMessageAsSeen($event)"
+      (archieveAction)="archieveMessage($event)"
+      (selectItemAction)="selectItem($event)"
+      [imageSource]="imageSource"
+      [hasPaging]="true"
+      (upSortAction)="upSortClicked()"
+      (downSortAction)="downSortClicked()"
+    ></lib-hlsMessagingList>
   </div>
 </div>
 

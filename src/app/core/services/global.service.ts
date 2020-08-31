@@ -6,7 +6,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable()
 export class GlobalService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
   public BASE_URL: string = environment.BASE_END_POINT;
   public PATIENT_SITE: string = environment.PATIENT_SITE;
   public SHOWCASE_SITE: string = environment.SHOWCASE_SITE;
@@ -81,7 +81,7 @@ export class GlobalService {
     instruction: this.BASE_URL_MA + "/instruction",
     instruction_object: this.BASE_URL_CA + "/instruction-object",
     instruction_category: this.BASE_URL_CA + "/instruction-category",
-
+    photo: this.BASE_URL_CA + "/photo/generate"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé.",
@@ -91,8 +91,8 @@ export class GlobalService {
     mark_important_message_success: "Message marqué comme important.",
     mark_important_message_error:
       "Votre message n'a pas pu être marqué comme important",
-    send_message_to_myself: "Vous ne pouvez pas répondre à un message que vous avez envoyé",
-
+    send_message_to_myself:
+      "Vous ne pouvez pas répondre à un message que vous avez envoyé"
   };
 
   public messagesDisplayScreen = {
@@ -128,7 +128,7 @@ export class GlobalService {
     tls: "assets/imgs/avatar_tls.svg",
     user: "assets/imgs/user.png",
     telesecretary: "assets/imgs/etablissement.svg"
-  }
+  };
   public call(
     method: RequestType,
     url: string,
@@ -146,7 +146,7 @@ export class GlobalService {
       }
       case RequestType.DELETE: {
         args[0] = {
-          responseType: "text",
+          responseType: "text"
         };
         return this.httpClient.delete<any>(url, args[0]);
       }

@@ -1,3 +1,5 @@
+import { SafeUrl } from "@angular/platform-browser";
+
 export class MyPatients {
   users: any;
   isMarkAsSeen: boolean;
@@ -12,8 +14,9 @@ export class MyPatients {
 
 export class PatientSerch {
   fullName: string;
-  img: string;
+  img: string | SafeUrl;
   photoId: string;
+  id: number;
 }
 export class CitySerch {
   name: string;
