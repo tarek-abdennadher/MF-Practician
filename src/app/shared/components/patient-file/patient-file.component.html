@@ -230,53 +230,96 @@
                         </div>
                     </form>
                 </div>
-
             </mat-tab>
+            <!-- Notes -->
             <mat-tab label="Notes" *ngIf="!isAdd">
                 <ng-template mat-tab-label>
                     <i class="fas fa-notes-medical my-tab-icon pr-custom-11px"></i>
                     <span>{{labels.notes}}</span>
                 </ng-template>
-                <!-- Notes -->
                 <div class="card-body">
-                    <div class="row">
-                        <button class="btn btn-success ml-3" (click)="addNote()">
+                    <div class="row add-note">
+                        <button class="btn btn-success" (click)="addNote()">
                             <i class="far fa-plus"></i>&nbsp;&nbsp;{{ labels.add_note }}
                         </button>
                     </div>
                     <br>
-                    <div class="card-deck">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This card has supporting text below as a natural lead-in to
-                                    additional content.</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This card has even longer content than the first to
-                                    show that equal height action.</p>
-                            </div>
-                        </div>
-                    </div>
 
+                    <div *ngIf="!isnoteList" class="card-body-note">
+                        <form [formGroup]="noteForm">
+                            <br>
+                            <div class="row">
+                                <div class="col-7">
+                                    <label for="date" class="col-12 col-form-label">{{ labels.note_date }}</label>
+                                    <div class="col-12 input-icons">
+                                        <i class="fa fa-calendar icon"></i>
+                                        <input type="text" formControlName="date" class="calender form-control"
+                                            bsDatepicker [bsConfig]="{
+                                          containerClass: 'theme-dark-blue',
+                                          dateInputFormat: 'DD/MM/YYYY'
+                                        }" [ngClass]="{
+                                          'is-invalid': noteSubmitted && f.date.errors
+                                        }" />
+                                        <div *ngIf="noteSubmitted && f.date.errors" class="invalid-feedback">
+                                            <div *ngIf="f.date.errors.required">
+                                                {{ errors.required }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-12 ">
+                                    <!-- Note Field -->
+                                    <label for="value" class="col-12 col-form-label">{{ labels.note_value }}</label>
+                                    <div class="col-12">
+                                        <textarea type="text" formControlName="value" class="form-control" [ngClass]="{
+                                      'is-invalid': noteSubmitted && f.value.errors
+                                    }">
+                                  </textarea>
+                                        <div *ngIf="noteSubmitted && f.value.errors" class="invalid-feedback">
+                                            <div *ngIf="f.value.errors.required">
+                                                {{ errors.required }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row justify-content-center actions">
+                                <button (click)="NoteSubmit()" type="submit" class="btn btn-primary mr-3">
+                                    {{ labels.save }}
+                                </button>
+                                <button (click)="cancelNoteAdd()" class="btn btn-cancel">
+                                    {{ labels.cancel }}
+                                </button>
+                            </div>
+                            <br>
+                        </form>
+                    </div>
+                    <br *ngIf="!isnoteList">
+                    <lib-hls-generic-list [imageSource]="noteimageSource" [isCheckbox]="false" [list]="noteList"
+                        (archieveAction)="archieveNote($event)" (cardAction)="noteCardClicked($event)">
+                    </lib-hls-generic-list>
                 </div>
             </mat-tab>
+            <!-- History -->
             <mat-tab label="Historique" *ngIf="!isAdd">
                 <ng-template mat-tab-label>
                     <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
                     {{labels.history}}
                 </ng-template>
+                <!-- <div class="card-body">
+                    <lib-hls-document-grid [list]="filtredItemList" [hasPaging]="true"
+                        (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true">
+                    </lib-hls-document-grid>
+                    <div class="search-results" infiniteScroll [infiniteScrollDistance]="2"
+                        [infiniteScrollThrottle]="50" (scrolled)="onScroll()"></div>
+                    <mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
+                    </mat-progress-spinner>
+                </div> -->
             </mat-tab>
         </mat-tab-group>
     </div>

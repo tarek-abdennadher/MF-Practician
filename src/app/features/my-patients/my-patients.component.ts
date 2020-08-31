@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { GlobalService } from '@app/core/services/global.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MyPatientsService } from '../services/my-patients.service';
 import { DialogService } from '../services/dialog.service';
 import { FeaturesService } from '../features.service';
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { CategoryService } from '../services/category.service';
 import { MyPatients } from '@app/shared/models/my-patients';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-patients',
@@ -71,6 +72,18 @@ export class MyPatientsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initPatients();
+    // update patients after detail view
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      let currentRoute = this.route;
+      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+      this.initPatients();
+    });
+    this.featureService.setIsMessaging(false);
+  }
+  initPatients() {
     this.route.params.subscribe(params => {
       this.pageNo = 0;
       this.myPatients = [];
@@ -119,7 +132,6 @@ export class MyPatientsComponent implements OnInit {
         }
       }
     });
-    this.featureService.setIsMessaging(false);
   }
 
   markNotificationsAsSeen() {
@@ -130,6 +142,7 @@ export class MyPatientsComponent implements OnInit {
     });
   }
   getPatientsOfCurrentParactician(pageNo) {
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientsOfCurrentParacticianV2(
         this.featureService.getUserId(),
@@ -257,6 +270,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsPendingOfCurrentParactician(pageNo) {
+    this.filtredPatients = [];
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
       .subscribe(myPatients => {
@@ -291,6 +305,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   getPatientsArchivedOfCurrentParactician(pageNo) {
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
       .subscribe(myPatients => {

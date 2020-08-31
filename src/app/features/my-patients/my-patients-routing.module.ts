@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MyPatientsComponent } from './my-patients.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
-import { PatientDetailComponent } from './add-patient/patient-detail/patient-detail.component';
+import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 
 const routes: Routes = [
   {

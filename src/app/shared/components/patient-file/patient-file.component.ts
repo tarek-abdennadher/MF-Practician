@@ -6,6 +6,12 @@ import { isBefore } from 'ngx-bootstrap/chronos';
 import { PatientFileService } from './patient-file.service';
 import { CorrespondencePipe } from '@app/shared/pipes/correspondence.pipe';
 import { CivilityPipe } from '@app/shared/pipes/civility.pipe';
+import { Router } from '@angular/router';
+import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
+import { MessagingListService } from '@app/features/services/messaging-list.service';
+import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { LocalStorageService } from 'ngx-webstorage';
+import { FeaturesService } from '@app/features/features.service';
 
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -43,8 +49,6 @@ export class PatientFileComponent implements OnInit {
   @Input() isAdd: boolean = false;
   /* Patient file information */
   @Input("patient") patient = new Subject();
-  /* Linked patients information */
-  @Input("linkedPatients") linkedPatients = new Subject<[]>();
   /* Category List */
   @Input("categoryList") categoryList = new Subject<[]>();
 
@@ -100,11 +104,6 @@ export class PatientFileComponent implements OnInit {
       if (val) {
         this.info = val;
         this.getPersonalInformation(val);
-      }
-    });
-    this.linkedPatients.subscribe((res) => {
-      if (res) {
-        this.attachedPatients = res;
       }
     });
   }
@@ -437,5 +436,4 @@ export class PatientFileComponent implements OnInit {
       });
     }
   }
-
 }

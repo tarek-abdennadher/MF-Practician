@@ -95,13 +95,14 @@ export class PatientDetailComponent implements OnInit {
     }
     this.route.queryParams.subscribe((params) => {
       this.patientFileId = params["id"];
+      forkJoin(
+        this.getPatientFile(),
+        this.getCategories()
+      ).subscribe((res) => { });
+      this.featureService.setIsMessaging(false);
+      this.getPatientInbox(this.pageNo);
     });
-    forkJoin(
-      this.getPatientFile(),
-      this.getCategories()
-    ).subscribe((res) => { });
-    this.featureService.setIsMessaging(false);
-    this.getPatientInbox(this.pageNo);
+
   }
 
   getPatientFile() {
@@ -246,6 +247,7 @@ export class PatientDetailComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
+      this.router.navigate(["."], { relativeTo: this.route.parent });
     } else {
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
