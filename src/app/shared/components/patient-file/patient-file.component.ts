@@ -10,8 +10,7 @@ import { Router } from '@angular/router';
 import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
 import { MessagingListService } from '@app/features/services/messaging-list.service';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
-import { LocalStorageService } from 'ngx-webstorage';
-import { FeaturesService } from '@app/features/features.service';
+import { GlobalService } from '@app/core/services/global.service';
 
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -41,6 +40,23 @@ export class PatientFileComponent implements OnInit {
   submitted = false;
   noteSubmitted = false;
   attachedImageSource: string;
+  /** Messaging attributes */
+  patientFileId: number;
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
+  messages: Array<any> = new Array();
+  itemsList: Array<any>;
+  pageNo = 0;
+  direction: OrderDirection = OrderDirection.DESC;
+  filtredItemList: Array<any> = new Array();
+  scroll = false;
   /** Inputs */
   @Input("imageSource") imageSource: string;
   @Input("practicianImage") practicianImage: string;
@@ -51,7 +67,6 @@ export class PatientFileComponent implements OnInit {
   @Input("patient") patient = new Subject();
   /* Category List */
   @Input("categoryList") categoryList = new Subject<[]>();
-
   /* Outputs */
   @Output("submitAction") submitAction = new EventEmitter();
   @Output("submitNoteAction") submitNoteAction = new EventEmitter();
@@ -73,7 +88,11 @@ export class PatientFileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private patientFileService: PatientFileService,
     private correspondencePipe: CorrespondencePipe,
-    private civilityPipe: CivilityPipe
+    private civilityPipe: CivilityPipe,
+    private documentService: MyDocumentsService,
+    private messagesServ: MessagingListService,
+    private router: Router,
+    private globalService: GlobalService
   ) {
     this.isList = true;
     this.isnoteList = true;
@@ -81,6 +100,7 @@ export class PatientFileComponent implements OnInit {
     this.labels = this.patientFileService.labels;
     this.errors = this.patientFileService.errors;
     this.maxDate.setDate(new Date().getDate() - 1);
+    this.avatars = this.globalService.avatars;
   }
   get ctr() {
     return this.personalInfoForm.controls;
@@ -159,6 +179,10 @@ export class PatientFileComponent implements OnInit {
   }
 
   getPersonalInformation(patient) {
+    this.patientFileId = patient.id;
+    if (patient.patientId) {
+      this.getPatientInbox(this.pageNo);
+    }
     if (patient.invitationStatus && patient.invitationStatus == "SENT") {
       this.displayInvite = false;
     }
@@ -181,7 +205,7 @@ export class PatientFileComponent implements OnInit {
             },
           ],
           time: note.noteDate,
-          isViewDetail: true,
+          isViewDetail: false,
           isArchieve: true,
           isSeen: true,
         });
@@ -276,7 +300,7 @@ export class PatientFileComponent implements OnInit {
   }
   cancelNoteAdd() {
     this.isnoteList = true;
-    this.noteForm.reset();
+    this.initNoteForm();
   }
   patientSubmit() {
     this.submitted = true;
@@ -338,7 +362,7 @@ export class PatientFileComponent implements OnInit {
           },
         ],
         time: this.noteForm.value.date,
-        isViewDetail: true,
+        isViewDetail: false,
         isArchieve: true,
         isSeen: true,
       });
@@ -362,7 +386,7 @@ export class PatientFileComponent implements OnInit {
             },
           ],
           time: this.noteForm.value.date,
-          isViewDetail: true,
+          isViewDetail: false,
           isArchieve: true,
           isSeen: true,
         };
@@ -435,5 +459,110 @@ export class PatientFileComponent implements OnInit {
         invitationStatus: "NOT_SENT"
       });
     }
+  }
+
+  getPatientInbox(pageNo) {
+    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
+      this.messages = res;
+      this.messages.sort(function (m1, m2) {
+        return (
+          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+      });
+      this.itemsList = this.messages.map((item) => this.parseMessage(item));
+      this.filtredItemList = this.itemsList;
+    });
+  }
+  getPatientNextInbox(pageNo) {
+    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
+      this.messages = res;
+      this.messages.sort(function (m1, m2) {
+        return (
+          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+      });
+      this.itemsList.push(
+        ...this.messages.map((item) => this.parseMessage(item))
+      );
+      this.filtredItemList = this.itemsList;
+    });
+  }
+  parseMessage(message): any {
+    let parsedMessage = {
+      id: message.id,
+      isSeen: message.seenAsReceiver,
+      users: [
+        {
+          id: message.sender.id,
+          fullName: message.sender.fullName,
+          img: this.avatars.user,
+          title: message.sender.jobTitle,
+          civility: message.sender.civility,
+          type:
+            message.sender.role == "PRACTICIAN"
+              ? "MEDICAL"
+              : message.sender.role,
+        },
+      ],
+      object: {
+        name: message.object,
+        isImportant: message.importantObject,
+      },
+      time: message.updatedAt,
+      isImportant: message.important,
+      hasFiles: message.hasFiles,
+      isViewDetail: message.hasViewDetail,
+      isMarkAsSeen: true,
+      photoId: message.sender.photoId,
+    };
+    if (parsedMessage.photoId) {
+      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            parsedMessage.users[0].img = myReader.result.toString();
+          };
+          let ok = myReader.readAsDataURL(response.body);
+        },
+        (error) => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
+    } else {
+      parsedMessage.users.forEach((user) => {
+        if (user.type == "MEDICAL") {
+          user.img = this.avatars.doctor;
+        } else if (user.type == "SECRETARY") {
+          user.img = this.avatars.secretary;
+        } else if (user.type == "TELESECRETARYGROUP") {
+          user.img = this.avatars.tls;
+        } else if (user.type == "PATIENT") {
+          if (user.civility == "M") {
+            user.img = this.avatars.man;
+          } else if (user.civility == "MME") {
+            user.img = this.avatars.women;
+          } else if (user.civility == "CHILD") {
+            user.img = this.avatars.child;
+          }
+        }
+      });
+    }
+    return parsedMessage;
+  }
+
+
+  onScroll() {
+    if (this.filtredItemList.length > 9) {
+      this.pageNo++;
+      this.getPatientNextInbox(this.pageNo);
+    }
+  }
+
+  messageClicked(item) {
+    this.router.navigate(["/messagerie-lire/" + item.id], {
+      queryParams: {
+        context: "inbox",
+      },
+    });
   }
 }

@@ -12,9 +12,9 @@ import { PatientFileComponent } from './components/patient-file/patient-file.com
 import { MatTabsModule } from '@angular/material/tabs';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { HlsGenericListModule } from 'hls-generic-list';
-import { HlsDocumentGridModule } from 'hls-document-grid';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HlsMessagingListModule } from 'hls-messaging-list';
 
 @NgModule({
   declarations: [IntPhoneComponent, CKEditorComponent, SecretaryDetailsComponent, PracticianDetailComponent, PatientFileComponent],
@@ -28,9 +28,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatTabsModule,
     BsDatepickerModule.forRoot(),
     HlsGenericListModule,
-    HlsDocumentGridModule,
     InfiniteScrollModule,
     MatProgressSpinnerModule,
+    HlsMessagingListModule
   ],
   exports: [IntPhoneComponent, CKEditorComponent, SecretaryDetailsComponent, PracticianDetailComponent, PatientFileComponent]
 })

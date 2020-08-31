@@ -7,7 +7,7 @@ $color-helssy-grey: #6e819bd4;
   border-radius: 6px;
   box-shadow: 0 2px 12px 4px rgba(56, 96, 165, 0.1);
   background-color: $helssy_white;
-  max-width: 540px;
+  min-width: 600px;
 }
 .Mes-informations {
   font-family: Montserrat-Medium;
@@ -33,7 +33,7 @@ $color-helssy-grey: #6e819bd4;
 /* Informations */
 .Rectangle-body {
   background-color: rgba(242, 242, 242, 0.75);
-  max-width: 540px;
+  min-width: 600px;
 }
 .col-form-label{
   font-family: Montserrat-Medium;
@@ -181,7 +181,7 @@ border: solid 2px rgba(64, 73, 83, 0.5);
     padding: 6px 6px 6px 50px !important;
   }
   .card-body-note{
-    padding-left: 25px;
+    padding-left: 30px;
     padding-right: 25px;
   }
   .add-note{

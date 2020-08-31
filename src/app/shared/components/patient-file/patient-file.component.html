@@ -213,6 +213,9 @@
                             </div>
                         </div>
                         <br>
+                        <div>
+
+                        </div>
                         <div *ngIf="displayInvite " class="row send-invitation">
                             <label for="invitationStatus" class=" invitation-text  ">
                                 <input type="checkbox" formControlName="invitationStatus"
@@ -244,7 +247,6 @@
                         </button>
                     </div>
                     <br>
-
                     <div *ngIf="!isnoteList" class="card-body-note">
                         <form [formGroup]="noteForm">
                             <br>
@@ -255,11 +257,11 @@
                                         <i class="fa fa-calendar icon"></i>
                                         <input type="text" formControlName="date" class="calender form-control"
                                             bsDatepicker [bsConfig]="{
-                                          containerClass: 'theme-dark-blue',
-                                          dateInputFormat: 'DD/MM/YYYY'
-                                        }" [ngClass]="{
-                                          'is-invalid': noteSubmitted && f.date.errors
-                                        }" />
+                                              containerClass: 'theme-dark-blue',
+                                              dateInputFormat: 'DD/MM/YYYY'
+                                            }" [ngClass]="{
+                                              'is-invalid': noteSubmitted && f.date.errors
+                                            }" />
                                         <div *ngIf="noteSubmitted && f.date.errors" class="invalid-feedback">
                                             <div *ngIf="f.date.errors.required">
                                                 {{ errors.required }}
@@ -275,9 +277,9 @@
                                     <label for="value" class="col-12 col-form-label">{{ labels.note_value }}</label>
                                     <div class="col-12">
                                         <textarea type="text" formControlName="value" class="form-control" [ngClass]="{
-                                      'is-invalid': noteSubmitted && f.value.errors
-                                    }">
-                                  </textarea>
+                                          'is-invalid': noteSubmitted && f.value.errors
+                                        }">
+                                      </textarea>
                                         <div *ngIf="noteSubmitted && f.value.errors" class="invalid-feedback">
                                             <div *ngIf="f.value.errors.required">
                                                 {{ errors.required }}
@@ -311,15 +313,15 @@
                     <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
                     {{labels.history}}
                 </ng-template>
-                <!-- <div class="card-body">
-                    <lib-hls-document-grid [list]="filtredItemList" [hasPaging]="true"
+                <div class="card-body">
+                    <lib-hlsMessagingList [list]=" filtredItemList" [hasPaging]="true"
                         (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true">
-                    </lib-hls-document-grid>
+                    </lib-hlsMessagingList>
                     <div class="search-results" infiniteScroll [infiniteScrollDistance]="2"
                         [infiniteScrollThrottle]="50" (scrolled)="onScroll()"></div>
                     <mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
                     </mat-progress-spinner>
-                </div> -->
+                </div>
             </mat-tab>
         </mat-tab-group>
     </div>
