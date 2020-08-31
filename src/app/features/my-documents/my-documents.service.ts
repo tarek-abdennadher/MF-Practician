@@ -210,4 +210,16 @@ export class MyDocumentsService {
       { responseType: "blob" }
     );
   }
+
+  getLettersImageEntity(id, entityType) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.photo +
+        "Letters/" +
+        id +
+        "?entityType=" +
+        entityType,
+      { responseType: "blob" }
+    );
+  }
 }

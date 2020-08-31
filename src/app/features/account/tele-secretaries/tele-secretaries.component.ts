@@ -5,11 +5,12 @@ import { ContactsService } from "@app/features/services/contacts.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
 import { FeaturesService } from "@app/features/features.service";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 @Component({
   selector: "app-tele-secretaries",
   templateUrl: "./tele-secretaries.component.html",
-  styleUrls: ["./tele-secretaries.component.scss"],
+  styleUrls: ["./tele-secretaries.component.scss"]
 })
 export class TeleSecretariesComponent implements OnInit {
   public messages: any;
@@ -17,7 +18,7 @@ export class TeleSecretariesComponent implements OnInit {
   public errors: any;
   public avatars: any;
   public imageSource: any;
-  public image: string | ArrayBuffer;
+  public image: string | ArrayBuffer | SafeUrl;
   public submitted = false;
   public labels: any;
   public infoForm: FormGroup;
@@ -27,7 +28,8 @@ export class TeleSecretariesComponent implements OnInit {
     private globalService: GlobalService,
     private contactsService: ContactsService,
     private featureService: FeaturesService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private sanitizer: DomSanitizer
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -43,7 +45,7 @@ export class TeleSecretariesComponent implements OnInit {
   }
 
   getTls() {
-    this.accountService.getPracticianTelesecretary().subscribe((practician) => {
+    this.accountService.getPracticianTelesecretary().subscribe(practician => {
       this.tls = practician.group;
       this.infoForm.patchValue({
         id: this.tls.id,
@@ -59,12 +61,11 @@ export class TeleSecretariesComponent implements OnInit {
         photoId: this.tls.photoId,
         resp: this.tls.supervisor
           ? this.tls.supervisor.civility + " " + this.tls.supervisor.fullName
-          : "",
+          : ""
       });
-      if (this.tls.photoId) {
-        this.hasImage = true;
-        this.getPictureProfile(this.tls.photoId);
-      }
+
+      this.hasImage = true;
+      this.getPictureProfile(this.tls.accountId);
     });
 
     this.infoForm.disable();
@@ -87,20 +88,22 @@ export class TeleSecretariesComponent implements OnInit {
       phoneNumber: new FormControl(null),
       website: new FormControl(null),
       photoId: new FormControl(null),
-      resp: new FormControl(null),
+      resp: new FormControl(null)
     });
   }
 
-  getPictureProfile(nodeId) {
-    this.documentService.downloadFile(nodeId).subscribe(
-      (response) => {
+  getPictureProfile(id) {
+    this.documentService.getDefaultImage(id).subscribe(
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          this.image = myReader.result;
+        myReader.onloadend = e => {
+          this.image = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         this.image = this.avatars.telesecretary;
       }
     );
