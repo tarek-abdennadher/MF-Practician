@@ -5,9 +5,10 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { LocalStorageService } from "ngx-webstorage";
 import * as jwt_decode from "jwt-decode";
 import { search } from "./practician-search/search.model";
+import { SafeUrl } from "@angular/platform-browser";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class FeaturesService {
   public listNotifications = [];
@@ -20,7 +21,7 @@ export class FeaturesService {
   numberOfProhibited: number = 0;
   numberOfArchivedPatient: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  public imageSource: string | ArrayBuffer;
+  public imageSource: string | ArrayBuffer | SafeUrl;
   private searchSource = new BehaviorSubject(new search());
   currentSearch = this.searchSource.asObservable();
   initialSearch = false;
@@ -172,7 +173,7 @@ export class FeaturesService {
 
   markAsSeen(obsList, ids) {
     let val = obsList.getValue();
-    val.forEach((elm) => {
+    val.forEach(elm => {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
       }
@@ -181,7 +182,7 @@ export class FeaturesService {
   }
 
   markAsSeenById(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id) && !elm.isSeen) {
         elm.isSeen = true;
         this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
@@ -190,7 +191,7 @@ export class FeaturesService {
   }
 
   markAsNotSeenById(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id) && elm.isSeen) {
         elm.isSeen = false;
         this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
@@ -212,7 +213,7 @@ export class FeaturesService {
   }
 
   addNotificationByIdMessage(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id)) {
         let notif = {
           civility: elm.users[0].civility,
@@ -222,7 +223,7 @@ export class FeaturesService {
           picture: elm.users[0].img,
           role: elm.users[0].type,
           sender: elm.users[0].fullName,
-          type: "MESSAGE",
+          type: "MESSAGE"
         };
         this.listNotifications.push(notif);
       }
@@ -232,7 +233,7 @@ export class FeaturesService {
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
-      list.find((p) => p.id == accountId).number = inboxNumber;
+      list.find(p => p.id == accountId).number = inboxNumber;
     }
     this.myPracticians.next(list);
   }
