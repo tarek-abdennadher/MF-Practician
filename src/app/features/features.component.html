@@ -17,6 +17,7 @@
     (myMedicalsEvent)="displayMyProContactsAction()" (myDocumentsEvent)="displayMyDocumentsAction()"
     (helpEvent)="displayHelpAction()" (mycategoriesEvent)="myCategories()" (myObjectsEvent)="myObjects()">
   </lib-hlsSideBar>
+  <app-new-message-widget></app-new-message-widget>
   <section class="main-container" [ngClass]="{ collapsed: collapedSideBar }">
     <!-- components will be implemented here -->
     <router-outlet></router-outlet>

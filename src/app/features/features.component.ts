@@ -18,6 +18,7 @@ import { MessageSent } from "@app/shared/models/message-sent";
 import { MessageArchived } from "./archieve-messages/message-archived";
 import { MyPatientsService } from "./services/my-patients.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { NewMessageWidgetService } from './new-message-widget/new-message-widget.service';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -50,7 +51,8 @@ export class FeaturesComponent implements OnInit {
     private practicianSearchService: PracticianSearchService,
     private jobTitlePipe: JobtitlePipe,
     private patientService: MyPatientsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private messageWidgetService:NewMessageWidgetService
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -357,7 +359,8 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
+    //this.router.navigate(["/messagerie-ecrire"]);
+    this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {
     this.router.navigate(["/messagerie-envoyes"]);

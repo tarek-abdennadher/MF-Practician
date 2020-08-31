@@ -113,7 +113,10 @@ export class GlobalService {
     newArchivedMessages: "messages non lus",
     attachedPersonnes: "Personnes Rattachées au patient",
     notes: "Mes notes",
-    history: "Historique des messages"
+    history: "Historique des messages",
+    newMessageCapital: "Nouveau message",
+    required:"Champs obligatoire",
+    free_object:"Objet libre"
   };
 
   public avatars = {
