@@ -93,11 +93,6 @@ export class PracticianDetailComponent implements OnInit {
     }
   }
   sendMessageClicked(item) {
-    this.router.navigate(["/messagerie-ecrire"], {
-      queryParams: {
-        id: item.accountId
-      }
-    });
     this.messageWidgetService.toggleObs.next(item.accountId);
   }
 }

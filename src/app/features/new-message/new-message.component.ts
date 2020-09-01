@@ -217,9 +217,6 @@ export class NewMessageComponent implements OnInit {
       this.connectedUserType = "MEDICAL";
       this.getTLSGroupByPracticianId();
     }
-    this.route.queryParams.subscribe((params) => {
-      this.selectedPracticianId = params["id"] || null;
-    });
     this.selectedPracticianId = this.id || null;
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;

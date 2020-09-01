@@ -228,7 +228,7 @@
       <button *ngIf="isInstruction" id="send-button" type="button" class="btn btn-primary" (click)="sendInstructionEmit()">ENVOYER</button>
     </div>
     <div class="col-md-2">
-      <i id="attahcement-button" class="far fa-paperclip action-btn mr-4"
+      <i id="attachement-button" class="far fa-paperclip action-btn mr-4"
         onclick="document.getElementById('file-input').click();"></i>
       <input [hidden]=true id="file-input" type="file" (change)="onFileChange($event)" />
       <i id="clear-button" class="fas fa-trash-alt action-btn" (click)="removeAttachment()"></i>
