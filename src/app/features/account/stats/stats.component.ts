@@ -12,8 +12,7 @@ import { FeaturesService } from "@app/features/features.service";
 export class StatsComponent implements OnInit {
   selectedId: Number;
   submitted = false;
-  patientMap = new Subject<any>();
-  tlsMap = new Subject<any>();
+  othersMap = new Subject<any>();
   receivedMap = new Subject<any>();
   sentMap = new Subject<any>();
   public messages: any;
@@ -34,8 +33,13 @@ export class StatsComponent implements OnInit {
         this.service
           .getsentStats(this.selectedId)
           .subscribe((s: Map<string, number>) => {
-            this.receivedMap.next(r);
-            this.sentMap.next(s);
+            this.service
+              .getothersStats(this.selectedId)
+              .subscribe((o: Map<string, number>) => {
+                this.receivedMap.next(r);
+                this.sentMap.next(s);
+                this.othersMap.next(o);
+              });
           });
       });
   }

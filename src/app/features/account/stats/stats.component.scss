@@ -3,14 +3,14 @@
   background-color: rgba(243, 243, 243, 0.5);
   border-radius: 14px;
   margin-left: 50px;
-  margin-right: 50px ;
-  min-height: 946px;
+  margin-right: 50px;
   padding-left: 100px;
   padding-right: 100px;
 }
 .chart {
-border-right: 2px solid #e1e8f3;
-min-height: 946px;
+  border-right: 2px solid #e1e8f3;
+  min-height: 500px;
+  max-height: 500px;
 }
 .chart-title {
   font-family: Montserrat-Medium;
@@ -22,4 +22,8 @@ min-height: 946px;
   letter-spacing: -0.42px;
   text-align: center;
   color: #4a4a4a;
+}
+.center {
+  justify-items: center;
+  align-items: center;
 }
