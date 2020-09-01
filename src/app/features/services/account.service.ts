@@ -107,6 +107,7 @@ export class AccountService {
     sec_detail: "Détails du secrétaire",
     received: "Messages reçus",
     sent: "Messages envoyés",
+    others: "Autres",
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -257,6 +258,12 @@ export class AccountService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "sentStat/" + id
+    );
+  }
+  getothersStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "otherStat/" + id
     );
   }
   getOptionById(id) {
