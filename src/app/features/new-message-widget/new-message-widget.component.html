@@ -9,13 +9,16 @@
           <div widget class="card" id="message-card">
             <div class="card-header d-flex" id="widget-header">
               <span id="widget-title" class="p-2">{{messages.newMessageCapital}}</span>
-              <div class="widget-controls ml-auto p-2" >
-                <a id="controls" data-widgster="restore"  class="transition"><i class="fal fa-minus"></i></a>
-                <a id="controls" data-widgster="fullscreen"  class="transition" (click)="onToggleFab()"><i class="fal fa-times"></i></a>
+              <div class="widget-controls ml-auto p-2">
+                <a id="controls" data-widgster="restore" class="transition" (click)="toggle=!toggle">
+                  <i class="fal" [ngClass]="{'fa-plus': toggle, 'fa-minus': !toggle}"></i>
+                </a>
+                <a id="controls" data-widgster="fullscreen" class="transition" (click)="onToggleFab()"><i
+                    class="fal fa-times"></i></a>
               </div>
             </div>
             <div>
-              <div class="card-body widget-body row">
+              <div class="card-body widget-body row" [ngStyle]="toggle?minimize:maximize">
                 <div class="col-12">
                   <app-new-message [id]="id"></app-new-message>
                 </div>
@@ -28,5 +31,5 @@
   </div>
 </div>
 <script>
-      $('.widget').widgster();
+  $('.widget').widgster();
 </script>

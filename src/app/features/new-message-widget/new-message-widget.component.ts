@@ -20,6 +20,9 @@ export class NewMessageWidgetComponent implements OnInit {
   messages: any;
   id: number;
 
+  toggle: boolean = false;
+  minimize = { height: '1.5rem', position: 'fixed', bottom: 0, overflow: 'hidden' }
+  maximize = { }
   constructor(
     private globalService: GlobalService,
     private messageWidgetService: NewMessageWidgetService
@@ -40,6 +43,7 @@ export class NewMessageWidgetComponent implements OnInit {
   hideItems() {
     this.fabTogglerState = "inactive";
     this.buttons = [];
+    this.toggle = false;
   }
 
   onToggleFab(id?) {
