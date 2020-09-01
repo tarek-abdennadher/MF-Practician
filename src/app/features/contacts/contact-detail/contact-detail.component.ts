@@ -6,8 +6,8 @@ import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from "rxjs";
-import { AccountService } from '@app/features/services/account.service';
-import { FeaturesService } from '@app/features/features.service';
+import { AccountService } from "@app/features/services/account.service";
+import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -15,7 +15,9 @@ declare var $: any;
   styleUrls: ["./contact-detail.component.scss"],
 })
 export class ContactDetailComponent implements OnInit {
+  account: any;
   specialities: Array<Speciality>;
+  specialitiesContainingDeleted: Array<Speciality>;
   errorMessage = "";
   successMessage = "";
   labels;
@@ -78,9 +80,9 @@ export class ContactDetailComponent implements OnInit {
     return this.infoForm.controls;
   }
 
-
   getContact(id) {
     this.contactsService.getContactById(id).subscribe((contact) => {
+      this.account = contact;
       this.otherPhones.next(contact.otherPhones);
       this.infoForm.patchValue({
         id: contact.id,
@@ -106,6 +108,7 @@ export class ContactDetailComponent implements OnInit {
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
       this.specialities = specialitiesList;
+      this.specialitiesContainingDeleted = specialitiesList;
     });
   }
   getjobTitles() {
@@ -136,6 +139,9 @@ export class ContactDetailComponent implements OnInit {
       return;
     }
     const value = this.infoForm.value;
+    if (this.account.speciality && this.account.speciality.deleted) {
+      this.specialitiesContainingDeleted.push(this.account.speciality);
+    }
     const contact = {
       id: value.id,
       contactType: value.type,
@@ -143,7 +149,9 @@ export class ContactDetailComponent implements OnInit {
       title: value.title,
       speciality:
         value.speciality != null
-          ? this.specialities.find((s) => s.id == value.speciality)
+          ? this.specialitiesContainingDeleted.find(
+              (s) => s.id == value.speciality
+            )
           : null,
       firstName: value.first_name,
       lastName: value.last_name,
