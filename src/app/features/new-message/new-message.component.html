@@ -163,7 +163,7 @@
   <!-- object List DropDown-->
   <div class="row mb-4" *ngIf=" contactType &&  ! isSecretary() || isInstruction">
     <div class="col-md-1">
-      <label class="label">Objet</label>
+      <label class="label">{{ texts.object }}</label>
     </div>
     <div class="col-md-11">
       <angular2-multiselect id="objects-dropdown" [data]="objectsList" formControlName="object"
@@ -194,7 +194,7 @@
     *ngIf=" !isInstruction && (otherObject || !contactType || ( isSecretary() && contactType) || newFlag)">
 
     <div class="col-md-1">
-      <label class="label">{{ texts.free_object }}</label>
+      <label class="label">{{ texts.object }}</label>
     </div>
     <div class="col-md-11">
       <input formControlName="freeObject" class="form-control" type="text" id="input-free-object" [ngClass]="{

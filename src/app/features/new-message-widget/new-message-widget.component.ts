@@ -18,6 +18,7 @@ export class NewMessageWidgetComponent implements OnInit {
   buttons = [];
   fabTogglerState = "inactive";
   messages: any;
+  id: number;
 
   constructor(
     private globalService: GlobalService,
@@ -27,7 +28,7 @@ export class NewMessageWidgetComponent implements OnInit {
   }
   ngOnInit(): void {
     this.messageWidgetService.toggleObs.subscribe(data => {
-      this.onToggleFab();
+      this.onToggleFab(data);
     })
   }
 
@@ -41,7 +42,8 @@ export class NewMessageWidgetComponent implements OnInit {
     this.buttons = [];
   }
 
-  onToggleFab() {
+  onToggleFab(id?) {
     this.buttons.length ? this.hideItems() : this.showItems();
+    this.id = id;
   }
 }

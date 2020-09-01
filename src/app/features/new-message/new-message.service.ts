@@ -11,7 +11,7 @@ export class HlsSendMessageService {
     cc: "CC : ",
     for: "Pour : ",
     address: "Adresse : ",
-    object: "Objet : ",
+    object: "Objet",
     free_object: "Objet libre : ",
     send: "Envoyer mon message",
     send_postal: "Envoyer par courrier postal",

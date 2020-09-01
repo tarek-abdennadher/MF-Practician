@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit,Input } from "@angular/core";
 import { Subject } from "rxjs";
 import {
   FormGroup,
@@ -40,6 +40,7 @@ import { HlsSendMessageService } from "./new-message.service";
   styleUrls: ["./new-message.component.scss"],
 })
 export class NewMessageComponent implements OnInit {
+  @Input() id:number;
   /////
   public uuid: string;
   private _destroyed$ = new Subject();
@@ -219,6 +220,7 @@ export class NewMessageComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.selectedPracticianId = params["id"] || null;
     });
+    this.selectedPracticianId = this.id || null;
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -236,6 +238,8 @@ export class NewMessageComponent implements OnInit {
     return this.sendMessageForm.controls;
   }
   ngOnInit(): void {
+    this.selectedPracticianId = this.id || null;
+    console.log(this.id)
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
       { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
@@ -381,6 +385,8 @@ export class NewMessageComponent implements OnInit {
       ...this.dropdownSettingsListObject,
       text: "Sélectionner un patient concerné si nécessaire",
     };
+
+
   }
 
   ccListSubscription() {
