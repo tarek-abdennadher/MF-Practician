@@ -141,38 +141,20 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   loadPhoto(user) {
-    if (user.photoId) {
-      this.documentService.getDefaultImage(user.id).subscribe(
-        response => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
-            user.img = this.sanitizer.bypassSecurityTrustUrl(
-              myReader.result as string
-            );
-          };
-          let ok = myReader.readAsDataURL(response);
-        },
-        error => {
-          user.img = this.avatars.user;
-        }
-      );
-    } else {
-      if (user.type == "MEDICAL") {
-        user.img = this.avatars.doctor;
-      } else if (user.type == "SECRETARY") {
-        user.img = this.avatars.secretary;
-      } else if (user.type == "TELESECRETARYGROUP") {
-        user.img = this.avatars.tls;
-      } else if (user.type == "PATIENT") {
-        if (user.civility == "M") {
-          user.img = this.avatars.man;
-        } else if (user.civility == "MME") {
-          user.img = this.avatars.women;
-        } else if (user.civility == "CHILD") {
-          user.img = this.avatars.child;
-        }
+    this.documentService.getDefaultImage(user.id).subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        user.img = this.avatars.user;
       }
-    }
+    );
   }
 
   cardClicked(item) {
