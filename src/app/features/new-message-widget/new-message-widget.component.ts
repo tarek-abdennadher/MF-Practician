@@ -18,6 +18,8 @@ export class NewMessageWidgetComponent implements OnInit {
   buttons = [];
   fabTogglerState = "inactive";
   messages: any;
+  id: number;
+
   toggle: boolean = false;
   minimize = { height: '1.5rem', position: 'fixed', bottom: 0, overflow: 'hidden' }
   maximize = { }
@@ -29,7 +31,7 @@ export class NewMessageWidgetComponent implements OnInit {
   }
   ngOnInit(): void {
     this.messageWidgetService.toggleObs.subscribe(data => {
-      this.onToggleFab();
+      this.onToggleFab(data);
     })
   }
 
@@ -44,7 +46,8 @@ export class NewMessageWidgetComponent implements OnInit {
     this.toggle = false;
   }
 
-  onToggleFab() {
+  onToggleFab(id?) {
     this.buttons.length ? this.hideItems() : this.showItems();
+    this.id = id;
   }
 }

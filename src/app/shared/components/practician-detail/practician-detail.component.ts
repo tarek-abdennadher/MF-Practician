@@ -6,6 +6,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "@app/features/features.service";
 import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { NewMessageWidgetService } from '@app/features/new-message-widget/new-message-widget.service';
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -33,7 +34,8 @@ export class PracticianDetailComponent implements OnInit {
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
     private globalService: GlobalService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private messageWidgetService: NewMessageWidgetService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -96,5 +98,6 @@ export class PracticianDetailComponent implements OnInit {
         id: item.accountId
       }
     });
+    this.messageWidgetService.toggleObs.next(item.accountId);
   }
 }
