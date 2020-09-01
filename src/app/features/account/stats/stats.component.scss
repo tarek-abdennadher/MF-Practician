@@ -2,15 +2,18 @@
 .Rectangle-body {
   background-color: rgba(243, 243, 243, 0.5);
   border-radius: 14px;
-  margin-left: 50px;
-  margin-right: 50px;
-  padding-left: 100px;
-  padding-right: 100px;
+  //margin-left: 50px;
+  //margin-right: 50px;
+  //padding-left: 100px;
+  //padding-right: 100px;
 }
 .chart {
-  border-right: 2px solid #e1e8f3;
+  height: 500px;
   min-height: 500px;
   max-height: 500px;
+}
+.border_ {
+  border-right: 2px solid #e1e8f3;
 }
 .chart-title {
   font-family: Montserrat-Medium;
@@ -21,9 +24,16 @@
   line-height: normal;
   letter-spacing: -0.42px;
   text-align: center;
+  margin: 0 auto;
   color: #4a4a4a;
 }
-.center {
-  justify-items: center;
-  align-items: center;
+.center_ {
+  margin: 0 auto;
+  width: 600px;
+}
+margin-right_ {
+  margin-left: 100px;
+  margin-right: 100px;
+  padding-left: 100px;
+  padding-right: 100px;
 }
