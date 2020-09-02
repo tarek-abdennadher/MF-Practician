@@ -141,37 +141,27 @@ export class ContactsComponent implements OnInit {
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach(item => {
-          if (item.photoId) {
-            item.users.forEach(user => {
-              this.documentService
-                .getDefaultImageEntity(
-                  user.id,
-                  user.contactType == "CONTACT" ? "CONTACT" : "ACCOUNT"
-                )
-                .subscribe(
-                  response => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = e => {
-                      user.img = this.sanitizer.bypassSecurityTrustUrl(
-                        myReader.result as string
-                      );
-                    };
-                    let ok = myReader.readAsDataURL(response);
-                  },
-                  error => {
-                    user.img = this.avatars.user;
-                  }
-                );
-            });
-          } else {
-            item.users.forEach(user => {
-              if (user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              }
-            });
-          }
+          item.users.forEach(user => {
+            this.documentService
+              .getDefaultImageEntity(
+                user.id,
+                user.contactType == "CONTACT" ? "CONTACT" : "ACCOUNT"
+              )
+              .subscribe(
+                response => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = e => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                error => {
+                  user.img = this.avatars.user;
+                }
+              );
+          });
         });
       },
       error => {
