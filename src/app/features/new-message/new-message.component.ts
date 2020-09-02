@@ -241,47 +241,12 @@ export class NewMessageComponent implements OnInit {
       { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
-    if (this.user?.photoId) {
-      this.documentService.downloadFile(this.user?.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            this.imageSource = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          this.imageSource = this.avatars.user;
-        }
-      );
-    } else {
-      if (this.role == "PRACTICIAN") {
-        this.imageSource = this.avatars.doctor;
-      } else if (this.role == "SECRETARY") {
-        this.imageSource = this.avatars.secretary;
-      }
-    }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.getSecretaryPracticians().subscribe((value) => {
         value.forEach((item) => {
           item.type = "CONTACT_PRO";
-          if (item.photo) {
-            this.documentService.downloadFile(item.photo).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  item.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                item.img = this.avatars.doctor;
-              }
-            );
-          } else {
-            item.img = this.avatars.doctor;
-          }
+
           this.forFieldList.push(item);
         });
         this.forList.next(this.forFieldList);
@@ -1256,20 +1221,7 @@ export class NewMessageComponent implements OnInit {
             img: null,
             type: "TELESECRETARYGROUP",
           };
-          if (groupValue.photoId) {
-            this.documentService.downloadFile(groupValue.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  item.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                item.img = this.avatars.doctor;
-              }
-            );
-          }
+
           this.practicianTLSGroup = item;
         }
       });
