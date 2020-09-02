@@ -236,7 +236,6 @@ export class NewMessageComponent implements OnInit {
   }
   ngOnInit(): void {
     this.selectedPracticianId = this.id || null;
-    console.log(this.id)
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
       { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
@@ -479,9 +478,7 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             object: selectedElements,
           });
-          this.sendMessageForm.patchValue({
-            freeObject: res.name,
-          });
+
           this.sendMessageForm.patchValue({
             body: res.body,
           });
