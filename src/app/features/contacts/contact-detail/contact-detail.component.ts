@@ -74,6 +74,8 @@ export class ContactDetailComponent implements OnInit {
       additional_address: new FormControl(null),
       phone: new FormControl("+33"),
       picture: new FormControl(null),
+      zipCode: new FormControl(null),
+      city: new FormControl(null)
     });
   }
   get ctr() {
@@ -98,6 +100,8 @@ export class ContactDetailComponent implements OnInit {
         phone: contact.phoneNumber ? contact.phoneNumber : "+33",
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId,
+        zipCode: contact.zipCode ? contact.zipCode : null,
+        city: contact.city ? contact.city : null
       });
       this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
@@ -150,8 +154,8 @@ export class ContactDetailComponent implements OnInit {
       speciality:
         value.speciality != null
           ? this.specialitiesContainingDeleted.find(
-              (s) => s.id == value.speciality
-            )
+            (s) => s.id == value.speciality
+          )
           : null,
       firstName: value.first_name,
       lastName: value.last_name,
@@ -160,6 +164,8 @@ export class ContactDetailComponent implements OnInit {
       email: value.email,
       address: value.address,
       additionalAddress: value.additional_address,
+      zipCode: value.zipCode,
+      city: value.city
     };
     let successResult = false;
     if (this.param == "add") {
