@@ -42,7 +42,9 @@ export class ContactsService {
     additionalEmail: "Email secondaire",
     category: "Nom de la catégorie ",
     contact_pro: "Fiche contact Pro",
-    category_name: "Nom de la catégorie (*)"
+    category_name: "Nom de la catégorie (*)",
+    zip_code: "Code postal",
+    city: "Ville"
   };
   constructor(private globalService: GlobalService) { }
 
