@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { Subject } from "rxjs";
 import {
   FormGroup,
@@ -40,7 +40,7 @@ import { HlsSendMessageService } from "./new-message.service";
   styleUrls: ["./new-message.component.scss"],
 })
 export class NewMessageComponent implements OnInit {
-  @Input() id:number;
+  @Input() id: number;
   /////
   public uuid: string;
   private _destroyed$ = new Subject();
@@ -381,8 +381,6 @@ export class NewMessageComponent implements OnInit {
       ...this.dropdownSettingsListObject,
       text: "Sélectionner un patient concerné si nécessaire",
     };
-
-
   }
 
   ccListSubscription() {
@@ -568,16 +566,13 @@ export class NewMessageComponent implements OnInit {
       // }
     }
   }
-  checkObjectValidator(){
-   if(this.contactType &&  ! this.isSecretary() || this.isInstruction){
-    this.sendMessageForm.controls.object.setValidators([
-      Validators.required,
-    ]);
-
-   } else {
-    this.sendMessageForm.controls.object.clearValidators();
-    this.sendMessageForm.controls.object.updateValueAndValidity();
-   }
+  checkObjectValidator() {
+    if ((this.contactType && !this.isSecretary()) || this.isInstruction) {
+      this.sendMessageForm.controls.object.setValidators([Validators.required]);
+    } else {
+      this.sendMessageForm.controls.object.clearValidators();
+      this.sendMessageForm.controls.object.updateValueAndValidity();
+    }
   }
   sendEmail() {
     this.submited = true;
@@ -876,34 +871,6 @@ export class NewMessageComponent implements OnInit {
         .subscribe((patientFiles) => {
           let list = [];
           patientFiles.forEach((item) => {
-            if (item.photoId) {
-              this.documentService.downloadFile(item.photo).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    item.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  if (item?.civility == "MME") {
-                    item.img = this.avatars.women;
-                  } else {
-                    if (item?.civility == "CHILD") {
-                      item.img = this.avatars.child;
-                    } else item.img = this.avatars.man;
-                  }
-                }
-              );
-            } else {
-              if (item?.civility == "MME") {
-                item.img = this.avatars.women;
-              } else {
-                if (item?.civility == "CHILD") {
-                  item.img = this.avatars.child;
-                } else item.img = this.avatars.man;
-              }
-            }
             list.push(item);
           });
           this.forList.next(list);
@@ -917,30 +884,6 @@ export class NewMessageComponent implements OnInit {
             let list = [];
             patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE";
-              if (item.photoId) {
-                this.documentService.downloadFile(item.photo).subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      item.img = myReader.result;
-                    };
-                    let ok = myReader.readAsDataURL(response.body);
-                  },
-                  (error) => {
-                    if (item?.civility == "MME") {
-                      item.img = this.avatars.women;
-                    } else {
-                      item.img = this.avatars.man;
-                    }
-                  }
-                );
-              } else {
-                if (item?.civility == "MME") {
-                  item.img = this.avatars.women;
-                } else {
-                  item.img = this.avatars.man;
-                }
-              }
               list.push(item);
             });
             this.concernList.next(list);
@@ -951,101 +894,60 @@ export class NewMessageComponent implements OnInit {
   parseContactsPractician(contactsPractician) {
     let myList = [];
     contactsPractician.forEach((contactPractician) => {
-      if (contactPractician.photoId && contactPractician.photoId != null) {
-        this.documentService.downloadFile(contactPractician.photoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              myList.push({
-                id: contactPractician.id,
-                fullName: contactPractician.fullName,
-                type: contactPractician.contactType,
-                isSelected:
-                  this.selectedPracticianId == contactPractician.id
-                    ? true
-                    : false,
-                img: myReader.result,
-              });
-              this.toList.next(myList);
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: null,
-            });
-            this.toList.next(myList);
-          }
-        );
-      } else {
-        if (contactPractician.contactType == "MEDICAL") {
+      if (contactPractician.contactType == "MEDICAL") {
+        myList.push({
+          id: contactPractician.id,
+          fullName: contactPractician.fullName,
+          type: contactPractician.contactType,
+          isSelected:
+            this.selectedPracticianId == contactPractician.id ? true : false,
+          img: this.avatars.doctor,
+        });
+        this.toList.next(myList);
+      } else if (
+        contactPractician.contactType == "SECRETARY" ||
+        contactPractician.contactType == "TELESECRETARYGROUP"
+      ) {
+        myList.push({
+          id: contactPractician.id,
+          fullName: contactPractician.fullName,
+          type: contactPractician.contactType,
+          isSelected:
+            this.selectedPracticianId == contactPractician.id ? true : false,
+          img: this.avatars.secretary,
+        });
+        this.toList.next(myList);
+      } else if (contactPractician.contactType == "PATIENT") {
+        if (contactPractician.civility == "M") {
           myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.doctor,
+            img: this.avatars.man,
           });
           this.toList.next(myList);
-        } else if (
-          contactPractician.contactType == "SECRETARY" ||
-          contactPractician.contactType == "TELESECRETARYGROUP"
-        ) {
+        } else if (contactPractician.civility == "MME") {
           myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.secretary,
+            img: this.avatars.women,
           });
           this.toList.next(myList);
-        } else if (contactPractician.contactType == "PATIENT") {
-          if (contactPractician.civility == "M") {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: this.avatars.man,
-            });
-            this.toList.next(myList);
-          } else if (contactPractician.civility == "MME") {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: this.avatars.women,
-            });
-            this.toList.next(myList);
-          } else if (contactPractician.civility == "CHILD") {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: this.avatars.child,
-            });
-            this.toList.next(myList);
-          }
+        } else if (contactPractician.civility == "CHILD") {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: this.avatars.child,
+          });
+          this.toList.next(myList);
         }
       }
     });
@@ -1247,30 +1149,6 @@ export class NewMessageComponent implements OnInit {
             let list = [];
             patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE";
-              if (item.photoId) {
-                this.documentService.downloadFile(item.photo).subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      item.img = myReader.result;
-                    };
-                    let ok = myReader.readAsDataURL(response.body);
-                  },
-                  (error) => {
-                    if (item?.civility == "MME") {
-                      item.img = this.avatars.women;
-                    } else {
-                      item.img = this.avatars.man;
-                    }
-                  }
-                );
-              } else {
-                if (item?.civility == "MME") {
-                  item.img = this.avatars.women;
-                } else {
-                  item.img = this.avatars.man;
-                }
-              }
               list.push(item);
             });
             this.concernList.next(list);
