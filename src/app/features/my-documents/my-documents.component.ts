@@ -14,7 +14,7 @@ import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { FeaturesService } from "../features.service";
-import { PatientSerch } from '@app/shared/models/my-patients';
+import { PatientSerch } from "@app/shared/models/my-patients";
 import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-my-documents",
@@ -54,7 +54,7 @@ export class MyDocumentsComponent implements OnInit {
   account: any;
   linkedPatients: any;
   imageObs: any;
-
+  number: number = 0;
   constructor(
     private mydocumentsService: MyDocumentsService,
     private globalService: GlobalService,
@@ -90,6 +90,7 @@ export class MyDocumentsComponent implements OnInit {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
+        this.number = this.itemsList.length;
         this.itemsList.forEach(item => {
           item.users.forEach(user => {
             this.documentService.getDefaultImage(item.id).subscribe(

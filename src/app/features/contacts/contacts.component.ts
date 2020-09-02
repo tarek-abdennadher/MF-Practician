@@ -33,6 +33,7 @@ export class ContactsComponent implements OnInit {
   addText = "Ajouter contact";
   page = "MY_PRACTICIANS";
   backButton = true;
+  number = 0;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
   avatars: {
@@ -93,19 +94,20 @@ export class ContactsComponent implements OnInit {
       this.getAllContactsForSecretary();
     }
     // update contacts after detail view
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      let currentRoute = this.route;
-      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-      if (this.userRole == "PRACTICIAN") {
-        this.getAllContacts();
-      } else if (this.userRole == "SECRETARY") {
-        this.getAllContactsForSecretary();
-      }
-    });
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        let currentRoute = this.route;
+        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        if (this.userRole == "PRACTICIAN") {
+          this.getAllContacts();
+        } else if (this.userRole == "SECRETARY") {
+          this.getAllContactsForSecretary();
+        }
+      });
     this.featureService.setIsMessaging(false);
   }
+
   getAllContactsForSecretary() {
     this.contactsService.getContactsProForSecretary().subscribe(
       contacts => {
@@ -127,15 +129,16 @@ export class ContactsComponent implements OnInit {
                 contactType: elm.contactType
               }
             ],
-            isArchieve: false,
+            isArchieve: elm.contactType != "CABINET" ? true : false,
             isImportant: false,
             hasFiles: false,
             isViewDetail: false,
-            isMarkAsSeen: false,
+            isMarkAsSeen: elm.contactType != "CONTACT" ? true : false,
             isChecked: false,
             photoId: elm.photoId
           };
         });
+        this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach(item => {
           if (item.photoId) {
@@ -197,15 +200,17 @@ export class ContactsComponent implements OnInit {
                 contactType: elm.contactType
               }
             ],
-            isArchieve: false,
+            isArchieve: true,
             isImportant: false,
             hasFiles: false,
             isViewDetail: false,
-            isMarkAsSeen: false,
+            isMarkAsSeen: elm.contactType != "CONTACT" ? true : false,
+            isContact: true,
             isChecked: false,
             photoId: elm.photoId
           };
         });
+        this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach(item => {
           item.users.forEach(user => {

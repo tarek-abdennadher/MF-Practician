@@ -18,7 +18,7 @@ import { MessageSent } from "@app/shared/models/message-sent";
 import { MessageArchived } from "./archieve-messages/message-archived";
 import { MyPatientsService } from "./services/my-patients.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { NewMessageWidgetService } from './new-message-widget/new-message-widget.service';
+import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -52,7 +52,7 @@ export class FeaturesComponent implements OnInit {
     private jobTitlePipe: JobtitlePipe,
     private patientService: MyPatientsService,
     private sanitizer: DomSanitizer,
-    private messageWidgetService:NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -178,7 +178,7 @@ export class FeaturesComponent implements OnInit {
   }
 
   getPracticians() {
-    this.practicianSearchService.getAllPracticians().subscribe(list => {
+    this.practicianSearchService.getSearchListPractician().subscribe(list => {
       if (this.localSt.retrieve("role") == "PRACTICIAN") {
         list = list.filter(
           a => a.accountId != this.featuresService.getUserId()
@@ -201,9 +201,9 @@ export class FeaturesComponent implements OnInit {
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => { };
+    this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function (frame) {
+    this.stompClient.connect({}, function(frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
         message => {
@@ -244,9 +244,9 @@ export class FeaturesComponent implements OnInit {
         let id = ids[i];
         const ws = new SockJS(this.globalService.BASE_URL + "/socket");
         this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => { };
+        this.stompClientList[i].debug = () => {};
         const that = this;
-        this.stompClientList[i].connect({}, function (frame) {
+        this.stompClientList[i].connect({}, function(frame) {
           this.subscribe("/topic/notification/" + id, message => {
             if (message.body) {
               let notification = JSON.parse(message.body);
@@ -274,8 +274,8 @@ export class FeaturesComponent implements OnInit {
             id: notif.id,
             sender: notif.jobTitle
               ? this.jobTitlePipe.transform(notif.jobTitle) +
-              " " +
-              notif.senderFullName
+                " " +
+                notif.senderFullName
               : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
@@ -495,7 +495,7 @@ export class FeaturesComponent implements OnInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
-        this.router.navigate(["/praticien-recherche"]);
+        // this.router.navigate(["/praticien-recherche"]);
         let result = this.practicians.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
@@ -655,18 +655,18 @@ export class FeaturesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-            ? "répondu"
-            : message.toReceivers[0].seen
-              ? "Lu"
-              : "Envoyé",
+          ? "répondu"
+          : message.toReceivers[0].seen
+          ? "Lu"
+          : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-            ? 100
-            : message.toReceivers[0].seen
-              ? 50
-              : 20
+          ? 100
+          : message.toReceivers[0].seen
+          ? 50
+          : 20
     };
     messageSent.users = [];
     message.toReceivers.forEach(r => {
