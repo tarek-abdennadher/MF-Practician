@@ -28,7 +28,7 @@
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
       <div class="row">
         <!-- Contact Type -->
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-4 pr-0 pl-0">
           <div for="type_contact" class="col-sm-12 col-form-label">
             {{ labels.type_contact }}
           </div>
@@ -39,9 +39,9 @@
               id="type"
               [ngClass]="{ 'is-invalid': submitted && ctr.type.errors }"
             >
-              <option value="null" disabled="true">{{
-                labels.type_contact
-              }}</option>
+              <option value="null" disabled="true">
+                {{ labels.type_contact }}
+              </option>
               <option value="MEDICAL">Praticien</option>
               <option value="CABINET">Cabinet médical</option>
               <option value="LABORATORY">Laboratoire</option>
@@ -54,7 +54,7 @@
           </div>
         </div>
         <!-- Contact Title -->
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-3 pr-0 pl-0">
           <div for="title" class="col-sm-12 col-form-label">
             {{ labels.title }}
           </div>
@@ -66,8 +66,8 @@
               id="title"
             >
               <option value="null" disabled="true">{{ labels.title }}</option>
-              <option *ngFor="let item of jobTitlesList" value="{{ item }}"
-                >{{ item | JobTitle }}
+              <option *ngFor="let item of jobTitlesList" value="{{ item }}">
+                {{ item | JobTitle }}
               </option>
             </select>
             <div *ngIf="submitted && ctr.title.errors" class="invalid-feedback">
@@ -78,7 +78,7 @@
           </div>
         </div>
         <!-- Contact Pro speciality -->
-        <div class="col-12 col-sm-5">
+        <div class="col-12 col-sm-5 pr-0 pl-0">
           <div for="speciality" class="col-sm-12 col-form-label">
             {{ labels.speciality }}
           </div>
@@ -91,12 +91,21 @@
               }"
               id="speciality"
             >
-              <option value="null" disabled="true">{{
-                labels.speciality
-              }}</option>
-              <option *ngFor="let s of specialities" [value]="s.id">{{
-                s.name
-              }}</option>
+              <option value="null" disabled="true">
+                {{ labels.speciality }}
+              </option>
+              <option
+                *ngIf="
+                  account && account.speciality && account.speciality.deleted
+                "
+                [value]="account.speciality.id"
+                disabled="true"
+              >
+                {{ account.speciality.name }}
+              </option>
+              <option *ngFor="let s of specialities" [value]="s.id">
+                {{ s.name }}
+              </option>
             </select>
             <div
               *ngIf="submitted && ctr.speciality.errors"
@@ -112,7 +121,7 @@
       <br />
       <div class="row">
         <!-- Contact Pro last name -->
-        <div class="col col-12 col-sm-6">
+        <div class="col col-12 col-sm-6 pr-0 pl-0">
           <div for="last_name" class="col-sm-12 col-form-label">
             {{ labels.last_name }}
           </div>
@@ -137,7 +146,7 @@
           </div>
         </div>
         <!-- Contact Pro first name -->
-        <div class="col col-12 col-sm-6">
+        <div class="col col-12 col-sm-6 pr-0 pl-0">
           <div for="first_name" class="col-sm-12 col-form-label">
             {{ labels.first_name }}
           </div>
@@ -165,7 +174,7 @@
       <br />
       <!--  Facility name -->
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 pr-0 pl-0">
           <div for="facility_name" class="col-sm-12 col-form-label">
             {{ labels.facility_name }}
           </div>
@@ -182,7 +191,7 @@
       <br />
       <!--  Contact Pro address -->
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 pr-0 pl-0">
           <div for="address" class="col-sm-12 col-form-label">
             {{ labels.address }}
           </div>
@@ -199,7 +208,7 @@
       <br />
       <!--  Contact Pro additional address -->
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 pr-0 pl-0">
           <div for="additional_address" class="col-sm-12 col-form-label">
             {{ labels.additional_address }}
           </div>
@@ -214,9 +223,35 @@
         </div>
       </div>
       <br />
+      <!--  Contact Pro zipCode + city -->
+      <div class="row">
+        <div class="col-12 col-sm-5 pl-0 pr-0">
+          <div class="col-12 col-form-label">{{ labels.zip_code }}</div>
+          <div class="col-sm-12">
+            <input
+              type="text"
+              formControlName="zipCode"
+              class="form-control"
+              id="zipCode"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-sm-7 pl-0 pr-0">
+          <div class="col-12 col-form-label">{{ labels.city }}</div>
+          <div class="col-sm-12">
+            <input
+              type="text"
+              formControlName="city"
+              class="form-control"
+              id="city"
+            />
+          </div>
+        </div>
+      </div>
+      <br />
       <!-- Phone number -->
       <div class="row">
-        <div class="col col-12">
+        <div class="col col-12 pr-0 pl-0">
           <div class="col-12 col-form-label">{{ labels.phone }}</div>
           <div class="col-12 row">
             <div class="col-10 col-sm-11">
@@ -252,7 +287,7 @@
       <br />
       <!-- Other Phones -->
       <div class="row">
-        <div class="col">
+        <div class="col pr-0 pl-0">
           <div *ngIf="isLabelShow" class="col-12 col-form-label">
             {{ labels.other_phone }}
           </div>
@@ -271,7 +306,7 @@
       <br *ngIf="isLabelShow" />
       <!--  Contact Pro email -->
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 pr-0 pl-0">
           <div for="email" class="col-sm-12 col-form-label">
             {{ labels.email_input }}
           </div>

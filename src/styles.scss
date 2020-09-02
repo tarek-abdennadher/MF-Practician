@@ -376,9 +376,23 @@ a {
 
 /* ============= custom size styles ============ */
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 899px) {
   .rectangle-custom {
     width: 100%;
   }
 }
+@media only screen and (max-width: 1380px) {
+  .mat-tab-group.mat-background-primary .mat-tab-label {
+    margin-left: unset;
+  }
+}
 /* ============================================= */
+
+/* ============= flags of phone component ============ */
+::ng-deep {
+  .flag {
+    background-image: url('assets/imgs/flags.jpg') !important;
+      }
+      }
+      /* ============================================= */
+

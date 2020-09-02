@@ -12,7 +12,7 @@ export class HlsSendMessageService {
     for: "Pour : ",
     address: "Adresse : ",
     object: "Objet",
-    free_object: "Objet libre : ",
+    free_object: "Objet libre",
     send: "Envoyer mon message",
     send_postal: "Envoyer par courrier postal",
     send_email: "Envoyer par email",
