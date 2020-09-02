@@ -98,6 +98,31 @@ export class MyPatientsComponent implements OnInit {
         }
       }
     });
+    // update categories after detail view
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      let currentRoute = this.route;
+      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+      switch (this.section) {
+        case "accepted": {
+          this.initPatients();
+          break;
+        }
+        case "pending": {
+          this.initPendingPatients();
+          break;
+        }
+        case "prohibit": {
+          this.initProhibitedPatients();
+          break;
+        }
+        case "archived": {
+          this.initArchivedPatients();
+          break;
+        }
+      }
+    });
   }
   initPatients() {
     this.links.isTypeFilter = true;

@@ -53,13 +53,6 @@ export class PatientDetailComponent implements OnInit {
     user: string;
     tls: string;
   };
-  messages: Array<any> = new Array();
-  pageNo = 0;
-  direction: OrderDirection = OrderDirection.DESC;
-  itemsList: Array<any>;
-  filtredItemList: Array<any> = new Array();
-  page2 = this.globalService.messagesDisplayScreen.inbox;
-  scroll = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -83,6 +76,7 @@ export class PatientDetailComponent implements OnInit {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.man;
     this.noteimageSource = this.avatars.user;
+    this.linkedPatientList = [];
   }
 
   ngOnInit(): void {
@@ -100,7 +94,6 @@ export class PatientDetailComponent implements OnInit {
         this.getCategories()
       ).subscribe((res) => { });
       this.featureService.setIsMessaging(false);
-      this.getPatientInbox(this.pageNo);
     });
 
   }
@@ -120,56 +113,12 @@ export class PatientDetailComponent implements OnInit {
               .pipe(takeUntil(this._destroyed$))
               .subscribe((res) => {
                 res.forEach((elm) => {
+                  this.linkedPatientList = [];
                   this.linkedPatientList.push(this.mappingLinkedPatients(elm));
                 });
                 this.linkedPatients.next(this.linkedPatientList);
               }
               );
-          }
-          if (patientFile?.photoId) {
-            this.documentService.downloadFile(patientFile.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  this.imageSource = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                if (patientFile?.civility == "MME") {
-                  this.imageSource = this.avatars.women;
-                } else {
-                  this.imageSource = this.avatars.man;
-                }
-              }
-            );
-          } else {
-            if (patientFile?.civility == "MME") {
-              this.imageSource = this.avatars.women;
-            } else {
-              if (patientFile?.civility == "CHILD") {
-                this.imageSource = this.avatars.child
-              }
-              else this.imageSource = this.avatars.man
-            }
-          }
-          if (patientFile?.practicianPhotoId != null) {
-            this.documentService
-              .downloadFile(patientFile.practicianPhotoId)
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    this.practicianImage = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  this.practicianImage = this.avatars.doctor;
-                }
-              );
-          } else {
-            this.practicianImage = this.avatars.doctor;
           }
         })
       );
@@ -336,21 +285,6 @@ export class PatientDetailComponent implements OnInit {
     this.router.navigate(["."], { relativeTo: this.route.parent });
   }
 
-  upSortClicked() {
-    this.direction = OrderDirection.ASC;
-    this.resetList();
-  }
-
-  downSortClicked() {
-    this.direction = OrderDirection.DESC;
-    this.resetList();
-  }
-
-  resetList() {
-    this.pageNo = 0;
-    this.itemsList = [];
-    this.filtredItemList = [];
-  }
 
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
@@ -358,99 +292,6 @@ export class PatientDetailComponent implements OnInit {
         context: "inbox",
       },
     });
-  }
-  getPatientInbox(pageNo) {
-    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
-      this.messages = res;
-      this.messages.sort(function (m1, m2) {
-        return (
-          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
-      });
-      this.itemsList = this.messages.map((item) => this.parseMessage(item));
-      this.filtredItemList = this.itemsList;
-    });
-  }
-  getPatientNextInbox(pageNo) {
-    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
-      this.messages = res;
-      this.messages.sort(function (m1, m2) {
-        return (
-          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
-      });
-      this.itemsList.push(
-        ...this.messages.map((item) => this.parseMessage(item))
-      );
-      this.filtredItemList = this.itemsList;
-    });
-  }
-  parseMessage(message): any {
-    let parsedMessage = {
-      id: message.id,
-      isSeen: message.seenAsReceiver,
-      users: [
-        {
-          id: message.sender.id,
-          fullName: message.sender.fullName,
-          img: this.avatars.user,
-          title: message.sender.jobTitle,
-          civility: message.sender.civility,
-          type:
-            message.sender.role == "PRACTICIAN"
-              ? "MEDICAL"
-              : message.sender.role,
-        },
-      ],
-      object: {
-        name: message.object,
-        isImportant: message.importantObject,
-      },
-      time: message.updatedAt,
-      isImportant: message.important,
-      hasFiles: message.hasFiles,
-      photoId: message.sender.photoId,
-    };
-    if (parsedMessage.photoId) {
-      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            parsedMessage.users[0].img = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          parsedMessage.users[0].img = this.avatars.user;
-        }
-      );
-    } else {
-      parsedMessage.users.forEach((user) => {
-        if (user.type == "MEDICAL") {
-          user.img = this.avatars.doctor;
-        } else if (user.type == "SECRETARY") {
-          user.img = this.avatars.secretary;
-        } else if (user.type == "TELESECRETARYGROUP") {
-          user.img = this.avatars.tls;
-        } else if (user.type == "PATIENT") {
-          if (user.civility == "M") {
-            user.img = this.avatars.man;
-          } else if (user.civility == "MME") {
-            user.img = this.avatars.women;
-          } else if (user.civility == "CHILD") {
-            user.img = this.avatars.child;
-          }
-        }
-      });
-    }
-    return parsedMessage;
-  }
-
-  onScroll() {
-    if (this.filtredItemList.length > 9) {
-      this.pageNo++;
-      this.getPatientNextInbox(this.pageNo);
-    }
   }
 
   // destory any subscribe to avoid memory leak
