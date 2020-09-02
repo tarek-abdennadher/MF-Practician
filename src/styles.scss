@@ -6,7 +6,8 @@
 /*** New fonts Montserrat **/
 @font-face {
   font-family: "Montserrat";
-  src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
+  src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf")
+    format("truetype");
 }
 @font-face {
   font-family: "Montserrat-Medium";
@@ -14,11 +15,11 @@
   font-weight: 1000 !important;
   font-style: normal;
   font-stretch: normal;
-
 }
 @font-face {
   font-family: "Montserrat-SemiBold";
-  src: url("./assets/fonts/Montserrat/Montserrat-SemiBold.ttf") format("truetype");
+  src: url("./assets/fonts/Montserrat/Montserrat-SemiBold.ttf")
+    format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -56,7 +57,11 @@ $patient-accent: mat-palette($mat-pink, A200, A100, A400);
 $patient-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn);
+$patient-theme: mat-light-theme(
+  $patient-primary,
+  $patient-accent,
+  $patient-warn
+);
 
 $gradient: linear-gradient(102deg, #f761a1, #8c1bab 98%);
 
@@ -117,8 +122,8 @@ a {
 
 /* mat-confirm-dialog (customised dialog) */
 .confirm-dialog-container .mat-dialog-container {
-  box-shadow: 0px 2px 0px #0000000d;
-  border-radius: 23px;
+  box-shadow: 0 2px 20px 6px rgba(56, 96, 165, 0.3);
+  border-radius: 6px;
   opacity: 1;
   padding: 0px;
 }
@@ -159,27 +164,30 @@ a {
 }
 
 .confirm-dialog-container #yes-button {
-  width: 214px;
-  height: 42px;
-  background: #ff0063 0% 0% no-repeat padding-box;
-  border-radius: 23px;
+  font-family: "Montserrat-Medium";
+  width: 145px;
+  height: 40px;
+  background: #1a56a7 0% 0% no-repeat padding-box;
+  border-radius: 2px;
   text-align: center;
-  font-size: 11px;
+  font-size: 16px;
   letter-spacing: 0px;
   color: #ffffff;
   opacity: 1;
 }
 
 .confirm-dialog-container #no-button {
-  width: 214px;
-  height: 42px;
-  background: #bcbcbc 0% 0% no-repeat padding-box;
-  border-radius: 23px;
+  font-family: "Montserrat-Medium";
+  width: 145px;
+  height: 40px;
+  background: transparent 0% 0% no-repeat padding-box;
+  border-radius: 2px;
   text-align: center;
-  font-size: 11px;
+  font-size: 16px;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: #1a56a7;
   opacity: 1;
+  border: 1px solid #1a56a7;
 }
 
 .confirm-dialog-container p.content-p {
@@ -187,7 +195,7 @@ a {
   font-size: 16px;
   font-weight: Bold;
   letter-spacing: 0px;
-  color: #6e819bd4;
+  color: #1a56a7;
   opacity: 1;
 }
 
@@ -195,7 +203,7 @@ a {
   font-size: 17px;
   font-weight: Bold;
   letter-spacing: 0px;
-  color: #6e819bd4;
+  color: #1a56a7;
   opacity: 1;
   text-transform: uppercase;
 }
@@ -204,7 +212,7 @@ a {
   font-weight: Bold;
   text-align: left;
   letter-spacing: -1.1px;
-  color: #6e819b;
+  color: #1a56a7;
   opacity: 1;
   float: left;
 }
@@ -215,9 +223,12 @@ a {
 }
 
 .btn-space {
-  margin-right: 15px;
+  margin-right: 15px !important;
+  margin-left: 15px !important;
 }
-
+.cdk-overlay-dark-backdrop {
+  background: none;
+}
 ::ng-deep {
   international-phone-number .form-control {
     height: 30px !important;
@@ -279,9 +290,9 @@ a {
 }
 /* ====================================================================== */
 
-.mat-checkbox-ripple .mat-ripple-element,.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+.mat-checkbox-ripple .mat-ripple-element,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
   background-color: $helssy_blue;
-
 }
 
 .mat-checkbox-inner-container {
@@ -290,7 +301,7 @@ a {
 }
 
 .mat-checkbox-layout {
- margin-bottom: unset;
+  margin-bottom: unset;
 }
 
 .rectangle-custom {
@@ -306,11 +317,10 @@ a {
   background-color: rgba(243, 243, 243, 0.5);
 }
 
-
 /* ============= Mat-tab styles overrides =========== */
 
 .mat-tab-header {
-  background-color:$helssy-white  !important;
+  background-color: $helssy-white !important;
   border-radius: 20px 20px 0 0 !important;
 }
 
@@ -319,7 +329,7 @@ a {
 }
 
 .mat-tab-group.mat-background-primary .mat-tab-label {
-  color: $helssy-grey ;
+  color: $helssy-grey;
   font-family: Montserrat-Medium !important;
   font-size: 13px !important;
   font-weight: 1000 !important;
@@ -335,27 +345,24 @@ a {
 //#mat-tab-label-0-0, #mat-tab-label-1-0 {
 //  margin-left: 0;
 //}
- [aria-posinset = "1"] {
-   margin-left: 23px !important;
- }
+[aria-posinset="1"] {
+  margin-left: 23px !important;
+}
 
 .mat-tab-group {
- border-radius: 54px !important;
+  border-radius: 54px !important;
 }
 
 .mat-ink-bar {
   background-color: $helssy-light-blue !important;
-  height: 5px  !important;
+  height: 5px !important;
   margin-left: 6px;
 }
 .mat-tab-body-content {
   overflow: hidden !important;
 }
 
-
 /* ================================================== */
-
-
 
 /* ============= custom size styles ============ */
 
@@ -391,8 +398,7 @@ a {
 /* ============= flags of phone component ============ */
 ::ng-deep {
   .flag {
-    background-image: url('assets/imgs/flags.jpg') !important;
-      }
-      }
-      /* ============================================= */
-
+    background-image: url("assets/imgs/flags.jpg") !important;
+  }
+}
+/* ============================================= */
