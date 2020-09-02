@@ -159,3 +159,11 @@ $color-helssy-grey: #6e819bd4;
         text-align: center;;
         margin-left: 15px;
       }
+      /* ============= flags of phone component ============ */
+::ng-deep {
+  .flag {
+    background-image: url('assets/imgs/flags.jpg') !important;
+      }
+      }
+      /* ============================================= */
+
