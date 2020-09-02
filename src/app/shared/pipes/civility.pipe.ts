@@ -1,5 +1,8 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform, Injectable } from "@angular/core";
 
+@Injectable({
+  providedIn: "root"
+})
 @Pipe({
   name: "civility"
 })
@@ -8,9 +11,9 @@ export class CivilityPipe implements PipeTransform {
     return value === "M"
       ? "Monsieur"
       : value === "MME"
-      ? "Madame"
-      : value === "CHILD"
-      ? "Enfant"
-      : "";
+        ? "Madame"
+        : value === "CHILD"
+          ? "Enfant"
+          : "";
   }
 }

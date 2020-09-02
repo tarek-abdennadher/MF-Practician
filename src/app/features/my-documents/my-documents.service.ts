@@ -195,4 +195,31 @@ export class MyDocumentsService {
       this.globalService.url.attachements + "/myObjects/" + id
     );
   }
+
+  getDefaultImage(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.photo + "/" + id,
+      { responseType: "blob" }
+    );
+  }
+  getDefaultImageEntity(id, entityType) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.photo + "/" + id + "?entityType=" + entityType,
+      { responseType: "blob" }
+    );
+  }
+
+  getLettersImageEntity(id, entityType) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.photo +
+        "Letters/" +
+        id +
+        "?entityType=" +
+        entityType,
+      { responseType: "blob" }
+    );
+  }
 }

@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) { }
+  constructor(public router: Router, public globalService: GlobalService) {}
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -104,24 +104,28 @@ export class AccountService {
       "Vous pouvez à partir de cet onglet, définir les catégories des patients",
     resp: "Responsable",
     activate_auto_resp: "Activer la réponse automatique en cas de congés ?",
-    sec_detail: "Détails du secrétaire"
+    sec_detail: "Détails du secrétaire",
+    received: "Messages reçus",
+    sent: "Messages envoyés",
+    others: "Autres",
   };
   public errors = {
     required: "Le champ est obligatoire",
     invalid_format: "Le format saisi est invalide",
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
-    invalid_phone: "Le numéro de téléphone saisi est invalide"
+    invalid_phone: "Le numéro de téléphone saisi est invalide",
   };
   public stats = {
     patient_title: "Patients",
     patient_m_1: "Messages reçus des patients",
-    patient_m_2: "Messages envoyés aux patients"
+    patient_m_2: "Messages envoyés aux patients",
   };
   public colors = {
     blue: "#008fff",
     light_blue: "#82f8ff",
-    dark_blue: "#1a56a7"
+    dark_blue: "#1a56a7",
+    light_steel_blue: "#B0C4DE",
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -153,8 +157,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-      "/" +
-      encodeURIComponent(pass)
+        "/" +
+        encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {
@@ -244,7 +248,24 @@ export class AccountService {
       this.globalService.url.messages + "groupStat/" + id
     );
   }
-
+  getreceivedStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "receivedStat/" + id
+    );
+  }
+  getsentStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "sentStat/" + id
+    );
+  }
+  getothersStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "otherStat/" + id
+    );
+  }
   getOptionById(id) {
     return this.globalService.call(
       RequestType.GET,
@@ -262,8 +283,8 @@ export class AccountService {
       {
         params: {
           leaveStartDate: leaveStartDate,
-          leaveEndDate: leaveEndDate
-        }
+          leaveEndDate: leaveEndDate,
+        },
       }
     );
   }

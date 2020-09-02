@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { AccountService } from "@app/features/services/account.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { ContactsService } from "@app/features/services/contacts.service";
-import { CategoryService } from "@app/features/services/category.service";
-import { FeaturesService } from "@app/features/features.service";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AccountService } from '@app/features/services/account.service';
+import { ContactsService } from '@app/features/services/contacts.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FeaturesService } from '@app/features/features.service';
 declare var $: any;
 @Component({
-  selector: "app-practician-object-detail",
-  templateUrl: "./practician-object-detail.component.html",
-  styleUrls: ["./practician-object-detail.component.scss"],
+  selector: 'app-object-detail',
+  templateUrl: './object-detail.component.html',
+  styleUrls: ['./object-detail.component.scss']
 })
-export class PracticianObjectDetailComponent implements OnInit {
+export class ObjectDetailComponent implements OnInit {
+
   public messages: any;
   itemsList = [];
   showAlert = false;
@@ -27,7 +27,6 @@ export class PracticianObjectDetailComponent implements OnInit {
     private contactsService: ContactsService,
     public router: Router,
     private route: ActivatedRoute,
-    private categoryService: CategoryService,
     private featureService: FeaturesService
   ) {
     this.messages = this.accountService.messages;
@@ -114,7 +113,7 @@ export class PracticianObjectDetailComponent implements OnInit {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate(["compte/mes-objets"]);
+        this.router.navigate(["mes-objets"]);
       });
     } else {
       this.accountService.updatePracticianObject(model).subscribe((res) => {
@@ -128,4 +127,5 @@ export class PracticianObjectDetailComponent implements OnInit {
   cancel() {
     this.router.navigate(["mes-objets"]);
   }
+
 }

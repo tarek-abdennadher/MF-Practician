@@ -1,6 +1,7 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import "~@angular/material/theming";
+@import "styles/multiselect";
 // Plus imports for other components in your app.
 /*** New fonts Montserrat **/
 @font-face {
@@ -25,6 +26,11 @@
   font-family: "Montserrat-Bold";
   src: url("./assets/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
 }
+@font-face {
+  font-family: "Montserrat-Italic";
+  src: url("./assets/fonts/Montserrat/Montserrat-Italic.ttf") format("truetype");
+}
+
 @import "~angular-notifier/styles/core.scss";
 @import "~angular-notifier/styles.scss";
 // Include the common styles for Angular Material. We include this here so that you only
@@ -52,6 +58,8 @@ $patient-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
 $patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn);
 
+$gradient: linear-gradient(102deg, #f761a1, #8c1bab 98%);
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
@@ -59,10 +67,9 @@ $patient-theme: mat-light-theme($patient-primary, $patient-accent, $patient-warn
 
 /* You can add global styles to this file, and also import other style files */
 $helssy-blue: #1a56a7;
-
-html * {
-  font-family: Montserrat;
-}
+$helssy-light-blue: #2460b4;
+$helssy-white: #fff;
+$helssy-grey: #5f5f5f;
 html,
 body {
   margin: 0;
@@ -77,7 +84,13 @@ body {
 input,
 select,
 textarea {
-  font-family: "Montserrat" !important;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
 }
 
 a {
@@ -279,3 +292,107 @@ a {
 .mat-checkbox-layout {
  margin-bottom: unset;
 }
+
+.rectangle-custom {
+  border-radius: 14px !important;
+  box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
+  background-color: $helssy-white;
+  border: none !important;
+  width: 96.7%;
+}
+
+.custom-card-message {
+  padding: unset !important;
+  background-color: rgba(243, 243, 243, 0.5);
+}
+
+
+/* ============= Mat-tab styles overrides =========== */
+
+.mat-tab-header {
+  background-color:$helssy-white  !important;
+  border-radius: 20px 20px 0 0 !important;
+}
+
+.mat-tab-label-active {
+  color: $helssy-light-blue !important;
+}
+
+.mat-tab-group.mat-background-primary .mat-tab-label {
+  color: $helssy-grey ;
+  font-family: Montserrat-Medium !important;
+  font-size: 13px !important;
+  font-weight: 1000 !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  line-height: normal !important;
+  letter-spacing: -0.18px !important;
+  text-align: center !important;
+  margin-left: 8.3%;
+  opacity: unset;
+}
+
+//#mat-tab-label-0-0, #mat-tab-label-1-0 {
+//  margin-left: 0;
+//}
+ [aria-posinset = "1"] {
+   margin-left: 23px !important;
+ }
+
+.mat-tab-group {
+ border-radius: 54px !important;
+}
+
+.mat-ink-bar {
+  background-color: $helssy-light-blue !important;
+  height: 5px  !important;
+  margin-left: 6px;
+}
+.mat-tab-body-content {
+  overflow: hidden !important;
+}
+
+
+/* ================================================== */
+
+
+
+/* ============= custom size styles ============ */
+
+.pr-custom-11px {
+  padding-right: 11px;
+}
+
+/* ============================================= */
+
+//success message
+.notifier__notification--material {
+  height: 63px;
+  background-image: $gradient;
+  line-height: 39px;
+  font-weight: 1000;
+  border-radius: 27px 27px 0 27px;
+}
+
+/* ============= custom size styles ============ */
+
+@media only screen and (max-width: 899px) {
+  .rectangle-custom {
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 1380px) {
+  .mat-tab-group.mat-background-primary .mat-tab-label {
+    margin-left: unset;
+  }
+}
+/* ============================================= */
+
+/* ============= flags of phone component ============ */
+::ng-deep {
+  .flag {
+    background-image: url('assets/imgs/flags.jpg') !important;
+      }
+      }
+      /* ============================================= */
+

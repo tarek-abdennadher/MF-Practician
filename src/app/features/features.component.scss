@@ -11,7 +11,7 @@
 }
 
 .main-container {
-  margin-left: 340px;
+  margin-left: 374px;
   margin-top: 100px;
   padding: 15px;
   -ms-overflow-x: hidden;
@@ -23,7 +23,7 @@
 .collapsed {
   margin-left: 60px;
 }
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1183px) {
   .main-container {
     margin-left: 0px !important;
     margin-top: 155px;
@@ -47,4 +47,11 @@
 }
 ::ng-deep .list-group-item {
   font-weight: normal !important;
+}
+
+@media only screen and (max-width: 899px) {
+  .main-container {
+    padding: unset;
+    margin-top: 90px;
+  }
 }

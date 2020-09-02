@@ -1,4 +1,3 @@
-
 <lib-hlsLinks
   [links]="links"
   [page]="page"
@@ -30,8 +29,10 @@
   (downloadAction)="download($event)"
   [attachements]="attachements"
 >
-  ></lib-hlsMessagingDetail
->
+</lib-hlsMessagingDetail>
+<div class="reply">
+  <router-outlet></router-outlet>
+</div>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">

@@ -1,0 +1,141 @@
+$hlessy-dark-grey: #344448;
+$hlessy-blue: #2460b4;
+$helssy_white: #ffffff;
+$color-helssy-grey: #6e819bd4;
+/* Navbar */
+.Rectangle {
+  border-radius: 6px;
+  box-shadow: 0 2px 12px 4px rgba(56, 96, 165, 0.1);
+  background-color: $helssy_white;
+    max-width: 540px;
+}
+.Mes-informations {
+  font-family: Montserrat-Medium;
+  font-size: 16px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.2px;
+  color: $hlessy-blue;
+  padding: 21px 18px 21px 18px;
+}
+.fa-icon{
+  font-size: 18px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  text-align: left;
+  color: $hlessy-blue;
+  padding: 26px 0px 26px 40px;
+}
+/* Informations */
+.Rectangle-body {
+  background-color: rgba(242, 242, 242, 0.75);
+  max-width: 540px;
+}
+.col-form-label{
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: #4a4a4a;
+}
+/* Form */
+.form-control{
+  border-radius: 6px;
+  background-color:$helssy_white;
+  border-color:$helssy_white;;
+}
+input[type="checkbox"]{
+  width: 15px;
+  height: 15px;
+}
+input[type="checkbox"]:checked, input[type="checkbox"]:focus {
+background-color: #1a56a7 ;
+}
+.btn.btn-primary{
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border-color: transparent;
+  background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
+}
+.alert.alert-danger{
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: rgba(248, 46, 108, 0.9);
+  //Button CSS
+  border-radius: 6px;
+  border: solid 1px #f82e6c;
+  background-color: #ffffff;
+}
+.btn.btn-cancel{
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: rgba(248, 46, 108, 0.9);
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border: solid 1px #f82e6c;
+}
+// placeholder CSS
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}

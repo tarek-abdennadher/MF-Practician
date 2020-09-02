@@ -20,6 +20,7 @@ import { CategoryService } from "@app/features/services/category.service";
 import { MyPatientsService } from "@app/features/services/my-patients.service";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { GlobalService } from "@app/core/services/global.service";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -31,6 +32,7 @@ export class PersonalInformationsComponent implements OnInit {
   @Input("practicianId") practicianId;
 
   specialities: Array<Speciality>;
+  specialitiesContainingDeleted: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
   passwordErrorMessage = "";
@@ -55,7 +57,7 @@ export class PersonalInformationsComponent implements OnInit {
   public phones = new Array();
   public isPhonesValid = false;
   failureAlert = false;
-  image: string | ArrayBuffer;
+  image: string | ArrayBuffer | SafeUrl;
   hasImage = false;
   nodeId: any;
   mesCategories: any = [];
@@ -69,6 +71,7 @@ export class PersonalInformationsComponent implements OnInit {
     secretary: string;
     user: string;
   };
+  accountId: number;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -80,7 +83,8 @@ export class PersonalInformationsComponent implements OnInit {
     private categoryService: CategoryService,
     private patientService: MyPatientsService,
     private globalService: GlobalService,
-    private jobTitlePipe: JobtitlePipe
+    private jobTitlePipe: JobtitlePipe,
+    private sanitizer: DomSanitizer
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -162,6 +166,7 @@ export class PersonalInformationsComponent implements OnInit {
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
       this.specialities = specialitiesList;
+      this.specialitiesContainingDeleted = specialitiesList;
     });
   }
 
@@ -179,14 +184,11 @@ export class PersonalInformationsComponent implements OnInit {
   getPersonalInfo() {
     this.accountService.getCurrentAccount().subscribe((account) => {
       if (account && account.practician) {
+        this.accountId = account.id;
         this.account = account.practician;
         this.otherPhones.next(account.otherPhones);
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        } else {
-          this.image = this.avatars.doctor;
-        }
+        this.hasImage = true;
+        this.getPictureProfile(account.id);
         this.infoForm.patchValue({
           id: account.practician.id ? account.practician.id : null,
           email: account.email ? account.email : "",
@@ -225,12 +227,8 @@ export class PersonalInformationsComponent implements OnInit {
       } else if (account && account.secretary) {
         this.account = account.secretary;
         this.otherPhones.next(account.otherPhones);
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        } else {
-          this.image = this.avatars.secretary;
-        }
+        this.hasImage = true;
+        this.getPictureProfile(account.id);
         this.infoForm.patchValue({
           id: account.secretary.id ? account.secretary.id : null,
           email: account.email ? account.email : "",
@@ -262,6 +260,9 @@ export class PersonalInformationsComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
+    if (this.account.speciality && this.account.speciality.deleted) {
+      this.specialitiesContainingDeleted.push(this.account.speciality);
+    }
     let model;
     if (this.isPractician) {
       model = {
@@ -278,7 +279,7 @@ export class PersonalInformationsComponent implements OnInit {
           additionalEmail: this.infoForm.value.additionalEmail,
           speciality:
             this.infoForm.value.speciality != null
-              ? this.specialities.find(
+              ? this.specialitiesContainingDeleted.find(
                   (s) => s.id == this.infoForm.value.speciality
                 )
               : null,
@@ -345,14 +346,16 @@ export class PersonalInformationsComponent implements OnInit {
   }
 
   // initialise profile picture
-  getPictureProfile(nodeId) {
-    this.documentService.downloadFile(nodeId).subscribe(
+  getPictureProfile(id) {
+    this.documentService.getDefaultImage(id).subscribe(
       (response) => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
-          this.image = myReader.result;
+          this.image = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
       (error) => {
         this.image = this.avatars.user;
@@ -403,13 +406,24 @@ export class PersonalInformationsComponent implements OnInit {
   }
 
   deletePicture() {
-    if (this.isPractician) {
-      this.image = this.avatars.doctor;
-    } else {
-      this.image = this.avatars.secretary;
-    }
-    this.account.photoId = null;
-    this.hasImage = false;
+    this.documentService
+      .getLettersImageEntity(this.accountId, "ACCOUNT")
+      .subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            this.image = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+            this.account.photoId = null;
+            this.hasImage = true;
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        (error) => {
+          this.image = this.avatars.user;
+        }
+      );
   }
   handleError = (err) => {
     if (err && err.error && err.error.apierror) {

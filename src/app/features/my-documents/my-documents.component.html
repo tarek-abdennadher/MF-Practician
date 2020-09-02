@@ -5,6 +5,7 @@
       [types]="documentTypes"
       [page]="page"
       [topText]="topText"
+      [number]="number"
       [backButton]="backButton"
       (backButtonAction)="goBack()"
       (typeAction)="filter($event)"
@@ -20,7 +21,7 @@
       [imageSource]="imageSource"
     ></lib-hls-generic-list>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-7 list">
     <router-outlet></router-outlet>
   </div>
 </div>

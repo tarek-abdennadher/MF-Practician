@@ -1,16 +1,33 @@
-<div class="form-inline">
-  <div class="col-md-12">
-    <lib-hlsMessagingList
-      [list]="itemList"
-      [imageSource]="imageSource"
-      [caller]="'myDocuments'"
-      (downloadAction)="downloadFile($event)"
-      (visualizeAction)="visualizeFile($event)"
-      [isCheckbox]="false"
-    ></lib-hlsMessagingList>
+<div class="container">
+  <div class="card-deck">
+    <div class="card Rectangle mb-4">
+      <div
+        class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 form-inline titles"
+      >
+        <div id="cercle">
+          <i class="fas fa-file-plus"></i>
+        </div>
+        <div>
+          <p class="text-bold col-12 top">&nbsp;&nbsp; Documents reçus</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-inline">
+          <div class="col-md-12">
+            <lib-hls-document-grid
+              [list]="itemList"
+              [imageSource]="imageSource"
+              [caller]="'myDocuments'"
+              (downloadAction)="downloadFile($event)"
+              (visualizeAction)="visualizeFile($event)"
+              [isCheckbox]="false"
+            ></lib-hls-document-grid>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
 <div
   class="search-results"
   infiniteScroll

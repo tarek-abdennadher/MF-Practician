@@ -1,161 +1,174 @@
+$hlessy-dark-grey: #344448;
+$hlessy-blue: #2460b4;
+$helssy_white: #ffffff;
 $color-helssy-grey: #6e819bd4;
-$helsey_blue: #1a56a7;
-$input-color: #f1f1f1;
-.title {
-  color: $helsey_blue;
-  i,
-  hr {
-    margin-left: 10px;
-  }
-  span {
-    font-weight: bold;
-  }
+/* Navbar */
+.Rectangle {
+  border-radius: 6px;
+  box-shadow: 0 2px 12px 4px rgba(56, 96, 165, 0.1);
+  background-color: $helssy_white;
+  max-width: 600px;
 }
-.card {
-  border-radius: 0.4rem;
-  border: none;
+.title {
+  display: flex;
+  align-items: center;
+  padding-left: 0px;
+}
+.Mes-informations {
+  font-family: "Montserrat-Medium";
+  font-size: 16px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.2px;
+  color: $hlessy-blue;
+  padding: 20px 12px 20px 0px;
+}
+.fa-icon {
+  font-size: 23px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  text-align: left;
+  color: $hlessy-blue;
+  padding: 20px 0px 20px 35px;
+}
+/* Informations */
+.Rectangle-body {
+  background-color: rgba(242, 242, 242, 0.75);
+  max-width: 600px;
 }
 .col-form-label {
-  font-size: 15px !important;
-  color: $color-helssy-grey;
-  font-family: "Montserrat-Medium" !important;
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: #4a4a4a;
 }
-.container {
-  max-width: unset;
+/* Form */
+.form-control {
+  border-radius: 6px;
+  background-color: $helssy_white;
+  border-color: $helssy_white;
 }
-input,
-select {
-  border-color: $input-color;
-  background-color: $input-color;
-}
-.btn-icon {
-  max-width: 50px;
-  background-color: #41bddf;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-weight: lighter;
-  height: calc(1.5em + 0.75rem + 2px);
-}
-.btn-icon:hover {
-  background-color: RoyalBlue;
-}
-input[type="date"] {
-  height: calc(1.5em + 0.75rem + 2px);
-}
-select {
-  height: calc(1.5em + 0.75rem + 2px);
-}
-input[type="date"]::-webkit-inner-spin-button {
-  opacity: 0;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  background: url(https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/calendar-16.png)
-    center/80% no-repeat;
-  color: rgba(0, 0, 0, 0);
-  opacity: 0.5;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  background: url(https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/calendar-16.png)
-    center/80% no-repeat;
-  opacity: 0.8;
-}
-
-.avatar {
-  vertical-align: middle;
-  width: 100px;
-  height: 100px;
+.profile-picture {
+  width: 95px;
+  height: 95px;
   border-radius: 50%;
 }
 .border-avatar {
-  border: solid;
-  border-color: #727272;
+  width: 95px;
+  height: 95px;
+  border-color: $helssy_white;
 }
-.btn {
-  border: 0px;
-  border-radius: 0.4rem;
-  color: white;
-}
-.btn-primary {
-  background-color: #41bddf !important;
-  text-align: center !important;
-}
-.btn-success {
-  background-color: #74c720;
-}
-.btn-danger {
-  background-color: #c74020 !important;
-  text-align: center !important;
-}
-.add-btn {
-  width: 100% !important;
-  height: 100% !important;
-  border: 1px solid #f1f1f1;
-  background-color: #f1f1f1;
-  border-radius: 0.2rem;
-  box-shadow: none;
-  margin-bottom: 15px;
-  min-height: 100%;
-  min-width: 100%;
-  color: $helsey_blue;
-  span {
-    display: block;
+::ng-deep {
+  international-phone-number.form-control.disabled {
+    border-color: $helssy_white;
+    background-color: $helssy_white;
+  }
+  international-phone-number button.dropbtn.btn {
+    border-color: $helssy_white;
+    background-color: $helssy_white;
   }
 }
-#checkstrength {
-  text-align: center;
+::ng-deep {
+  international-phone-number .form-control {
+    height: 30px !important;
+    border-color: $helssy_white;
+    background-color: $helssy_white;
+  }
+  international-phone-number .dropdown button.dropbtn.btn,
+  button.dropbtn.btn:hover {
+    border-color: $helssy_white;
+    background-color: $helssy_white;
+    padding: 4px !important;
+    height: 30px !important;
+  }
+  international-phone-number .dropdown button.dropbtn.btn .arrow-down {
+    border-bottom: $helssy_white;
+  }
 }
-.link1 {
-  color: $color-helssy-grey;
-  font-size: 14px;
-}
-.pointer {
-  cursor: pointer;
-}
-
-.fit-content {
-  width: 180px;
-}
-
-input[type="file"] {
-  display: none;
-}
-.input-icons i {
-  position: absolute;
-}
-.icon {
-  color: $color-helssy-grey;
-  width: 40px;
-  text-align: right;
-  font-size: 17px;
-  padding: 12px;
-}
-.calender.form-control {
-  padding: 6px 6px 6px 50px !important;
-}
-
-.phone {
-  background: $input-color 0% 0% no-repeat padding-box;
-  opacity: 1;
-  border-color: $input-color !important;
-  font-family: "Montserrat";
-  font-size: 17px;
-  line-height: 24px;
-  height: 50px;
-}
-// buttons add phone CSS
 .btn-icon {
-  max-width: 40px;
-  color: white;
-  cursor: pointer;
-  font-weight: lighter;
-  background: #41bddf 0% 0% no-repeat padding-box;
-  border-radius: 5px;
-  opacity: 1;
+  background-color: #1a56a7;
+  border-color: #1a56a7;
+  border-radius: 6px;
+  color: $helssy_white;
   height: 40px;
+  width: 40px;
 }
-.form-control{
+.btn.btn-primary {
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  //Button CSS
   height: 40px;
+  border-radius: 6px;
+  border-color: transparent;
+  background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
+  width: 169px;
+  margin-right: 32px;
 }
+.btn.btn-cancel {
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: rgba(248, 46, 108, 0.9);
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border: solid 1px #f82e6c;
+  width: 169px;
+}
+.alert.alert-success {
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: $helssy_white;
+  //Button CSS
+  border-radius: 6px;
+  border: solid 1px transparent;
+  background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
+}
+.alert.alert-danger {
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: rgba(248, 46, 108, 0.9);
+  //Button CSS
+  border-radius: 6px;
+  border: solid 1px #f82e6c;
+  background-color: #ffffff;
+  text-align: center;
+  margin-left: 15px;
+}
+/* ============= flags of phone component ============ */
+::ng-deep {
+  .flag {
+    background-image: url("assets/imgs/flags.jpg") !important;
+  }
+}
+/* ============================================= */

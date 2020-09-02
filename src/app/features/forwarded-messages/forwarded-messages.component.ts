@@ -8,20 +8,23 @@ import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-forwarded-messages",
   templateUrl: "./forwarded-messages.component.html",
-  styleUrls: ["./forwarded-messages.component.scss"],
+  styleUrls: ["./forwarded-messages.component.scss"]
 })
 export class ForwardedMessagesComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
-  imageSource : string;
+  imageSource: string;
   links = {
     isAllSelect: true,
     isFilter: false,
     isArchieve: true,
+    isPagination: true,
+    isRefresh: true
   };
   page = "INBOX";
   number = 0;
@@ -32,7 +35,15 @@ export class ForwardedMessagesComponent implements OnInit {
   selectedObjects: Array<any>;
   filtredItemList: Array<any> = new Array();
   private readonly notifier: NotifierService;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string;tls: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
   constructor(
     notifierService: NotifierService,
     private route: ActivatedRoute,
@@ -40,7 +51,8 @@ export class ForwardedMessagesComponent implements OnInit {
     public router: Router,
     private messageService: MessageService,
     private featureService: FeaturesService,
-    private documentService: MyDocumentsService
+    private documentService: MyDocumentsService,
+    private sanitizer: DomSanitizer
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -49,12 +61,12 @@ export class ForwardedMessagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.featureService.setActiveChild("sent");
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       if (params["status"] == "archiveSuccess") {
         this.notifier.show({
           message: this.globalService.toastrMessages.archived_message_success,
           type: "info",
-          template: this.customNotificationTmpl,
+          template: this.customNotificationTmpl
         });
       }
     });
@@ -67,40 +79,24 @@ export class ForwardedMessagesComponent implements OnInit {
       .forwardedMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
-        messages.forEach((message) => {
+        messages.forEach(message => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
-          messageSent.users.forEach((user) => {
-            if (user.photoId) {
-              this.documentService.downloadFile(user.photoId).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  user.img = this.avatars.user;
-                }
-              );
-            } else {
-              if (user.type == "PRACTICIAN" || user.type == "MEDICAL") {
-                user.img = this.avatars.doctor;
-              } else if (user.type == "SECRETARY") {
-                user.img = this.avatars.secretary;
-              }else if (user.type == "TELESECRETARYGROUP") {
-                user.img = this.avatars.tls;
-              } else if (user.type == "PATIENT") {
-                if (user.civility == "M") {
-                  user.img = this.avatars.man;
-                } else if (user.civility == "MME") {
-                  user.img = this.avatars.women;
-                } else if (user.civility == "CHILD") {
-                  user.img = this.avatars.child;
-                }
+          messageSent.users.forEach(user => {
+            this.documentService.getDefaultImage(user.id).subscribe(
+              response => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = e => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              error => {
+                user.img = this.avatars.user;
               }
-            }
+            );
           });
           this.itemsList.push(messageSent);
           this.filtredItemList = this.itemsList;
@@ -127,10 +123,10 @@ export class ForwardedMessagesComponent implements OnInit {
           ? 100
           : message.toReceivers[0].seen
           ? 50
-          : 20,
+          : 20
     };
     messageSent.users = [];
-    message.toReceivers.forEach((r) => {
+    message.toReceivers.forEach(r => {
       messageSent.users.push({
         fullName: r.fullName,
         img: this.imageSource,
@@ -138,11 +134,12 @@ export class ForwardedMessagesComponent implements OnInit {
         type: r.role,
         photoId: r.photoId,
         civility: r.civility,
+        id: r.receiverId
       });
     });
     messageSent.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageSent.time = message.createdAt;
     messageSent.isImportant = message.important;
@@ -154,30 +151,24 @@ export class ForwardedMessagesComponent implements OnInit {
 
   parseMessages(messages) {
     let parsedMessages = [];
-    messages.forEach((message) => {
+    messages.forEach(message => {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
-      messageSent.users.forEach((user) => {
-        if (user.photoId) {
-          this.documentService.downloadFile(user.photoId).subscribe(
-            (response) => {
-              let myReader: FileReader = new FileReader();
-              myReader.onloadend = (e) => {
-                user.img = myReader.result;
-              };
-              let ok = myReader.readAsDataURL(response.body);
-            },
-            (error) => {
-              user.img = "assets/imgs/user.png";
-            }
-          );
-        } else {
-          if (user.type == "PRACTICIAN") {
-            user.img = "assets/imgs/avatar_docteur.svg";
-          } else if (user.type == "SECRETARY") {
-            user.img = "assets/imgs/avatar_secrétaire.svg";
+      messageSent.users.forEach(user => {
+        this.documentService.getDefaultImage(user.id).subscribe(
+          response => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = e => {
+              user.img = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
+            };
+            let ok = myReader.readAsDataURL(response);
+          },
+          error => {
+            user.img = "assets/imgs/user.png";
           }
-        }
+        );
       });
       parsedMessages.push(messageSent);
     });
@@ -187,18 +178,18 @@ export class ForwardedMessagesComponent implements OnInit {
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "forwarded",
-      },
+        context: "forwarded"
+      }
     });
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = false;
     });
   }
@@ -216,18 +207,23 @@ export class ForwardedMessagesComponent implements OnInit {
   }
   archieveActionClicked() {
     const messagesId = this.filtredItemList
-      .filter((e) => e.isChecked == true)
-      .map((e) => e.id);
+      .filter(e => e.isChecked == true)
+      .map(e => e.id);
     if (messagesId.length > 0) {
       this.messageService.markMessageAsArchived(messagesId).subscribe(
-        (resp) => {
-          this.itemsList = this.itemsList.filter(elm => !messagesId.includes(elm.id))
-          this.filtredItemList = this.filtredItemList.filter(elm => !messagesId.includes(elm.id))
+        resp => {
+          this.itemsList = this.itemsList.filter(
+            elm => !messagesId.includes(elm.id)
+          );
+          this.filtredItemList = this.filtredItemList.filter(
+            elm => !messagesId.includes(elm.id)
+          );
           this.deleteElementsFromInbox(messagesId.slice(0));
           this.featureService.archiveState.next(true);
-          this.featureService.numberOfForwarded = this.featureService.numberOfForwarded - messagesId.length;
+          this.featureService.numberOfForwarded =
+            this.featureService.numberOfForwarded - messagesId.length;
         },
-        (error) => {
+        error => {
           console.log("We have to find a way to notify user by this error");
         }
       );
@@ -236,14 +232,17 @@ export class ForwardedMessagesComponent implements OnInit {
   archieveMessage(event) {
     let messageId = event.id;
     this.messageService.markMessageAsArchived([messageId]).subscribe(
-      (resp) => {
+      resp => {
         this.itemsList = this.itemsList.filter(elm => messageId != elm.id);
-        this.filtredItemList = this.filtredItemList.filter(elm => messageId != elm.id)
+        this.filtredItemList = this.filtredItemList.filter(
+          elm => messageId != elm.id
+        );
         this.deleteElementsFromInbox([messageId]);
         this.featureService.archiveState.next(true);
-        this.featureService.numberOfForwarded = this.featureService.numberOfForwarded - 1;
+        this.featureService.numberOfForwarded =
+          this.featureService.numberOfForwarded - 1;
       },
-      (error) => {
+      error => {
         console.log("We have to find a way to notify user by this error");
       }
     );
@@ -253,7 +252,7 @@ export class ForwardedMessagesComponent implements OnInit {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(
-            (item) =>
+            item =>
               item.users[0].type.toLowerCase() ==
               (event == "doctor"
                 ? "medical"
@@ -263,12 +262,12 @@ export class ForwardedMessagesComponent implements OnInit {
           );
   }
   selectItem(event) {
-    this.selectedObjects = event.filter((a) => a.isChecked == true);
+    this.selectedObjects = event.filter(a => a.isChecked == true);
   }
 
   deleteElementsFromInbox(ids) {
     let searchList = this.featureService.getSearchSentValue();
-    searchList = searchList.filter(x => !ids.includes(x.id))
+    searchList = searchList.filter(x => !ids.includes(x.id));
     this.featureService.setSearchSent(searchList);
   }
 
@@ -276,19 +275,23 @@ export class ForwardedMessagesComponent implements OnInit {
     this.featureService.getFilteredSentSearch().subscribe(res => {
       if (res == null) {
         this.filtredItemList = [];
-      }
-      else if (res?.length > 0) {
+      } else if (res?.length > 0) {
         this.filtredItemList = res;
-      }
-      else {
+      } else {
         this.filtredItemList = this.itemsList;
       }
-    })
+    });
   }
 
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
+  }
+
+  refreshMessagingList() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.ngOnInit();
   }
 }

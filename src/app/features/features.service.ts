@@ -5,9 +5,10 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { LocalStorageService } from "ngx-webstorage";
 import * as jwt_decode from "jwt-decode";
 import { search } from "./practician-search/search.model";
+import { SafeUrl } from "@angular/platform-browser";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class FeaturesService {
   public listNotifications = [];
@@ -20,12 +21,19 @@ export class FeaturesService {
   numberOfProhibited: number = 0;
   numberOfArchivedPatient: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  public imageSource: string | ArrayBuffer;
+  public imageSource: string | ArrayBuffer | SafeUrl;
   private searchSource = new BehaviorSubject(new search());
   currentSearch = this.searchSource.asObservable();
   initialSearch = false;
   public fullName: string;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
 
   public searchInboxFiltered = new BehaviorSubject([]);
   public searchInbox = new BehaviorSubject([]);
@@ -47,14 +55,12 @@ export class FeaturesService {
 
   public isMessaging = new BehaviorSubject<boolean>(false);
 
-
   constructor(
     private globalService: GlobalService,
     private localSt: LocalStorageService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
   getNumberOfPendingObs() {
     return this._numberOfPending.asObservable();
@@ -171,14 +177,63 @@ export class FeaturesService {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
       }
-    })
+    });
     obsList.next(val);
+  }
+
+  markAsSeenById(obsList, ids) {
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id) && !elm.isSeen) {
+        elm.isSeen = true;
+        this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
+      }
+    });
+  }
+
+  markAsNotSeenById(obsList, ids) {
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id) && elm.isSeen) {
+        elm.isSeen = false;
+        this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
+      }
+    });
+  }
+
+  removeNotificationByIdMessage(ids) {
+    let i = 0;
+    let copyListNotifications = [...this.listNotifications];
+    for (let elm of this.listNotifications) {
+      if (ids.includes(elm.messageId)) {
+        copyListNotifications.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+    this.listNotifications = copyListNotifications;
+  }
+
+  addNotificationByIdMessage(obsList, ids) {
+    obsList.forEach(elm => {
+      if (ids.includes(elm.id)) {
+        let notif = {
+          civility: elm.users[0].civility,
+          id: elm.users[0].id,
+          messageId: elm.id,
+          photoId: elm.photoId,
+          picture: elm.users[0].img,
+          role: elm.users[0].type,
+          sender: elm.users[0].fullName,
+          type: "MESSAGE"
+        };
+        this.listNotifications.push(notif);
+      }
+    });
   }
 
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
-      list.find((p) => p.id == accountId).number = inboxNumber;
+      list.find(p => p.id == accountId).number = inboxNumber;
     }
     this.myPracticians.next(list);
   }
@@ -201,9 +256,9 @@ export class FeaturesService {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.BASE_URL_MA +
-      "/notifications/" +
-      notidId +
-      "/markAsSeen"
+        "/notifications/" +
+        notidId +
+        "/markAsSeen"
     );
   }
 
@@ -211,16 +266,16 @@ export class FeaturesService {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.BASE_URL_MA +
-      "/notifications/" +
-      senderId +
-      "/INVITATION/markAsSeen"
+        "/notifications/" +
+        senderId +
+        "/INVITATION/markAsSeen"
     );
   }
   markReceivedNotifAsSeen() {
     return this.globalService.call(
       RequestType.POST,
       this.globalService.BASE_URL_MA +
-      "/notifications/markAsSeenByType/INVITATION"
+        "/notifications/markAsSeenByType/INVITATION"
     );
   }
 
@@ -279,6 +334,18 @@ export class FeaturesService {
   }
 
   public firstLetterUpper(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  checkIfSendPostalEnabled() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.option + "/check-postal/" + this.getUserId()
+    );
+  }
+  activateSendPostal() {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.option + "/activate-postal/" + this.getUserId()
+    );
   }
 }

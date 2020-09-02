@@ -1,0 +1,113 @@
+
+$sapphire: #1a56a7;
+
+.label {
+  height: 19px;
+  font-size: 16px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #b7b7b7;
+  padding-top: 11px;
+  margin-bottom: 0;
+}
+
+.label-free-object {
+  height: 19px;
+  font-size: 16px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #b7b7b7;
+  margin-bottom: 0;
+}
+
+#send-button,#send-button-instruction{
+  width: 142px;
+  height: 46px;
+  border-radius: 6px;
+  font-weight: 1000;
+  background-color: $sapphire; ;
+}
+
+.action-btn{
+  font-size: 20px;
+  padding-top: 16px;
+  cursor: pointer;
+}
+
+::ng-deep{
+  .invalid{
+    .selected-list .c-btn{
+      border: solid 0.5px !important;
+      border-color: red !important;
+    }
+    .ck.ck-editor {
+      border: solid 0.5px;
+      border-color: red;
+    }
+    border: solid 0.5px !important;
+    border-color: red !important;
+  }
+}
+
+a {
+  color: #8ab4f8;
+}
+::deep {
+  .notifier__container {
+    color: #fff;
+  }
+}
+
+.loading{
+  color: black;
+  display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+}
+
+#loading-img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+}
+#card-gif{
+  border-radius: 28px;
+}
+
+#attachement {
+  width: 205px;
+  height: 30px;
+  border-radius: 15px;
+  border: solid 1px $sapphire;
+  background-color: rgba(198, 213, 233, 0.3);
+  position: absolute;
+  bottom: 8px;
+}
+
+#attachement-label{
+  text-align: center;
+  color: $sapphire;
+  font-weight: 1000;
+  font-size: 12px;
+
+}
+
+#attachement-button,
+#clear-button {
+  color: rgba(74, 74, 74, 0.8);
+}
+
+#input-free-object{
+  margin-left: 8px;
+}
+
+

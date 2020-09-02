@@ -7,6 +7,7 @@ import { TeleSecretariesComponent } from './tele-secretaries/tele-secretaries.co
 import { FacturesComponent } from './factures/factures.component';
 import { StatsComponent } from './stats/stats.component';
 import { MyLeavesComponent } from './my-leaves/my-leaves.component';
+import { SecretaryDetailsComponent } from '@app/shared/components/secretary-details/secretary-details.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,13 @@ const routes: Routes = [
       },
       {
         path: "mes-secretaires",
-        component: MySecretariesComponent
+        component: MySecretariesComponent,
+        children: [
+          {
+            path: "secretaire-detail/:id",
+            component: SecretaryDetailsComponent,
+          }
+        ]
       },
       {
         path: "mon-telesecretariat",

@@ -1,37 +1,46 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
-import { AccountService } from '@app/features/services/account.service';
-import { ContactsService } from '@app/features/services/contacts.service';
-import { Router } from '@angular/router';
-import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
-import { GlobalService } from '@app/core/services/global.service';
-import { FeaturesService } from '@app/features/features.service';
+import { Component, OnInit, Input } from "@angular/core";
+import { FormGroup, FormBuilder, FormArray, FormControl } from "@angular/forms";
+import { AccountService } from "@app/features/services/account.service";
+import { ContactsService } from "@app/features/services/contacts.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
+import { GlobalService } from "@app/core/services/global.service";
+import { FeaturesService } from "@app/features/features.service";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-secretary-details',
-  templateUrl: './secretary-details.component.html',
-  styleUrls: ['./secretary-details.component.scss']
+  selector: "app-secretary-details",
+  templateUrl: "./secretary-details.component.html",
+  styleUrls: ["./secretary-details.component.scss"]
 })
 export class SecretaryDetailsComponent implements OnInit {
   public infoForm: FormGroup;
-  @Input("secertaryId") secertaryId: number = null;
   public messages: any;
   public labels: any;
   isPractician = true;
   links = {};
   selectedSecretary: any;
-  image: string | ArrayBuffer;
+  image: string | ArrayBuffer | SafeUrl;
   hasImage = false;
   isLabelShow: boolean;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
   constructor(
     private accountService: AccountService,
     private contactsService: ContactsService,
     public router: Router,
+    private route: ActivatedRoute,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private sanitizer: DomSanitizer
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -43,7 +52,9 @@ export class SecretaryDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSecretary(this.secertaryId);
+    this.route.params.subscribe(params => {
+      this.getSecretary(params["id"]);
+    });
     this.featureService.setIsMessaging(false);
   }
   initInfoForm() {
@@ -70,16 +81,19 @@ export class SecretaryDetailsComponent implements OnInit {
 
   getSecretary(id) {
     this.initInfoForm();
-    this.accountService.getAccountById(id).subscribe((value) => {
+    this.accountService.getAccountById(id).subscribe(value => {
       this.selectedSecretary = value;
-      if (value.secretary.photoId) {
-        this.hasImage = true;
-        this.getPictureProfile(value.secretary.photoId);
-      }
-      if (this.selectedSecretary?.otherPhones && this.selectedSecretary?.otherPhones.length != 0) {
+      this.hasImage = true;
+      this.getPictureProfile(value.id);
+
+      if (
+        this.selectedSecretary?.otherPhones &&
+        this.selectedSecretary?.otherPhones.length != 0
+      ) {
         this.isLabelShow = true;
         this.selectedSecretary.otherPhones.forEach(p =>
-          this.phoneList.push(this.updatePhone(p)));
+          this.phoneList.push(this.updatePhone(p))
+        );
       }
       this.infoForm.patchValue({
         id: value.id,
@@ -96,16 +110,18 @@ export class SecretaryDetailsComponent implements OnInit {
     });
   }
   // initialise profile picture
-  getPictureProfile(nodeId) {
-    this.documentService.downloadFile(nodeId).subscribe(
-      (response) => {
+  getPictureProfile(id) {
+    this.documentService.getDefaultImage(id).subscribe(
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          this.image = myReader.result;
+        myReader.onloadend = e => {
+          this.image = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         this.image = this.avatars.secretary;
       }
     );

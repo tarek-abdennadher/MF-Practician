@@ -1,14 +1,24 @@
 import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
-import { Observable } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class MessagingDetailService {
+  public id = new BehaviorSubject(null);
   constructor(private globalService: GlobalService) {}
 
+  getIdValue() {
+    return this.id.getValue();
+  }
+  getIdObs() {
+    return this.id.asObservable();
+  }
+  setId(id) {
+    this.id.next(id);
+  }
   getMessagingDetailById(id): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
@@ -24,8 +34,10 @@ export class MessagingDetailService {
   }
 
   patientsProhibitedByCurrentPractician(): Observable<number[]> {
-    return this.globalService.call(RequestType.GET, this.globalService.url.favorite +
-      "currentPractician/prohibitedPatientId");
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "currentPractician/prohibitedPatientId"
+    );
   }
   public markMessageAsImportant(ids: number[]): Observable<boolean> {
     return this.globalService.call(

@@ -1,6 +1,12 @@
-<div id="chart">
-  <apx-chart *ngIf="!emptyData" [series]="chartOptions.series" [chart]="chartOptions.chart"
-    [labels]="chartOptions.labels" [responsive]="chartOptions.responsive" [legend]="chartOptions.legend"
-    [colors]="chartOptions.colors"></apx-chart>
+<div id="chart" class="margin-right_">
+  <apx-chart
+    *ngIf="!emptyData"
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [labels]="chartOptions.labels"
+    [responsive]="chartOptions.responsive"
+    [legend]="chartOptions.legend"
+    [colors]="chartOptions.colors"
+  ></apx-chart>
   <div class="info" *ngIf="emptyData">{{ infoMessage }}</div>
 </div>

@@ -18,7 +18,7 @@
     <form [formGroup]="infoForm" #f="ngForm">
       <div class="row">
         <label for="name" class="col-12 col-sm-12 col-form-label">{{
-                labels.last_name
+                labels.category_name
               }}</label>
         <div class="col-12 col-sm-12">
           <input type="text" formControlName="name" class="form-control" id="cat-name" [ngClass]="{
@@ -33,7 +33,7 @@
       </div>
       <br />
       <div class="row justify-content-center">
-        <button type="submit" class="btn btn-primary mr-2" (click)="submit()">
+        <button type="submit" class="btn btn-primary mr-2 mb-2" (click)="submit()">
           {{ labels.validate }}
         </button>
         <button (click)="cancel()" class="btn btn-cancel">

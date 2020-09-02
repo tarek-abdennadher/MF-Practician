@@ -1,50 +1,34 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  LOCALE_ID,
-  OnDestroy,
-  ViewChild,
-  Output,
-  EventEmitter,
-} from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { BsLocaleService } from "ngx-bootstrap/datepicker";
-import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
-import { Subject, forkJoin } from "rxjs";
-import { takeUntil, tap } from "rxjs/operators";
-import { PatientFile } from "@app/shared/models/patient-file";
-import { Location } from "@angular/common";
-import { NoteService } from "@app/features/services/note.service";
-import { NotifierService } from "angular-notifier";
-import { MyPatientsService } from "../services/my-patients.service";
-import { AccountService } from "../services/account.service";
-import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { MyPatients } from "../my-patients/my-patients";
-import { CategoryService } from "../services/category.service";
-import { FeaturesService } from "../features.service";
-import { LocalStorageService } from "ngx-webstorage";
-import { GlobalService } from "@app/core/services/global.service";
+import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from '@angular/core';
+import { Subject, forkJoin } from 'rxjs';
+import { PatientFile } from '@app/shared/models/patient-file';
+import { NotifierService } from 'angular-notifier';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
-import { MessagingListService } from '../services/messaging-list.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FeaturesService } from '@app/features/features.service';
+import { AccountService } from '@app/features/services/account.service';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { MyPatientsService } from '@app/features/services/my-patients.service';
+import { CategoryService } from '@app/features/services/category.service';
+import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
+import { NoteService } from '@app/features/services/note.service';
+import { LocalStorageService } from 'ngx-webstorage';
+import { MessagingListService } from '@app/features/services/messaging-list.service';
+import { GlobalService } from '@app/core/services/global.service';
+import { defineLocale, frLocale } from 'ngx-bootstrap/chronos';
+import { takeUntil, tap } from 'rxjs/operators';
+import { MyPatients } from '@app/shared/models/my-patients';
 
 @Component({
-  selector: "app-patient-detail",
-  templateUrl: "./patient-detail.component.html",
-  styleUrls: ["./patient-detail.component.scss"],
+  selector: 'app-patient-detail',
+  templateUrl: './patient-detail.component.html',
+  styleUrls: ['./patient-detail.component.scss']
 })
 export class PatientDetailComponent implements OnInit {
+
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   noteimageSource: string;
-  page = "MY_PRACTICIANS";
   notifMessage = "";
-  links = {};
-  number = null;
-  topText = "Fiche Patient";
-  topText2 = "Historique des échanges";
-  bottomText = "";
-  backButton = true;
   placement = "right";
   practicianId: number;
   patientId: number;
@@ -69,13 +53,6 @@ export class PatientDetailComponent implements OnInit {
     user: string;
     tls: string;
   };
-  messages: Array<any> = new Array();
-  pageNo = 0;
-  direction: OrderDirection = OrderDirection.DESC;
-  itemsList: Array<any>;
-  filtredItemList: Array<any> = new Array();
-  page2 = this.globalService.messagesDisplayScreen.inbox;
-  scroll = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -84,7 +61,6 @@ export class PatientDetailComponent implements OnInit {
     private localeService: BsLocaleService,
     private patientService: MyPatientsService,
     private categoryService: CategoryService,
-    private _location: Location,
     private documentService: MyDocumentsService,
     private noteService: NoteService,
     private localStorage: LocalStorageService,
@@ -100,6 +76,7 @@ export class PatientDetailComponent implements OnInit {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.man;
     this.noteimageSource = this.avatars.user;
+    this.linkedPatientList = [];
   }
 
   ngOnInit(): void {
@@ -110,15 +87,15 @@ export class PatientDetailComponent implements OnInit {
       this.userRole = "SECRETARY"
       this.practicianId = this.featureService.selectedPracticianId;
     }
-    this.route.params.subscribe((params) => {
-      this.patientFileId = params["idAccount"];
+    this.route.queryParams.subscribe((params) => {
+      this.patientFileId = params["id"];
+      forkJoin(
+        this.getPatientFile(),
+        this.getCategories()
+      ).subscribe((res) => { });
+      this.featureService.setIsMessaging(false);
     });
-    forkJoin(
-      this.getPatientFile(),
-      this.getCategories()
-    ).subscribe((res) => { });
-    this.featureService.setIsMessaging(false);
-    this.getPatientInbox(this.pageNo);
+
   }
 
   getPatientFile() {
@@ -136,58 +113,12 @@ export class PatientDetailComponent implements OnInit {
               .pipe(takeUntil(this._destroyed$))
               .subscribe((res) => {
                 res.forEach((elm) => {
+                  this.linkedPatientList = [];
                   this.linkedPatientList.push(this.mappingLinkedPatients(elm));
                 });
                 this.linkedPatients.next(this.linkedPatientList);
               }
               );
-          }
-          this.bottomText =
-            patientFile?.firstName + " " + patientFile?.lastName;
-          if (patientFile?.photoId) {
-            this.documentService.downloadFile(patientFile.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  this.imageSource = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                if (patientFile?.civility == "MME") {
-                  this.imageSource = this.avatars.women;
-                } else {
-                  this.imageSource = this.avatars.man;
-                }
-              }
-            );
-          } else {
-            if (patientFile?.civility == "MME") {
-              this.imageSource = this.avatars.women;
-            } else {
-              if (patientFile?.civility == "CHILD") {
-                this.imageSource = this.avatars.child
-              }
-              else this.imageSource = this.avatars.man
-            }
-          }
-          if (patientFile?.practicianPhotoId != null) {
-            this.documentService
-              .downloadFile(patientFile.practicianPhotoId)
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    this.practicianImage = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  this.practicianImage = this.avatars.doctor;
-                }
-              );
-          } else {
-            this.practicianImage = this.avatars.doctor;
           }
         })
       );
@@ -258,8 +189,6 @@ export class PatientDetailComponent implements OnInit {
   }
   handleResponse = (res) => {
     if (res) {
-      this.bottomText =
-        res?.firstName + " " + res?.lastName;
       this.notifMessage = this.patientService.messages.edit_info_success;
       this.notifier.show({
         message: this.notifMessage,
@@ -267,6 +196,7 @@ export class PatientDetailComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
+      this.router.navigate(["."], { relativeTo: this.route.parent });
     } else {
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
@@ -350,28 +280,11 @@ export class PatientDetailComponent implements OnInit {
       }
     });
   }
-  goBack() {
-    this._location.back();
-  }
+
   cancelAction() {
-    this._location.back();
+    this.router.navigate(["."], { relativeTo: this.route.parent });
   }
 
-  upSortClicked() {
-    this.direction = OrderDirection.ASC;
-    this.resetList();
-  }
-
-  downSortClicked() {
-    this.direction = OrderDirection.DESC;
-    this.resetList();
-  }
-
-  resetList() {
-    this.pageNo = 0;
-    this.itemsList = [];
-    this.filtredItemList = [];
-  }
 
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
@@ -380,103 +293,11 @@ export class PatientDetailComponent implements OnInit {
       },
     });
   }
-  getPatientInbox(pageNo) {
-    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
-      this.messages = res;
-      this.messages.sort(function (m1, m2) {
-        return (
-          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
-      });
-      this.itemsList = this.messages.map((item) => this.parseMessage(item));
-      this.filtredItemList = this.itemsList;
-    });
-  }
-  getPatientNextInbox(pageNo) {
-    this.messagesServ.getMessagesByPatientFile(this.patientFileId, pageNo, this.direction).subscribe(res => {
-      this.messages = res;
-      this.messages.sort(function (m1, m2) {
-        return (
-          new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
-      });
-      this.itemsList.push(
-        ...this.messages.map((item) => this.parseMessage(item))
-      );
-      this.filtredItemList = this.itemsList;
-    });
-  }
-  parseMessage(message): any {
-    let parsedMessage = {
-      id: message.id,
-      isSeen: message.seenAsReceiver,
-      users: [
-        {
-          id: message.sender.id,
-          fullName: message.sender.fullName,
-          img: this.avatars.user,
-          title: message.sender.jobTitle,
-          civility: message.sender.civility,
-          type:
-            message.sender.role == "PRACTICIAN"
-              ? "MEDICAL"
-              : message.sender.role,
-        },
-      ],
-      object: {
-        name: message.object,
-        isImportant: message.importantObject,
-      },
-      time: message.updatedAt,
-      isImportant: message.important,
-      hasFiles: message.hasFiles,
-      photoId: message.sender.photoId,
-    };
-    if (parsedMessage.photoId) {
-      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            parsedMessage.users[0].img = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          parsedMessage.users[0].img = this.avatars.user;
-        }
-      );
-    } else {
-      parsedMessage.users.forEach((user) => {
-        if (user.type == "MEDICAL") {
-          user.img = this.avatars.doctor;
-        } else if (user.type == "SECRETARY") {
-          user.img = this.avatars.secretary;
-        } else if (user.type == "TELESECRETARYGROUP") {
-          user.img = this.avatars.tls;
-        } else if (user.type == "PATIENT") {
-          if (user.civility == "M") {
-            user.img = this.avatars.man;
-          } else if (user.civility == "MME") {
-            user.img = this.avatars.women;
-          } else if (user.civility == "CHILD") {
-            user.img = this.avatars.child;
-          }
-        }
-      });
-    }
-    return parsedMessage;
-  }
-
-  onScroll() {
-    if (this.filtredItemList.length > 9) {
-      this.pageNo++;
-      this.getPatientNextInbox(this.pageNo);
-    }
-  }
 
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
   }
+
 }

@@ -6,15 +6,16 @@ import { Location } from "@angular/common";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from "@app/core/services/global.service";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-archieve-messages",
   templateUrl: "./archieve-messages.component.html",
-  styleUrls: ["./archieve-messages.component.scss"],
+  styleUrls: ["./archieve-messages.component.scss"]
 })
 export class ArchieveMessagesComponent implements OnInit {
-  imageSource : string;
+  imageSource: string;
 
   page = "INBOX";
   number = 0;
@@ -26,12 +27,24 @@ export class ArchieveMessagesComponent implements OnInit {
   backButton = true;
   selectedObjects: Array<any>;
   itemsList = [];
+  links = {
+    isRefresh: true,
+    isPagination: true
+  };
   filtredItemList = [];
   pageNo = 0;
   scroll = false;
   searchContext: boolean;
   listLength = 0;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
   direction: OrderDirection = OrderDirection.DESC;
 
   constructor(
@@ -40,7 +53,8 @@ export class ArchieveMessagesComponent implements OnInit {
     private _location: Location,
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private sanitizer: DomSanitizer
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -55,22 +69,24 @@ export class ArchieveMessagesComponent implements OnInit {
 
   getMyMessagesArchived(pageNo: number) {
     this.scroll = true;
-    this.archivedService.getMyArchivedMessages(pageNo, this.direction).subscribe((messages) => {
-      this.scroll = false;
-      this.number = this.featureService.numberOfArchieve;
-      this.bottomText =
-        this.number > 1
-          ? this.globalService.messagesDisplayScreen.newArchivedMessages
-          : this.globalService.messagesDisplayScreen.newArchivedMessage;
-      messages.forEach((message) => {
-        let archivedMessage = this.mappingMessageArchived(message);
-        archivedMessage.users.forEach((user) => {
-          this.loadPhoto(user);
+    this.archivedService
+      .getMyArchivedMessages(pageNo, this.direction)
+      .subscribe(messages => {
+        this.scroll = false;
+        this.number = this.featureService.numberOfArchieve;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newArchivedMessages
+            : this.globalService.messagesDisplayScreen.newArchivedMessage;
+        messages.forEach(message => {
+          let archivedMessage = this.mappingMessageArchived(message);
+          archivedMessage.users.forEach(user => {
+            this.loadPhoto(user);
+          });
+          this.itemsList.push(archivedMessage);
         });
-        this.itemsList.push(archivedMessage);
+        this.filtredItemList = this.itemsList;
       });
-      this.filtredItemList = this.itemsList;
-    });
   }
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
@@ -94,7 +110,8 @@ export class ArchieveMessagesComponent implements OnInit {
           message.senderDetail.role == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
-      },
+        id: message.senderDetail.id
+      }
     ];
     messageArchived.progress = {
       name:
@@ -108,11 +125,11 @@ export class ArchieveMessagesComponent implements OnInit {
           ? 100
           : message.toReceiversArchived[0].seen
           ? 50
-          : 20,
+          : 20
     };
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
@@ -124,36 +141,20 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   loadPhoto(user) {
-    if (user.photoId) {
-      this.documentService.downloadFile(user.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            user.img = myReader.result;
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          user.img = this.avatars.user;
-        }
-      );
-    } else {
-      if (user.type == "MEDICAL") {
-        user.img =this.avatars.doctor;
-      } else if (user.type == "SECRETARY") {
-        user.img = this.avatars.secretary;
-      }else if (user.type == "TELESECRETARYGROUP") {
-        user.img = this.avatars.tls;
-      } else if (user.type == "PATIENT") {
-        if (user.civility == "M") {
-          user.img = this.avatars.man;
-        } else if (user.civility == "MME") {
-          user.img = this.avatars.women;
-        } else if (user.civility == "CHILD") {
-          user.img = this.avatars.child;
-        }
+    this.documentService.getDefaultImage(user.id).subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        user.img = this.avatars.user;
       }
-    }
+    );
   }
 
   cardClicked(item) {
@@ -162,8 +163,8 @@ export class ArchieveMessagesComponent implements OnInit {
     }
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "archive",
-      },
+        context: "archive"
+      }
     });
   }
 
@@ -172,9 +173,11 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   markMessageAsSeen(messageId) {
-    this.archivedService.markMessageAsSeen(messageId).subscribe((result) => {
+    this.archivedService.markMessageAsSeen(messageId).subscribe(result => {
       this.featureService.numberOfArchieve--;
-      this.featureService.markAsSeen(this.featureService.searchArchive, [messageId]);
+      this.featureService.markAsSeen(this.featureService.searchArchive, [
+        messageId
+      ]);
     });
   }
 
@@ -206,23 +209,21 @@ export class ArchieveMessagesComponent implements OnInit {
       if (res == null) {
         this.filtredItemList = [];
         this.searchContext = true;
-      }
-      else if (res?.length > 0) {
+      } else if (res?.length > 0) {
         this.filtredItemList = res;
         this.searchContext = true;
-      }
-      else {
+      } else {
         this.filtredItemList = this.itemsList;
         this.searchContext = false;
       }
-    })
+    });
   }
 
   mapAllMessages(messages) {
-    messages.forEach((message) => {
+    messages.forEach(message => {
       const archivedMessage = this.mappingMessageArchived(message);
-      archivedMessage.users.forEach((user) => {
-        this.loadPhoto(user)
+      archivedMessage.users.forEach(user => {
+        this.loadPhoto(user);
       });
       this.filtredItemList.push(archivedMessage);
     });
@@ -242,5 +243,12 @@ export class ArchieveMessagesComponent implements OnInit {
     this.pageNo = 0;
     this.itemsList = [];
     this.getMyMessagesArchived(this.pageNo);
+  }
+
+  refreshMessagingList() {
+    this.pageNo = 0;
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.ngOnInit();
   }
 }

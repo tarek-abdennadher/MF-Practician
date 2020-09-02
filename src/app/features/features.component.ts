@@ -16,11 +16,13 @@ import { ArchieveMessagesService } from "./archieve-messages/archieve-messages.s
 import { MessageService } from "./services/message.service";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { MessageArchived } from "./archieve-messages/message-archived";
-import { MyPatientsService } from './services/my-patients.service';
+import { MyPatientsService } from "./services/my-patients.service";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
-  styleUrls: ["./features.component.scss"],
+  styleUrls: ["./features.component.scss"]
 })
 export class FeaturesComponent implements OnInit {
   collapedSideBar: boolean;
@@ -48,7 +50,9 @@ export class FeaturesComponent implements OnInit {
     private accountService: AccountService,
     private practicianSearchService: PracticianSearchService,
     private jobTitlePipe: JobtitlePipe,
-    private patientService: MyPatientsService
+    private patientService: MyPatientsService,
+    private sanitizer: DomSanitizer,
+    private messageWidgetService: NewMessageWidgetService
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -57,28 +61,35 @@ export class FeaturesComponent implements OnInit {
   public myPracticians = [];
 
   user = this.localSt.retrieve("user");
-  fullname = this.user['firstName'] + ' ' + this.user['lastName'];
+  fullname = this.user["firstName"] + " " + this.user["lastName"];
   userRole = this.localSt.retrieve("role");
   role: string =
     this.localSt.retrieve("role") == "SECRETARY" ? "secretary" : "medical";
   links = {
     isArchieve: true,
     isImportant: true,
-    isFilter: true,
+    isFilter: true
   };
   private stompClient;
   private stompClientList = [];
 
   ngOnInit(): void {
-    let firstNameRefactored = this.featuresService.firstLetterUpper(this.user?.firstName);
+    let firstNameRefactored = this.featuresService.firstLetterUpper(
+      this.user?.firstName
+    );
     let lastNameRefactored = this.user?.lastName.toUpperCase();
-    this.featuresService.fullName = this.jobTitlePipe.transform(this.user.jobTitle) +  " " + firstNameRefactored + " " + lastNameRefactored;
+    this.featuresService.fullName =
+      this.jobTitlePipe.transform(this.user.jobTitle) +
+      " " +
+      firstNameRefactored +
+      " " +
+      lastNameRefactored;
     this.fullname = this.featuresService.fullName;
-    this.featuresService.getNumberOfInbox().subscribe((val) => {
+    this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     });
     if (this.userRole && this.userRole == "SECRETARY") {
-      this.featuresService.getSecretaryPracticians().subscribe((value) => {
+      this.featuresService.getSecretaryPracticians().subscribe(value => {
         this.featuresService.myPracticians.next(value);
         this.myPracticians = this.featuresService.myPracticians.getValue();
       });
@@ -106,19 +117,19 @@ export class FeaturesComponent implements OnInit {
   }
 
   observeState() {
-    this.featuresService.inboxState.subscribe((state) => {
+    this.featuresService.inboxState.subscribe(state => {
       if (state) {
         this.getAllInbox();
         this.featuresService.inboxState.next(false);
       }
     });
-    this.featuresService.sentState.subscribe((state) => {
+    this.featuresService.sentState.subscribe(state => {
       if (state) {
         this.sentMessage();
         this.featuresService.sentState.next(false);
       }
     });
-    this.featuresService.archiveState.subscribe((state) => {
+    this.featuresService.archiveState.subscribe(state => {
       if (state) {
         this.getAllArchive();
         this.featuresService.archiveState.next(false);
@@ -127,14 +138,14 @@ export class FeaturesComponent implements OnInit {
   }
 
   private subscribeIsMessaging() {
-    this.featuresService.getIsMessaging().subscribe((isMessaging) => {
+    this.featuresService.getIsMessaging().subscribe(isMessaging => {
       this.messaging = isMessaging;
     });
   }
 
   getAllInbox() {
-    this.messageListService.getAllInboxMessages(1000000).subscribe((res) => {
-      let result = res.map((elm) => this.parseMessage(elm));
+    this.messageListService.getAllInboxMessages(1000000).subscribe(res => {
+      let result = res.map(elm => this.parseMessage(elm));
       this.featuresService.setSearchInbox(result);
     });
   }
@@ -142,8 +153,8 @@ export class FeaturesComponent implements OnInit {
   getAllInboxByAccountId(id) {
     this.messageListService
       .getAllInboxByAccountId(id, 1000000)
-      .subscribe((res) => {
-        let result = res.map((elm) => this.parseMessage(elm));
+      .subscribe(res => {
+        let result = res.map(elm => this.parseMessage(elm));
         let inboxObs = new BehaviorSubject(result);
         this.featuresService.searchPracticianInbox.set(id, inboxObs);
         this.featuresService.searchPracticianInboxFiltered.set(
@@ -154,23 +165,23 @@ export class FeaturesComponent implements OnInit {
   }
 
   getAllArchive() {
-    this.messageArchiveService.getAllMyArchivedMessages().subscribe((res) => {
-      let list = res.map((item) => this.mapArchiveMessages(item));
+    this.messageArchiveService.getAllMyArchivedMessages().subscribe(res => {
+      let list = res.map(item => this.mapArchiveMessages(item));
       this.featuresService.setSearchArchive(list);
     });
   }
 
   sentMessage() {
-    this.messageService.sentMessage().subscribe((res) => {
+    this.messageService.sentMessage().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
     });
   }
 
   getPracticians() {
-    this.practicianSearchService.getAllPracticians().subscribe((list) => {
+    this.practicianSearchService.getSearchListPractician().subscribe(list => {
       if (this.localSt.retrieve("role") == "PRACTICIAN") {
         list = list.filter(
-          (a) => a.accountId != this.featuresService.getUserId()
+          a => a.accountId != this.featuresService.getUserId()
         );
       }
       this.featuresService.setSearchFiltredPractician(list);
@@ -179,21 +190,23 @@ export class FeaturesComponent implements OnInit {
   }
   getPatients() {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.patientService.getAllPatientFilesByPracticianId(this.featuresService.getUserId()).subscribe((list) => {
-        this.featuresService.setFilteredPatientsSearch(list);
-        this.patients = list;
-      });
+      this.patientService
+        .getAllPatientFilesByPracticianId(this.featuresService.getUserId())
+        .subscribe(list => {
+          this.featuresService.setFilteredPatientsSearch(list);
+          this.patients = list;
+        });
     }
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => { };
+    this.stompClient.debug = () => {};
     const that = this;
-    this.stompClient.connect({}, function (frame) {
+    this.stompClient.connect({}, function(frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
-        (message) => {
+        message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
             if (notification.type == "MESSAGE") {
@@ -222,19 +235,19 @@ export class FeaturesComponent implements OnInit {
   }
 
   getPracticiansRealTimeMessage() {
-    this.featuresService.getSecretaryPracticiansId().subscribe((ids) => {
+    this.featuresService.getSecretaryPracticiansId().subscribe(ids => {
       this.secretaryIds = ids;
-      this.secretaryIds.forEach((id) => {
+      this.secretaryIds.forEach(id => {
         this.getAllInboxByAccountId(id);
       });
       for (var i = 0; i < ids.length; i++) {
         let id = ids[i];
         const ws = new SockJS(this.globalService.BASE_URL + "/socket");
         this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => { };
+        this.stompClientList[i].debug = () => {};
         const that = this;
-        this.stompClientList[i].connect({}, function (frame) {
-          this.subscribe("/topic/notification/" + id, (message) => {
+        this.stompClientList[i].connect({}, function(frame) {
+          this.subscribe("/topic/notification/" + id, message => {
             if (message.body) {
               let notification = JSON.parse(message.body);
               if (
@@ -255,14 +268,14 @@ export class FeaturesComponent implements OnInit {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .subscribe((notifications) => {
-        notifications.forEach((notif) => {
+      .subscribe(notifications => {
+        notifications.forEach(notif => {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.jobTitle
               ? this.jobTitlePipe.transform(notif.jobTitle) +
-              " " +
-              notif.senderFullName
+                " " +
+                notif.senderFullName
               : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
@@ -270,48 +283,34 @@ export class FeaturesComponent implements OnInit {
             type: notif.type,
             photoId: notif.senderPhotoId,
             role: notif.role,
-            civility: notif.civility,
+            civility: notif.civility
           });
         });
+
         let photoIds: Set<string> = new Set();
-        notifications.forEach((notif) => {
-          photoIds.add(notif.senderPhotoId);
+        notifications.forEach(notif => {
+          photoIds.add(notif.senderId);
         });
-        let photosMap: Map<string, string | ArrayBuffer> = new Map();
+        let photosMap: Map<string, string | ArrayBuffer | SafeUrl> = new Map();
         let arrayOfObservables = [];
-        photoIds.forEach((id) => {
-          arrayOfObservables.push(this.documentService.downloadFile(id));
+        photoIds.forEach(id => {
+          arrayOfObservables.push(this.documentService.getDefaultImage(id));
         });
         forkJoin(arrayOfObservables).subscribe((result: any[]) => {
           for (let i = 0; i < photoIds.size; i++) {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              photosMap.set(Array.from(photoIds)[i], myReader.result);
+            myReader.onloadend = e => {
+              photosMap.set(
+                Array.from(photoIds)[i],
+                this.sanitizer.bypassSecurityTrustUrl(myReader.result as string)
+              );
               if (photosMap.size == photoIds.size) {
-                notificationsFormated.forEach((notif) => {
-                  if (notif.photoId && photosMap.has(notif.photoId)) {
-                    notif.picture = photosMap.get(notif.photoId);
-                  } else {
-                    if (notif.role == "PRACTICIAN") {
-                      notif.picture = this.avatars.doctor;
-                    } else if (notif.role == "SECRETARY") {
-                      notif.picture = this.avatars.secretary;
-                    } else if (notif.role == "TELESECRETARYGROUP") {
-                      notif.picture = this.avatars.tls;
-                    } else if (notif.role == "PATIENT") {
-                      if (notif.civility == "M") {
-                        notif.picture = this.avatars.man;
-                      } else if (notif.civility == "MME") {
-                        notif.picture = this.avatars.women;
-                      } else if (notif.civility == "CHILD") {
-                        notif.picture = this.avatars.child;
-                      }
-                    }
-                  }
+                notificationsFormated.forEach(notif => {
+                  notif.picture = photosMap.get(notif.senderId);
                 });
               }
             };
-            let ok = myReader.readAsDataURL(result[i].body);
+            let ok = myReader.readAsDataURL(result[i]);
           }
         });
 
@@ -320,31 +319,31 @@ export class FeaturesComponent implements OnInit {
   }
 
   countMyInboxNotSeen() {
-    this.messageListService.countMyInboxNotSeen().subscribe((num) => {
+    this.messageListService.countMyInboxNotSeen().subscribe(num => {
       this.featuresService.setNumberOfInbox(num);
     });
   }
 
   countForwarded() {
-    this.featuresService.getCountOfForwarded().subscribe((resp) => {
+    this.featuresService.getCountOfForwarded().subscribe(resp => {
       this.featuresService.numberOfForwarded = resp;
     });
   }
 
   countMyArchive() {
-    this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
+    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
       this.featuresService.numberOfArchieve = resp;
     });
   }
 
   countMyPatientPending() {
-    this.featuresService.countPendingInvitations().subscribe((num) => {
+    this.featuresService.countPendingInvitations().subscribe(num => {
       this.featuresService.setNumberOfPending(num);
     });
   }
 
   setNumberOfPending() {
-    this.featuresService.getNumberOfPendingObs().subscribe((num) => {
+    this.featuresService.getNumberOfPendingObs().subscribe(num => {
       this.numberOfPending = num;
     });
   }
@@ -360,7 +359,8 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
-    this.router.navigate(["/messagerie-ecrire"]);
+    //this.router.navigate(["/messagerie-ecrire"]);
+    this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {
     this.router.navigate(["/messagerie-envoyes"]);
@@ -371,12 +371,9 @@ export class FeaturesComponent implements OnInit {
   displayArchieveAction() {
     this.router.navigate(["/messagerie-archives"]);
   }
+
   displayMyPatientsAction(event) {
-    this.router.navigate(["/mes-patients"], {
-      queryParams: {
-        section: event,
-      },
-    });
+    this.router.navigate(["/mes-patients/" + event]);
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/favorites"]);
@@ -420,9 +417,9 @@ export class FeaturesComponent implements OnInit {
   }
   closeNotification() {
     console.log("notifications not seen");
-    this.featuresService.markReceivedNotifAsSeen().subscribe((resp) => {
+    this.featuresService.markReceivedNotifAsSeen().subscribe(resp => {
       this.featuresService.listNotifications = this.featuresService.listNotifications.filter(
-        (notif) => notif.messageId != null
+        notif => notif.messageId != null
       );
     });
   }
@@ -435,7 +432,7 @@ export class FeaturesComponent implements OnInit {
           let result = this.featuresService
             .getSearchInboxValue()
             .filter(
-              (x) =>
+              x =>
                 x.users[0].fullName
                   .toLowerCase()
                   .includes(event.toLowerCase()) ||
@@ -452,7 +449,7 @@ export class FeaturesComponent implements OnInit {
             .get(practicianId)
             .getValue()
             .filter(
-              (x) =>
+              x =>
                 x.users[0].fullName
                   .toLowerCase()
                   .includes(event.toLowerCase()) ||
@@ -473,7 +470,7 @@ export class FeaturesComponent implements OnInit {
         let result = this.featuresService
           .getSearchSentValue()
           .filter(
-            (x) =>
+            x =>
               x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
               x.object.name.toLowerCase().includes(event.toLowerCase())
           );
@@ -487,7 +484,7 @@ export class FeaturesComponent implements OnInit {
         let result = this.featuresService
           .getSearchArchiveValue()
           .filter(
-            (x) =>
+            x =>
               x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
               x.object.name.toLowerCase().includes(event.toLowerCase())
           );
@@ -498,8 +495,8 @@ export class FeaturesComponent implements OnInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
-        this.router.navigate(["/praticien-recherche"]);
-        let result = this.practicians.filter((x) =>
+        // this.router.navigate(["/praticien-recherche"]);
+        let result = this.practicians.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
         result = result.length > 0 ? result : null;
@@ -507,10 +504,9 @@ export class FeaturesComponent implements OnInit {
       } else {
         this.router.navigate(["/mes-contacts-pro"]);
       }
-    }
-    else if (this.featuresService.activeChild.getValue() == "patient") {
+    } else if (this.featuresService.activeChild.getValue() == "patient") {
       if (event) {
-        let result = this.patients.filter((x) =>
+        let result = this.patients.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
         result = result.length > 0 ? result : null;
@@ -529,8 +525,8 @@ export class FeaturesComponent implements OnInit {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/messagerie-lire/" + notification.messageId], {
             queryParams: {
-              context: "inbox",
-            },
+              context: "inbox"
+            }
           });
           this.featuresService.setNumberOfInbox(
             this.featuresService.getNumberOfInboxValue() - 1
@@ -542,23 +538,23 @@ export class FeaturesComponent implements OnInit {
     ) {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/messagerie-lire/" + notification.messageId], {
             queryParams: {
-              context: "sent",
-            },
+              context: "sent"
+            }
           });
         });
     } else if (notification.type == "INVITATION") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/mes-patients"], {
             queryParams: {
-              section: "pending",
-            },
+              section: "pending"
+            }
           });
         });
     }
@@ -569,37 +565,31 @@ export class FeaturesComponent implements OnInit {
   }
 
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
+    this.accountService.getCurrentAccount().subscribe(account => {
       if (account && account.practician) {
         this.account = account.practician;
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        } else {
-          this.featuresService.imageSource = this.avatars.doctor;
-        }
+        this.hasImage = true;
+        this.getPictureProfile(account.id);
       } else if (account && account.secretary) {
         this.account = account.secretary;
-        if (this.account.photoId) {
-          this.hasImage = true;
-          this.getPictureProfile(this.account.photoId);
-        } else {
-          this.featuresService.imageSource = this.avatars.secretary;
-        }
+        this.hasImage = true;
+        this.getPictureProfile(account.id);
       }
     });
   }
   // initialise profile picture
-  getPictureProfile(nodeId) {
-    this.documentService.downloadFile(nodeId).subscribe(
-      (response) => {
+  getPictureProfile(id) {
+    this.documentService.getDefaultImage(id).subscribe(
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          this.featuresService.imageSource = myReader.result;
+        myReader.onloadend = e => {
+          this.featuresService.imageSource = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         this.featuresService.imageSource = this.avatars.user;
       }
     );
@@ -623,12 +613,12 @@ export class FeaturesComponent implements OnInit {
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
-              : message.sender.role,
-        },
+              : message.sender.role
+        }
       ],
       object: {
         name: message.object,
-        isImportant: message.importantObject,
+        isImportant: message.importantObject
       },
       time: message.updatedAt,
       isImportant: message.important,
@@ -636,40 +626,23 @@ export class FeaturesComponent implements OnInit {
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
       isArchieve: true,
-      photoId: message.sender.photoId,
+      photoId: message.sender.photoId
     };
-    if (parsedMessage.photoId) {
-      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            parsedMessage.users[0].img = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          parsedMessage.users[0].img = this.avatars.user;
-        }
-      );
-    } else {
-      parsedMessage.users.forEach((user) => {
-        if (user.type == "MEDICAL") {
-          user.img = this.avatars.doctor;
-        } else if (user.type == "SECRETARY") {
-          user.img = this.avatars.secretary;
-        } else if (user.type == "TELESECRETARYGROUP") {
-          user.img = this.avatars.tls;
-        } else if (user.type == "PATIENT") {
-          if (user.civility == "M") {
-            user.img = this.avatars.man;
-          } else if (user.civility == "MME") {
-            user.img = this.avatars.women;
-          } else if (user.civility == "CHILD") {
-            user.img = this.avatars.child;
-          }
-        }
-      });
-    }
+    this.documentService.getDefaultImage(message.sender.senderId).subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        parsedMessage.users[0].img = this.avatars.user;
+      }
+    );
+
     return parsedMessage;
   }
 
@@ -682,21 +655,21 @@ export class FeaturesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-            ? "répondu"
-            : message.toReceivers[0].seen
-              ? "Lu"
-              : "Envoyé",
+          ? "répondu"
+          : message.toReceivers[0].seen
+          ? "Lu"
+          : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-            ? 100
-            : message.toReceivers[0].seen
-              ? 50
-              : 20,
+          ? 100
+          : message.toReceivers[0].seen
+          ? 50
+          : 20
     };
     messageSent.users = [];
-    message.toReceivers.forEach((r) => {
+    message.toReceivers.forEach(r => {
       messageSent.users.push({
         fullName: r.fullName,
         img: this.avatars.user,
@@ -704,11 +677,12 @@ export class FeaturesComponent implements OnInit {
         type: r.role,
         photoId: r.photoId,
         civility: r.civility,
+        id: r.receiverId ? r.receiverId : null
       });
     });
     messageSent.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageSent.time = message.createdAt;
     messageSent.isImportant = message.important;
@@ -720,40 +694,24 @@ export class FeaturesComponent implements OnInit {
 
   parseMessages(messages) {
     let parsedMessages = [];
-    messages.forEach((message) => {
+    messages.forEach(message => {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
-      messageSent.users.forEach((user) => {
-        if (user.photoId) {
-          this.documentService.downloadFile(user.photoId).subscribe(
-            (response) => {
-              let myReader: FileReader = new FileReader();
-              myReader.onloadend = (e) => {
-                user.img = myReader.result;
-              };
-              let ok = myReader.readAsDataURL(response.body);
-            },
-            (error) => {
-              user.img = "assets/imgs/user.png";
-            }
-          );
-        } else {
-          if (user.type == "PRACTICIAN" || user.type == "MEDICAL") {
-            user.img = this.avatars.doctor;
-          } else if (user.type == "SECRETARY") {
-            user.img = this.avatars.secretary;
-          } else if (user.type == "TELESECRETARYGROUP") {
-            user.img = this.avatars.tls;
-          } else if (user.type == "PATIENT") {
-            if (user.civility == "M") {
-              user.img = this.avatars.man;
-            } else if (user.civility == "MME") {
-              user.img = this.avatars.women;
-            } else if (user.civility == "CHILD") {
-              user.img = this.avatars.child;
-            }
+      messageSent.users.forEach(user => {
+        this.documentService.getDefaultImage(user.id).subscribe(
+          response => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = e => {
+              user.img = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
+            };
+            let ok = myReader.readAsDataURL(response);
+          },
+          error => {
+            user.img = "assets/imgs/user.png";
           }
-        }
+        );
       });
       parsedMessages.push(messageSent);
     });
@@ -783,11 +741,12 @@ export class FeaturesComponent implements OnInit {
           message.senderDetail.role == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
-      },
+        id: message.senderDetail.id
+      }
     ];
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
@@ -799,36 +758,18 @@ export class FeaturesComponent implements OnInit {
   }
 
   loadPhoto(user) {
-    if (user.photoId) {
-      this.documentService.downloadFile(user.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            user.img = myReader.result;
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          user.img = this.avatars.user;
-        }
-      );
-    } else {
-      if (user.type == "MEDICAL") {
-        user.img = this.avatars.doctor;
-      } else if (user.type == "SECRETARY") {
-        user.img = this.avatars.secretary;
-      } else if (user.type == "TELESECRETARYGROUP") {
-        user.img = this.avatars.tls;
-      } else if (user.type == "PATIENT") {
-        if (user.civility == "M") {
-          user.img = this.avatars.man;
-        } else if (user.civility == "MME") {
-          user.img = this.avatars.women;
-        } else if (user.civility == "CHILD") {
-          user.img = this.avatars.child;
-        }
+    this.documentService.downloadFile(user.photoId).subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          user.img = myReader.result;
+        };
+        let ok = myReader.readAsDataURL(response.body);
+      },
+      error => {
+        user.img = this.avatars.user;
       }
-    }
+    );
   }
 
   getPhotoId(senderDetail): string {
@@ -848,14 +789,12 @@ export class FeaturesComponent implements OnInit {
 
   mapArchiveMessages(message) {
     const archivedMessage = this.mappingMessageArchived(message);
-    archivedMessage.users.forEach((user) => {
+    archivedMessage.users.forEach(user => {
       this.loadPhoto(user);
     });
     return archivedMessage;
   }
-  addPatient() {
-    this.router.navigate(["ajout-patient"]);
-  }
+
   myObjects() {
     this.router.navigate(["mes-objets"]);
   }

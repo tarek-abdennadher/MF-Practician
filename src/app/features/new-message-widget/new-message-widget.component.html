@@ -1,0 +1,35 @@
+<div class="fab-container">
+  <button *ngIf="fabTogglerState == 'inactive' " mat-fab class="fab-toggler" (click)="onToggleFab()">
+    <i id="icons" class="material-icons" [@fabToggler]="{value: fabTogglerState}">add</i>
+  </button>
+  <div [@speedDialStagger]="buttons.length">
+    <div *ngFor="let btn of buttons" mat-mini-fab class="fab-secondary" color="secondary">
+      <i>
+        <div class="col-lg-6 col-sm-12 col-md-12 ">
+          <div widget class="card" id="message-card">
+            <div class="card-header d-flex" id="widget-header">
+              <span id="widget-title" class="p-2">{{messages.newMessageCapital}}</span>
+              <div class="widget-controls ml-auto p-2">
+                <a id="controls" data-widgster="restore" class="transition" (click)="toggle=!toggle">
+                  <i class="fal" [ngClass]="{'fa-plus': toggle, 'fa-minus': !toggle}"></i>
+                </a>
+                <a id="controls" data-widgster="fullscreen" class="transition" (click)="onToggleFab()"><i
+                    class="fal fa-times"></i></a>
+              </div>
+            </div>
+            <div>
+              <div class="card-body widget-body row" [ngStyle]="toggle?minimize:maximize">
+                <div class="col-12">
+                  <app-new-message [id]="id"></app-new-message>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </i>
+    </div>
+  </div>
+</div>
+<script>
+  $('.widget').widgster();
+</script>
