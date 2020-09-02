@@ -6,7 +6,8 @@ import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "@app/features/features.service";
 import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
 import { DomSanitizer } from "@angular/platform-browser";
-import { NewMessageWidgetService } from '@app/features/new-message-widget/new-message-widget.service';
+import { NewMessageWidgetService } from "@app/features/new-message-widget/new-message-widget.service";
+import { ContactsService } from "@app/features/services/contacts.service";
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -16,6 +17,7 @@ export class PracticianDetailComponent implements OnInit {
   practician: any;
   imageSource: string;
   public isFavorite: boolean = false;
+  public isArchive: boolean = true;
   isPractician = true;
   links = {};
   avatars: {
@@ -35,7 +37,8 @@ export class PracticianDetailComponent implements OnInit {
     private featureService: FeaturesService,
     private globalService: GlobalService,
     private sanitizer: DomSanitizer,
-    private messageWidgetService: NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService,
+    private contactService: ContactsService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -50,6 +53,9 @@ export class PracticianDetailComponent implements OnInit {
   }
   getPractician(id) {
     this.practicianDetailService.getPracticiansById(id).subscribe(response => {
+      if (this.localSt.retrieve("role") == "SECRETARY") {
+        this.isArchive = false;
+      }
       this.practician = response;
       this.documentService.getDefaultImage(this.practician.accountId).subscribe(
         response => {
@@ -99,5 +105,14 @@ export class PracticianDetailComponent implements OnInit {
       }
     });
     this.messageWidgetService.toggleObs.next(item.accountId);
+  }
+  archieveClicked(item) {
+    let array = [];
+    array.push(item.accountId);
+    this.contactService
+      .deleteMultiplePracticianContactPro(array)
+      .subscribe(res => {
+        this.router.navigate(["/mes-contacts-pro"]);
+      });
   }
 }
