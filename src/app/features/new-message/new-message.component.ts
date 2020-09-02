@@ -538,6 +538,21 @@ export class NewMessageComponent implements OnInit {
       this.sendMessageForm.controls.object.clearValidators();
       this.sendMessageForm.controls.object.updateValueAndValidity();
     }
+
+    if (
+      !this.isInstruction &&
+      (this.otherObject ||
+        !this.contactType ||
+        (this.isSecretary() && this.contactType) ||
+        this.newFlag)
+    ) {
+      this.sendMessageForm.controls.freeObject.setValidators([
+        Validators.required,
+      ]);
+    } else {
+      this.sendMessageForm.controls.freeObject.clearValidators();
+      this.sendMessageForm.controls.freeObject.updateValueAndValidity();
+    }
   }
   sendEmail() {
     this.submited = true;
@@ -623,20 +638,6 @@ export class NewMessageComponent implements OnInit {
         });
       }
     }
-    if (this.isPatient) {
-      let context = false;
-      if (
-        this.sendMessageForm.value.for &&
-        this.sendMessageForm.value.for.length > 0
-      ) {
-        context = true;
-      }
-      const obj = {
-        forContext: context,
-        formValue: this.sendMessageForm.value,
-      };
-      this.objectSelection(obj);
-    }
   }
   updateSelectionSeting(limitSelection) {
     this.dropdownSettings = {
@@ -696,59 +697,47 @@ export class NewMessageComponent implements OnInit {
       this.sendMessageForm.patchValue({ body: null });
       this.otherObject = false;
     }
-    if (
-      this.isPatient &&
-      this.sendMessageForm.value.to?.length == 1 &&
-      this.sendMessageForm.value.object?.length == 1 &&
-      this.checkObjectAuthorization() !== 0
-    ) {
-      this.hasError = true;
-      this.sendMessageForm.controls["body"].disable();
-      this.sendMessageForm.patchValue({
-        body: null,
-      });
-    } else {
-      if (!this.isPatient && !this.isTls) {
-        if (this.sendMessageForm.value.to.length == 1) {
-          this.contactType = true;
-        } else {
-          this.contactType = false;
-          this.otherObject = true;
-          this.sendMessageForm.patchValue({
-            freeObject: "",
-            body: null,
-          });
-        }
-      }
-      if (
-        this.sendMessageForm.value.object &&
-        this.sendMessageForm.value.object.length > 0
-      ) {
-        this.otherObject =
-          this.sendMessageForm.value.object.length == 1
-            ? this.sendMessageForm.value.object[0].title.toLowerCase() ==
-              this.hlsSendMessageService.texts.other
-              ? true
-              : false
-            : null;
-        this.newFlag = this.otherObject;
-        this.maxlengthBody = this.isPatient
-          ? this.sendMessageForm.value.object.length == 1 &&
-            this.sendMessageForm.value.object[0].title.toLowerCase() ==
-              this.hlsSendMessageService.texts.other
-            ? 500
-            : 99999999999999999999
-          : null;
-
-        this.hasError = false;
-        this.sendMessageForm.controls["body"].enable();
-        this.sendMessageForm.patchValue({
-          body: this.sendMessageForm.value.object[0].body,
-        });
+    if (!this.isPatient && !this.isTls) {
+      if (this.sendMessageForm.value.to.length == 1) {
+        this.contactType = true;
       } else {
-        this.otherObject = false;
+        this.contactType = false;
+        this.otherObject = true;
+        this.sendMessageForm.patchValue({
+          freeObject: "",
+          body: null,
+        });
       }
     }
+    if (
+      this.sendMessageForm.value.object &&
+      this.sendMessageForm.value.object.length > 0
+    ) {
+      this.otherObject =
+        this.sendMessageForm.value.object.length == 1
+          ? this.sendMessageForm.value.object[0].title.toLowerCase() ==
+            this.hlsSendMessageService.texts.other
+            ? true
+            : false
+          : null;
+      this.newFlag = this.otherObject;
+      this.maxlengthBody = this.isPatient
+        ? this.sendMessageForm.value.object.length == 1 &&
+          this.sendMessageForm.value.object[0].title.toLowerCase() ==
+            this.hlsSendMessageService.texts.other
+          ? 500
+          : 99999999999999999999
+        : null;
+
+      this.hasError = false;
+      this.sendMessageForm.controls["body"].enable();
+      this.sendMessageForm.patchValue({
+        body: this.sendMessageForm.value.object[0].body,
+      });
+    } else {
+      this.otherObject = false;
+    }
+
     if (this.isSecretary()) {
       let selectedFor = [];
       selectedFor = this.sendMessageForm.value.for;
