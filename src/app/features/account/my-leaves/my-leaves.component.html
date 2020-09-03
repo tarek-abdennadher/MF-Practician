@@ -49,6 +49,15 @@
             </div>
         </div>
         <br>
+        <div class="row">
+            <div class="col-12 col-sm-4 col-form-label">{{
+                messages.leave_message
+              }}</div>
+            <div class="col-12 col-sm-8">
+                <hls-ckeditor [ctrl]="f.leaveAutoMessage"></hls-ckeditor>
+            </div>
+        </div>
+        <br>
         <div class="row justify-content-center">
             <button type="submit" (click)="submit()" class="btn btn-primary" id="leave-submit-button">
                 {{ messages.validate }}
