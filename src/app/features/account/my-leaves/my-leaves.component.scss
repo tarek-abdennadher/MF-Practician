@@ -1,3 +1,4 @@
+$helssy_white: #ffffff;
 /* Informations */
 .Rectangle-body {
   background-color: rgba(243, 243, 243, 0.5);
@@ -11,6 +12,12 @@
     padding-left: 60px;
     padding-right: 60px;
   }
+}
+/* Form */
+.form-control{
+  border-radius: 6px;
+  background-color:$helssy_white;
+  border-color:$helssy_white;;
 }
 
 .col-form-label{
