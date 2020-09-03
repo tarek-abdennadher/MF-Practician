@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -20,6 +20,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   styleUrls: ["./messaging-detail.component.scss"]
 })
 export class MessagingDetailComponent implements OnInit {
+  @ViewChild("reply") private myScrollContainer: ElementRef;
   private _destroyed$ = new Subject();
   previousURL = "";
   role: string = "PRACTICIAN";
@@ -340,6 +341,11 @@ export class MessagingDetailComponent implements OnInit {
 
   replyAction() {
     this.messagingDetailService.setId(this.idMessage);
+    this.myScrollContainer.nativeElement.scroll({
+      top: this.myScrollContainer.nativeElement.scrollHeight,
+      left: 0,
+      behavior: "smooth"
+    });
     this.router.navigate([
       "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
       this.idMessage
@@ -359,6 +365,9 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     );
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 
   acceptAction() {
@@ -374,6 +383,9 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     );
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 
   refuseAction() {
@@ -389,6 +401,9 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     );
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 
   importantAction() {
