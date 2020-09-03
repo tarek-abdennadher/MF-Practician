@@ -53,7 +53,8 @@ export class MyLeavesComponent implements OnInit {
     this.leavesForm = new FormGroup({
       activateLeaveAutoMessage: new FormControl(false),
       leaveStartDate: new FormControl(null),
-      leaveEndDate: new FormControl(null)
+      leaveEndDate: new FormControl(null),
+      leaveAutoMessage: new FormControl(null)
     });
   }
 
@@ -77,9 +78,9 @@ export class MyLeavesComponent implements OnInit {
       this.leavesForm.patchValue({
         activateLeaveAutoMessage: op.activateLeaveAutoMessage,
         leaveStartDate: op.leaveStartDate ? new Date(op.leaveStartDate) : null,
-        leaveEndDate: op.leaveEndDate ? new Date(op.leaveEndDate) : null
+        leaveEndDate: op.leaveEndDate ? new Date(op.leaveEndDate) : null,
+        leaveAutoMessage: op.leaveAutoMessage ? op.leaveAutoMessage : null
       })
-      console.log(this.leavesForm.value)
     });
   }
 
@@ -88,10 +89,13 @@ export class MyLeavesComponent implements OnInit {
     if (this.leavesForm.invalid) {
       return;
     }
-    let leaveStartDate = this.leavesForm.value.leaveStartDate;
-    let leaveEndDate = this.leavesForm.value.leaveEndDate;
-    let activateLeaveAutoMessage = this.leavesForm.value.activateLeaveAutoMessage;
-    this.service.updateLeavesInOptionByPractician(activateLeaveAutoMessage, leaveStartDate, leaveEndDate).subscribe((elm) => {
+    let model = {
+      activateLeaveAutoMessage: this.leavesForm.value.activateLeaveAutoMessage,
+      leaveStartDate: this.leavesForm.value.leaveStartDate,
+      leaveEndDate: this.leavesForm.value.leaveEndDate,
+      leaveAutoMessage: this.leavesForm.value.leaveAutoMessage
+    }
+    this.service.updateLeavesInOptionByPractician(model).subscribe((elm) => {
       if (elm) {
         this.notifMessage = this.service.messages.update_leaves_success;
         this.notifier.show({
