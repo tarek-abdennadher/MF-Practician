@@ -1,26 +1,20 @@
 <div class="card-body Rectangle-body">
   <div class="card-body row">
-    <div
-      class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center border_"
-    >
+    <div class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center border_">
       <br />
       <div class="chart-title">{{ messages.received }}</div>
       <br />
       <app-apx-pie [stats]="receivedMap"></app-apx-pie>
     </div>
     <br />
-    <div
-      class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center"
-    >
+    <div class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center">
       <br />
       <div class="chart-title">{{ messages.sent }}</div>
       <br />
       <app-apx-pie [stats]="sentMap"></app-apx-pie>
     </div>
     <br />
-    <div
-      class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center center_"
-    >
+    <div class="chart col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 justify-content-center center_">
       <br />
       <div class="chart-title">{{ messages.others }}</div>
       <br />
