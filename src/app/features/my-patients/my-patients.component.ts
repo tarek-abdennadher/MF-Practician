@@ -376,6 +376,7 @@ export class MyPatientsComponent implements OnInit {
       img: this.avatars.user,
       civility: patient.civility
     });
+    myPatients.id = patient.id;
     myPatients.photoId = patient.photoId;
     myPatients.isMarkAsSeen = false;
     myPatients.isSeen = true;
