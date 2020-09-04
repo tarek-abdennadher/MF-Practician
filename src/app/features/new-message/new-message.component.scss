@@ -109,6 +109,27 @@ a {
   margin-left: 8px;
 }
 
+@media (max-width: 720px) {
+  #attachement {
+    width: unset;
+  }
+
+  #attachement-label{
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  #send-button{
+    width: unset;
+  }
+
+  ::ng-deep {
+    .ck-editor__editable {
+      height: unset !important;
+    }
+  }
+}
+
 .modal-dialog {
   width: 580px !important;
   max-width: 580px !important;

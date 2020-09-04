@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, HostListener } from "@angular/core";
 import { Subject } from "rxjs";
 import {
   FormGroup,
@@ -125,6 +125,7 @@ export class NewMessageComponent implements OnInit {
   dropdownSettingsTypesList: any;
   dropdownSettingsConcernList: any;
   showFile: any;
+  innerWidth: number;
 
   set objectsList(objectsList: any) {
     this._objectsList = objectsList;
@@ -348,6 +349,9 @@ export class NewMessageComponent implements OnInit {
       ...this.dropdownSettingsListObject,
       text: "Sélectionner un patient concerné si nécessaire",
     };
+
+    this.innerWidth = window.innerWidth;
+
   }
 
   ccListSubscription() {
@@ -1230,6 +1234,11 @@ export class NewMessageComponent implements OnInit {
         ) !== -1) ||
       false
     );
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
   }
   openConfirmModel() {
     $("#firstModal").modal("hide");
