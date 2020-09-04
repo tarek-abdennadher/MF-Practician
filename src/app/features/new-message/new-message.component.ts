@@ -1255,6 +1255,7 @@ export class NewMessageComponent implements OnInit {
     this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
+    newMessage.sendType = this.lastSendType;
     message.to.forEach((to) => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
