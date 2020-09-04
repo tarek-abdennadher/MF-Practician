@@ -11,6 +11,7 @@ import { CategoryService } from "../services/category.service";
 import { MyPatients } from "@app/shared/models/my-patients";
 import { filter } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
+import { NewMessageWidgetService } from '../new-message-widget/new-message-widget.service';
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
@@ -61,7 +62,8 @@ export class MyPatientsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private featuresService: FeaturesService,
     private categoryService: CategoryService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private messageWidgetService: NewMessageWidgetService
   ) {
     this.filterPatientsForm = this.formBuilder.group({
       category: [""]
@@ -411,11 +413,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   writeAction(item) {
-    this.router.navigate(["/messagerie-ecrire/"], {
-      queryParams: {
-        id: item.users[0].accountId
-      }
-    });
+    this.messageWidgetService.toggleObs.next(item.users[0].accountId);
   }
   prohibitAction(item) {
     this.myPatientsService

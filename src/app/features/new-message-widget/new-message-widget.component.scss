@@ -192,7 +192,6 @@ $sapphire: #1a56a7;
     flex-direction: column-reverse;
     align-items: flex-start;
     margin-bottom: 5px;
-    margin-right: 160px;
 
     button {
       margin-bottom: 557px;
@@ -246,4 +245,25 @@ $sapphire: #1a56a7;
   color: #fff;
   margin-left: 24px;
   cursor: pointer;
+}
+
+@media (max-width: 727px) {
+  #message-card {
+    width: 95%;
+  }
+  .fab-container {
+    div {
+      margin-right: 0;
+    }
+  }
+
+
+}
+
+@media(max-width: 580px){
+  .widget-body{
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 }
