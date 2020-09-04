@@ -1,14 +1,25 @@
 <div class="row text-center">
-  <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
-    class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+  <a
+    *ngIf="failureAlert"
+    id="FailureAlert"
+    (click)="close()"
+    class="alert alert-danger alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ labels.phone_error }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
 </div>
 <div class="card Rectangle" id="contact-pro-tabs">
-  <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 form-inline">
+  <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 title">
     <i class="fas fa-info-circle fa-icon"></i>
     <span class="Mes-informations">{{ labels.contact_pro }} </span>
   </div>
@@ -22,8 +33,12 @@
             {{ labels.type_contact }}
           </div>
           <div class="col-sm-12">
-            <select formControlName="type" class="form-control" id="type"
-              [ngClass]="{ 'is-invalid': submitted && ctr.type.errors }">
+            <select
+              formControlName="type"
+              class="form-control"
+              id="type"
+              [ngClass]="{ 'is-invalid': submitted && ctr.type.errors }"
+            >
               <option value="null" disabled="true">
                 {{ labels.type_contact }}
               </option>
@@ -44,8 +59,12 @@
             {{ labels.title }}
           </div>
           <div class="col-sm-12">
-            <select formControlName="title" class="form-control"
-              [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }" id="title">
+            <select
+              formControlName="title"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && ctr.title.errors }"
+              id="title"
+            >
               <option value="null" disabled="true">{{ labels.title }}</option>
               <option *ngFor="let item of jobTitlesList" value="{{ item }}">
                 {{ item | JobTitle }}
@@ -64,22 +83,34 @@
             {{ labels.speciality }}
           </div>
           <div class="col-sm-12">
-            <select formControlName="speciality" class="form-control" [ngClass]="{
+            <select
+              formControlName="speciality"
+              class="form-control"
+              [ngClass]="{
                 'is-invalid': submitted && ctr.speciality.errors
-              }" id="speciality">
+              }"
+              id="speciality"
+            >
               <option value="null" disabled="true">
                 {{ labels.speciality }}
               </option>
-              <option *ngIf="
+              <option
+                *ngIf="
                   account && account.speciality && account.speciality.deleted
-                " [value]="account.speciality.id" disabled="true">
+                "
+                [value]="account.speciality.id"
+                disabled="true"
+              >
                 {{ account.speciality.name }}
               </option>
               <option *ngFor="let s of specialities" [value]="s.id">
                 {{ s.name }}
               </option>
             </select>
-            <div *ngIf="submitted && ctr.speciality.errors" class="invalid-feedback">
+            <div
+              *ngIf="submitted && ctr.speciality.errors"
+              class="invalid-feedback"
+            >
               <div *ngIf="ctr.speciality.errors.required">
                 {{ labels.required }}
               </div>
@@ -95,10 +126,19 @@
             {{ labels.last_name }}
           </div>
           <div class="col-sm-12">
-            <input type="text" formControlName="last_name" class="form-control" id="last_name" [ngClass]="{
+            <input
+              type="text"
+              formControlName="last_name"
+              class="form-control"
+              id="last_name"
+              [ngClass]="{
                 'is-invalid': submitted && ctr.last_name.errors
-              }" />
-            <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+              }"
+            />
+            <div
+              *ngIf="submitted && ctr.last_name.errors"
+              class="invalid-feedback"
+            >
               <div *ngIf="ctr.last_name.errors.required">
                 {{ labels.required }}
               </div>
@@ -111,10 +151,19 @@
             {{ labels.first_name }}
           </div>
           <div class="col-sm-12">
-            <input type="text" formControlName="first_name" class="form-control" id="first_name" [ngClass]="{
+            <input
+              type="text"
+              formControlName="first_name"
+              class="form-control"
+              id="first_name"
+              [ngClass]="{
                 'is-invalid': submitted && ctr.first_name.errors
-              }" />
-            <div *ngIf="submitted && ctr.first_name.errors" class="invalid-feedback">
+              }"
+            />
+            <div
+              *ngIf="submitted && ctr.first_name.errors"
+              class="invalid-feedback"
+            >
               <div *ngIf="ctr.first_name.errors.required">
                 {{ labels.required }}
               </div>
@@ -130,7 +179,12 @@
             {{ labels.facility_name }}
           </div>
           <div class="col-sm-12">
-            <input type="text" formControlName="name" class="form-control" id="facility_name" />
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              id="facility_name"
+            />
           </div>
         </div>
       </div>
@@ -142,7 +196,12 @@
             {{ labels.address }}
           </div>
           <div class="col-sm-12">
-            <input type="text" formControlName="address" class="form-control" id="address" />
+            <input
+              type="text"
+              formControlName="address"
+              class="form-control"
+              id="address"
+            />
           </div>
         </div>
       </div>
@@ -154,7 +213,12 @@
             {{ labels.additional_address }}
           </div>
           <div class="col-sm-12">
-            <input type="text" formControlName="additional_address" class="form-control" id="additional_address" />
+            <input
+              type="text"
+              formControlName="additional_address"
+              class="form-control"
+              id="additional_address"
+            />
           </div>
         </div>
       </div>
@@ -164,34 +228,56 @@
         <div class="col-12 col-sm-5 pl-0 pr-0">
           <div class="col-12 col-form-label">{{ labels.zip_code }}</div>
           <div class="col-sm-12">
-            <input type="text" formControlName="zipCode" class="form-control" id="zipCode" />
+            <input
+              type="text"
+              formControlName="zipCode"
+              class="form-control"
+              id="zipCode"
+            />
           </div>
         </div>
         <div class="col-12 col-sm-7 pl-0 pr-0">
           <div class="col-12 col-form-label">{{ labels.city }}</div>
           <div class="col-sm-12">
-            <input type="text" formControlName="city" class="form-control" id="city" />
+            <input
+              type="text"
+              formControlName="city"
+              class="form-control"
+              id="city"
+            />
           </div>
         </div>
-
       </div>
-      <br>
+      <br />
       <!-- Phone number -->
       <div class="row">
         <div class="col col-12 pr-0 pl-0">
           <div class="col-12 col-form-label">{{ labels.phone }}</div>
           <div class="col-12 row">
             <div class="col-10 col-sm-11">
-              <international-phone-number class="form-control phone" id="phone" formControlName="phone"
-                placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
-                [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }">
+              <international-phone-number
+                class="form-control phone"
+                id="phone"
+                formControlName="phone"
+                placeholder="Téléphone"
+                [maxlength]="20"
+                [defaultCountry]=""
+                [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }"
+              >
               </international-phone-number>
-              <div *ngIf="ctr.phone.invalid && ctr.phone.touched" class="text-danger">
+              <div
+                *ngIf="ctr.phone.invalid && ctr.phone.touched"
+                class="text-danger"
+              >
                 {{ labels.phone_invalid }}
               </div>
             </div>
             <div class="col-1 col-sm-1">
-              <button (click)="addPhone()" class="btn btn-xs btn-icon" id="add-phone-button">
+              <button
+                (click)="addPhone()"
+                class="btn btn-xs btn-icon"
+                id="add-phone-button"
+              >
                 <i class="far fa-plus"></i>
               </button>
             </div>
@@ -206,8 +292,13 @@
             {{ labels.other_phone }}
           </div>
           <div class="col-12 col-sm-12">
-            <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)" [addnewPhone]="addnewPhone"
-              (validPhones)="submitPhones($event)" id="other-phones">
+            <int-phone
+              [editList]="otherPhones"
+              (phones)="getPhoneList($event)"
+              [addnewPhone]="addnewPhone"
+              (validPhones)="submitPhones($event)"
+              id="other-phones"
+            >
             </int-phone>
           </div>
         </div>
@@ -220,18 +311,29 @@
             {{ labels.email_input }}
           </div>
           <div class="col-sm-12">
-            <input type="text" formControlName="email" class="form-control" id="email" />
+            <input
+              type="text"
+              formControlName="email"
+              class="form-control"
+              id="email"
+            />
           </div>
         </div>
       </div>
       <br />
-      <div class="row justify-content-center">
-        <button type="submit" class="btn btn-primary mb-2" (click)="submit()">
-          {{ labels.validate }}
-        </button>
-        <button (click)="cancel()" class="btn btn-cancel">
-          {{ labels.cancel }}
-        </button>
+      <div class="row justify-content-left col-12">
+        <div class="col-md-12">
+          <button
+            type="submit"
+            class="btn btn-primary col-md-4 mr-4"
+            (click)="submit()"
+          >
+            {{ labels.validate }}
+          </button>
+          <button (click)="cancel()" class="btn btn-cancel col-md-4">
+            {{ labels.cancel }}
+          </button>
+        </div>
       </div>
     </form>
   </div>

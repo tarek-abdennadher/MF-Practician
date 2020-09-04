@@ -1,24 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { OrderDirection } from '@app/shared/enmus/order-direction';
-import { GlobalService } from '@app/core/services/global.service';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MyPatientsService } from '../services/my-patients.service';
-import { DialogService } from '../services/dialog.service';
-import { FeaturesService } from '../features.service';
-import { MyDocumentsService } from '../my-documents/my-documents.service';
-import { CategoryService } from '../services/category.service';
-import { MyPatients } from '@app/shared/models/my-patients';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormBuilder } from "@angular/forms";
+import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { GlobalService } from "@app/core/services/global.service";
+import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
+import { MyPatientsService } from "../services/my-patients.service";
+import { DialogService } from "../services/dialog.service";
+import { FeaturesService } from "../features.service";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { CategoryService } from "../services/category.service";
+import { MyPatients } from "@app/shared/models/my-patients";
+import { filter } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from '../new-message-widget/new-message-widget.service';
 @Component({
-  selector: 'app-my-patients',
-  templateUrl: './my-patients.component.html',
-  styleUrls: ['./my-patients.component.scss']
+  selector: "app-my-patients",
+  templateUrl: "./my-patients.component.html",
+  styleUrls: ["./my-patients.component.scss"]
 })
 export class MyPatientsComponent implements OnInit {
-
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -101,30 +100,30 @@ export class MyPatientsComponent implements OnInit {
       }
     });
     // update categories after detail view
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      let currentRoute = this.route;
-      while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-      switch (this.section) {
-        case "accepted": {
-          this.initPatients();
-          break;
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        let currentRoute = this.route;
+        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        switch (this.section) {
+          case "accepted": {
+            this.initPatients();
+            break;
+          }
+          case "pending": {
+            this.initPendingPatients();
+            break;
+          }
+          case "prohibit": {
+            this.initProhibitedPatients();
+            break;
+          }
+          case "archived": {
+            this.initArchivedPatients();
+            break;
+          }
         }
-        case "pending": {
-          this.initPendingPatients();
-          break;
-        }
-        case "prohibit": {
-          this.initProhibitedPatients();
-          break;
-        }
-        case "archived": {
-          this.initArchivedPatients();
-          break;
-        }
-      }
-    });
+      });
   }
   initPatients() {
     this.links.isTypeFilter = true;
@@ -481,7 +480,7 @@ export class MyPatientsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe(resp => { });
+            .subscribe(resp => {});
         }
       });
   }
@@ -505,14 +504,24 @@ export class MyPatientsComponent implements OnInit {
   }
 
   archivedAction(item) {
-    this.myPatientsService
-      .deletePatientFile(item.users[0].id)
-      .subscribe(resp => {
-        if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter(
-            elm => elm.users[0].id != item.users[0].id
-          );
-          this.number--;
+    this.dialogService
+      .openConfirmDialog(
+        "Etes vous sur de bien vouloir archiver ce patient",
+        "Confirmation d'archivage"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          this.myPatientsService
+            .deletePatientFile(item.users[0].id)
+            .subscribe(resp => {
+              if (resp == true) {
+                this.filtredPatients = this.filtredPatients.filter(
+                  elm => elm.users[0].id != item.users[0].id
+                );
+                this.number--;
+              }
+            });
         }
       });
   }
@@ -545,7 +554,7 @@ export class MyPatientsComponent implements OnInit {
   cardClicked(item) {
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id,
+        id: item.users[0].id
       },
       relativeTo: this.route
     });
@@ -613,5 +622,4 @@ export class MyPatientsComponent implements OnInit {
   addPatient() {
     this.router.navigate(["ajout-patient"], { relativeTo: this.route });
   }
-
 }

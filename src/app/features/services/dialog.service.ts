@@ -3,22 +3,22 @@ import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class DialogService {
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) {}
 
   openConfirmDialog(msg, titre) {
     return this.dialog.open(MatConfirmDialogComponent, {
-      width: "609px",
-      height: "215px",
+      width: "410px",
+      height: "auto",
       panelClass: "confirm-dialog-container",
       disableClose: true,
       position: { top: "250px" },
       data: {
         message: msg,
-        title: titre,
-      },
+        title: titre
+      }
     });
   }
 }
