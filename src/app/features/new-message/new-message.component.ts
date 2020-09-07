@@ -434,12 +434,6 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          // if (res.file) {
-          //   this.sendMessageForm.patchValue({
-          //     file: [res.file],
-          //   });
-          //   this.showFile = res.showFile;
-          // }
           if (res.document) {
             this.sendMessageForm.patchValue({
               document: res.document,
@@ -457,12 +451,6 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          // if (res.file) {
-          //   this.sendMessageForm.patchValue({
-          //     file: [res.file],
-          //   });
-          //   this.showFile = res.showFile;
-          // }
           if (res.document) {
             this.sendMessageForm.patchValue({
               document: res.document,
@@ -1040,16 +1028,6 @@ export class NewMessageComponent implements OnInit {
           })
         );
       if (selectedObj.allowDocument) {
-        // const doc = this.requestTypeService
-        //   .getDocument(objectDto)
-        //   .pipe(takeUntil(this._destroyed$))
-        //   .pipe(
-        //     tap((response: any) => {
-        //       const blob = new Blob([response.body]);
-        //       var fileOfBlob = new File([blob], selectedObj.title + ".pdf");
-        //       newData.file = fileOfBlob;
-        //     })
-        //   );
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
@@ -1063,8 +1041,6 @@ export class NewMessageComponent implements OnInit {
             this.selectedObject.next(newData);
           });
       }
-      //this.selectedObject.next(result);
-      //this.openDialog(selectedObj);
     } else if (selectedObj) {
       this.selectedObject.next({
         id: null,
