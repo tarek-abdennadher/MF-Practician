@@ -243,6 +243,7 @@ export class MessagingReplyComponent implements OnInit {
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
+    replyMessage.document = message.document ? message.document : null;
     replyMessage.object = message.object;
     if (message.requestTypeId && message.requestTitleId) {
       replyMessage.requestTypeId = message.requestTypeId;
