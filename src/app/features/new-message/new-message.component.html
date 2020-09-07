@@ -207,8 +207,8 @@
     </div>
   </div>
   <hr>
-  <!-- body-->
-  <div class="row mb-2">
+  <!-- body with no document-->
+  <div class="row mb-2" *ngIf="!ctr.document.value">
     <div class="col-md-12">
       <lib-hls-ckeditor [ngClass]="{
         'is-invalid': submited && ctr.body.errors,'invalid': submited && ctr.body.errors}" [ctrl]="ctr.body">
@@ -220,6 +220,38 @@
       </div>
     </div>
   </div>
+
+    <!-- body with document-->
+    <mat-tab-group headerPosition="below" *ngIf="ctr.document.value">
+      <mat-tab label="Message">
+        <div class="row mb-2">
+          <div class="col-md-12">
+            <lib-hls-ckeditor [ngClass]="{
+              'is-invalid': submited && ctr.body.errors,'invalid': submited && ctr.body.errors}" [ctrl]="ctr.body">
+            </lib-hls-ckeditor>
+            <div *ngIf="ctr.body.errors" class="invalid-feedback">
+              <div *ngIf="ctr.body.errors.required">
+                {{ texts.required}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Corp du document">
+        <div class="row mb-2">
+          <div class="col-md-12">
+            <lib-hls-ckeditor [ngClass]="{
+              'is-invalid': submited && ctr.document.errors,'invalid': submited && ctr.document.errors}" [ctrl]="ctr.document">
+            </lib-hls-ckeditor>
+            <div *ngIf="ctr.document.errors" class="invalid-feedback">
+              <div *ngIf="ctr.document.errors.required">
+                {{ texts.required}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
 
   <br>
   <div class="row mb-2">

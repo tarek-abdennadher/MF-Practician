@@ -89,5 +89,26 @@ a {
 
 }
 
+::ng-deep .mat-tab-group-inverted-header .mat-tab-header {
+  border-top: none !important;
+  border-bottom: none;
+  margin-top: 5px !important;
+  //padding-left: 34px !important;
+}
+
+::ng-deep .mat-ink-bar {
+  background-color: #1a56a7 !important;
+  height: 5px !important;
+  //margin-left: 6px;
+}
+
+::ng-deep .mat-tab-label-active {
+  color: #1a56a7 !important;
+  font-family: Montserrat, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.67px !important;
+}
+
 
 
