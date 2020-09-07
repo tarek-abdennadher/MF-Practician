@@ -28,4 +28,9 @@ export class RequestTypeService {
     return this.globalService.call(RequestType.POST, this.globalService.url.practicianObject + "/generatePdf"
     , request, { observe: "response", responseType: "blob" })
   }
+
+  getDocumentAsHtml(request) {
+    return this.globalService.call(RequestType.POST, this.globalService.url.practicianObject + "/generateHtml"
+    , request)
+  }
 }

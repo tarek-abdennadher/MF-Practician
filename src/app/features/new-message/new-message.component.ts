@@ -207,6 +207,7 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
+      document: null
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -433,11 +434,10 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.file) {
+          if (res.document) {
             this.sendMessageForm.patchValue({
-              file: [res.file],
+              document: res.document,
             });
-            this.showFile = res.showFile;
           }
         } else {
           selectedElements = this.objectFilteredList.filter(
@@ -451,11 +451,10 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.file) {
+          if (res.document) {
             this.sendMessageForm.patchValue({
-              file: [res.file],
+              document: res.document,
             });
-            this.showFile = res.showFile;
           }
         }
       } else {
@@ -666,6 +665,9 @@ export class NewMessageComponent implements OnInit {
       });
       this.sendMessageForm.patchValue({
         file: null,
+      });
+      this.sendMessageForm.patchValue({
+        document: null,
       });
 
       this.selectContext = false;
@@ -1015,6 +1017,7 @@ export class NewMessageComponent implements OnInit {
         name: selectedObj.title,
         body: null,
         file: null,
+        document: null
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1025,16 +1028,7 @@ export class NewMessageComponent implements OnInit {
           })
         );
       if (selectedObj.allowDocument) {
-        const doc = this.requestTypeService
-          .getDocument(objectDto)
-          .pipe(takeUntil(this._destroyed$))
-          .pipe(
-            tap((response: any) => {
-              const blob = new Blob([response.body]);
-              var fileOfBlob = new File([blob], selectedObj.title + ".pdf");
-              newData.file = fileOfBlob;
-            })
-          );
+        const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((res) => {
@@ -1047,8 +1041,6 @@ export class NewMessageComponent implements OnInit {
             this.selectedObject.next(newData);
           });
       }
-      //this.selectedObject.next(result);
-      //this.openDialog(selectedObj);
     } else if (selectedObj) {
       this.selectedObject.next({
         id: null,
@@ -1057,6 +1049,12 @@ export class NewMessageComponent implements OnInit {
         body: "",
       });
     }
+  }
+
+  getPdfAsHtml(request, newData) {
+    return this.requestTypeService.getDocumentAsHtml(request).pipe(takeUntil(this._destroyed$)).pipe(tap((response) => {
+      newData.document = response.document;
+    }));
   }
 
   goToBack() {
@@ -1317,6 +1315,7 @@ export class NewMessageComponent implements OnInit {
       ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
+    newMessage.document = message.document;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
