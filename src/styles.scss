@@ -388,6 +388,13 @@ a {
     width: 100%;
   }
 }
+
+@media only screen and (max-width: 1183px) {
+  .hidden-side-bar {
+    display: none !important;
+  }
+}
+
 @media only screen and (max-width: 1380px) {
   .mat-tab-group.mat-background-primary .mat-tab-label {
     margin-left: unset;

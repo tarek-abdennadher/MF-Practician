@@ -1,4 +1,5 @@
 <lib-hlsLinks
+  class="links"
   [links]="links"
   [page]="page"
   [topText]="topText"
@@ -130,3 +131,25 @@
 ></div>
 <mat-progress-spinner *ngIf="scroll" diameter="20"
 mode="indeterminate" value="100"> </mat-progress-spinner>
+<lib-hlsLinks
+  class="mobile-links"
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  [imageSource]="imageSource"
+  [person]="person"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (importantAction) = "importantAction()"
+  (filterAction)="filterActionClicked($event)"
+  (refreshMessagingListAction)="refreshMessagingList()"
+  (notSeenAction) = "notSeenActionClicked()"
+  (checkSeenMessagesAction) = "checkSeenMessagingList()"
+  (checkNotSeenMessagesAction) = "checkNotSeenMessagingList()"
+  (checkImportantMessagesAction) = "checkImportantMessagingList()"
+></lib-hlsLinks>

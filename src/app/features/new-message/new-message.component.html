@@ -15,28 +15,15 @@
 </ngx-spinner>
 <form [formGroup]="sendMessageForm">
   <!-- type DropDown-->
-  <div
-    class="row mb-2"
-    *ngIf="messageTypesList && messageTypesList.length !== 0"
-  >
-    <div class="col-md-1">
+  <div class="row mb-2" *ngIf="messageTypesList && messageTypesList.length !== 0 ">
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label">Type</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <angular2-multiselect
-        id="type-dropdown"
-        [data]="messageTypesList"
-        formControlName="type"
-        [settings]="dropdownSettingsTypesList"
-        [ngClass]="{
-          'is-invalid': submited && ctr.type.errors,
-          invalid: submited && ctr.type.errors
-        }"
-        (click)="onTypeChanged()"
-        (onSelect)="onTypeChanged()"
-        (onDeSelect)="onTypeChanged()"
-        (onOpen)="(null)"
-      >
+    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+      <angular2-multiselect id="type-dropdown" [data]="messageTypesList" formControlName="type"
+        [settings]="dropdownSettingsTypesList" [ngClass]="{
+      'is-invalid': submited && ctr.type.errors,'invalid': submited && ctr.type.errors}" (click)="onTypeChanged()"
+        (onSelect)="onTypeChanged()" (onDeSelect)="onTypeChanged()" (onOpen)="(null)">
         <c-item>
           <ng-template let-item="item">
             <label>{{ item.text }}</label>
@@ -58,15 +45,11 @@
 
   <!-- To List DropDown-->
   <div class="row mb-2">
-    <div class="col-md-1">
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label">À</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <angular2-multiselect
-        id="to-dropdown"
-        [data]="toListParsed"
-        formControlName="to"
-        [settings]="dropdownSettings"
+    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+      <angular2-multiselect id="to-dropdown" [data]="toListParsed" formControlName="to" [settings]="dropdownSettings"
         [ngClass]="{
           'is-invalid': submited && ctr.to.errors,
           invalid: submited && ctr.to.errors
@@ -97,15 +80,11 @@
 
   <!-- CC List DropDown-->
   <div class="row mb-2" *ngIf="isCCListVisible">
-    <div class="col-md-1">
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label">CC</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <angular2-multiselect
-        id="cc-dropdown"
-        [data]="ccParsedList"
-        formControlName="cc"
-        [settings]="dropdownSettings"
+    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+      <angular2-multiselect id="cc-dropdown" [data]="ccParsedList" formControlName="cc" [settings]="dropdownSettings"
         [ngClass]="{
           'is-invalid': submited && ctr.cc.errors,
           invalid: submited && ctr.cc.errors
@@ -131,29 +110,14 @@
   </div>
 
   <!-- for List DropDown-->
-  <div
-    class="row mb-2"
-    *ngIf="
-      forListParsed &&
-      forListParsed.length !== 0 &&
-      showPatientFile &&
-      isForListVisible
-    "
-  >
-    <div class="col-md-1">
+  <div class="row mb-2" *ngIf="forListParsed && forListParsed.length !== 0 && showPatientFile && isForListVisible">
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label">Pour</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <angular2-multiselect
-        id="for-dropdown"
-        [data]="forFilteredList"
-        formControlName="for"
-        [settings]="dropdownSettingsForList"
-        [ngClass]="{
-          'is-invalid': submited && ctr.for.errors,
-          invalid: submited && ctr.for.errors
-        }"
-      >
+    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+      <angular2-multiselect id="for-dropdown" [data]="forFilteredList" formControlName="for"
+        [settings]="dropdownSettingsForList" [ngClass]="{
+      'is-invalid': submited && ctr.for.errors,'invalid': submited && ctr.for.errors}">
         <c-item>
           <ng-template let-item="item">
             <label>{{ item.fullName }}</label>
@@ -174,33 +138,15 @@
   </div>
 
   <!-- concerns List DropDown-->
-  <div
-    class="row mb-2"
-    *ngIf="
-      isSecretary &&
-      concernFilteredList &&
-      concernFilteredList.length !== 0 &&
-      !isInstruction
-    "
-  >
-    <div class="col-md-1">
+  <div class="row mb-2" *ngIf="isSecretary && concernFilteredList && concernFilteredList.length !== 0 && !isInstruction">
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label">{{ texts.concerns }}</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <angular2-multiselect
-        id="concern-dropdown"
-        [data]="concernFilteredList"
-        formControlName="concerns"
-        [settings]="dropdownSettingsConcernList"
-        [ngClass]="{
-          'is-invalid': submited && ctr.concerns.errors,
-          invalid: submited && ctr.concerns.errors
-        }"
-        (click)="onConcernChanged()"
-        (onSelect)="onConcernChanged()"
-        (onDeSelect)="onConcernChanged()"
-        (onOpen)="(null)"
-      >
+    <div class="col-md-10 col-sm-9 col-xs-9  ml-4">
+      <angular2-multiselect id="concern-dropdown" [data]="concernFilteredList" formControlName="concerns"
+        [settings]="dropdownSettingsConcernList" [ngClass]="{
+      'is-invalid': submited && ctr.concerns.errors,'invalid': submited && ctr.concerns.errors}" (click)="onConcernChanged()"
+      (onSelect)="onConcernChanged()" (onDeSelect)="onConcernChanged()" (onOpen)="(null)">
         <c-item>
           <ng-template let-item="item">
             <label>{{ item.fullName }}</label>
@@ -223,26 +169,15 @@
   <hr />
 
   <!-- object List DropDown-->
-  <div
-    class="row mb-4"
-    *ngIf="(contactType && !isSecretary()) || isInstruction"
-  >
-    <div class="col-md-1">
+  <div class="row mb-4" *ngIf=" (contactType &&  ! isSecretary()) || isInstruction">
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label">{{ texts.object }}</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <angular2-multiselect
-        id="objects-dropdown"
-        [data]="objectsList"
-        formControlName="object"
-        [settings]="dropdownSettingsListObject"
-        [ngClass]="{
-          'is-invalid': submited && ctr.object.errors,
-          invalid: submited && ctr.object.errors
-        }"
-        (onSelect)="onObjectChanedSelect()"
-        (onDeSelect)="onObjectChanged()"
-      >
+    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+      <angular2-multiselect id="objects-dropdown" [data]="objectsList" formControlName="object"
+        [settings]="dropdownSettingsListObject" [ngClass]="{
+      'is-invalid': submited && ctr.object.errors,'invalid': submited && ctr.object.errors}"
+        (onSelect)="onObjectChanedSelect()" (onDeSelect)="onObjectChanged()">
         <c-item>
           <ng-template let-item="item">
             <label>{{ item.title }}</label>
@@ -264,27 +199,15 @@
   </div>
 
   <!-- FREE OBJECT -->
-  <div
-    class="row mb-4"
-    *ngIf="
-      !isInstruction &&
-      (otherObject || !contactType || (isSecretary() && contactType) || newFlag)
-    "
-  >
-    <div class="col-md-1">
+  <div class="row mb-4"
+    *ngIf=" !isInstruction && (otherObject || !contactType || ( isSecretary() && contactType) || newFlag)">
+
+    <div class="col-md-1 col-sm-2 col-xs-2">
       <label class="label-free-object">{{ texts.free_object }}</label>
     </div>
-    <div class="col-md-10 ml-4">
-      <input
-        formControlName="freeObject"
-        class="form-control"
-        type="text"
-        id="input-free-object"
-        [ngClass]="{
-          'is-invalid': submited && ctr.freeObject.errors,
-          invalid: submited && ctr.freeObject.errors
-        }"
-      />
+    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+      <input formControlName="freeObject" class="form-control" type="text" id="input-free-object" [ngClass]="{
+        'is-invalid': submited && ctr.freeObject.errors,'invalid': submited && ctr.freeObject.errors}"/>
       <div *ngIf="ctr.freeObject.errors" class="invalid-feedback">
         <div *ngIf="ctr.freeObject.errors.required">
           {{ texts.required }}
@@ -292,9 +215,9 @@
       </div>
     </div>
   </div>
-  <hr />
-  <!-- body-->
-  <div class="row mb-2">
+  <hr>
+  <!-- body with no document-->
+  <div class="row mb-2" *ngIf="!ctr.document.value">
     <div class="col-md-12">
       <lib-hls-ckeditor
         id="body"
@@ -313,56 +236,64 @@
     </div>
   </div>
 
-  <br />
+    <!-- body with document-->
+    <mat-tab-group headerPosition="below" *ngIf="ctr.document.value">
+      <mat-tab label="Message">
+        <div class="row mb-2">
+          <div class="col-md-12">
+            <lib-hls-ckeditor [ngClass]="{
+              'is-invalid': submited && ctr.body.errors,'invalid': submited && ctr.body.errors}" [ctrl]="ctr.body">
+            </lib-hls-ckeditor>
+            <div *ngIf="ctr.body.errors" class="invalid-feedback">
+              <div *ngIf="ctr.body.errors.required">
+                {{ texts.required}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Corp du document">
+        <div class="row mb-2">
+          <div class="col-md-12">
+            <lib-hls-ckeditor [ngClass]="{
+              'is-invalid': submited && ctr.document.errors,'invalid': submited && ctr.document.errors}" [ctrl]="ctr.document">
+            </lib-hls-ckeditor>
+            <div *ngIf="ctr.document.errors" class="invalid-feedback">
+              <div *ngIf="ctr.document.errors.required">
+                {{ texts.required}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+  <br>
   <div class="row mb-2">
-    <div class="col-md-3">
-      <button
-        *ngIf="!isInstruction"
-        id="send-button"
-        type="button"
-        class="btn btn-primary"
-        (click)="sendEmail()"
-      >
-        ENVOYER
-      </button>
-      <button
-        *ngIf="isInstruction"
-        id="send-button-instruction"
-        type="button"
-        class="btn btn-primary"
-        (click)="sendInstructionEmit()"
-      >
-        ENVOYER
-      </button>
+    <div class="col-6 col-sm-3 col-md-3">
+      <button *ngIf="!isInstruction" id="send-button" type="button" class="btn btn-primary" (click)="sendEmail()">ENVOYER</button>
+      <button *ngIf="isInstruction" id="send-button-instruction" type="button" class="btn btn-primary" (click)="sendInstructionEmit()">ENVOYER</button>
     </div>
-    <div class="col-md-2">
-      <i
-        id="attachement-button"
-        class="far fa-paperclip action-btn mr-4"
-        onclick="document.getElementById('file-input').click();"
-      ></i>
-      <input
-        [hidden]="true"
-        id="file-input"
-        type="file"
-        (change)="onFileChange($event)"
-      />
-      <i
-        id="clear-button"
-        class="fas fa-trash-alt action-btn"
-        (click)="removeAttachment()"
-      ></i>
+    <div class="col-6 col-sm-3 col-md-2">
+      <i id="attachement-button" class="far fa-paperclip action-btn mr-4"
+        onclick="document.getElementById('file-input').click();"></i>
+      <input [hidden]=true id="file-input" type="file" (change)="onFileChange($event)" />
+      <i id="clear-button" class="fas fa-trash-alt action-btn" (click)="removeAttachment()"></i>
     </div>
-    <div *ngIf="sendMessageForm.get('file').value" class="col-md-5">
-      <div
-        id="attachement"
-        *ngFor="let file of sendMessageForm.get('file').value; let i = index"
-      >
-        <p id="attachement-label">
-          <i class="far fa-paperclip mr-1"></i
-          >{{
-            file.name.length < 20 ? file.name : file.name.substr(0, 19) + "..."
-          }}
+    <div *ngIf="sendMessageForm.get('file').value  && innerWidth >= 750" class="col-12 col-sm-5 col-md-5">
+      <div id="attachement" *ngFor="let file of sendMessageForm.get('file').value; let i = index">
+        <p id="attachement-label"> <i
+            class="far fa-paperclip mr-1"></i>{{ file.name.length < 20 ? file.name : file.name.substr(0,19) + "..." }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-2" *ngIf="innerWidth < 750">
+    <div *ngIf="sendMessageForm.get('file').value " class="col-12">
+      <br><br>
+      <div id="attachement" *ngFor="let file of sendMessageForm.get('file').value; let i = index">
+        <p id="attachement-label"> <i
+            class="far fa-paperclip mr-1"></i>{{ file.name.length < 20 ? file.name : file.name.substr(0,19) + "..." }}
         </p>
       </div>
     </div>

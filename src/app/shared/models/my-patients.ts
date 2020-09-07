@@ -10,6 +10,7 @@ export class MyPatients {
   isViewDetail: boolean;
   photoId: string;
   fullInfo: any;
+  id: number;
 }
 
 export class PatientSerch {
