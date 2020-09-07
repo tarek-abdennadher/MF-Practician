@@ -68,3 +68,11 @@ $helssy_white: #ffffff;
     }
 }
 
+/* ============= flags of phone component ============ */
+::ng-deep {
+  .flag {
+    background-image: url('assets/imgs/flags.jpg') !important;
+      }
+      }
+      /* ============================================= */
+

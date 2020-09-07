@@ -5,7 +5,7 @@ import {
   FormBuilder,
   FormGroup,
   FormControl,
-  Validators
+  Validators,
 } from "@angular/forms";
 import { MustMatch } from "./must-match";
 import { Speciality } from "@app/shared/models/speciality";
@@ -26,12 +26,13 @@ declare var $: any;
   selector: "app-personal-informations",
   templateUrl: "./personal-informations.component.html",
   styleUrls: ["./personal-informations.component.scss"],
-  providers: [JobtitlePipe]
+  providers: [JobtitlePipe],
 })
 export class PersonalInformationsComponent implements OnInit {
   @Input("practicianId") practicianId;
 
   specialities: Array<Speciality>;
+  specialitiesContainingDeleted: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
   passwordErrorMessage = "";
@@ -115,7 +116,7 @@ export class PersonalInformationsComponent implements OnInit {
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, emailValidator]
+          validators: [Validators.required, emailValidator],
         }),
         title: new FormControl(null, Validators.required),
         speciality: new FormControl(null, Validators.required),
@@ -125,7 +126,7 @@ export class PersonalInformationsComponent implements OnInit {
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null)
+        additionalEmail: new FormControl(null),
       });
     } else {
       this.infoForm = new FormGroup({
@@ -133,7 +134,7 @@ export class PersonalInformationsComponent implements OnInit {
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, emailValidator]
+          validators: [Validators.required, emailValidator],
         }),
         civility: new FormControl(null, Validators.required),
         birthday: new FormControl(null),
@@ -141,7 +142,7 @@ export class PersonalInformationsComponent implements OnInit {
         additional_address: new FormControl(null),
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
-        category: new FormControl(null)
+        category: new FormControl(null),
       });
     }
   }
@@ -149,10 +150,10 @@ export class PersonalInformationsComponent implements OnInit {
     this.passwordForm = this.formBuilder.group(
       {
         new_password: ["", [Validators.required, Validators.minLength(8)]],
-        confirm_password: ["", Validators.required]
+        confirm_password: ["", Validators.required],
       },
       {
-        validator: MustMatch("new_password", "confirm_password")
+        validator: MustMatch("new_password", "confirm_password"),
       }
     );
   }
@@ -163,8 +164,9 @@ export class PersonalInformationsComponent implements OnInit {
     return this.passwordForm.controls;
   }
   getAllSpeciality() {
-    this.contactsService.getAllSpecialities().subscribe(specialitiesList => {
+    this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
       this.specialities = specialitiesList;
+      this.specialitiesContainingDeleted = specialitiesList;
     });
   }
 
@@ -180,7 +182,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.showPasswordFailure = false;
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe(account => {
+    this.accountService.getCurrentAccount().subscribe((account) => {
       if (account && account.practician) {
         this.accountId = account.id;
         this.account = account.practician;
@@ -220,7 +222,7 @@ export class PersonalInformationsComponent implements OnInit {
             : null,
           additionalEmail: account.practician.additionalEmail
             ? account.practician.additionalEmail
-            : null
+            : null,
         });
       } else if (account && account.secretary) {
         this.account = account.secretary;
@@ -240,7 +242,7 @@ export class PersonalInformationsComponent implements OnInit {
           civility: account.secretary.civility
             ? account.secretary.civility
             : null,
-          otherPhones: account.otherPhones ? account.otherPhones : []
+          otherPhones: account.otherPhones ? account.otherPhones : [],
         });
       }
     });
@@ -258,6 +260,9 @@ export class PersonalInformationsComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
+    if (this.account.speciality && this.account.speciality.deleted) {
+      this.specialitiesContainingDeleted.push(this.account.speciality);
+    }
     let model;
     if (this.isPractician) {
       model = {
@@ -274,14 +279,14 @@ export class PersonalInformationsComponent implements OnInit {
           additionalEmail: this.infoForm.value.additionalEmail,
           speciality:
             this.infoForm.value.speciality != null
-              ? this.specialities.find(
-                  s => s.id == this.infoForm.value.speciality
+              ? this.specialitiesContainingDeleted.find(
+                  (s) => s.id == this.infoForm.value.speciality
                 )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          photoId: this.account.photoId
-        }
+          photoId: this.account.photoId,
+        },
       };
     } else {
       model = {
@@ -293,11 +298,11 @@ export class PersonalInformationsComponent implements OnInit {
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           civility: this.infoForm.value.civility,
-          photoId: this.account.photoId
-        }
+          photoId: this.account.photoId,
+        },
       };
     }
-    this.accountService.updateAccount(model).subscribe(res => {
+    this.accountService.updateAccount(model).subscribe((res) => {
       this.showAlert = true;
       $(".alert").alert();
       this.submitted = false;
@@ -343,16 +348,16 @@ export class PersonalInformationsComponent implements OnInit {
   // initialise profile picture
   getPictureProfile(id) {
     this.documentService.getDefaultImage(id).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           this.image = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      error => {
+      (error) => {
         this.image = this.avatars.user;
       }
     );
@@ -367,7 +372,7 @@ export class PersonalInformationsComponent implements OnInit {
       const currentFileUpload = selectedFiles.item(0);
       this.documentService
         .uploadFileSelected(this.nodeId, currentFileUpload)
-        .subscribe(event => {
+        .subscribe((event) => {
           if (event.body) {
             const bodySplited = event.body.toString().split("/");
             this.account.photoId = bodySplited[bodySplited.length - 1];
@@ -376,7 +381,7 @@ export class PersonalInformationsComponent implements OnInit {
           if (event instanceof HttpResponse) {
             const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
+            myReader.onloadend = (e) => {
               this.image = myReader.result;
             };
             myReader.readAsDataURL(file);
@@ -389,11 +394,11 @@ export class PersonalInformationsComponent implements OnInit {
   getAttachementFolderId() {
     this.documentService
       .getSiteById("helssycoreapplication")
-      .subscribe(directory => {
+      .subscribe((directory) => {
         const guid = directory.entry.guid;
-        this.documentService.getAllChildFolders(guid).subscribe(data => {
+        this.documentService.getAllChildFolders(guid).subscribe((data) => {
           const profilAttachementFolder = data.list.entries.filter(
-            directory => directory.entry.name === "Profiles Pictures"
+            (directory) => directory.entry.name === "Profiles Pictures"
           )[0].entry;
           this.nodeId = profilAttachementFolder.id;
         });
@@ -404,9 +409,9 @@ export class PersonalInformationsComponent implements OnInit {
     this.documentService
       .getLettersImageEntity(this.accountId, "ACCOUNT")
       .subscribe(
-        response => {
+        (response) => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
+          myReader.onloadend = (e) => {
             this.image = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
@@ -415,12 +420,12 @@ export class PersonalInformationsComponent implements OnInit {
           };
           let ok = myReader.readAsDataURL(response);
         },
-        error => {
+        (error) => {
           this.image = this.avatars.user;
         }
       );
   }
-  handleError = err => {
+  handleError = (err) => {
     if (err && err.error && err.error.apierror) {
       this.passwordErrorMessage = err.error.apierror.message;
       this.showPasswordFailure = true;
@@ -429,13 +434,13 @@ export class PersonalInformationsComponent implements OnInit {
       throw err;
     }
   };
-  handleResponsePasswordUpdate = response => {
+  handleResponsePasswordUpdate = (response) => {
     if (response) {
       this.showPasswordSuccess = true;
       $("#alertPasswordSuccess").alert();
       this.passwordForm.patchValue({
         new_password: "",
-        confirm_password: ""
+        confirm_password: "",
       });
       this.isPasswordValid = false;
       this.initPasswordForm();
@@ -452,7 +457,7 @@ export class PersonalInformationsComponent implements OnInit {
     this.isLabelShow = true;
   }
   getjobTitles() {
-    this.accountService.getJobTiles().subscribe(resp => {
+    this.accountService.getJobTiles().subscribe((resp) => {
       this.jobTitlesList = resp;
     });
   }

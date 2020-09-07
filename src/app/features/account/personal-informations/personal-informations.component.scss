@@ -12,6 +12,9 @@ $helssy_white: #ffffff;
   letter-spacing: normal;
   color: $hlessy-dark-grey;
 }
+label {
+  margin-top: -3rem;
+}
 /* Navbar */
 .Rectangle {
   border-radius: 14px;
@@ -19,7 +22,7 @@ $helssy_white: #ffffff;
   box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
   background-color: $helssy_white;
   margin-left: 50px;
-  margin-right: 50px ;
+  margin-right: 50px;
 }
 .Mes-informations {
   font-family: Montserrat-Medium;
@@ -33,7 +36,7 @@ $helssy_white: #ffffff;
   color: $hlessy-blue;
   padding: 18px;
 }
-.fa-icon{
+.fa-icon {
   font-size: 15px;
   font-stretch: normal;
   font-style: normal;
@@ -47,7 +50,7 @@ $helssy_white: #ffffff;
 .Rectangle-body-pract {
   background-color: rgba(243, 243, 243, 0.5);
   margin-left: 50px;
-  margin-right: 50px ;
+  margin-right: 50px;
   min-height: 946px;
 }
 /* Informations */
@@ -69,7 +72,8 @@ $helssy_white: #ffffff;
   opacity: 0.3;
 }
 
-.image-container:hover .middle, .image-container:hover .middle-attached {
+.image-container:hover .middle,
+.image-container:hover .middle-attached {
   opacity: 1;
 }
 
@@ -100,7 +104,7 @@ $helssy_white: #ffffff;
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
-.profile-picture{
+.profile-picture {
   width: 95px;
   height: 95px;
   border-radius: 50%;
@@ -109,12 +113,12 @@ $helssy_white: #ffffff;
   border-color: $helssy_white;
 }
 /* Form */
- .form-control{
+.form-control {
   border-radius: 6px;
-  background-color:$helssy_white;
-  border-color:$helssy_white;;
+  background-color: $helssy_white;
+  border-color: $helssy_white;
 }
-.col-form-label{
+.col-form-label {
   font-family: Montserrat-Medium;
   font-size: 12px;
   font-weight: 1000;
@@ -141,24 +145,25 @@ input[type="file"] {
 }
 ::ng-deep {
   international-phone-number .form-control {
-        height: 30px !important;
-        border-color:$helssy_white;
-        background-color:$helssy_white;
-      }
-      international-phone-number .dropdown button.dropbtn.btn,  button.dropbtn.btn:hover{
-          border-color: $helssy_white;
-          background-color: $helssy_white;
-          padding: 4px !important;
-          height: 30px !important;
-      }
-      international-phone-number .dropdown button.dropbtn.btn .arrow-down {
-        border-bottom:$helssy_white;
-      }
-      international-phone-number button.dropbtn.btn{
-        pointer-events : unset!important;
+    height: 30px !important;
+    border-color: $helssy_white;
+    background-color: $helssy_white;
   }
-      }
-.btn-icon{
+  international-phone-number .dropdown button.dropbtn.btn,
+  button.dropbtn.btn:hover {
+    border-color: $helssy_white;
+    background-color: $helssy_white;
+    padding: 4px !important;
+    height: 30px !important;
+  }
+  international-phone-number .dropdown button.dropbtn.btn .arrow-down {
+    border-bottom: $helssy_white;
+  }
+  international-phone-number button.dropbtn.btn {
+    pointer-events: unset !important;
+  }
+}
+.btn-icon {
   background-color: #1a56a7;
   border-color: #1a56a7;
   border-radius: 6px;
@@ -166,7 +171,7 @@ input[type="file"] {
   height: 40px;
   width: 40px;
 }
-.btn.btn-primary{
+.btn.btn-primary {
   // Text CSS
   font-family: Montserrat-Medium;
   font-size: 14px;
@@ -181,7 +186,7 @@ input[type="file"] {
   border-color: transparent;
   background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
 }
-.btn.btn-cancel{
+.btn.btn-cancel {
   // Text CSS
   font-family: Montserrat-Medium;
   font-size: 14px;
@@ -196,11 +201,11 @@ input[type="file"] {
   border-radius: 6px;
   border: solid 1px #f82e6c;
 }
-hr{
+hr {
   border-radius: 14px;
   box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
 }
-.reset-password{
+.reset-password {
   font-family: Montserrat-Medium;
   font-size: 16px;
   font-weight: 1000;
@@ -211,13 +216,13 @@ hr{
   text-align: left;
   color: #4a4a4a;
 }
-.password{
+.password {
   border-top: solid 1px #d0d0d0;
-  form{
+  form {
     margin-left: 50px;
+  }
 }
-}
-.alert.alert-danger{
+.alert.alert-danger {
   font-family: Montserrat-Medium;
   font-size: 14px;
   font-weight: 1000;
@@ -231,7 +236,7 @@ hr{
   border: solid 1px #f82e6c;
   background-color: #ffffff;
 }
-.alert.alert-success{
+.alert.alert-success {
   font-family: Montserrat-Medium;
   font-size: 14px;
   font-weight: 1000;
@@ -245,8 +250,16 @@ hr{
   border: solid 1px transparent;
   background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
 }
-button.close:focus, button.close{
+button.close:focus,
+button.close {
   border: none;
   border-color: transparent;
   color: transparent;
 }
+/* ============= flags of phone component ============ */
+::ng-deep {
+  .flag {
+    background-image: url("assets/imgs/flags.jpg") !important;
+  }
+}
+/* ============================================= */

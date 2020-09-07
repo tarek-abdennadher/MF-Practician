@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from "@angular/core";
+import { Component, OnInit, Input, HostListener } from "@angular/core";
 import { Subject } from "rxjs";
 import {
   FormGroup,
@@ -34,14 +34,16 @@ import { ObjectsService } from "../services/objects.service";
 import { EventEmitter } from "@angular/core";
 import { HlsSendMEssage } from "./hlsSendMessage.model";
 import { HlsSendMessageService } from "./new-message.service";
+declare var $: any;
 @Component({
   selector: "app-new-message",
   templateUrl: "./new-message.component.html",
   styleUrls: ["./new-message.component.scss"],
 })
 export class NewMessageComponent implements OnInit {
-  @Input() id:number;
-  /////
+  @Input() id: number;
+  addOptionConfirmed: boolean = false;
+  sendPostal: boolean = false;
   public uuid: string;
   private _destroyed$ = new Subject();
   imageDropdown: string;
@@ -123,6 +125,7 @@ export class NewMessageComponent implements OnInit {
   dropdownSettingsTypesList: any;
   dropdownSettingsConcernList: any;
   showFile: any;
+  innerWidth: number;
 
   set objectsList(objectsList: any) {
     this._objectsList = objectsList;
@@ -218,9 +221,6 @@ export class NewMessageComponent implements OnInit {
       this.connectedUserType = "MEDICAL";
       this.getTLSGroupByPracticianId();
     }
-    this.route.queryParams.subscribe((params) => {
-      this.selectedPracticianId = params["id"] || null;
-    });
     this.selectedPracticianId = this.id || null;
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -240,53 +240,17 @@ export class NewMessageComponent implements OnInit {
   }
   ngOnInit(): void {
     this.selectedPracticianId = this.id || null;
-    console.log(this.id)
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
       { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
-    if (this.user?.photoId) {
-      this.documentService.downloadFile(this.user?.photoId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            this.imageSource = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        (error) => {
-          this.imageSource = this.avatars.user;
-        }
-      );
-    } else {
-      if (this.role == "PRACTICIAN") {
-        this.imageSource = this.avatars.doctor;
-      } else if (this.role == "SECRETARY") {
-        this.imageSource = this.avatars.secretary;
-      }
-    }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
       this.featureService.getSecretaryPracticians().subscribe((value) => {
         value.forEach((item) => {
           item.type = "CONTACT_PRO";
-          if (item.photo) {
-            this.documentService.downloadFile(item.photo).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  item.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                item.img = this.avatars.doctor;
-              }
-            );
-          } else {
-            item.img = this.avatars.doctor;
-          }
+
           this.forFieldList.push(item);
         });
         this.forList.next(this.forFieldList);
@@ -387,6 +351,7 @@ export class NewMessageComponent implements OnInit {
       text: "Sélectionner un patient concerné si nécessaire",
     };
 
+    this.innerWidth = window.innerWidth;
 
   }
 
@@ -488,9 +453,7 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             object: selectedElements,
           });
-          this.sendMessageForm.patchValue({
-            freeObject: res.name,
-          });
+
           this.sendMessageForm.patchValue({
             body: res.body,
           });
@@ -564,37 +527,28 @@ export class NewMessageComponent implements OnInit {
       this.sendAction.emit(sendModel);
     }
   }
-  sendPostal() {
-    if (this.sendMessageForm.invalid) {
-      this.steps.hasError = true;
+  checkObjectValidator() {
+    if ((this.contactType && !this.isSecretary()) || this.isInstruction) {
+      this.sendMessageForm.controls.object.setValidators([Validators.required]);
+    } else {
+      this.sendMessageForm.controls.object.clearValidators();
+      this.sendMessageForm.controls.object.updateValueAndValidity();
     }
-    if (
-      this.sendMessageForm.value.to.length != 0 &&
-      (this.sendMessageForm.value.freeObject != "" ||
-        this.sendMessageForm.value.object.length == 1) &&
-      !["", undefined, null].includes(this.sendMessageForm.value.body)
-    ) {
-      this.steps.click = true;
-      // if (this.sendMessageForm.value.to.address != null || this.isAddress == true) {
-      //   let sendModel = new HlsSendMEssage();
-      //   sendModel = Object.assign(this.sendMessageForm.value);
-      //   sendModel.file = this.file;
-      //   this.sendPostalAction.emit(sendModel);
-      // } else {S
-      //   this.isAddress = true;
-      // }
-    }
-  }
-  checkObjectValidator(){
-   if(this.contactType &&  ! this.isSecretary() || this.isInstruction){
-    this.sendMessageForm.controls.object.setValidators([
-      Validators.required,
-    ]);
 
-   } else {
-    this.sendMessageForm.controls.object.clearValidators();
-    this.sendMessageForm.controls.object.updateValueAndValidity();
-   }
+    if (
+      !this.isInstruction &&
+      (this.otherObject ||
+        !this.contactType ||
+        (this.isSecretary() && this.contactType) ||
+        this.newFlag)
+    ) {
+      this.sendMessageForm.controls.freeObject.setValidators([
+        Validators.required,
+      ]);
+    } else {
+      this.sendMessageForm.controls.freeObject.clearValidators();
+      this.sendMessageForm.controls.freeObject.updateValueAndValidity();
+    }
   }
   sendEmail() {
     this.submited = true;
@@ -680,20 +634,6 @@ export class NewMessageComponent implements OnInit {
         });
       }
     }
-    if (this.isPatient) {
-      let context = false;
-      if (
-        this.sendMessageForm.value.for &&
-        this.sendMessageForm.value.for.length > 0
-      ) {
-        context = true;
-      }
-      const obj = {
-        forContext: context,
-        formValue: this.sendMessageForm.value,
-      };
-      this.objectSelection(obj);
-    }
   }
   updateSelectionSeting(limitSelection) {
     this.dropdownSettings = {
@@ -756,59 +696,47 @@ export class NewMessageComponent implements OnInit {
       this.sendMessageForm.patchValue({ body: null });
       this.otherObject = false;
     }
-    if (
-      this.isPatient &&
-      this.sendMessageForm.value.to?.length == 1 &&
-      this.sendMessageForm.value.object?.length == 1 &&
-      this.checkObjectAuthorization() !== 0
-    ) {
-      this.hasError = true;
-      this.sendMessageForm.controls["body"].disable();
-      this.sendMessageForm.patchValue({
-        body: null,
-      });
-    } else {
-      if (!this.isPatient && !this.isTls) {
-        if (this.sendMessageForm.value.to.length == 1) {
-          this.contactType = true;
-        } else {
-          this.contactType = false;
-          this.otherObject = true;
-          this.sendMessageForm.patchValue({
-            freeObject: "",
-            body: null,
-          });
-        }
-      }
-      if (
-        this.sendMessageForm.value.object &&
-        this.sendMessageForm.value.object.length > 0
-      ) {
-        this.otherObject =
-          this.sendMessageForm.value.object.length == 1
-            ? this.sendMessageForm.value.object[0].title.toLowerCase() ==
-              this.hlsSendMessageService.texts.other
-              ? true
-              : false
-            : null;
-        this.newFlag = this.otherObject;
-        this.maxlengthBody = this.isPatient
-          ? this.sendMessageForm.value.object.length == 1 &&
-            this.sendMessageForm.value.object[0].title.toLowerCase() ==
-              this.hlsSendMessageService.texts.other
-            ? 500
-            : 99999999999999999999
-          : null;
-
-        this.hasError = false;
-        this.sendMessageForm.controls["body"].enable();
-        this.sendMessageForm.patchValue({
-          body: this.sendMessageForm.value.object[0].body,
-        });
+    if (!this.isPatient && !this.isTls) {
+      if (this.sendMessageForm.value.to.length == 1) {
+        this.contactType = true;
       } else {
-        this.otherObject = false;
+        this.contactType = false;
+        this.otherObject = true;
+        this.sendMessageForm.patchValue({
+          freeObject: "",
+          body: null,
+        });
       }
     }
+    if (
+      this.sendMessageForm.value.object &&
+      this.sendMessageForm.value.object.length > 0
+    ) {
+      this.otherObject =
+        this.sendMessageForm.value.object.length == 1
+          ? this.sendMessageForm.value.object[0].title.toLowerCase() ==
+            this.hlsSendMessageService.texts.other
+            ? true
+            : false
+          : null;
+      this.newFlag = this.otherObject;
+      this.maxlengthBody = this.isPatient
+        ? this.sendMessageForm.value.object.length == 1 &&
+          this.sendMessageForm.value.object[0].title.toLowerCase() ==
+            this.hlsSendMessageService.texts.other
+          ? 500
+          : 99999999999999999999
+        : null;
+
+      this.hasError = false;
+      this.sendMessageForm.controls["body"].enable();
+      this.sendMessageForm.patchValue({
+        body: this.sendMessageForm.value.object[0].body,
+      });
+    } else {
+      this.otherObject = false;
+    }
+
     if (this.isSecretary()) {
       let selectedFor = [];
       selectedFor = this.sendMessageForm.value.for;
@@ -896,34 +824,6 @@ export class NewMessageComponent implements OnInit {
         .subscribe((patientFiles) => {
           let list = [];
           patientFiles.forEach((item) => {
-            if (item.photoId) {
-              this.documentService.downloadFile(item.photo).subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    item.img = myReader.result;
-                  };
-                  let ok = myReader.readAsDataURL(response.body);
-                },
-                (error) => {
-                  if (item?.civility == "MME") {
-                    item.img = this.avatars.women;
-                  } else {
-                    if (item?.civility == "CHILD") {
-                      item.img = this.avatars.child;
-                    } else item.img = this.avatars.man;
-                  }
-                }
-              );
-            } else {
-              if (item?.civility == "MME") {
-                item.img = this.avatars.women;
-              } else {
-                if (item?.civility == "CHILD") {
-                  item.img = this.avatars.child;
-                } else item.img = this.avatars.man;
-              }
-            }
             list.push(item);
           });
           this.forList.next(list);
@@ -937,30 +837,6 @@ export class NewMessageComponent implements OnInit {
             let list = [];
             patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE";
-              if (item.photoId) {
-                this.documentService.downloadFile(item.photo).subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      item.img = myReader.result;
-                    };
-                    let ok = myReader.readAsDataURL(response.body);
-                  },
-                  (error) => {
-                    if (item?.civility == "MME") {
-                      item.img = this.avatars.women;
-                    } else {
-                      item.img = this.avatars.man;
-                    }
-                  }
-                );
-              } else {
-                if (item?.civility == "MME") {
-                  item.img = this.avatars.women;
-                } else {
-                  item.img = this.avatars.man;
-                }
-              }
               list.push(item);
             });
             this.concernList.next(list);
@@ -971,101 +847,60 @@ export class NewMessageComponent implements OnInit {
   parseContactsPractician(contactsPractician) {
     let myList = [];
     contactsPractician.forEach((contactPractician) => {
-      if (contactPractician.photoId && contactPractician.photoId != null) {
-        this.documentService.downloadFile(contactPractician.photoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              myList.push({
-                id: contactPractician.id,
-                fullName: contactPractician.fullName,
-                type: contactPractician.contactType,
-                isSelected:
-                  this.selectedPracticianId == contactPractician.id
-                    ? true
-                    : false,
-                img: myReader.result,
-              });
-              this.toList.next(myList);
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: null,
-            });
-            this.toList.next(myList);
-          }
-        );
-      } else {
-        if (contactPractician.contactType == "MEDICAL") {
+      if (contactPractician.contactType == "MEDICAL") {
+        myList.push({
+          id: contactPractician.id,
+          fullName: contactPractician.fullName,
+          type: contactPractician.contactType,
+          isSelected:
+            this.selectedPracticianId == contactPractician.id ? true : false,
+          img: this.avatars.doctor,
+        });
+        this.toList.next(myList);
+      } else if (
+        contactPractician.contactType == "SECRETARY" ||
+        contactPractician.contactType == "TELESECRETARYGROUP"
+      ) {
+        myList.push({
+          id: contactPractician.id,
+          fullName: contactPractician.fullName,
+          type: contactPractician.contactType,
+          isSelected:
+            this.selectedPracticianId == contactPractician.id ? true : false,
+          img: this.avatars.secretary,
+        });
+        this.toList.next(myList);
+      } else if (contactPractician.contactType == "PATIENT") {
+        if (contactPractician.civility == "M") {
           myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.doctor,
+            img: this.avatars.man,
           });
           this.toList.next(myList);
-        } else if (
-          contactPractician.contactType == "SECRETARY" ||
-          contactPractician.contactType == "TELESECRETARYGROUP"
-        ) {
+        } else if (contactPractician.civility == "MME") {
           myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.secretary,
+            img: this.avatars.women,
           });
           this.toList.next(myList);
-        } else if (contactPractician.contactType == "PATIENT") {
-          if (contactPractician.civility == "M") {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: this.avatars.man,
-            });
-            this.toList.next(myList);
-          } else if (contactPractician.civility == "MME") {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: this.avatars.women,
-            });
-            this.toList.next(myList);
-          } else if (contactPractician.civility == "CHILD") {
-            myList.push({
-              id: contactPractician.id,
-              fullName: contactPractician.fullName,
-              type: contactPractician.contactType,
-              isSelected:
-                this.selectedPracticianId == contactPractician.id
-                  ? true
-                  : false,
-              img: this.avatars.child,
-            });
-            this.toList.next(myList);
-          }
+        } else if (contactPractician.civility == "CHILD") {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: this.avatars.child,
+          });
+          this.toList.next(myList);
         }
       }
     });
@@ -1094,124 +929,17 @@ export class NewMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
-    this.spinner.show();
-    this.uuid = uuid();
-    const newMessage = new Message();
-    message.to.forEach((to) => {
-      newMessage.toReceivers.push({ receiverId: to.id });
-    });
-    message.cc
-      ? message.cc.forEach((cc) => {
-          newMessage.ccReceivers.push({ receiverId: cc.id });
-        })
-      : null;
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      newMessage.sender = {
-        senderId: this.featureService.getUserId(),
-        originalSenderId: this.featureService.getUserId(),
-        sentForPatientFile:
-          message.for && message.for[0] ? message.for[0].id : null,
-        senderForCivility:
-          message.for && message.for[0] ? message.for[0]?.civility : null,
-        senderForPhotoId:
-          message.for && message.for[0] ? message.for[0]?.photoId : null,
-        senderForfullName:
-          message.for && message.for[0] ? message.for[0]?.fullName : null,
-      };
+    if (message.type[0].id == SendType.SEND_POSTAL) {
+      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
+        this.sendPostal = result;
+        if (this.sendPostal) {
+          this.sendMessage2(message);
+        } else {
+          $("#firstModal").modal("toggle");
+        }
+      });
     } else {
-      newMessage.sender = {
-        senderId: this.featureService.getUserId(),
-        originalSenderId: this.featureService.getUserId(),
-        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
-      };
-      if (message.concerns && message.concerns[0]) {
-        newMessage.sender.concernsId =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0].id
-            : null;
-        newMessage.sender.concernsCivility =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0]?.civility
-            : null;
-        newMessage.sender.concernsPhotoId =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0]?.photoId
-            : null;
-        newMessage.sender.concernsFullName =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0]?.fullName
-            : null;
-      }
-    }
-    message.object != "" &&
-    message.object[0].name.toLowerCase() !=
-      this.globalService.messagesDisplayScreen.other
-      ? (newMessage.object = message.object[0].name)
-      : (newMessage.object = message.freeObject);
-    newMessage.body = message.body;
-    newMessage.document = message.document;
-    if (message.file !== undefined && message.file !== null) {
-      newMessage.uuid = this.uuid;
-      this.selectedFiles = message.file;
-
-      const formData = new FormData();
-      if (this.selectedFiles) {
-        newMessage.hasFiles = true;
-        formData.append("model", JSON.stringify(newMessage));
-        formData.append(
-          "file",
-          this.selectedFiles[0],
-          this.selectedFiles[0].name
-        );
-      }
-
-      this.nodeService
-        .saveFileInMemory(this.uuid, formData)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          (mess) => {
-            this.featureService.sentState.next(true);
-            this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
-            this.messageWidgetService.toggleObs.next();
-          },
-          (error) => {
-            this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl,
-            });
-          }
-        );
-    } else {
-      this.messageService
-        .sendMessage(newMessage)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          (mess) => {
-            this.featureService.sentState.next(true);
-            this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
-            this.messageWidgetService.toggleObs.next();
-          },
-          (error) => {
-            this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl,
-            });
-          }
-        );
+      this.sendMessage2(message);
     }
   }
   addProContactAction() {
@@ -1268,30 +996,6 @@ export class NewMessageComponent implements OnInit {
             let list = [];
             patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE";
-              if (item.photoId) {
-                this.documentService.downloadFile(item.photo).subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      item.img = myReader.result;
-                    };
-                    let ok = myReader.readAsDataURL(response.body);
-                  },
-                  (error) => {
-                    if (item?.civility == "MME") {
-                      item.img = this.avatars.women;
-                    } else {
-                      item.img = this.avatars.man;
-                    }
-                  }
-                );
-              } else {
-                if (item?.civility == "MME") {
-                  item.img = this.avatars.women;
-                } else {
-                  item.img = this.avatars.man;
-                }
-              }
               list.push(item);
             });
             this.concernList.next(list);
@@ -1407,20 +1111,7 @@ export class NewMessageComponent implements OnInit {
             img: null,
             type: "TELESECRETARYGROUP",
           };
-          if (groupValue.photoId) {
-            this.documentService.downloadFile(groupValue.photoId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  item.img = myReader.result;
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                item.img = this.avatars.doctor;
-              }
-            );
-          }
+
           this.practicianTLSGroup = item;
         }
       });
@@ -1565,5 +1256,152 @@ export class NewMessageComponent implements OnInit {
         ) !== -1) ||
       false
     );
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+  }
+  openConfirmModel() {
+    $("#firstModal").modal("hide");
+    $("#confirmModal").modal("toggle");
+  }
+  activateSenPostalOption() {
+    if (this.addOptionConfirmed) {
+      this.featureService.activateSendPostal().subscribe((res) => {
+        this.sendPostal = true;
+        $("#confirmModal").modal("hide");
+        $("#successModal").modal("toggle");
+      });
+    }
+  }
+  checkboxChange(event) {
+    if (event.target.checked) {
+      this.addOptionConfirmed = true;
+    } else {
+      this.addOptionConfirmed = false;
+    }
+  }
+  sendMessage2(message) {
+    this.spinner.show();
+    this.uuid = uuid();
+    const newMessage = new Message();
+    newMessage.sendType = this.lastSendType;
+    message.to.forEach((to) => {
+      newMessage.toReceivers.push({ receiverId: to.id });
+    });
+    message.cc
+      ? message.cc.forEach((cc) => {
+          newMessage.ccReceivers.push({ receiverId: cc.id });
+        })
+      : null;
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sentForPatientFile:
+          message.for && message.for[0] ? message.for[0].id : null,
+        senderForCivility:
+          message.for && message.for[0] ? message.for[0]?.civility : null,
+        senderForPhotoId:
+          message.for && message.for[0] ? message.for[0]?.photoId : null,
+        senderForfullName:
+          message.for && message.for[0] ? message.for[0]?.fullName : null,
+      };
+    } else {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
+      };
+      if (message.concerns && message.concerns[0]) {
+        newMessage.sender.concernsId =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0].id
+            : null;
+        newMessage.sender.concernsCivility =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0]?.civility
+            : null;
+        newMessage.sender.concernsPhotoId =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0]?.photoId
+            : null;
+        newMessage.sender.concernsFullName =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0]?.fullName
+            : null;
+      }
+    }
+    message.object != "" &&
+    message.object[0].name.toLowerCase() !=
+      this.globalService.messagesDisplayScreen.other
+      ? (newMessage.object = message.object[0].name)
+      : (newMessage.object = message.freeObject);
+    newMessage.body = message.body;
+    newMessage.document = message.document;
+    if (message.file !== undefined && message.file !== null) {
+      newMessage.uuid = this.uuid;
+      this.selectedFiles = message.file;
+
+      const formData = new FormData();
+      if (this.selectedFiles) {
+        newMessage.hasFiles = true;
+        formData.append("model", JSON.stringify(newMessage));
+        formData.append(
+          "file",
+          this.selectedFiles[0],
+          this.selectedFiles[0].name
+        );
+      }
+
+      this.nodeService
+        .saveFileInMemory(this.uuid, formData)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (mess) => {
+            this.featureService.sentState.next(true);
+            this.spinner.hide();
+            this.router.navigate(["/messagerie"], {
+              queryParams: {
+                status: "sentSuccess",
+              },
+            });
+            this.messageWidgetService.toggleObs.next();
+          },
+          (error) => {
+            this.spinner.hide();
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+          }
+        );
+    } else {
+      this.messageService
+        .sendMessage(newMessage)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (mess) => {
+            this.featureService.sentState.next(true);
+            this.spinner.hide();
+            this.router.navigate(["/messagerie"], {
+              queryParams: {
+                status: "sentSuccess",
+              },
+            });
+            this.messageWidgetService.toggleObs.next();
+          },
+          (error) => {
+            this.spinner.hide();
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+          }
+        );
+    }
   }
 }

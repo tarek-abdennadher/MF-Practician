@@ -487,15 +487,16 @@
                     <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
                     {{labels.history}}
                 </ng-template>
-                <div class="card-body">
+                <div class="card-body justify-content-center">
                     <lib-hlsMessagingList [list]=" filtredItemList" [hasPaging]="true"
                         (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true">
                     </lib-hlsMessagingList>
-                    <div class="search-results" infiniteScroll [infiniteScrollDistance]="2"
-                        [infiniteScrollThrottle]="50" (scrolled)="onScroll()"></div>
-                    <mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
-                    </mat-progress-spinner>
                 </div>
+
+                <div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+                    (scrolled)="onScroll()"></div>
+                <mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
+                </mat-progress-spinner>
             </mat-tab>
         </mat-tab-group>
     </div>

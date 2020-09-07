@@ -7,7 +7,7 @@
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
 <lib-hlsMessagingList [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
-  (cardAction)="cardClicked($event)" [imageSource]="imageSource"></lib-hlsMessagingList>
+  (cardAction)="cardClicked($event)" [caller]="'sentMessage'" [imageSource]="imageSource"></lib-hlsMessagingList>
   </div>
 </div>
 <notifier-container></notifier-container>

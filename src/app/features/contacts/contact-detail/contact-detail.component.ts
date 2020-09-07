@@ -6,8 +6,8 @@ import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from "rxjs";
-import { AccountService } from '@app/features/services/account.service';
-import { FeaturesService } from '@app/features/features.service';
+import { AccountService } from "@app/features/services/account.service";
+import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -15,7 +15,9 @@ declare var $: any;
   styleUrls: ["./contact-detail.component.scss"],
 })
 export class ContactDetailComponent implements OnInit {
+  account: any;
   specialities: Array<Speciality>;
+  specialitiesContainingDeleted: Array<Speciality>;
   errorMessage = "";
   successMessage = "";
   labels;
@@ -72,15 +74,17 @@ export class ContactDetailComponent implements OnInit {
       additional_address: new FormControl(null),
       phone: new FormControl("+33"),
       picture: new FormControl(null),
+      zipCode: new FormControl(null),
+      city: new FormControl(null)
     });
   }
   get ctr() {
     return this.infoForm.controls;
   }
 
-
   getContact(id) {
     this.contactsService.getContactById(id).subscribe((contact) => {
+      this.account = contact;
       this.otherPhones.next(contact.otherPhones);
       this.infoForm.patchValue({
         id: contact.id,
@@ -96,6 +100,8 @@ export class ContactDetailComponent implements OnInit {
         phone: contact.phoneNumber ? contact.phoneNumber : "+33",
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId,
+        zipCode: contact.zipCode ? contact.zipCode : null,
+        city: contact.city ? contact.city : null
       });
       this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
@@ -106,6 +112,7 @@ export class ContactDetailComponent implements OnInit {
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
       this.specialities = specialitiesList;
+      this.specialitiesContainingDeleted = specialitiesList;
     });
   }
   getjobTitles() {
@@ -136,6 +143,9 @@ export class ContactDetailComponent implements OnInit {
       return;
     }
     const value = this.infoForm.value;
+    if (this.account.speciality && this.account.speciality.deleted) {
+      this.specialitiesContainingDeleted.push(this.account.speciality);
+    }
     const contact = {
       id: value.id,
       contactType: value.type,
@@ -143,7 +153,9 @@ export class ContactDetailComponent implements OnInit {
       title: value.title,
       speciality:
         value.speciality != null
-          ? this.specialities.find((s) => s.id == value.speciality)
+          ? this.specialitiesContainingDeleted.find(
+            (s) => s.id == value.speciality
+          )
           : null,
       firstName: value.first_name,
       lastName: value.last_name,
@@ -152,6 +164,8 @@ export class ContactDetailComponent implements OnInit {
       email: value.email,
       address: value.address,
       additionalAddress: value.additional_address,
+      zipCode: value.zipCode,
+      city: value.city
     };
     let successResult = false;
     if (this.param == "add") {

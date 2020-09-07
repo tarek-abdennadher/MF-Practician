@@ -114,6 +114,8 @@ export class PatientFileComponent implements OnInit {
     return <FormArray>this.personalInfoForm.get("otherPhones");
   }
   ngOnInit(): void {
+    this.filtredItemList = [];
+    this.itemsList = [];
     this.maxDate.setDate(new Date().getDate() - 1);
     this.initPersonalForm();
     this.initNoteForm();
@@ -126,6 +128,8 @@ export class PatientFileComponent implements OnInit {
       if (val) {
         this.info = val;
         this.getPersonalInformation(val);
+        this.filtredItemList = [];
+        this.itemsList = [];
       }
     });
     this.linkedPatients.subscribe((res) => {
