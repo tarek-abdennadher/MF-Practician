@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-5">
+        <lib-hls-generic-list-links [links]="links" [page]="page" [topText]="topText" [number]="number">
+        </lib-hls-generic-list-links>
+        <lib-hls-generic-list [isCheckbox]="false" [list]="filtredPatients" [imageSource]="imageSource"
+            [isInvitationPending]="isInvitation" [isMyPatients]="isMyPatients" (acceptedAction)="acceptedAction($event)"
+            (refuseAction)="refuseAction($event)" (cardAction)="cardClicked($event)" [hasPaging]="true">
+        </lib-hls-generic-list>
+    </div>
+    <div class="col-md-7 objects">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+    (scrolled)="onScroll()"></div>
+<mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
+</mat-progress-spinner>

@@ -373,7 +373,24 @@ export class FeaturesComponent implements OnInit {
   }
 
   displayMyPatientsAction(event) {
-    this.router.navigate(["/mes-patients/" + event]);
+    switch (event) {
+      case "accepted": {
+        this.router.navigate(["/mes-patients"]);
+        break;
+      }
+      case "pending": {
+        this.router.navigate(["/mes-invitations"]);
+        break;
+      }
+      case "prohibit": {
+        this.router.navigate(["/mes-patients-bloques"]);
+        break;
+      }
+      case "archived": {
+        this.router.navigate(["/mes-patients-archives"]);
+        break;
+      }
+    }
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/favorites"]);
