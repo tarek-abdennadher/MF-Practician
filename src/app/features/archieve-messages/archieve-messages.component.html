@@ -6,7 +6,12 @@
   [backButton]="backButton"
   (backButtonAction)="BackButton()"
   [links]="links"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
   (refreshMessagingListAction)="refreshMessagingList()"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
 ></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
@@ -22,13 +27,7 @@
 ></lib-hlsMessagingList>
   </div>
 </div>
-<div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()"
-></div>
-<mat-progress-spinner *ngIf="scroll" diameter="20"
+
+<mat-progress-spinner *ngIf="loading" diameter="20"
 mode="indeterminate" value="100"> </mat-progress-spinner>
 

@@ -9,6 +9,8 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { PaginationService } from '../services/pagination.service';
 
 @Component({
   selector: "app-forwarded-messages",
@@ -44,6 +46,7 @@ export class ForwardedMessagesComponent implements OnInit {
     user: string;
     tls: string;
   };
+  loading = false;
   constructor(
     notifierService: NotifierService,
     private route: ActivatedRoute,
@@ -52,7 +55,8 @@ export class ForwardedMessagesComponent implements OnInit {
     private messageService: MessageService,
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public pagination: PaginationService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -70,16 +74,27 @@ export class ForwardedMessagesComponent implements OnInit {
         });
       }
     });
-    this.forwardedMessage();
+    this.countAllMyForwardedMessages();
     this.searchSent();
   }
 
-  forwardedMessage() {
+  countAllMyForwardedMessages() {
     this.messageService
-      .forwardedMessage()
+      .countForwardedMessage()
+      .subscribe(messages => {
+        this.pagination.init(messages);
+        this.loadPage();
+      });
+  }
+
+  forwardedMessage() {
+    this.loading = true;
+    this.messageService
+      .forwardedMessage(this.pagination.pageNo, this.pagination.direction)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
         messages.forEach(message => {
+          this.loading = false;
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           messageSent.users.forEach(user => {
@@ -112,18 +127,18 @@ export class ForwardedMessagesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-          ? "répondu"
-          : message.toReceivers[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "répondu"
+            : message.toReceivers[0].seen
+              ? "Lu"
+              : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-          ? 100
-          : message.toReceivers[0].seen
-          ? 50
-          : 20
+            ? 100
+            : message.toReceivers[0].seen
+              ? 50
+              : 20
     };
     messageSent.users = [];
     message.toReceivers.forEach(r => {
@@ -252,14 +267,14 @@ export class ForwardedMessagesComponent implements OnInit {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(
-            item =>
-              item.users[0].type.toLowerCase() ==
-              (event == "doctor"
-                ? "medical"
-                : event == "secretary"
+          item =>
+            item.users[0].type.toLowerCase() ==
+            (event == "doctor"
+              ? "medical"
+              : event == "secretary"
                 ? "telesecretarygroup" || "secretary"
                 : event)
-          );
+        );
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
@@ -293,5 +308,24 @@ export class ForwardedMessagesComponent implements OnInit {
     this.itemsList = [];
     this.filtredItemList = [];
     this.ngOnInit();
+  }
+
+
+  previousPageActionClicked() {
+    if (this.pagination.hasPreviousPage()) {
+      this.loadPage();
+    }
+  }
+
+  nextPageActionClicked() {
+    if (this.pagination.hasNextPage()) {
+      this.loadPage();
+    }
+  }
+
+  loadPage() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.forwardedMessage();
   }
 }

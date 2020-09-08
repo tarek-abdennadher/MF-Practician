@@ -25,6 +25,13 @@ export class ArchieveMessagesService {
     );
   }
 
+  countAllMyArchivedMessages(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.archived_messages + "myCount"
+    );
+  }
+
   public markMessageAsSeen(id: number): Observable<boolean> {
     return this.globalService.call(
       RequestType.POST,
