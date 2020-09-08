@@ -84,14 +84,17 @@
           </div>
           <div class="col-sm-12">
             <select
+              data-live-search="true"
               formControlName="speciality"
-              class="form-control"
+              data-none-results-text="Pas de correspondance"
+              class="selectpicker form-control"
+              data-container="body"
               [ngClass]="{
                 'is-invalid': submitted && ctr.speciality.errors
               }"
               id="speciality"
             >
-              <option value="null" disabled="true">
+              <option value="null" disabled="true" selected>
                 {{ labels.speciality }}
               </option>
               <option
@@ -103,7 +106,7 @@
               >
                 {{ account.speciality.name }}
               </option>
-              <option *ngFor="let s of specialities" [value]="s.id">
+              <option *ngFor="let s of specialities | async" [value]="s.id">
                 {{ s.name }}
               </option>
             </select>
