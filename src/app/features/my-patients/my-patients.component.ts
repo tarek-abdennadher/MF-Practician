@@ -84,16 +84,8 @@ export class MyPatientsComponent implements OnInit {
             this.initPatients();
             break;
           }
-          case "pending": {
-            this.initPendingPatients();
-            break;
-          }
           case "prohibit": {
             this.initProhibitedPatients();
-            break;
-          }
-          case "archived": {
-            this.initArchivedPatients();
             break;
           }
         }
@@ -110,16 +102,8 @@ export class MyPatientsComponent implements OnInit {
             this.initPatients();
             break;
           }
-          case "pending": {
-            this.initPendingPatients();
-            break;
-          }
           case "prohibit": {
             this.initProhibitedPatients();
-            break;
-          }
-          case "archived": {
-            this.initArchivedPatients();
             break;
           }
         }
@@ -134,15 +118,6 @@ export class MyPatientsComponent implements OnInit {
     this.getPatientsOfCurrentParactician(this.pageNo);
     this.searchPatients();
   }
-  initPendingPatients() {
-    this.links.isTypeFilter = false;
-    this.links.isAdd = false;
-    this.section = "pending";
-    this.isInvitation = true;
-    this.featureService.setActiveChild(null);
-    this.getPendingListRealTime(this.pageNo);
-    this.markNotificationsAsSeen();
-  }
   initProhibitedPatients() {
     this.links.isTypeFilter = false;
     this.links.isAdd = false;
@@ -150,14 +125,6 @@ export class MyPatientsComponent implements OnInit {
     this.featureService.setActiveChild(null);
     this.isInvitation = false;
     this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
-  }
-  initArchivedPatients() {
-    this.links.isTypeFilter = false;
-    this.links.isAdd = false;
-    this.section = "archived";
-    this.featureService.setActiveChild(null);
-    this.isInvitation = false;
-    this.getPatientsArchivedOfCurrentParactician(this.pageNo);
   }
 
   markNotificationsAsSeen() {
@@ -298,72 +265,6 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
-  getPatientsPendingOfCurrentParactician(pageNo) {
-    this.myPatients = [];
-    this.filtredPatients = [];
-    this.myPatientsService
-      .getPendingInvitations(pageNo, this.direction)
-      .subscribe(myPatients => {
-        this.number = myPatients.length;
-        this.bottomText =
-          this.number > 1
-            ? this.globalService.messagesDisplayScreen.patients
-            : this.globalService.messagesDisplayScreen.patient;
-        this.myPatients = [];
-        myPatients.forEach(elm => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
-        });
-        this.filtredPatients = this.myPatients;
-      });
-  }
-
-  getNextPatientsPendingOfCurrentParactician(pageNo) {
-    this.myPatientsService
-      .getPendingInvitations(pageNo, this.direction)
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
-            this.myPatients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
-          });
-        }
-      });
-  }
-
-  getPatientsArchivedOfCurrentParactician(pageNo) {
-    this.myPatients = [];
-    this.filtredPatients = [];
-    this.myPatientsService
-      .getPatientFilesArchived(pageNo, this.direction)
-      .subscribe(myPatients => {
-        this.number = myPatients.length;
-        this.bottomText =
-          this.number > 1
-            ? this.globalService.messagesDisplayScreen.patients
-            : this.globalService.messagesDisplayScreen.patient;
-        myPatients.forEach(elm => {
-          this.myPatients.push(this.mappingMyPatients(elm, false, true));
-        });
-        this.filtredPatients = this.myPatients;
-      });
-  }
-
-  getNextPatientsArchivedOfCurrentParactician(pageNo) {
-    this.myPatientsService
-      .getPatientFilesArchived(pageNo, this.direction)
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
-            this.myPatients.push(this.mappingMyPatients(elm, false, true));
-          });
-        }
-      });
-  }
 
   mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
@@ -464,46 +365,6 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
-  acceptedAction(item) {
-    this.myPatientsService
-      .acceptPatientInvitation(item.users[0].patientId)
-      .subscribe(resp => {
-        if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter(
-            elm => elm.users[0].id != item.users[0].id
-          );
-          this.number--;
-          this.featureService.setNumberOfPending(
-            this.featureService.getNumberOfPendingValue() - 1
-          );
-          this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            notif => notif.senderId != item.users[0].accountId
-          );
-          this.featureService
-            .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe(resp => {});
-        }
-      });
-  }
-  refuseAction(item) {
-    this.myPatientsService
-      .prohibitePatient(item.users[0].patientId)
-      .subscribe(resp => {
-        if (resp == true) {
-          this.filtredPatients = this.filtredPatients.filter(
-            elm => elm.users[0].id != item.users[0].id
-          );
-          this.number--;
-          this.featureService.setNumberOfPending(
-            this.featureService.getNumberOfPendingValue() - 1
-          );
-          this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            notif => notif.senderId != item.users[0].accountId
-          );
-        }
-      });
-  }
-
   archivedAction(item) {
     this.dialogService
       .openConfirmDialog(
@@ -540,17 +401,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
 
-  getPendingListRealTime(pageNo) {
-    this.number = 0;
-    this.bottomText = this.globalService.messagesDisplayScreen.patient;
-    this.featureService.getNumberOfPendingObs().subscribe(resp => {
-      if (
-        this.featureService.getNumberOfPendingValue() != this.myPatients.length
-      ) {
-        this.getPatientsPendingOfCurrentParactician(pageNo);
-      }
-    });
-  }
+
 
   cardClicked(item) {
     this.router.navigate(["fiche-patient"], {
@@ -571,16 +422,8 @@ export class MyPatientsComponent implements OnInit {
             this.getNextPagePatientsOfCurrentParactician(this.pageNo);
             break;
           }
-          case "pending": {
-            this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
-            break;
-          }
           case "prohibit": {
             this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
-            break;
-          }
-          case "archived": {
-            this.getNextPatientsArchivedOfCurrentParactician(this.pageNo);
             break;
           }
         }

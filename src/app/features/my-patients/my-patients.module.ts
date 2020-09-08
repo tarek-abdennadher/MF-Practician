@@ -9,11 +9,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '@app/shared/shared.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 
 
 @NgModule({
-  declarations: [MyPatientsComponent, AddPatientComponent, PatientDetailComponent],
+  declarations: [MyPatientsComponent, AddPatientComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
