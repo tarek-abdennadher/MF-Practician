@@ -12,7 +12,7 @@
   ></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
-<lib-hlsMessagingList [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
+<lib-hlsMessagingList  *ngIf="!loading" [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
   (cardAction)="cardClicked($event)" [caller]="'forwardedMessage'" [imageSource]="imageSource"></lib-hlsMessagingList>
   </div>
 </div>

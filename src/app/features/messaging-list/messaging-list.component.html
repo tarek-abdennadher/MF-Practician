@@ -35,6 +35,7 @@
           <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -53,6 +54,7 @@
           <span (click)="filterActionClicked('secretary')">Secrétaire</span>
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -71,6 +73,7 @@
           Patients
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -89,6 +92,7 @@
           Praticiens
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -104,6 +108,7 @@
     </mat-tab-group>
 
     <lib-hlsMessagingList class="mobile-links"
+      *ngIf="!loading"
       [list]="filtredItemList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"
