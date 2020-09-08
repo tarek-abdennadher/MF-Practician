@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  AfterViewChecked
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -19,7 +26,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"]
 })
-export class MessagingDetailComponent implements OnInit {
+export class MessagingDetailComponent implements OnInit, AfterViewChecked {
   @ViewChild("reply") private myScrollContainer: ElementRef;
   private _destroyed$ = new Subject();
   previousURL = "";
@@ -83,7 +90,14 @@ export class MessagingDetailComponent implements OnInit {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
-
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
+  }
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       if (params["context"]) {
@@ -139,6 +153,7 @@ export class MessagingDetailComponent implements OnInit {
       this.getMessageDetailById(this.idMessage);
     });
     this.featureService.setIsMessaging(true);
+    this.scrollToBottom();
   }
 
   getMessageDetailById(id) {
@@ -341,11 +356,7 @@ export class MessagingDetailComponent implements OnInit {
 
   replyAction() {
     this.messagingDetailService.setId(this.idMessage);
-    this.myScrollContainer.nativeElement.scroll({
-      top: this.myScrollContainer.nativeElement.scrollHeight,
-      left: 0,
-      behavior: "smooth"
-    });
+    this.scrollToBottom();
     this.router.navigate([
       "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
       this.idMessage
@@ -354,6 +365,7 @@ export class MessagingDetailComponent implements OnInit {
 
   forwardAction() {
     this.messagingDetailService.setId(this.idMessage);
+    this.scrollToBottom();
     this.router.navigate(
       [
         "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
@@ -365,9 +377,6 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     );
-    try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
   }
 
   acceptAction() {
@@ -383,9 +392,7 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     );
-    try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    this.scrollToBottom();
   }
 
   refuseAction() {
@@ -401,9 +408,7 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
     );
-    try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    this.scrollToBottom();
   }
 
   importantAction() {
