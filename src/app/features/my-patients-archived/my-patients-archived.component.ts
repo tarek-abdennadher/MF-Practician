@@ -3,10 +3,11 @@ import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { FeaturesService } from '../features.service';
 import { MyPatientsService } from '../services/my-patients.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { GlobalService } from '@app/core/services/global.service';
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { MyPatients } from '@app/shared/models/my-patients';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-patients-archived',
@@ -32,6 +33,7 @@ export class MyPatientsArchivedComponent implements OnInit {
   };
   page = "PATIENT";
   topText = this.globalService.messagesDisplayScreen.archived_patients;
+  bottomText = ""
   imageSource: string;
   scroll = false;
   constructor(
@@ -47,9 +49,17 @@ export class MyPatientsArchivedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initArchivedPatients();
+    // update list after detail view
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        let currentRoute = this.route;
+        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+      });
   }
   initArchivedPatients() {
-    ;
     this.featureService.setActiveChild(null);
     this.getPatientsArchivedOfCurrentParactician(this.pageNo);
   }
@@ -83,6 +93,7 @@ export class MyPatientsArchivedComponent implements OnInit {
     if (this.listLength != this.filtredPatients.length) {
       this.listLength = this.filtredPatients.length;
       this.pageNo++;
+      this.getNextPatientsArchivedOfCurrentParactician(this.pageNo);
     }
   }
   mappingMyPatients(patient, prohibited, archived) {

@@ -113,6 +113,7 @@ export class MyInvitationsComponent implements OnInit {
     if (this.listLength != this.filtredPatients.length) {
       this.listLength = this.filtredPatients.length;
       this.pageNo++;
+      this.getNextPatientsPendingOfCurrentParactician(this.pageNo)
     }
   }
   mappingMyPatients(patient, prohibited, archived) {

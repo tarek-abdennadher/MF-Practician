@@ -105,7 +105,7 @@ export class AddPatientComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
-      this.router.navigate(["/mes-patients/accepted"],);
+      this.router.navigate(["/mes-patients"],);
     } else {
       this.notifMessage = this.patientService.errors.failed_add;
       this.notifier.show({
