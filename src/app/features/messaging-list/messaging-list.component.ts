@@ -17,6 +17,7 @@ import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { MyPatientsService } from "../services/my-patients.service";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
+import { PaginationService } from '../services/pagination.service';
 
 @Component({
   selector: "app-messaging-list",
@@ -56,6 +57,7 @@ export class MessagingListComponent implements OnInit {
   page = "INBOX";
   number: number;
   topText = "Boîte de réception";
+
   bottomText =
     this.number > 1
       ? this.globalService.messagesDisplayScreen.newMessages
@@ -64,9 +66,8 @@ export class MessagingListComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private readonly notifier: NotifierService;
   color = "red";
-  pageNo = 0;
-  listLength = 10;
-  scroll = false;
+
+  loading = false;
   inboxNumber;
   paramsId;
   avatars: {
@@ -79,7 +80,8 @@ export class MessagingListComponent implements OnInit {
     tls: string;
   };
   searchContext = false;
-  direction: OrderDirection = OrderDirection.DESC;
+  listLength = 10;
+  userTypeTabsFilter: string = 'all';
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -89,7 +91,8 @@ export class MessagingListComponent implements OnInit {
     private globalService: GlobalService,
     private documentService: MyDocumentsService,
     private patientService: MyPatientsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public pagination: PaginationService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -101,7 +104,6 @@ export class MessagingListComponent implements OnInit {
     this.featureService.setActiveChild("inbox");
     this.itemsList = new Array();
     this.route.params.subscribe(params => {
-      this.pageNo = 0;
       this.listLength = 10;
       this.itemsList = new Array();
       this.filtredItemList = new Array();
@@ -113,7 +115,7 @@ export class MessagingListComponent implements OnInit {
         (this.isPatientFile &&
           this.featureService.selectedPracticianId != 0 &&
           this.featureService.selectedPracticianId !=
-            this.featureService.getUserId())
+          this.featureService.getUserId())
       ) {
         this.isPatientFile
           ? (this.topText = "Historique des échanges -")
@@ -156,31 +158,31 @@ export class MessagingListComponent implements OnInit {
 
         this.isPatientFile
           ? (this.links = {
-              isAllSelect: true,
-              isAllSeen: true,
-              isSeen: false,
-              isArchieve: false,
-              isImportant: false,
-              isFilter: false,
-              isMenuDisplay: true,
-              isAllSelectCarret: true,
-              isRefresh: true,
-              isPagination: true
-            })
+            isAllSelect: true,
+            isAllSeen: true,
+            isSeen: false,
+            isArchieve: false,
+            isImportant: false,
+            isFilter: false,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
+          })
           : (this.links = {
-              isAllSelect: true,
-              isAllSeen: true,
-              isSeen: false,
-              isArchieve: false,
-              isImportant: false,
-              isFilter: true,
-              isMenuDisplay: true,
-              isAllSelectCarret: true,
-              isRefresh: true,
-              isPagination: true
-            });
+            isAllSelect: true,
+            isAllSeen: true,
+            isSeen: false,
+            isArchieve: false,
+            isImportant: false,
+            isFilter: true,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
+          });
         this.paramsId = this.featureService.selectedPracticianId;
-        this.getMyInbox(this.featureService.selectedPracticianId, this.pageNo);
+        this.getMyInbox(this.featureService.selectedPracticianId);
         this.searchInboxPractician(this.featureService.selectedPracticianId);
       } else {
         this.featureService.selectedPracticianId = 0;
@@ -193,36 +195,36 @@ export class MessagingListComponent implements OnInit {
         });
         this.isPatientFile
           ? (this.links = {
-              isAllSelect: true,
-              isAllSeen: true,
-              isSeen: false,
-              isArchieve: true,
-              isImportant: false,
-              isFilter: false,
-              isMenuDisplay: true,
-              isAllSelectCarret: true,
-              isRefresh: true,
-              isPagination: true
-            })
+            isAllSelect: true,
+            isAllSeen: true,
+            isSeen: false,
+            isArchieve: true,
+            isImportant: false,
+            isFilter: false,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
+          })
           : (this.links = {
-              isAllSelect: true,
-              isAllSeen: true,
-              isSeen: false,
-              isArchieve: true,
-              isImportant: false,
-              isFilter: true,
-              isMenuDisplay: true,
-              isAllSelectCarret: true,
-              isRefresh: true,
-              isPagination: true
-            });
+            isAllSelect: true,
+            isAllSeen: true,
+            isSeen: false,
+            isArchieve: true,
+            isImportant: false,
+            isFilter: true,
+            isMenuDisplay: true,
+            isAllSelectCarret: true,
+            isRefresh: true,
+            isPagination: true
+          });
         this.isPatientFile
           ? (this.topText = "Historique des échanges")
           : (this.topText = "Boîte de réception");
         this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;
         this.paramsId = this.featureService.getUserId();
-        this.getMyInbox(this.featureService.getUserId(), this.pageNo);
+        this.getMyInbox(this.featureService.getUserId());
         this.searchInbox();
       }
       this.inboxNumber = this.featureService.getNumberOfInboxValue();
@@ -252,6 +254,7 @@ export class MessagingListComponent implements OnInit {
     });
     this.featureService.setIsMessaging(true);
     this.displayListMessagesBySizeScreen();
+    this.pagination.init(50);
   }
 
   cardClicked(item) {
@@ -337,7 +340,7 @@ export class MessagingListComponent implements OnInit {
         resp => {
           let listToArchive = this.itemsList
             .slice(0)
-            .filter(function(elm, ind) {
+            .filter(function (elm, ind) {
               return messagesId.indexOf(elm.id) != -1;
             });
           listToArchive.forEach(message => {
@@ -374,97 +377,111 @@ export class MessagingListComponent implements OnInit {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(item => {
-            switch (event) {
-              case "doctor":
-                return item.users[0].type.toLowerCase() == "medical";
-              case "secretary":
-                return (
-                  item.users[0].type.toLowerCase() == "secretary" ||
-                  item.users[0].type.toLowerCase() == "telesecretarygroup"
-                );
-              default:
-                return item.users[0].type.toLowerCase() == event;
-            }
-          });
-  }
-
-  getMyInbox(accountId, pageNo) {
-    this.messagesServ
-      .getInboxByAccountId(accountId, pageNo, this.direction)
-      .subscribe(retrievedMess => {
-        if (!this.isMyInbox) {
-          this.featureService.myPracticians.asObservable().subscribe(list => {
-            this.number = list.find(
-              p => p.id == this.featureService.selectedPracticianId
-            ).number;
-            this.bottomText =
-              this.number > 1
-                ? this.globalService.messagesDisplayScreen.newMessages
-                : this.globalService.messagesDisplayScreen.newMessage;
-          });
-        }
-        if (this.patientFileId) {
-          this.messagesServ
-            .getMessagesByPatientFile(
-              this.patientFileId,
-              pageNo,
-              this.direction
-            )
-            .subscribe(res => {
-              this.messages = res;
-            });
-          if (this.patientId != null) {
-            this.patientService
-              .getAccountIdByPatientId(this.patientId)
-              .subscribe(res => {
-                this.patientAccountId = res;
-                this.messages.push(
-                  ...retrievedMess.filter(
-                    message => message.sender.senderId == this.patientAccountId
-                  )
-                );
-              });
+          switch (event) {
+            case "doctor":
+              return item.users[0].type.toLowerCase() == "medical";
+            case "secretary":
+              return (
+                item.users[0].type.toLowerCase() == "secretary" ||
+                item.users[0].type.toLowerCase() == "telesecretarygroup"
+              );
+            default:
+              return item.users[0].type.toLowerCase() == event;
           }
-          this.messages.sort(function(m1, m2) {
-            return (
-              new Date(m2.updatedAt).getTime() -
-              new Date(m1.updatedAt).getTime()
-            );
-          });
-          this.itemsList.push(
-            ...this.messages.map(item => this.parseMessage(item))
-          );
-          this.filtredItemList = this.itemsList;
-          this.topText = this.globalService.messagesDisplayScreen.history;
-          this.bottomText = "";
-        } else {
-          this.messages = retrievedMess;
-          this.messages.sort(function(m1, m2) {
-            return (
-              new Date(m2.updatedAt).getTime() -
-              new Date(m1.updatedAt).getTime()
-            );
-          });
-          this.itemsList.push(
-            ...this.messages.map(item => this.parseMessage(item))
-          );
-          this.filtredItemList = this.itemsList;
-        }
-      });
+        });
+    this.userTypeTabsFilter = event;
   }
 
-  getMyInboxNextPage(accountId, pageNo) {
+
+  getMyInbox(accountId) {
+    this.loading = true;
+    this.messagesServ.countInboxByAccountId(accountId).subscribe((num) => {
+      this.pagination.init(num);
+      this.messagesServ
+        .getInboxByAccountId(accountId, this.pagination.pageNo, this.pagination.direction)
+        .subscribe(retrievedMess => {
+          this.loading = false;
+          if (!this.isMyInbox) {
+            this.featureService.myPracticians.asObservable().subscribe(list => {
+              this.number = list.find(
+                p => p.id == this.featureService.selectedPracticianId
+              ).number;
+              this.bottomText =
+                this.number > 1
+                  ? this.globalService.messagesDisplayScreen.newMessages
+                  : this.globalService.messagesDisplayScreen.newMessage;
+            });
+          }
+          if (this.patientFileId) {
+            this.loading = true;
+            this.messagesServ
+              .getMessagesByPatientFile(
+                this.patientFileId,
+                this.pagination.pageNo,
+                this.pagination.direction
+              )
+              .subscribe(res => {
+                this.loading = false;
+                this.messages = res;
+              });
+            if (this.patientId != null) {
+              this.loading = true;
+              this.patientService
+                .getAccountIdByPatientId(this.patientId)
+                .subscribe(res => {
+                  this.loading = false;
+                  this.patientAccountId = res;
+                  this.messages.push(
+                    ...retrievedMess.filter(
+                      message => message.sender.senderId == this.patientAccountId
+                    )
+                  );
+                });
+            }
+            this.messages.sort(function (m1, m2) {
+              return (
+                new Date(m2.updatedAt).getTime() -
+                new Date(m1.updatedAt).getTime()
+              );
+            });
+            this.itemsList.push(
+              ...this.messages.map(item => this.parseMessage(item))
+            );
+            this.filtredItemList = this.itemsList;
+            this.topText = this.globalService.messagesDisplayScreen.history;
+            this.bottomText = "";
+          } else {
+            this.messages = retrievedMess;
+            this.messages.sort(function (m1, m2) {
+              return (
+                new Date(m2.updatedAt).getTime() -
+                new Date(m1.updatedAt).getTime()
+              );
+            });
+            this.itemsList.push(
+              ...this.messages.map(item => this.parseMessage(item))
+            );
+            this.filtredItemList = this.itemsList;
+          }
+        });
+    })
+
+  }
+
+  getMyInboxNextPage(accountId) {
+    this.loading = true;
     this.messagesServ
-      .getInboxByAccountId(accountId, pageNo, this.direction)
+      .getInboxByAccountId(accountId, this.pagination.pageNo, this.pagination.direction)
       .subscribe(retrievedMess => {
+        this.loading = false;
         this.listLength = retrievedMess.length;
         if (retrievedMess.length > 0) {
           if (this.patientFileId) {
             this.messagesServ
               .getMessagesByPatientFile(
                 this.patientFileId,
-                pageNo,
-                this.direction
+                this.pagination.pageNo,
+                this.pagination.direction
               )
               .subscribe(res => {
                 this.messages = res;
@@ -482,7 +499,7 @@ export class MessagingListComponent implements OnInit {
                   );
                 });
             }
-            this.messages.sort(function(m1, m2) {
+            this.messages.sort(function (m1, m2) {
               return (
                 new Date(m2.updatedAt).getTime() -
                 new Date(m1.updatedAt).getTime()
@@ -496,7 +513,7 @@ export class MessagingListComponent implements OnInit {
             this.bottomText = "";
           } else {
             this.messages = retrievedMess;
-            this.messages.sort(function(m1, m2) {
+            this.messages.sort(function (m1, m2) {
               return (
                 new Date(m2.updatedAt).getTime() -
                 new Date(m1.updatedAt).getTime()
@@ -505,11 +522,11 @@ export class MessagingListComponent implements OnInit {
             this.itemsList.push(
               ...this.messages.map(item => this.parseMessage(item))
             );
+
             if (this.filtredItemList.length != this.itemsList.length) {
               this.filtredItemList = this.itemsList.filter(
                 item =>
-                  item.users[0].type.toLowerCase() ==
-                  this.filtredItemList[0].users[0].type.toLowerCase()
+                  [item.users[0].type.toLowerCase(), 'all'].includes(this.userTypeTabsFilter)
               );
             }
           }
@@ -651,10 +668,10 @@ export class MessagingListComponent implements OnInit {
     let messageId = event.id;
     this.messagesServ.markMessageAsArchived([messageId]).subscribe(
       resp => {
-        this.itemsList = this.itemsList.filter(function(elm, ind) {
+        this.itemsList = this.itemsList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
-        this.filtredItemList = this.filtredItemList.filter(function(elm, ind) {
+        this.filtredItemList = this.filtredItemList.filter(function (elm, ind) {
           return elm.id != event.id;
         });
         this.deleteElementsFromInbox([messageId]);
@@ -766,13 +783,6 @@ export class MessagingListComponent implements OnInit {
     });
   }
 
-  onScroll() {
-    if (this.listLength > 9 && !this.searchContext) {
-      this.pageNo++;
-      this.getMyInboxNextPage(this.paramsId, this.pageNo);
-    }
-  }
-
   deleteElementsFromInbox(ids) {
     let searchList = this.featureService.getSearchInboxValue();
     searchList = searchList.filter(x => !ids.includes(x.id));
@@ -822,24 +832,16 @@ export class MessagingListComponent implements OnInit {
   }
 
   upSortClicked() {
-    this.direction = OrderDirection.ASC;
-    this.resetList();
+    this.pagination.direction = OrderDirection.ASC;
+    this.loadPage();
   }
 
   downSortClicked() {
-    this.direction = OrderDirection.DESC;
-    this.resetList();
-  }
-
-  resetList() {
-    this.pageNo = 0;
-    this.itemsList = [];
-    this.filtredItemList = [];
-    this.getMyInbox(this.paramsId, this.pageNo);
+    this.pagination.direction = OrderDirection.DESC;
+    this.loadPage();
   }
 
   refreshMessagingList() {
-    this.pageNo = 0;
     this.itemsList = [];
     this.filtredItemList = [];
     this.ngOnInit();
@@ -949,5 +951,23 @@ export class MessagingListComponent implements OnInit {
       this.filterActionClicked("all");
       this.selectedTabIndex = 0;
     }
+  }
+
+  previousPageActionClicked() {
+    if (this.pagination.hasPreviousPage() && !this.searchContext) {
+      this.loadPage();
+    }
+  }
+
+  nextPageActionClicked() {
+    if (this.pagination.hasNextPage() && !this.searchContext) {
+      this.loadPage();
+    }
+  }
+
+  loadPage() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.getMyInboxNextPage(this.paramsId);
   }
 }

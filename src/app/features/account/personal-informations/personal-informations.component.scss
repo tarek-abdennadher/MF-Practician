@@ -263,3 +263,27 @@ button.close {
   }
 }
 /* ============================================= */
+
+/* ========== Bootstrap-select selectpicker ============== */
+::ng-deep {
+  .selectpicker {
+    z-index: 99999;
+  }
+  .bootstrap-select {
+    //width: 100% !important;
+    // max-width: 300px !important;
+    //border-color: $input-color;
+    //background-color: $input-color;
+  }
+
+  .bootstrap-select > select.mobile-device:focus + .dropdown-toggle,
+  .bootstrap-select .dropdown-toggle:focus {
+    outline: none !important;
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    outline: none !important;
+  }
+}
+/* ============================================= */

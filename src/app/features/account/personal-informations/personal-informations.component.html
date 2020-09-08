@@ -158,9 +158,9 @@
                   [ngClass]="{ 'is-invalid': submitted && ctr.civility.errors }"
                   id="sec-civility"
                 >
-                  <option value="null" disabled="true">{{
-                    labels.civility
-                  }}</option>
+                  <option value="null" disabled="true">
+                    {{ labels.civility }}
+                  </option>
                   <option value="M">M</option>
                   <option value="MME">Mme</option>
                 </select>
@@ -576,8 +576,8 @@
                 id="pract-job-title"
               >
                 <option value="null" disabled="true">{{ labels.title }}</option>
-                <option *ngFor="let item of jobTitlesList" value="{{ item }}"
-                  >{{ item | JobTitle }}
+                <option *ngFor="let item of jobTitlesList" value="{{ item }}">
+                  {{ item | JobTitle }}
                 </option>
               </select>
               <div
@@ -595,28 +595,33 @@
             <div class="col-12 col-form-label">{{ labels.speciality }}</div>
             <div class="col-12">
               <select
+                data-live-search="true"
                 formControlName="speciality"
-                class="form-control"
+                data-none-results-text="Pas de correspondance"
+                class="selectpicker form-control"
+                data-container="body"
                 [ngClass]="{
                   'is-invalid': submitted && ctr.speciality.errors
                 }"
                 id="pract-speciality"
               >
-                <option value="null" disabled="true">{{
-                  labels.speciality
-                }}</option>
+                <option value="null" disabled="true" selected>
+                  {{ labels.speciality }}
+                </option>
                 <option
                   *ngIf="
                     account && account.speciality && account.speciality.deleted
                   "
                   [value]="account.speciality.id"
                   disabled="true"
-                  >{{ account.speciality.name }}</option
                 >
-                <option *ngFor="let s of specialities" [value]="s.id">{{
-                  s.name
-                }}</option>
+                  {{ account.speciality.name }}
+                </option>
+                <option *ngFor="let s of specialities | async" [value]="s.id">
+                  {{ s.name }}
+                </option>
               </select>
+
               <div
                 *ngIf="submitted && ctr.speciality.errors"
                 class="invalid-feedback"

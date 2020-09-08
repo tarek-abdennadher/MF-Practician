@@ -4,10 +4,15 @@
   (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
   (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
   (filterAction)="filterActionClicked($event)" (refreshMessagingListAction)="refreshMessagingList()"
-></lib-hlsLinks>
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
+  ></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
-<lib-hlsMessagingList [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
+<lib-hlsMessagingList  *ngIf="!loading" [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
   (cardAction)="cardClicked($event)" [caller]="'forwardedMessage'" [imageSource]="imageSource"></lib-hlsMessagingList>
   </div>
 </div>
@@ -18,3 +23,5 @@
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
+<mat-progress-spinner *ngIf="loading" diameter="20"
+mode="indeterminate" value="100"> </mat-progress-spinner>

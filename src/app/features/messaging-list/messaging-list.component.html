@@ -8,6 +8,11 @@
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
@@ -30,6 +35,7 @@
           <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -48,6 +54,7 @@
           <span (click)="filterActionClicked('secretary')">Secrétaire</span>
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -66,6 +73,7 @@
           Patients
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -84,6 +92,7 @@
           Praticiens
         </ng-template>
         <lib-hlsMessagingList
+          *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
@@ -99,6 +108,7 @@
     </mat-tab-group>
 
     <lib-hlsMessagingList class="mobile-links"
+      *ngIf="!loading"
       [list]="filtredItemList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"
@@ -122,14 +132,7 @@
   </div>
 </ng-template>
 
-<div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()"
-></div>
-<mat-progress-spinner *ngIf="scroll" diameter="20"
+<mat-progress-spinner *ngIf="loading" diameter="20"
 mode="indeterminate" value="100"> </mat-progress-spinner>
 <lib-hlsLinks
   class="mobile-links"
@@ -141,6 +144,11 @@ mode="indeterminate" value="100"> </mat-progress-spinner>
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
