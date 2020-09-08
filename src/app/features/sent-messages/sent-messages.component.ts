@@ -9,7 +9,6 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer } from "@angular/platform-browser";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { PaginationService } from '../services/pagination.service';
 
 @Component({
