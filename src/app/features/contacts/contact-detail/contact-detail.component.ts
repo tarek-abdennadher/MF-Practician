@@ -16,7 +16,7 @@ declare var $: any;
 })
 export class ContactDetailComponent implements OnInit {
   account: any;
-  specialities: Array<Speciality>;
+  specialities = new Subject<Array<Speciality>>();
   specialitiesContainingDeleted: Array<Speciality>;
   errorMessage = "";
   successMessage = "";
@@ -52,13 +52,16 @@ export class ContactDetailComponent implements OnInit {
     this.getjobTitles();
     this.route.params.subscribe((params) => {
       this.param = params["id"];
+      this.getAllSpeciality();
       this.initForm();
       if (this.param != "add") {
         this.getContact(this.param);
       }
-      this.getAllSpeciality();
     });
     this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
   }
   initForm() {
     this.infoForm = new FormGroup({
@@ -75,7 +78,7 @@ export class ContactDetailComponent implements OnInit {
       phone: new FormControl("+33"),
       picture: new FormControl(null),
       zipCode: new FormControl(null),
-      city: new FormControl(null)
+      city: new FormControl(null),
     });
   }
   get ctr() {
@@ -101,7 +104,7 @@ export class ContactDetailComponent implements OnInit {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId,
         zipCode: contact.zipCode ? contact.zipCode : null,
-        city: contact.city ? contact.city : null
+        city: contact.city ? contact.city : null,
       });
       this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
@@ -111,7 +114,9 @@ export class ContactDetailComponent implements OnInit {
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
-      this.specialities = specialitiesList;
+      $(".selectpicker").selectpicker();
+      this.specialities.next(specialitiesList);
+      $(".selectpicker").selectpicker("refresh");
       this.specialitiesContainingDeleted = specialitiesList;
     });
   }
@@ -154,8 +159,8 @@ export class ContactDetailComponent implements OnInit {
       speciality:
         value.speciality != null
           ? this.specialitiesContainingDeleted.find(
-            (s) => s.id == value.speciality
-          )
+              (s) => s.id == value.speciality
+            )
           : null,
       firstName: value.first_name,
       lastName: value.last_name,
@@ -165,7 +170,7 @@ export class ContactDetailComponent implements OnInit {
       address: value.address,
       additionalAddress: value.additional_address,
       zipCode: value.zipCode,
-      city: value.city
+      city: value.city,
     };
     let successResult = false;
     if (this.param == "add") {

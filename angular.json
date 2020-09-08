@@ -33,13 +33,15 @@
               "node_modules/bootstrap/dist/css/bootstrap.css",
               "src/styles/app.scss",
               "node_modules/angular2-multiselect-dropdown/themes/default.theme.css",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "node_modules/bootstrap-select/dist/css/bootstrap-select.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/@ckeditor/ckeditor5-build-classic/build/translations/fr.js"
+              "node_modules/@ckeditor/ckeditor5-build-classic/build/translations/fr.js",
+              "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"
             ]
           },
           "configurations": {
