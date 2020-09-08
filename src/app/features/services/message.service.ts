@@ -3,26 +3,45 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { GlobalService } from "@app/core/services/global.service";
 import { Observable } from "rxjs";
 import { Message } from "@app/shared/models/message";
+import { OrderDirection } from '@app/shared/enmus/order-direction';
 
 @Injectable({
   providedIn: "root"
 })
 export class MessageService {
-  constructor(private globalService: GlobalService) {}
+  constructor(private globalService: GlobalService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  sentMessage(): Observable<Array<Message>> {
+  sentMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.sentMessage
+      this.globalService.url.sentMessage, {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
     );
   }
 
-  forwardedMessage(): Observable<Array<Message>> {
+  forwardedMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.forwardedMessage
+      this.globalService.url.forwardedMessage, {
+      params: { 'pageNo': pageNo, 'order': order }
+    }
+    );
+  }
+
+  countForwardedMessage(): Observable<number> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + 'countForwarded'
+    );
+  }
+
+  countSentMessage(): Observable<number> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + 'countSentInBox'
     );
   }
 

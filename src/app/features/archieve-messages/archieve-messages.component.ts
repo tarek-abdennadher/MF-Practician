@@ -8,6 +8,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { DomSanitizer } from "@angular/platform-browser";
+import { PaginationService } from '../services/pagination.service';
 
 @Component({
   selector: "app-archieve-messages",
@@ -16,7 +17,6 @@ import { DomSanitizer } from "@angular/platform-browser";
 })
 export class ArchieveMessagesComponent implements OnInit {
   imageSource: string;
-
   page = "INBOX";
   number = 0;
   topText = "Messages archivés";
@@ -32,8 +32,7 @@ export class ArchieveMessagesComponent implements OnInit {
     isPagination: true
   };
   filtredItemList = [];
-  pageNo = 0;
-  scroll = false;
+  loading = false;
   searchContext: boolean;
   listLength = 0;
   avatars: {
@@ -45,7 +44,6 @@ export class ArchieveMessagesComponent implements OnInit {
     user: string;
     tls: string;
   };
-  direction: OrderDirection = OrderDirection.DESC;
 
   constructor(
     public router: Router,
@@ -54,7 +52,8 @@ export class ArchieveMessagesComponent implements OnInit {
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
     private globalService: GlobalService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public pagination: PaginationService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -63,16 +62,25 @@ export class ArchieveMessagesComponent implements OnInit {
   ngOnInit(): void {
     this.featureService.setActiveChild("archived");
     this.featureService.setIsMessaging(true);
-    this.getMyMessagesArchived(this.pageNo);
+    this.countAllMyArchivedMessages();
     this.searchArchive();
   }
 
-  getMyMessagesArchived(pageNo: number) {
-    this.scroll = true;
+  countAllMyArchivedMessages() {
     this.archivedService
-      .getMyArchivedMessages(pageNo, this.direction)
+      .countAllMyArchivedMessages()
       .subscribe(messages => {
-        this.scroll = false;
+        this.pagination.init(messages);
+        this.loadPage();
+      });
+  }
+
+  getMyMessagesArchived() {
+    this.loading = true;
+    this.archivedService
+      .getMyArchivedMessages(this.pagination.pageNo, this.pagination.direction)
+      .subscribe(messages => {
+        this.loading = false;
         this.number = this.featureService.numberOfArchieve;
         this.bottomText =
           this.number > 1
@@ -88,6 +96,7 @@ export class ArchieveMessagesComponent implements OnInit {
         this.filtredItemList = this.itemsList;
       });
   }
+
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
     messageArchived.id = message.id;
@@ -118,14 +127,14 @@ export class ArchieveMessagesComponent implements OnInit {
         message.messageStatus == "TREATED"
           ? "répondu"
           : message.toReceiversArchived[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "Lu"
+            : "Envoyé",
       value:
         message.messageStatus == "TREATED"
           ? 100
           : message.toReceiversArchived[0].seen
-          ? 50
-          : 20
+            ? 50
+            : 20
     };
     messageArchived.object = {
       name: message.object,
@@ -196,14 +205,6 @@ export class ArchieveMessagesComponent implements OnInit {
     }
   }
 
-  onScroll() {
-    if (this.listLength != this.itemsList.length && !this.searchContext) {
-      this.listLength = this.itemsList.length;
-      this.pageNo++;
-      this.getMyMessagesArchived(this.pageNo);
-    }
-  }
-
   searchArchive() {
     this.featureService.getFilteredArchiveSearch().subscribe(res => {
       if (res == null) {
@@ -230,25 +231,36 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   upSortClicked() {
-    this.direction = OrderDirection.ASC;
-    this.resetList();
+    this.pagination.direction = OrderDirection.ASC;
+    this.loadPage();
   }
 
   downSortClicked() {
-    this.direction = OrderDirection.DESC;
-    this.resetList();
-  }
-
-  resetList() {
-    this.pageNo = 0;
-    this.itemsList = [];
-    this.getMyMessagesArchived(this.pageNo);
+    this.pagination.direction = OrderDirection.DESC;
+    this.loadPage();
   }
 
   refreshMessagingList() {
-    this.pageNo = 0;
     this.itemsList = [];
     this.filtredItemList = [];
     this.ngOnInit();
+  }
+
+  previousPageActionClicked() {
+    if (this.pagination.hasPreviousPage() && !this.searchContext) {
+      this.loadPage();
+    }
+  }
+
+  nextPageActionClicked() {
+    if (this.pagination.hasNextPage() && !this.searchContext) {
+      this.loadPage();
+    }
+  }
+
+  loadPage() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+    this.getMyMessagesArchived();
   }
 }
