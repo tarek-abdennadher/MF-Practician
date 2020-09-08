@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, HostListener } from "@angular/core";
 import { Subject } from "rxjs";
 import {
   FormGroup,
@@ -34,6 +34,7 @@ import { ObjectsService } from "../services/objects.service";
 import { EventEmitter } from "@angular/core";
 import { HlsSendMEssage } from "./hlsSendMessage.model";
 import { HlsSendMessageService } from "./new-message.service";
+declare var $: any;
 @Component({
   selector: "app-new-message",
   templateUrl: "./new-message.component.html",
@@ -41,7 +42,8 @@ import { HlsSendMessageService } from "./new-message.service";
 })
 export class NewMessageComponent implements OnInit {
   @Input() id: number;
-  /////
+  addOptionConfirmed: boolean = false;
+  sendPostal: boolean = false;
   public uuid: string;
   private _destroyed$ = new Subject();
   imageDropdown: string;
@@ -123,6 +125,7 @@ export class NewMessageComponent implements OnInit {
   dropdownSettingsTypesList: any;
   dropdownSettingsConcernList: any;
   showFile: any;
+  innerWidth: number;
 
   set objectsList(objectsList: any) {
     this._objectsList = objectsList;
@@ -204,6 +207,7 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
+      document: null
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -346,6 +350,9 @@ export class NewMessageComponent implements OnInit {
       ...this.dropdownSettingsListObject,
       text: "Sélectionner un patient concerné si nécessaire",
     };
+
+    this.innerWidth = window.innerWidth;
+
   }
 
   ccListSubscription() {
@@ -427,11 +434,10 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.file) {
+          if (res.document) {
             this.sendMessageForm.patchValue({
-              file: [res.file],
+              document: res.document,
             });
-            this.showFile = res.showFile;
           }
         } else {
           selectedElements = this.objectFilteredList.filter(
@@ -445,11 +451,10 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.file) {
+          if (res.document) {
             this.sendMessageForm.patchValue({
-              file: [res.file],
+              document: res.document,
             });
-            this.showFile = res.showFile;
           }
         }
       } else {
@@ -508,27 +513,6 @@ export class NewMessageComponent implements OnInit {
       sendModel = Object.assign(this.sendMessageForm.value);
       sendModel.file = this.sendMessageForm.get("file").value;
       this.sendAction.emit(sendModel);
-    }
-  }
-  sendPostal() {
-    if (this.sendMessageForm.invalid) {
-      this.steps.hasError = true;
-    }
-    if (
-      this.sendMessageForm.value.to.length != 0 &&
-      (this.sendMessageForm.value.freeObject != "" ||
-        this.sendMessageForm.value.object.length == 1) &&
-      !["", undefined, null].includes(this.sendMessageForm.value.body)
-    ) {
-      this.steps.click = true;
-      // if (this.sendMessageForm.value.to.address != null || this.isAddress == true) {
-      //   let sendModel = new HlsSendMEssage();
-      //   sendModel = Object.assign(this.sendMessageForm.value);
-      //   sendModel.file = this.file;
-      //   this.sendPostalAction.emit(sendModel);
-      // } else {S
-      //   this.isAddress = true;
-      // }
     }
   }
   checkObjectValidator() {
@@ -681,6 +665,9 @@ export class NewMessageComponent implements OnInit {
       });
       this.sendMessageForm.patchValue({
         file: null,
+      });
+      this.sendMessageForm.patchValue({
+        document: null,
       });
 
       this.selectContext = false;
@@ -930,123 +917,17 @@ export class NewMessageComponent implements OnInit {
   }
 
   sendMessage(message) {
-    this.spinner.show();
-    this.uuid = uuid();
-    const newMessage = new Message();
-    message.to.forEach((to) => {
-      newMessage.toReceivers.push({ receiverId: to.id });
-    });
-    message.cc
-      ? message.cc.forEach((cc) => {
-          newMessage.ccReceivers.push({ receiverId: cc.id });
-        })
-      : null;
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      newMessage.sender = {
-        senderId: this.featureService.getUserId(),
-        originalSenderId: this.featureService.getUserId(),
-        sentForPatientFile:
-          message.for && message.for[0] ? message.for[0].id : null,
-        senderForCivility:
-          message.for && message.for[0] ? message.for[0]?.civility : null,
-        senderForPhotoId:
-          message.for && message.for[0] ? message.for[0]?.photoId : null,
-        senderForfullName:
-          message.for && message.for[0] ? message.for[0]?.fullName : null,
-      };
+    if (message.type[0].id == SendType.SEND_POSTAL) {
+      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
+        this.sendPostal = result;
+        if (this.sendPostal) {
+          this.sendMessage2(message);
+        } else {
+          $("#firstModal").modal("toggle");
+        }
+      });
     } else {
-      newMessage.sender = {
-        senderId: this.featureService.getUserId(),
-        originalSenderId: this.featureService.getUserId(),
-        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
-      };
-      if (message.concerns && message.concerns[0]) {
-        newMessage.sender.concernsId =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0].id
-            : null;
-        newMessage.sender.concernsCivility =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0]?.civility
-            : null;
-        newMessage.sender.concernsPhotoId =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0]?.photoId
-            : null;
-        newMessage.sender.concernsFullName =
-          message.concerns && message.concerns[0]
-            ? message.concerns[0]?.fullName
-            : null;
-      }
-    }
-    message.object != "" &&
-    message.object[0].name.toLowerCase() !=
-      this.globalService.messagesDisplayScreen.other
-      ? (newMessage.object = message.object[0].name)
-      : (newMessage.object = message.freeObject);
-    newMessage.body = message.body;
-    if (message.file !== undefined && message.file !== null) {
-      newMessage.uuid = this.uuid;
-      this.selectedFiles = message.file;
-
-      const formData = new FormData();
-      if (this.selectedFiles) {
-        newMessage.hasFiles = true;
-        formData.append("model", JSON.stringify(newMessage));
-        formData.append(
-          "file",
-          this.selectedFiles[0],
-          this.selectedFiles[0].name
-        );
-      }
-
-      this.nodeService
-        .saveFileInMemory(this.uuid, formData)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          (mess) => {
-            this.featureService.sentState.next(true);
-            this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
-            this.messageWidgetService.toggleObs.next();
-          },
-          (error) => {
-            this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl,
-            });
-          }
-        );
-    } else {
-      this.messageService
-        .sendMessage(newMessage)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          (mess) => {
-            this.featureService.sentState.next(true);
-            this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
-            this.messageWidgetService.toggleObs.next();
-          },
-          (error) => {
-            this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl,
-            });
-          }
-        );
+      this.sendMessage2(message);
     }
   }
   addProContactAction() {
@@ -1136,6 +1017,7 @@ export class NewMessageComponent implements OnInit {
         name: selectedObj.title,
         body: null,
         file: null,
+        document: null
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1146,16 +1028,7 @@ export class NewMessageComponent implements OnInit {
           })
         );
       if (selectedObj.allowDocument) {
-        const doc = this.requestTypeService
-          .getDocument(objectDto)
-          .pipe(takeUntil(this._destroyed$))
-          .pipe(
-            tap((response: any) => {
-              const blob = new Blob([response.body]);
-              var fileOfBlob = new File([blob], selectedObj.title + ".pdf");
-              newData.file = fileOfBlob;
-            })
-          );
+        const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((res) => {
@@ -1168,8 +1041,6 @@ export class NewMessageComponent implements OnInit {
             this.selectedObject.next(newData);
           });
       }
-      //this.selectedObject.next(result);
-      //this.openDialog(selectedObj);
     } else if (selectedObj) {
       this.selectedObject.next({
         id: null,
@@ -1178,6 +1049,12 @@ export class NewMessageComponent implements OnInit {
         body: "",
       });
     }
+  }
+
+  getPdfAsHtml(request, newData) {
+    return this.requestTypeService.getDocumentAsHtml(request).pipe(takeUntil(this._destroyed$)).pipe(tap((response) => {
+      newData.document = response.document;
+    }));
   }
 
   goToBack() {
@@ -1355,5 +1232,152 @@ export class NewMessageComponent implements OnInit {
         ) !== -1) ||
       false
     );
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+  }
+  openConfirmModel() {
+    $("#firstModal").modal("hide");
+    $("#confirmModal").modal("toggle");
+  }
+  activateSenPostalOption() {
+    if (this.addOptionConfirmed) {
+      this.featureService.activateSendPostal().subscribe((res) => {
+        this.sendPostal = true;
+        $("#confirmModal").modal("hide");
+        $("#successModal").modal("toggle");
+      });
+    }
+  }
+  checkboxChange(event) {
+    if (event.target.checked) {
+      this.addOptionConfirmed = true;
+    } else {
+      this.addOptionConfirmed = false;
+    }
+  }
+  sendMessage2(message) {
+    this.spinner.show();
+    this.uuid = uuid();
+    const newMessage = new Message();
+    newMessage.sendType = this.lastSendType;
+    message.to.forEach((to) => {
+      newMessage.toReceivers.push({ receiverId: to.id });
+    });
+    message.cc
+      ? message.cc.forEach((cc) => {
+          newMessage.ccReceivers.push({ receiverId: cc.id });
+        })
+      : null;
+    if (this.localSt.retrieve("role") == "PRACTICIAN") {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sentForPatientFile:
+          message.for && message.for[0] ? message.for[0].id : null,
+        senderForCivility:
+          message.for && message.for[0] ? message.for[0]?.civility : null,
+        senderForPhotoId:
+          message.for && message.for[0] ? message.for[0]?.photoId : null,
+        senderForfullName:
+          message.for && message.for[0] ? message.for[0]?.fullName : null,
+      };
+    } else {
+      newMessage.sender = {
+        senderId: this.featureService.getUserId(),
+        originalSenderId: this.featureService.getUserId(),
+        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
+      };
+      if (message.concerns && message.concerns[0]) {
+        newMessage.sender.concernsId =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0].id
+            : null;
+        newMessage.sender.concernsCivility =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0]?.civility
+            : null;
+        newMessage.sender.concernsPhotoId =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0]?.photoId
+            : null;
+        newMessage.sender.concernsFullName =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0]?.fullName
+            : null;
+      }
+    }
+    message.object != "" &&
+    message.object[0].name.toLowerCase() !=
+      this.globalService.messagesDisplayScreen.other
+      ? (newMessage.object = message.object[0].name)
+      : (newMessage.object = message.freeObject);
+    newMessage.body = message.body;
+    newMessage.document = message.document;
+    if (message.file !== undefined && message.file !== null) {
+      newMessage.uuid = this.uuid;
+      this.selectedFiles = message.file;
+
+      const formData = new FormData();
+      if (this.selectedFiles) {
+        newMessage.hasFiles = true;
+        formData.append("model", JSON.stringify(newMessage));
+        formData.append(
+          "file",
+          this.selectedFiles[0],
+          this.selectedFiles[0].name
+        );
+      }
+
+      this.nodeService
+        .saveFileInMemory(this.uuid, formData)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (mess) => {
+            this.featureService.sentState.next(true);
+            this.spinner.hide();
+            this.router.navigate(["/messagerie"], {
+              queryParams: {
+                status: "sentSuccess",
+              },
+            });
+            this.messageWidgetService.toggleObs.next();
+          },
+          (error) => {
+            this.spinner.hide();
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+          }
+        );
+    } else {
+      this.messageService
+        .sendMessage(newMessage)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (mess) => {
+            this.featureService.sentState.next(true);
+            this.spinner.hide();
+            this.router.navigate(["/messagerie"], {
+              queryParams: {
+                status: "sentSuccess",
+              },
+            });
+            this.messageWidgetService.toggleObs.next();
+          },
+          (error) => {
+            this.spinner.hide();
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_error,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+          }
+        );
+    }
   }
 }

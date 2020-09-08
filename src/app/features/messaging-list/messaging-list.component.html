@@ -1,4 +1,5 @@
 <lib-hlsLinks
+  class="links"
   [links]="links"
   [page]="page"
   [topText]="topText"
@@ -7,6 +8,11 @@
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
@@ -121,12 +127,32 @@
   </div>
 </ng-template>
 
-<div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()"
-></div>
-<mat-progress-spinner *ngIf="scroll" diameter="20"
+<mat-progress-spinner *ngIf="loading" diameter="20"
 mode="indeterminate" value="100"> </mat-progress-spinner>
+<lib-hlsLinks
+  class="mobile-links"
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  [imageSource]="imageSource"
+  [person]="person"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (importantAction) = "importantAction()"
+  (filterAction)="filterActionClicked($event)"
+  (refreshMessagingListAction)="refreshMessagingList()"
+  (notSeenAction) = "notSeenActionClicked()"
+  (checkSeenMessagesAction) = "checkSeenMessagingList()"
+  (checkNotSeenMessagesAction) = "checkNotSeenMessagingList()"
+  (checkImportantMessagesAction) = "checkImportantMessagingList()"
+></lib-hlsLinks>

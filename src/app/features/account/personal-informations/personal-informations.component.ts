@@ -31,7 +31,7 @@ declare var $: any;
 export class PersonalInformationsComponent implements OnInit {
   @Input("practicianId") practicianId;
 
-  specialities: Array<Speciality>;
+  specialities = new Subject<Array<Speciality>>();
   specialitiesContainingDeleted: Array<Speciality>;
   isPasswordValid = false;
   errorMessage = "";
@@ -108,6 +108,9 @@ export class PersonalInformationsComponent implements OnInit {
     this.initPasswordForm();
     this.getPersonalInfo();
     this.getAttachementFolderId();
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
   }
   initInfoForm() {
     if (this.isPractician) {
@@ -165,7 +168,9 @@ export class PersonalInformationsComponent implements OnInit {
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
-      this.specialities = specialitiesList;
+      $(".selectpicker").selectpicker();
+      this.specialities.next(specialitiesList);
+      $(".selectpicker").selectpicker("refresh");
       this.specialitiesContainingDeleted = specialitiesList;
     });
   }

@@ -4,6 +4,7 @@ export class Message {
   public id?: number;
   public sendType?: SendType | string;
   public body?: string;
+  public document?: string;
   public object?: any;
   public toReceivers?: any;
   public ccReceivers?: any;
@@ -20,6 +21,7 @@ export class Message {
     this.id = (message && message.id) || "";
     this.sendType = (message && message.sendType) || SendType.MESSAGING;
     this.body = (message && message.body) || "";
+    this.document = message && message.document || null;
     this.toReceivers = (message && message.toReceivers) || [];
     this.ccReceivers = (message && message.ccReceivers) || [];
     this.sender = (message && message.sender) || "";

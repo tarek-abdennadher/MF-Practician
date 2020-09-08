@@ -1,5 +1,10 @@
 <lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
-  [backButton]="backButton" (selectAllAction)="selectAllActionClicked()"
+  [backButton]="backButton"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"(selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
   (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
   (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
@@ -17,3 +22,5 @@
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
+<mat-progress-spinner *ngIf="loading" diameter="20"
+mode="indeterminate" value="100"> </mat-progress-spinner>
