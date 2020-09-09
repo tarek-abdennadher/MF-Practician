@@ -46,10 +46,10 @@ $color-helssy-grey: #6e819bd4;
   color: #4a4a4a;
 }
 /* Form */
-.form-control{
+.form-control, select{
   border-radius: 6px;
   background-color:$helssy_white;
-  border-color:$helssy_white;;
+  border-color:$helssy_white;
 }
 /* Informations */
   .custom-card-message {
@@ -198,3 +198,25 @@ border: solid 2px rgba(64, 73, 83, 0.5);
     background-image: url('assets/imgs/flags.jpg') !important;
       }
       }
+/* ========== Bootstrap-select selectpicker ============== */
+::ng-deep {
+  .selectpicker {
+    z-index: 99999;
+  }
+  .btn-light {
+    border-radius: 6px;
+    background-color:$helssy_white;
+    border-color:$helssy_white;
+  }
+
+  .bootstrap-select > select.mobile-device:focus + .dropdown-toggle,
+  .bootstrap-select .dropdown-toggle:focus {
+    outline: none !important;
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    outline: none !important;
+  }
+}
+/* ============================================= */

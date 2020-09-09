@@ -215,7 +215,12 @@
                                 <label for="category"
                                     class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.category }}</label>
                                 <div class="col-12 col-sm-12">
-                                    <select formControlName="category" class="form-control" id="category">
+                                    <select data-live-search="true" formControlName="category"
+                                        data-none-results-text="Aucune catégorie" class="selectpicker form-control"
+                                        data-container="body" id="category">
+                                        <option value="null" disabled="true">
+                                            Aucune catégorie
+                                        </option>
                                         <option *ngFor="let item of categories" value="{{ item.id }}" [selected]="
                                             personalInfoForm.controls.category.value == item.id
                                           ">{{ item.name }}
