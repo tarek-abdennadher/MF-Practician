@@ -14,11 +14,13 @@ export class MessageService {
   ngOnInit() { }
 
   sentMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo && order) {
+      params = { params: { 'pageNo': pageNo, 'order': order } }
+    }
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.sentMessage, {
-      params: { 'pageNo': pageNo, 'order': order }
-    }
+      this.globalService.url.sentMessage, params
     );
   }
 
