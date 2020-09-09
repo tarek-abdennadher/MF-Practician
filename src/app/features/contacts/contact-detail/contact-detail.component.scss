@@ -179,8 +179,8 @@ $color-helssy-grey: #6e819bd4;
   }
   .btn-light {
     border-radius: 6px;
-    background-color:$helssy_white;
-    border-color:$helssy_white;
+    background-color: $helssy_white;
+    border-color: $helssy_white;
   }
   .bootstrap-select > select.mobile-device:focus + .dropdown-toggle,
   .bootstrap-select .dropdown-toggle:focus {
@@ -193,3 +193,9 @@ $color-helssy-grey: #6e819bd4;
   }
 }
 /* ============================================= */
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
