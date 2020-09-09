@@ -562,6 +562,9 @@ export class NewMessageComponent implements OnInit {
     }
   }
   sendInstructionEmit() {
+    this.submited = true;
+    this.checkObjectValidator();
+
     if (this.sendMessageForm.invalid) {
       this.steps.hasError = true;
     }
