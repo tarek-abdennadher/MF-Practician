@@ -570,10 +570,30 @@ export class PatientFileComponent implements OnInit {
   }
 
   messageClicked(item) {
+    this.markMessageAsSeen(item);
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
         context: "inbox",
       },
     });
+  }
+
+  markMessageAsSeen(event) {
+    let messageId = event.id;
+    this.messagesServ.markMessageAsSeen(messageId).subscribe(
+      resp => {
+        if (resp == true) {
+          let filtredIndex = this.filtredItemList.findIndex(
+            item => item.id == messageId
+          );
+          if (filtredIndex != -1) {
+            this.filtredItemList[filtredIndex].isSeen = true;
+          }
+        }
+      },
+      error => {
+        console.log("We have to find a way to notify user by this error");
+      }
+    );
   }
 }

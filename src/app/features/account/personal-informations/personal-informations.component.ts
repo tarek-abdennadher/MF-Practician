@@ -21,6 +21,7 @@ import { MyPatientsService } from "@app/features/services/my-patients.service";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -28,7 +29,8 @@ declare var $: any;
   styleUrls: ["./personal-informations.component.scss"],
   providers: [JobtitlePipe],
 })
-export class PersonalInformationsComponent implements OnInit {
+export class PersonalInformationsComponent
+  implements OnInit, ComponentCanDeactivate {
   @Input("practicianId") practicianId;
 
   specialities = new Subject<Array<Speciality>>();
@@ -99,6 +101,9 @@ export class PersonalInformationsComponent implements OnInit {
     this.imageSource = this.avatars.user;
   }
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
+  canDeactivate(): boolean {
+    return !this.infoForm.dirty;
+  }
   ngOnInit(): void {
     this.featureService.setIsMessaging(false);
     this.passwordSubmitted = false;
@@ -265,6 +270,7 @@ export class PersonalInformationsComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
+    this.infoForm.markAsPristine();
     if (this.account.speciality && this.account.speciality.deleted) {
       this.specialitiesContainingDeleted.push(this.account.speciality);
     }
