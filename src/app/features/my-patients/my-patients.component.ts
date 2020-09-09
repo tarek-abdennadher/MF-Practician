@@ -72,6 +72,7 @@ export class MyPatientsComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         let currentRoute = this.route;
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        this.pageNo = 0;
         this.getPatientsOfCurrentParactician(this.pageNo);
       });
   }
@@ -92,6 +93,8 @@ export class MyPatientsComponent implements OnInit {
     });
   }
   getPatientsOfCurrentParactician(pageNo) {
+    this.myPatients = [];
+    this.filtredPatients = [];
     this.myPatientsService
       .getPatientsOfCurrentParacticianV2(
         this.featureService.getUserId(),
@@ -99,8 +102,6 @@ export class MyPatientsComponent implements OnInit {
         this.direction
       )
       .subscribe(myPatients => {
-        this.myPatients = [];
-        this.filtredPatients = [];
         this.number = myPatients.length;
         myPatients.forEach(elm => {
           this.myPatients.push(

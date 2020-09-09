@@ -56,6 +56,7 @@ export class MyInvitationsComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         let currentRoute = this.route;
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        this.pageNo = 0;
         this.getPendingListRealTime(this.pageNo);
       });
   }
