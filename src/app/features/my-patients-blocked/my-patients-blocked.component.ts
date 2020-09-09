@@ -55,6 +55,7 @@ export class MyPatientsBlockedComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         let currentRoute = this.route;
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        this.pageNo = 0;
         this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
       });
   }
