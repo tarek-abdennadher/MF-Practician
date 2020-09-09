@@ -363,7 +363,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
-    //this.router.navigate(["/messagerie-ecrire"]);
     this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {

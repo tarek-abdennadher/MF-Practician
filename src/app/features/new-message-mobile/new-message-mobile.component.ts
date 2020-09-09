@@ -1,19 +1,21 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import { Component, Input, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 
 @Component({
-  selector: 'app-new-message-mobile',
-  templateUrl: './new-message-mobile.component.html',
-  styleUrls: ['./new-message-mobile.component.scss']
+  selector: "app-new-message-mobile",
+  templateUrl: "./new-message-mobile.component.html",
+  styleUrls: ["./new-message-mobile.component.scss"],
 })
 export class NewMessageMobileComponent implements OnInit {
+  constructor(
+    private router: Router,
+    private messageWidgetService: NewMessageWidgetService
+  ) {}
 
-  constructor(private router: Router) { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   displaySendAction() {
-    this.router.navigate(["messagerie-ecrire"]);
+    this.messageWidgetService.toggleObs.next();
   }
 }

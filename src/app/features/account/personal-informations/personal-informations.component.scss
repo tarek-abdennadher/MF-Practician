@@ -285,3 +285,23 @@ button.close {
   }
 }
 /* ============================================= */
+
+/* ============================================= */
+/* Mobile part */
+@media (max-width: 425px) {
+  .titleContainer {
+    padding-top: 23px;
+    padding-bottom: 23px;
+  }
+
+  .titleIcon {
+    padding: 0;
+  }
+
+  .titleText {
+    padding: 23px 0 21px 18px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================= */
