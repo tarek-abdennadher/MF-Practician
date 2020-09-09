@@ -114,7 +114,6 @@ export class ContactDetailComponent implements OnInit {
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
-      $(".selectpicker").selectpicker();
       this.specialities.next(specialitiesList);
       $(".selectpicker").selectpicker("refresh");
       this.specialitiesContainingDeleted = specialitiesList;
