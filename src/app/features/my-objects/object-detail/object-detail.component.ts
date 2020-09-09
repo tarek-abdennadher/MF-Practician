@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AccountService } from '@app/features/services/account.service';
-import { ContactsService } from '@app/features/services/contacts.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FeaturesService } from '@app/features/features.service';
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { AccountService } from "@app/features/services/account.service";
+import { ContactsService } from "@app/features/services/contacts.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { FeaturesService } from "@app/features/features.service";
+import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 declare var $: any;
 @Component({
-  selector: 'app-object-detail',
-  templateUrl: './object-detail.component.html',
-  styleUrls: ['./object-detail.component.scss']
+  selector: "app-object-detail",
+  templateUrl: "./object-detail.component.html",
+  styleUrls: ["./object-detail.component.scss"],
 })
-export class ObjectDetailComponent implements OnInit {
-
+export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
   public messages: any;
   itemsList = [];
   showAlert = false;
@@ -32,7 +32,9 @@ export class ObjectDetailComponent implements OnInit {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
   }
-
+  canDeactivate(): boolean {
+    return !this.infoForm.dirty;
+  }
   ngOnInit(): void {
     this.getAllDocumentModel();
     this.route.params.subscribe((params) => {
@@ -106,6 +108,7 @@ export class ObjectDetailComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
+    this.infoForm.markAsPristine();
     let model = this.infoForm.value;
     model.accountId = this.featureService.getUserId();
     if (this.selectedCategoryId == "add") {
@@ -127,5 +130,4 @@ export class ObjectDetailComponent implements OnInit {
   cancel() {
     this.router.navigate(["mes-objets"]);
   }
-
 }
