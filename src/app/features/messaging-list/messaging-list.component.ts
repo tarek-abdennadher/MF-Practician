@@ -18,6 +18,7 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { MyPatientsService } from "../services/my-patients.service";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { PaginationService } from '../services/pagination.service';
+import { LocalStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: "app-messaging-list",
@@ -82,6 +83,7 @@ export class MessagingListComponent implements OnInit {
   searchContext = false;
   listLength = 10;
   userTypeTabsFilter: string = 'all';
+  isSecretary = this.localSt.retrieve("role") == "SECRETARY";
   constructor(
     private messagesServ: MessagingListService,
     public router: Router,
@@ -92,7 +94,8 @@ export class MessagingListComponent implements OnInit {
     private documentService: MyDocumentsService,
     private patientService: MyPatientsService,
     private sanitizer: DomSanitizer,
-    public pagination: PaginationService
+    public pagination: PaginationService,
+    private localSt: LocalStorageService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
