@@ -516,7 +516,27 @@ export class FeaturesComponent implements OnInit {
       }
     }
   }
-
+  markNotificationsAsViewed(notifications) {
+    notifications.forEach(notification => {
+      if (notification.type == "MESSAGE") {
+        this.featuresService
+          .markMessageAsSeenByNotification(notification.messageId)
+          .subscribe(() => {});
+      } else if (
+        notification.type == "MESSAGE_IN_PROGRESS" ||
+        notification.type == "MESSAGE_TREATED"
+      ) {
+        this.featuresService
+          .markNotificationAsSeen(notification.id)
+          .subscribe(resp => {});
+      } else if (notification.type == "INVITATION") {
+        this.featuresService
+          .markNotificationAsSeen(notification.id)
+          .subscribe(resp => {});
+      }
+    });
+    this.getMyNotificationsNotSeen();
+  }
   selectNotification(notification) {
     if (notification.type == "MESSAGE") {
       this.featuresService
