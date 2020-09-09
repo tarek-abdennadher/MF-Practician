@@ -9,8 +9,46 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '@app/shared/shared.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
-
+const notifierOptions: NotifierOptions = {
+  position: {
+    horizontal: {
+      position: "left",
+      distance: 370
+    },
+    vertical: {
+      position: "top",
+      distance: 90
+    }
+  },
+  theme: "material",
+  behaviour: {
+    autoHide: 2000,
+    onClick: false,
+    onMouseover: "pauseAutoHide",
+    showDismissButton: false
+  },
+  animations: {
+    enabled: true,
+    show: {
+      preset: "fade",
+      speed: 1500,
+      easing: "ease"
+    },
+    hide: {
+      preset: "fade",
+      speed: 300,
+      easing: "ease",
+      offset: 50
+    },
+    shift: {
+      speed: 300,
+      easing: "ease"
+    },
+    overlap: 150
+  }
+};
 @NgModule({
   declarations: [MyPatientsComponent, AddPatientComponent],
   imports: [
@@ -23,6 +61,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     InfiniteScrollModule,
     SharedModule,
     MyPatientsRoutingModule,
+    NotifierModule.withConfig(notifierOptions)
   ]
 })
 export class MyPatientsModule { }
