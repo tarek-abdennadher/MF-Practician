@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { ContactsComponent } from './contacts.component';
-import { ContactDetailComponent } from './contact-detail/contact-detail.component';
-import { SecretaryDetailsComponent } from '@app/shared/components/secretary-details/secretary-details.component';
-import { PracticianDetailComponent } from '@app/shared/components/practician-detail/practician-detail.component';
-
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { ContactsComponent } from "./contacts.component";
+import { ContactDetailComponent } from "./contact-detail/contact-detail.component";
+import { SecretaryDetailsComponent } from "@app/shared/components/secretary-details/secretary-details.component";
+import { PracticianDetailComponent } from "@app/shared/components/practician-detail/practician-detail.component";
+import { DirtyCheckGuard } from "../dirty-check.guard";
 
 const routes: Routes = [
   {
@@ -14,6 +14,7 @@ const routes: Routes = [
       {
         path: "contact-detail/:id",
         component: ContactDetailComponent,
+        canDeactivate: [DirtyCheckGuard],
       },
       {
         path: "praticien-detail/:id",
@@ -22,13 +23,13 @@ const routes: Routes = [
       {
         path: "secretaire-detail/:id",
         component: SecretaryDetailsComponent,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ContactsRoutingModule { }
+export class ContactsRoutingModule {}
