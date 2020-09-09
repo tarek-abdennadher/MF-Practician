@@ -11,7 +11,7 @@ import { MyDocumentsService } from '@app/features/my-documents/my-documents.serv
 import { MessagingListService } from '@app/features/services/messaging-list.service';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { GlobalService } from '@app/core/services/global.service';
-
+declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
   const phoneNumber = c.get("phoneNumber");
@@ -137,6 +137,9 @@ export class PatientFileComponent implements OnInit {
         this.attachedPatients = res;
       }
     });
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
   }
 
   initPersonalForm() {

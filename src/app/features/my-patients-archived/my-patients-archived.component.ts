@@ -8,7 +8,7 @@ import { GlobalService } from '@app/core/services/global.service';
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { MyPatients } from '@app/shared/models/my-patients';
 import { filter } from 'rxjs/operators';
-
+declare var $: any;
 @Component({
   selector: 'app-my-patients-archived',
   templateUrl: './my-patients-archived.component.html',
@@ -58,6 +58,9 @@ export class MyPatientsArchivedComponent implements OnInit {
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
         this.pageNo = 0;
         this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+        setTimeout(() => {
+          $(".selectpicker").selectpicker("refresh");
+        }, 500);
       });
   }
   initArchivedPatients() {

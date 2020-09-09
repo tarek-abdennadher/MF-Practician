@@ -12,7 +12,7 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { GlobalService } from '@app/core/services/global.service';
 import { defineLocale, frLocale } from 'ngx-bootstrap/chronos';
 import { takeUntil, tap } from 'rxjs/operators';
-
+declare var $: any;
 @Component({
   selector: 'app-add-patient',
   templateUrl: './add-patient.component.html',
@@ -79,6 +79,9 @@ export class AddPatientComponent implements OnInit {
     }
     forkJoin(this.getCategories()).subscribe((res) => { });
     this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
   }
   getCategories() {
     return this.categoryService

@@ -8,7 +8,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { GlobalService } from '@app/core/services/global.service';
 import { MyPatients } from '@app/shared/models/my-patients';
 import { filter } from 'rxjs/operators';
-
+declare var $: any;
 @Component({
   selector: 'app-my-patients-blocked',
   templateUrl: './my-patients-blocked.component.html',
@@ -57,6 +57,9 @@ export class MyPatientsBlockedComponent implements OnInit {
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
         this.pageNo = 0;
         this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+        setTimeout(() => {
+          $(".selectpicker").selectpicker("refresh");
+        }, 500);
       });
   }
   initProhibitedPatients() {
