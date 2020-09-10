@@ -801,7 +801,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       case "SECRETARY":
         return senderDetail.secretary.photoId;
       case "TELESECRETARYGROUP":
-        return senderDetail.secretary.photoId;
+        return senderDetail.telesecretaryGroup.photoId;
       default:
         return null;
     }
