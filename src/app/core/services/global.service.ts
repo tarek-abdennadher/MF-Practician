@@ -115,8 +115,11 @@ export class GlobalService {
     notes: "Mes notes",
     history: "Historique des messages",
     newMessageCapital: "Nouveau message",
-    required:"Champs obligatoire",
-    free_object:"Objet libre"
+    required: "Champs obligatoire",
+    free_object: "Objet libre",
+    invitations: "Mes invitations",
+    blocked_patients: "Patients Bloqués",
+    archived_patients: "Patients Archivés"
   };
 
   public avatars = {

@@ -3,7 +3,7 @@ import { ChartComponent, ApexLegend, ApexFill } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
-  ApexChart,
+  ApexChart
 } from "ng-apexcharts";
 import { Subject } from "rxjs";
 import { AccountService } from "@app/features/services/account.service";
@@ -21,7 +21,7 @@ export type ChartOptions = {
 @Component({
   selector: "app-apx-pie",
   templateUrl: "./apx-pie.component.html",
-  styleUrls: ["./apx-pie.component.scss"],
+  styleUrls: ["./apx-pie.component.scss"]
 })
 export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
@@ -42,13 +42,13 @@ export class ApxPieComponent implements OnInit {
       series: [0, 0],
       chart: {
         width: 200,
-        type: "donut",
+        type: "donut"
       },
       colors: [
         this.colors.blue,
         this.colors.dark_blue,
         this.colors.light_blue,
-        this.colors.light_steel_blue,
+        this.colors.light_steel_blue
       ],
       labels: ["Chargement..", "Chargement.."],
       legend: {
@@ -59,8 +59,8 @@ export class ApxPieComponent implements OnInit {
         fontFamily: "Montserrat",
         fontWeight: "normal",
         labels: {
-          colors: ["#4a4a4a"],
-        },
+          colors: ["#4a4a4a"]
+        }
       },
       responsive: [
         {
@@ -68,31 +68,31 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1000,
             chart: {
               width: 100,
-              type: "donut",
+              type: "donut"
             },
             colors: [
               this.colors.blue,
               this.colors.dark_blue,
               this.colors.light_blue,
-              this.colors.light_steel_blue,
-            ],
-          },
-        },
-      ],
+              this.colors.light_steel_blue
+            ]
+          }
+        }
+      ]
     };
-    this.stats.subscribe((myMap) => {
+    this.stats.subscribe(myMap => {
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
         series: [...map.values()],
         chart: {
           width: 430,
-          type: "donut",
+          type: "donut"
         },
         colors: [
           this.colors.blue,
           this.colors.dark_blue,
           this.colors.light_blue,
-          this.colors.light_steel_blue,
+          this.colors.light_steel_blue
         ],
         legend: {
           horizontalAlign: "left",
@@ -101,8 +101,8 @@ export class ApxPieComponent implements OnInit {
           fontFamily: "Montserrat",
           fontWeight: "normal",
           labels: {
-            colors: ["#4a4a4a"],
-          },
+            colors: ["#4a4a4a"]
+          }
         },
         labels: [...map.keys()],
         responsive: [
@@ -111,22 +111,25 @@ export class ApxPieComponent implements OnInit {
               breakpoint: 1000,
               chart: {
                 width: 100,
-                type: "donut",
+                type: "donut"
               },
               colors: [
                 this.colors.blue,
                 this.colors.dark_blue,
                 this.colors.light_blue,
-                this.colors.light_steel_blue,
-              ],
-            },
-          },
-        ],
+                this.colors.light_steel_blue
+              ]
+            }
+          }
+        ]
       };
-      this.chartOptions.series.forEach((n) => {
+      this.chartOptions.series.forEach(n => {
         if (n != 0) {
           this.emptyData = false;
         }
+      });
+      jQuery(document).ready(function() {
+        jQuery(".apexcharts-pie-label").attr("fill", "#000000");
       });
     });
     this.featureService.setIsMessaging(false);

@@ -15,7 +15,7 @@
 ></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
-<lib-hlsMessagingList
+<lib-hlsMessagingList *ngIf="!loading"
   [list]="filtredItemList"
   (cardAction)="cardClicked($event)"
   [isCheckbox]="false"

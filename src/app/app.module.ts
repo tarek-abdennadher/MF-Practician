@@ -16,6 +16,7 @@ import { TokenInterceptor } from "./core/interceptors/token.interceptor";
 import { AccountModule } from "./features/account/account.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ResponseInterceptor } from './core/interceptors/response.interceptor';
+import { CachingInterceptor } from './core/interceptors/cache.interceptor';
 
 registerLocaleData(localeFr, "fr");
 @NgModule({
@@ -41,6 +42,11 @@ registerLocaleData(localeFr, "fr");
       provide: HTTP_INTERCEPTORS,
       useClass: ResponseInterceptor,
       multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CachingInterceptor,
+      multi: true,
     },
     { provide: LOCALE_ID, useValue: "fr" },
     LoginService,

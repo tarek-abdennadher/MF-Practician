@@ -5,13 +5,14 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { CategoryService } from "@app/features/services/category.service";
 import { FeaturesService } from "@app/features/features.service";
+import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 declare var $: any;
 @Component({
   selector: "app-category-detail",
   templateUrl: "./category-detail.component.html",
   styleUrls: ["./category-detail.component.scss"],
 })
-export class CategoryDetailComponent implements OnInit {
+export class CategoryDetailComponent implements OnInit, ComponentCanDeactivate {
   public messages: any;
   showAlert = false;
   failureAlert = false;
@@ -31,7 +32,9 @@ export class CategoryDetailComponent implements OnInit {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
   }
-
+  canDeactivate(): boolean {
+    return !this.infoForm.dirty;
+  }
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.selectedCategoryId = params["id"];
@@ -70,6 +73,7 @@ export class CategoryDetailComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
+    this.infoForm.markAsPristine();
     let model;
     model = {
       id: this.infoForm.value.id,

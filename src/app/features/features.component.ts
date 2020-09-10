@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
 import { PracticianSearchService } from "./practician-search/practician-search.service";
@@ -24,7 +24,7 @@ import { NewMessageWidgetService } from "./new-message-widget/new-message-widget
   templateUrl: "./features.component.html",
   styleUrls: ["./features.component.scss"]
 })
-export class FeaturesComponent implements OnInit {
+export class FeaturesComponent implements OnInit, AfterViewInit {
   collapedSideBar: boolean;
   account: any;
   hasImage: boolean;
@@ -52,11 +52,15 @@ export class FeaturesComponent implements OnInit {
     private jobTitlePipe: JobtitlePipe,
     private patientService: MyPatientsService,
     private sanitizer: DomSanitizer,
-    private messageWidgetService: NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService,
+    private cdr: ChangeDetectorRef
   ) {
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
     this.avatars = this.globalService.avatars;
+  }
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
   public myPracticians = [];
 
@@ -201,9 +205,9 @@ export class FeaturesComponent implements OnInit {
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => {};
+    this.stompClient.debug = () => { };
     const that = this;
-    this.stompClient.connect({}, function(frame) {
+    this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
         message => {
@@ -244,9 +248,9 @@ export class FeaturesComponent implements OnInit {
         let id = ids[i];
         const ws = new SockJS(this.globalService.BASE_URL + "/socket");
         this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => {};
+        this.stompClientList[i].debug = () => { };
         const that = this;
-        this.stompClientList[i].connect({}, function(frame) {
+        this.stompClientList[i].connect({}, function (frame) {
           this.subscribe("/topic/notification/" + id, message => {
             if (message.body) {
               let notification = JSON.parse(message.body);
@@ -274,8 +278,8 @@ export class FeaturesComponent implements OnInit {
             id: notif.id,
             sender: notif.jobTitle
               ? this.jobTitlePipe.transform(notif.jobTitle) +
-                " " +
-                notif.senderFullName
+              " " +
+              notif.senderFullName
               : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
@@ -359,7 +363,6 @@ export class FeaturesComponent implements OnInit {
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
-    //this.router.navigate(["/messagerie-ecrire"]);
     this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {
@@ -373,7 +376,24 @@ export class FeaturesComponent implements OnInit {
   }
 
   displayMyPatientsAction(event) {
-    this.router.navigate(["/mes-patients/" + event]);
+    switch (event) {
+      case "accepted": {
+        this.router.navigate(["/mes-patients"]);
+        break;
+      }
+      case "pending": {
+        this.router.navigate(["/mes-invitations"]);
+        break;
+      }
+      case "prohibit": {
+        this.router.navigate(["/mes-patients-bloques"]);
+        break;
+      }
+      case "archived": {
+        this.router.navigate(["/mes-patients-archives"]);
+        break;
+      }
+    }
   }
   displayMyMedicalsAction() {
     this.router.navigate(["/favorites"]);
@@ -675,18 +695,18 @@ export class FeaturesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-          ? "répondu"
-          : message.toReceivers[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "répondu"
+            : message.toReceivers[0].seen
+              ? "Lu"
+              : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-          ? 100
-          : message.toReceivers[0].seen
-          ? 50
-          : 20
+            ? 100
+            : message.toReceivers[0].seen
+              ? 50
+              : 20
     };
     messageSent.users = [];
     message.toReceivers.forEach(r => {

@@ -177,13 +177,11 @@ $color-helssy-grey: #6e819bd4;
   .selectpicker {
     z-index: 99999;
   }
-  .bootstrap-select {
-    //width: 100% !important;
-    // max-width: 300px !important;
-    //border-color: $input-color;
-    //background-color: $input-color;
+  .btn-light {
+    border-radius: 6px;
+    background-color: $helssy_white;
+    border-color: $helssy_white;
   }
-
   .bootstrap-select > select.mobile-device:focus + .dropdown-toggle,
   .bootstrap-select .dropdown-toggle:focus {
     outline: none !important;
@@ -195,3 +193,9 @@ $color-helssy-grey: #6e819bd4;
   }
 }
 /* ============================================= */
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

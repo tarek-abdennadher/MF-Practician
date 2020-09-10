@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { emailValidator } from '@app/core/Validators/email.validator';
-import { ContactBookService } from '@app/features/services/contact-book.service';
-import { AccountService } from '@app/features/services/account.service';
-import { FeaturesService } from '@app/features/features.service';
-import { NotifierService } from 'angular-notifier';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { emailValidator } from "@app/core/Validators/email.validator";
+import { ContactBookService } from "@app/features/services/contact-book.service";
+import { AccountService } from "@app/features/services/account.service";
+import { FeaturesService } from "@app/features/features.service";
+import { NotifierService } from "angular-notifier";
 declare var $: any;
 @Component({
-  selector: 'app-my-contact-detail',
-  templateUrl: './my-contact-detail.component.html',
-  styleUrls: ['./my-contact-detail.component.scss']
+  selector: "app-my-contact-detail",
+  templateUrl: "./my-contact-detail.component.html",
+  styleUrls: ["./my-contact-detail.component.scss"],
 })
 export class MyContactDetailComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -38,7 +38,6 @@ export class MyContactDetailComponent implements OnInit {
     private service: ContactBookService,
     private featureService: FeaturesService,
     notifierService: NotifierService
-
   ) {
     this.notifier = notifierService;
     this.isLabelShow = false;
