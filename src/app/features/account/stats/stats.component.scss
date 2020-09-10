@@ -12,6 +12,7 @@
 .border_ {
   border-right: 2px solid #e1e8f3;
 }
+
 .chart-title {
   font-family: Montserrat-Medium;
   font-size: 30px;
@@ -23,8 +24,16 @@
   text-align: center;
   margin: 0 auto;
   color: #4a4a4a;
+  //  margin-left: 60px;
 }
 .center_ {
   margin: 0 auto;
   width: 600px;
+}
+
+@media (max-width: 768px) {
+  .Rectangle-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }

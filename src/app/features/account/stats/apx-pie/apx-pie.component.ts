@@ -64,18 +64,11 @@ export class ApxPieComponent implements OnInit {
       },
       responsive: [
         {
+          breakpoint: 480,
           options: {
-            breakpoint: 1000,
             chart: {
-              width: 100,
-              type: "donut"
-            },
-            colors: [
-              this.colors.blue,
-              this.colors.dark_blue,
-              this.colors.light_blue,
-              this.colors.light_steel_blue
-            ]
+              width: 200
+            }
           }
         }
       ]
@@ -85,7 +78,7 @@ export class ApxPieComponent implements OnInit {
       this.chartOptions = {
         series: [...map.values()],
         chart: {
-          width: 430,
+          width: 450,
           type: "donut"
         },
         colors: [
@@ -95,7 +88,7 @@ export class ApxPieComponent implements OnInit {
           this.colors.light_steel_blue
         ],
         legend: {
-          horizontalAlign: "left",
+          horizontalAlign: "center",
           position: "bottom",
           fontSize: "14px",
           fontFamily: "Montserrat",
@@ -107,18 +100,212 @@ export class ApxPieComponent implements OnInit {
         labels: [...map.keys()],
         responsive: [
           {
+            breakpoint: 1901,
             options: {
-              breakpoint: 1000,
               chart: {
-                width: 100,
-                type: "donut"
+                width: 643
               },
-              colors: [
-                this.colors.blue,
-                this.colors.dark_blue,
-                this.colors.light_blue,
-                this.colors.light_steel_blue
-              ]
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1801,
+            options: {
+              chart: {
+                width: 593
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1701,
+            options: {
+              chart: {
+                width: 543
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1601,
+            options: {
+              chart: {
+                width: 493
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1501,
+            options: {
+              chart: {
+                width: 443
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1401,
+            options: {
+              chart: {
+                width: 393
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 1301,
+            options: {
+              chart: {
+                width: 343
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 1201,
+            options: {
+              chart: {
+                width: 293
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 1101,
+            options: {
+              chart: {
+                width: 430
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1001,
+            options: {
+              chart: {
+                width: 380
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 901,
+            options: {
+              chart: {
+                width: 330
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 801,
+            options: {
+              chart: {
+                width: 295
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 701,
+            options: {
+              chart: {
+                width: 620
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 601,
+            options: {
+              chart: {
+                width: 520
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 501,
+            options: {
+              chart: {
+                width: 420
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 401,
+            options: {
+              chart: {
+                width: 420
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 769,
+            options: {
+              chart: {
+                width: 329
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 361,
+            options: {
+              chart: {
+                width: 285
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 415,
+            options: {
+              chart: {
+                width: 338
+              },
+              legend: {
+                show: false
+              }
             }
           }
         ]
