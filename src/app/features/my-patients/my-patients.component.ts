@@ -12,12 +12,14 @@ import { MyPatients } from "@app/shared/models/my-patients";
 import { filter } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from '../new-message-widget/new-message-widget.service';
+declare var $: any;
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
   styleUrls: ["./my-patients.component.scss"]
 })
 export class MyPatientsComponent implements OnInit {
+
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -74,6 +76,9 @@ export class MyPatientsComponent implements OnInit {
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
         this.pageNo = 0;
         this.getPatientsOfCurrentParactician(this.pageNo);
+        setTimeout(() => {
+          $(".selectpicker").selectpicker("refresh");
+        }, 500);
       });
   }
   initPatients() {

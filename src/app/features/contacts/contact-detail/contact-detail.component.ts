@@ -8,13 +8,14 @@ import { emailValidator } from "@app/core/Validators/email.validator";
 import { Subject } from "rxjs";
 import { AccountService } from "@app/features/services/account.service";
 import { FeaturesService } from "@app/features/features.service";
+import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
   styleUrls: ["./contact-detail.component.scss"],
 })
-export class ContactDetailComponent implements OnInit {
+export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   account: any;
   specialities = new Subject<Array<Speciality>>();
   specialitiesContainingDeleted: Array<Speciality>;
@@ -47,7 +48,9 @@ export class ContactDetailComponent implements OnInit {
     this.failureAlert = false;
     this.isLabelShow = false;
   }
-
+  canDeactivate(): boolean {
+    return !this.infoForm.dirty;
+  }
   ngOnInit(): void {
     this.getjobTitles();
     this.route.params.subscribe((params) => {
@@ -146,6 +149,7 @@ export class ContactDetailComponent implements OnInit {
     if (this.infoForm.invalid) {
       return;
     }
+    this.infoForm.markAsPristine();
     const value = this.infoForm.value;
     if (this.account.speciality && this.account.speciality.deleted) {
       this.specialitiesContainingDeleted.push(this.account.speciality);

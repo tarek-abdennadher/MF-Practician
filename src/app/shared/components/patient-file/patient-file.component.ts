@@ -11,7 +11,7 @@ import { MyDocumentsService } from '@app/features/my-documents/my-documents.serv
 import { MessagingListService } from '@app/features/services/messaging-list.service';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { GlobalService } from '@app/core/services/global.service';
-
+declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
   const phoneNumber = c.get("phoneNumber");
@@ -137,6 +137,9 @@ export class PatientFileComponent implements OnInit {
         this.attachedPatients = res;
       }
     });
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
   }
 
   initPersonalForm() {
@@ -570,10 +573,30 @@ export class PatientFileComponent implements OnInit {
   }
 
   messageClicked(item) {
+    this.markMessageAsSeen(item);
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
         context: "inbox",
       },
     });
+  }
+
+  markMessageAsSeen(event) {
+    let messageId = event.id;
+    this.messagesServ.markMessageAsSeen(messageId).subscribe(
+      resp => {
+        if (resp == true) {
+          let filtredIndex = this.filtredItemList.findIndex(
+            item => item.id == messageId
+          );
+          if (filtredIndex != -1) {
+            this.filtredItemList[filtredIndex].isSeen = true;
+          }
+        }
+      },
+      error => {
+        console.log("We have to find a way to notify user by this error");
+      }
+    );
   }
 }

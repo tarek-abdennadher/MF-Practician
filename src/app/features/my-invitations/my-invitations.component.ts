@@ -8,7 +8,7 @@ import { MyPatients } from '@app/shared/models/my-patients';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { GlobalService } from '@app/core/services/global.service';
 import { filter } from 'rxjs/operators';
-
+declare var $: any;
 @Component({
   selector: 'app-my-invitations',
   templateUrl: './my-invitations.component.html',
@@ -58,6 +58,9 @@ export class MyInvitationsComponent implements OnInit {
         while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
         this.pageNo = 0;
         this.getPendingListRealTime(this.pageNo);
+        setTimeout(() => {
+          $(".selectpicker").selectpicker("refresh");
+        }, 500);
       });
   }
   initPendingPatients() {
