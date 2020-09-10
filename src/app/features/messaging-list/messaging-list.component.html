@@ -28,84 +28,46 @@
 
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
-    <mat-tab-group class="links" mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)" [(selectedIndex)]="selectedTabIndex">
+    <mat-tab-group
+    *ngIf="!isSecretary"
+    class="links" mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)" [(selectedIndex)]="selectedTabIndex">
       <mat-tab label="TousMessages" >
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
           <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
         </ng-template>
-        <lib-hlsMessagingList
-          *ngIf="!loading"
-          [list]="filtredItemList"
-          [hasPaging]="true"
-          (cardAction)="cardClicked($event)"
-          (markAsSeenAction)="markMessageAsSeen($event)"
-          (archieveAction)="archieveMessage($event)"
-          (selectItemAction)="selectItem($event)"
-          [imageSource]="imageSource"
-          [hasPaging]="true"
-          (upSortAction)="upSortClicked()"
-          (downSortAction)="downSortClicked()"
-        ></lib-hlsMessagingList>
+        <ng-container *ngTemplateOutlet="messagingList"></ng-container>
+
       </mat-tab>
       <mat-tab label="Secrétaire">
         <ng-template mat-tab-label>
           <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
           <span (click)="filterActionClicked('secretary')">Secrétaire</span>
         </ng-template>
-        <lib-hlsMessagingList
-          *ngIf="!loading"
-          [list]="filtredItemList"
-          [hasPaging]="true"
-          (cardAction)="cardClicked($event)"
-          (markAsSeenAction)="markMessageAsSeen($event)"
-          (archieveAction)="archieveMessage($event)"
-          (selectItemAction)="selectItem($event)"
-          [imageSource]="imageSource"
-          [hasPaging]="true"
-          (upSortAction)="upSortClicked()"
-          (downSortAction)="downSortClicked()"
-        ></lib-hlsMessagingList>
+        <ng-container *ngTemplateOutlet="messagingList"></ng-container>
+
       </mat-tab>
       <mat-tab label="Patients" (click)="filterActionClicked('patient')">
         <ng-template mat-tab-label>
           <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
           Patients
         </ng-template>
-        <lib-hlsMessagingList
-          *ngIf="!loading"
-          [list]="filtredItemList"
-          [hasPaging]="true"
-          (cardAction)="cardClicked($event)"
-          (markAsSeenAction)="markMessageAsSeen($event)"
-          (archieveAction)="archieveMessage($event)"
-          (selectItemAction)="selectItem($event)"
-          [imageSource]="imageSource"
-          [hasPaging]="true"
-          (upSortAction)="upSortClicked()"
-          (downSortAction)="downSortClicked()"
-        ></lib-hlsMessagingList>
+        <ng-container *ngTemplateOutlet="messagingList"></ng-container>
+
       </mat-tab>
       <mat-tab label="Praticiens">
         <ng-template mat-tab-label>
           <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
           Praticiens
         </ng-template>
-        <lib-hlsMessagingList
-          *ngIf="!loading"
-          [list]="filtredItemList"
-          [hasPaging]="true"
-          (cardAction)="cardClicked($event)"
-          (markAsSeenAction)="markMessageAsSeen($event)"
-          (archieveAction)="archieveMessage($event)"
-          (selectItemAction)="selectItem($event)"
-          [imageSource]="imageSource"
-          [hasPaging]="true"
-          (upSortAction)="upSortClicked()"
-          (downSortAction)="downSortClicked()"
-        ></lib-hlsMessagingList>
+        <ng-container *ngTemplateOutlet="messagingList"></ng-container>
+
       </mat-tab>
     </mat-tab-group>
+
+    <ng-container   *ngIf="isSecretary">
+      <ng-container *ngTemplateOutlet="messagingList"></ng-container>
+    </ng-container>
 
     <lib-hlsMessagingList class="mobile-links"
       *ngIf="!loading"
@@ -120,9 +82,25 @@
       (upSortAction)="upSortClicked()"
       (downSortAction)="downSortClicked()"
     ></lib-hlsMessagingList>
+
+    <ng-template  #messagingList>
+      <lib-hlsMessagingList
+      class="links"
+      *ngIf="!loading"
+      [list]="filtredItemList"
+      [hasPaging]="true"
+      (cardAction)="cardClicked($event)"
+      (markAsSeenAction)="markMessageAsSeen($event)"
+      (archieveAction)="archieveMessage($event)"
+      (selectItemAction)="selectItem($event)"
+      [imageSource]="imageSource"
+      (upSortAction)="upSortClicked()"
+      (downSortAction)="downSortClicked()"
+    ></lib-hlsMessagingList>
+    </ng-template>
+
   </div>
 </div>
-
 
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
@@ -134,6 +112,7 @@
 
 <mat-progress-spinner *ngIf="loading" diameter="20"
 mode="indeterminate" value="100"> </mat-progress-spinner>
+
 <lib-hlsLinks
   class="mobile-links"
   [links]="links"
