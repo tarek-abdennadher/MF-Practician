@@ -11,6 +11,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { filter } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
+import { NewMessageWidgetService } from '../new-message-widget/new-message-widget.service';
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
@@ -55,7 +56,8 @@ export class ContactsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private globalService: GlobalService,
     private featureService: FeaturesService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private messageWidgetService: NewMessageWidgetService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -307,11 +309,7 @@ export class ContactsComponent implements OnInit {
     }
   }
   markAsSeenClicked(item) {
-    this.router.navigate(["/messagerie-ecrire"], {
-      queryParams: {
-        id: item.id
-      }
-    });
+    this.messageWidgetService.toggleObs.next(item.id);
   }
   archieveClicked(event) {
     const ids = [];

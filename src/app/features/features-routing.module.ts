@@ -11,6 +11,10 @@ import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { PracticianDetailComponent } from "@app/shared/components/practician-detail/practician-detail.component";
+import { MyInvitationsComponent } from './my-invitations/my-invitations.component';
+import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { MyPatientsArchivedComponent } from './my-patients-archived/my-patients-archived.component';
+import { MyPatientsBlockedComponent } from './my-patients-blocked/my-patients-blocked.component';
 const routes: Routes = [
   {
     path: "",
@@ -87,12 +91,42 @@ const routes: Routes = [
         loadChildren: () => import("./my-objects/my-objects.module").then((m) => m.MyObjectsModule),
       },
       {
-        path: "mes-patients/:section",
+        path: "mes-patients",
         loadChildren: () =>
           import("./my-patients/my-patients.module").then(
             (m) => m.MyPatientsModule
           ),
       },
+      {
+        path: "mes-invitations",
+        component: MyInvitationsComponent,
+        children: [
+          {
+            path: "fiche-patient",
+            component: PatientDetailComponent
+          }
+        ]
+      },
+      {
+        path: "mes-patients-archives",
+        component: MyPatientsArchivedComponent,
+        children: [
+          {
+            path: "fiche-patient",
+            component: PatientDetailComponent
+          }
+        ]
+      },
+      {
+        path: "mes-patients-bloques",
+        component: MyPatientsBlockedComponent,
+        children: [
+          {
+            path: "fiche-patient",
+            component: PatientDetailComponent
+          }
+        ]
+      }
     ],
   },
 ];

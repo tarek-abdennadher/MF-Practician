@@ -1,13 +1,14 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { MyAccountComponent } from './my-account/my-account.component';
-import { PersonalInformationsComponent } from './personal-informations/personal-informations.component';
-import { MySecretariesComponent } from './my-secretaries/my-secretaries.component';
-import { TeleSecretariesComponent } from './tele-secretaries/tele-secretaries.component';
-import { FacturesComponent } from './factures/factures.component';
-import { StatsComponent } from './stats/stats.component';
-import { MyLeavesComponent } from './my-leaves/my-leaves.component';
-import { SecretaryDetailsComponent } from '@app/shared/components/secretary-details/secretary-details.component';
+import { MyAccountComponent } from "./my-account/my-account.component";
+import { PersonalInformationsComponent } from "./personal-informations/personal-informations.component";
+import { MySecretariesComponent } from "./my-secretaries/my-secretaries.component";
+import { TeleSecretariesComponent } from "./tele-secretaries/tele-secretaries.component";
+import { FacturesComponent } from "./factures/factures.component";
+import { StatsComponent } from "./stats/stats.component";
+import { MyLeavesComponent } from "./my-leaves/my-leaves.component";
+import { SecretaryDetailsComponent } from "@app/shared/components/secretary-details/secretary-details.component";
+import { DirtyCheckGuard } from "../dirty-check.guard";
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
       { path: "", redirectTo: "", pathMatch: "full" },
       {
         path: "mes-informations",
-        component: PersonalInformationsComponent
+        component: PersonalInformationsComponent,
+        canDeactivate: [DirtyCheckGuard],
       },
       {
         path: "mes-secretaires",
@@ -26,31 +28,32 @@ const routes: Routes = [
           {
             path: "secretaire-detail/:id",
             component: SecretaryDetailsComponent,
-          }
-        ]
+          },
+        ],
       },
       {
         path: "mon-telesecretariat",
-        component: TeleSecretariesComponent
+        component: TeleSecretariesComponent,
       },
       {
         path: "mes-factures",
-        component: FacturesComponent
+        component: FacturesComponent,
       },
       {
         path: "mes-stats",
-        component: StatsComponent
+        component: StatsComponent,
       },
       {
         path: "mes-conges",
-        component: MyLeavesComponent
-      }
-    ]
-  }
+        component: MyLeavesComponent,
+        canDeactivate: [DirtyCheckGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AccountRoutingModule { }
+export class AccountRoutingModule {}

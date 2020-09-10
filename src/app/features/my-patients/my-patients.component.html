@@ -1,19 +1,17 @@
 <div class="row">
     <div class="col-md-5">
-        <lib-hls-generic-list-links [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText"
-            [number]="number" [addText]="addText" [types]="mesCategories" (addAction)="addPatient()"
-            (typeAction)="listFilter($event)"></lib-hls-generic-list-links>
+        <lib-hls-generic-list-links [links]="links" [page]="page" [topText]="topText" [number]="number"
+            [addText]="addText" [types]="mesCategories" (addAction)="addPatient()" (typeAction)="listFilter($event)">
+        </lib-hls-generic-list-links>
         <lib-hls-generic-list [isCheckbox]="false" [list]="filtredPatients" [imageSource]="imageSource"
-            [isInvitationPending]="isInvitation" [isMyPatients]="isMyPatients" (markAsSeenAction)="writeAction($event)"
-            (writeAction)="writeAction($event)" (prohibitAction)="prohibitAction($event)"
-            (editAction)="editAction($event)" (deleteAction)="deleteAction($event)"
-            (authorizedAction)="authorizeAction($event)" (acceptedAction)="acceptedAction($event)"
-            (refuseAction)="refuseAction($event)" (archivedAction)="archivedAction($event)"
-            (activatedAction)="activatedAction($event)" (cardAction)="cardClicked($event)"
-            (upSortAction)="upSortClicked()" (downSortAction)="downSortClicked()" [hasPaging]="true">
+            [isMyPatients]="isMyPatients" (markAsSeenAction)="writeAction($event)" (writeAction)="writeAction($event)"
+            (prohibitAction)="prohibitAction($event)" (editAction)="editAction($event)"
+            (deleteAction)="deleteAction($event)" (archivedAction)="archivedAction($event)"
+            (cardAction)="cardClicked($event)" (upSortAction)="upSortClicked()" (downSortAction)="downSortClicked()"
+            [hasPaging]="true">
         </lib-hls-generic-list>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-7 objects">
         <router-outlet></router-outlet>
     </div>
 </div>

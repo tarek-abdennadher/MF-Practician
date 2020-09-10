@@ -44,6 +44,10 @@ import { NewMessageWidgetComponent } from './new-message-widget/new-message-widg
 import { NewMessageComponent } from './new-message/new-message.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { HlsCkeditorModule } from 'hls-ckeditor';
+import { MyInvitationsComponent } from './my-invitations/my-invitations.component';
+import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { MyPatientsArchivedComponent } from './my-patients-archived/my-patients-archived.component';
+import { MyPatientsBlockedComponent } from './my-patients-blocked/my-patients-blocked.component';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -97,7 +101,11 @@ const notifierOptions: NotifierOptions = {
     PersonalInformationsComponent,
     NewMessageMobileComponent,
     NewMessageWidgetComponent,
-    NewMessageComponent
+    NewMessageComponent,
+    PatientDetailComponent,
+    MyInvitationsComponent,
+    MyPatientsArchivedComponent,
+    MyPatientsBlockedComponent
   ],
   imports: [
     FormsModule,

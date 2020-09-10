@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { CategoryComponent } from './category.component';
-import { CategoryDetailComponent } from './category-detail/category-detail.component';
-
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { CategoryComponent } from "./category.component";
+import { CategoryDetailComponent } from "./category-detail/category-detail.component";
+import { DirtyCheckGuard } from "../dirty-check.guard";
 
 const routes: Routes = [
   {
@@ -11,14 +11,15 @@ const routes: Routes = [
     children: [
       {
         path: ":id",
-        component: CategoryDetailComponent
-      }
-    ]
-  }
+        component: CategoryDetailComponent,
+        canDeactivate: [DirtyCheckGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CategoryRoutingModule { }
+export class CategoryRoutingModule {}
