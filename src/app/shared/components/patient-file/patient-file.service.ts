@@ -32,7 +32,7 @@ export class PatientFileService {
         note_date: "Date (*)",
         cordonnees: "Coordonnées",
         info_compl: "Informations complémentaires",
-        send_invitation: "Une invitation sera envoyée à votre patient l’invitant à créer son compte Helssy et d’être relié automatiquement avec votre cabinet.",
+        send_invitation: "Ne pas envoyer une invitation à votre patient lui permettant de vous contacter via la messagerie Helssy.",
         history: "Historique",
         invite_patient: "Inviter le patient"
     };

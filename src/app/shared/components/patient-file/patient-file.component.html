@@ -230,13 +230,13 @@
                             </div>
                         </div>
                         <br>
-                        <div *ngIf="displayInvite " class="row send-invitation">
+                        <div *ngIf="isAdd " class="row send-invitation">
                             <label for="invitationStatus" class=" invitation-text  ">
                                 <input type="checkbox" formControlName="invitationStatus"
                                     (change)="onCheckboxChange($event)" />&nbsp;&nbsp;
                                 {{ labels.send_invitation }}</label>
-                            <br>
                         </div>
+                        <br *ngIf="isAdd ">
                         <div class="row justify-content-left">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary col-md-4 mr-4" id="submit-info-button"
