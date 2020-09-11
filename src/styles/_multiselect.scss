@@ -11,13 +11,12 @@ $blue-helssy: #1a56a7;
 #objects-dropdown,
 #cc-dropdown,
 #concern-dropdown {
-
   ::-webkit-scrollbar {
     width: 10px;
   }
   /* Track */
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px rgba(223, 230, 240, 0.75);;
+    box-shadow: inset 0 0 5px rgba(223, 230, 240, 0.75);
     border-radius: 10px;
   }
 
@@ -29,9 +28,8 @@ $blue-helssy: #1a56a7;
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background:$blue-helssy;
+    background: $blue-helssy;
   }
-
 
   .dropdown-list ul li {
     display: flex !important;
@@ -177,6 +175,10 @@ $blue-helssy: #1a56a7;
     letter-spacing: 0.07px;
     text-align: center;
     color: #40b49a;
+  }
+
+  .selected-list .c-list .c-token .c-remove svg {
+    fill: #40b49a;
   }
 
   .selected-list .c-list :hover {
