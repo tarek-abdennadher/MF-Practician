@@ -284,9 +284,9 @@ export class PatientDetailComponent implements OnInit {
             type: "info",
             template: this.customNotificationTmpl,
           });
-          let index = this.notesList.indexOf(x => x.id == res.id);
-          if (index !== -1) {
-            this.notesList[index] = this.mappingNote(res);
+          let noteToUpdate = this.notesList.findIndex(x => x.id == res.id);
+          if (noteToUpdate !== -1) {
+            this.notesList[noteToUpdate] = this.mappingNote(res);
             this.notes.next(this.notesList)
           }
         } else {
