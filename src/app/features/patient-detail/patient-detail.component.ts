@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from '@angular/core';
-import { Subject, forkJoin } from 'rxjs';
+import { Subject, forkJoin, BehaviorSubject } from 'rxjs';
 import { PatientFile } from '@app/shared/models/patient-file';
 import { NotifierService } from 'angular-notifier';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
@@ -41,6 +41,8 @@ export class PatientDetailComponent implements OnInit {
   categoryList = new Subject<[]>();
   linkedPatients = new Subject();
   linkedPatientList = [];
+  notes = new BehaviorSubject([]);
+  notesList = [];
   userRole: string;
   isPatientFile = false;
   private readonly notifier: NotifierService;
@@ -77,6 +79,7 @@ export class PatientDetailComponent implements OnInit {
     this.imageSource = this.avatars.man;
     this.noteimageSource = this.avatars.user;
     this.linkedPatientList = [];
+    this.notesList = []
   }
 
   ngOnInit(): void {
@@ -99,12 +102,19 @@ export class PatientDetailComponent implements OnInit {
   }
 
   getPatientFile() {
+    this.notesList = [];
     return this.patientService
       .getPatientFileById(this.patientFileId)
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((patientFile) => {
           this.patientFile.next(patientFile);
+          if (patientFile.notes && patientFile.notes.length > 0) {
+            patientFile.notes.forEach((elm) => {
+              this.notesList.push(this.mappingNote(elm));
+            });
+          }
+          this.notes.next(this.notesList);
           if (patientFile.patientId) {
             this.patientId = patientFile.patientId;
             this.isPatientFile = true;
@@ -123,7 +133,23 @@ export class PatientDetailComponent implements OnInit {
         })
       );
   }
-
+  mappingNote(note) {
+    return {
+      id: note.id,
+      users: [
+        {
+          fullName:
+            note.value.length < 60
+              ? note.value
+              : note.value.substring(0, 60) + "...",
+        },
+      ],
+      time: note.noteDate,
+      isViewDetail: false,
+      isArchieve: true,
+      isSeen: true,
+    }
+  }
   mappingLinkedPatients(patient) {
     const linkedPatients = new MyPatients();
     linkedPatients.fullInfo = patient;
@@ -237,6 +263,8 @@ export class PatientDetailComponent implements OnInit {
               type: "info",
               template: this.customNotificationTmpl,
             });
+            this.notesList.push(this.mappingNote(res));
+            this.notes.next(this.notesList);
           } else {
             this.notifMessage = this.noteService.errors.failed_add;
             this.notifier.show({
@@ -256,6 +284,11 @@ export class PatientDetailComponent implements OnInit {
             type: "info",
             template: this.customNotificationTmpl,
           });
+          let index = this.notesList.indexOf(x => x.id == res.id);
+          if (index !== -1) {
+            this.notesList[index] = this.mappingNote(res);
+            this.notes.next(this.notesList)
+          }
         } else {
           this.notifMessage = this.noteService.errors.failed_edit;
           this.notifier.show({
@@ -277,6 +310,10 @@ export class PatientDetailComponent implements OnInit {
           type: "info",
           template: this.customNotificationTmpl,
         });
+        this.notesList = this.notesList.filter(
+          note => note.id != noteId
+        );
+        this.notes.next(this.notesList)
       }
     });
   }
@@ -296,6 +333,8 @@ export class PatientDetailComponent implements OnInit {
 
   // destory any subscribe to avoid memory leak
   ngOnDestroy(): void {
+    this.notes.next([]);
+    this.notes.complete();
     this._destroyed$.next();
     this._destroyed$.complete();
   }

@@ -7,7 +7,7 @@ $color-helssy-grey: #6e819bd4;
   border-radius: 6px;
   box-shadow: 0 2px 12px 4px rgba(56, 96, 165, 0.1);
   background-color: $helssy_white;
-   max-width: 540px;
+  max-width: 540px;
 }
 .Mes-informations {
   font-family: Montserrat-Medium;
@@ -20,7 +20,7 @@ $color-helssy-grey: #6e819bd4;
   color: $hlessy-blue;
   padding: 20px 18px 20px 18px;
 }
-.fa-icon{
+.fa-icon {
   font-size: 18px;
   font-stretch: normal;
   font-style: normal;
@@ -35,7 +35,7 @@ $color-helssy-grey: #6e819bd4;
   background-color: rgba(242, 242, 242, 0.75);
   max-width: 540px;
 }
-.col-form-label{
+.col-form-label {
   font-family: Montserrat-Medium;
   font-size: 12px;
   font-weight: 1000;
@@ -47,12 +47,12 @@ $color-helssy-grey: #6e819bd4;
   color: #4a4a4a;
 }
 /* Form */
-.form-control{
+.form-control {
   border-radius: 6px;
-  background-color:$helssy_white;
-  border-color:$helssy_white;;
+  background-color: $helssy_white;
+  border-color: $helssy_white;
 }
-.btn.btn-primary{
+.btn.btn-primary {
   // Text CSS
   font-family: Montserrat-Medium;
   font-size: 14px;
@@ -67,7 +67,7 @@ $color-helssy-grey: #6e819bd4;
   border-color: transparent;
   background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
 }
-.btn.btn-cancel{
+.btn.btn-cancel {
   // Text CSS
   font-family: Montserrat-Medium;
   font-size: 14px;
@@ -82,7 +82,7 @@ $color-helssy-grey: #6e819bd4;
   border-radius: 6px;
   border: solid 1px #f82e6c;
 }
-.alert.alert-success{
+.alert.alert-success {
   font-family: Montserrat-Medium;
   font-size: 14px;
   font-weight: 1000;
@@ -96,7 +96,7 @@ $color-helssy-grey: #6e819bd4;
   border: solid 1px transparent;
   background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
 }
-.alert.alert-danger{
+.alert.alert-danger {
   font-family: Montserrat-Medium;
   font-size: 14px;
   font-weight: 1000;
@@ -109,4 +109,11 @@ $color-helssy-grey: #6e819bd4;
   border-radius: 6px;
   border: solid 1px #f82e6c;
   background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .Rectangle-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }

@@ -199,3 +199,10 @@ $color-helssy-grey: #6e819bd4;
   justify-content: center;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .Rectangle-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

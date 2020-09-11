@@ -134,7 +134,7 @@ export class NewMessageComponent implements OnInit {
   set messageTypesList(messageTypesList: any) {
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
+      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [messageTypesList[0]] });
   }
@@ -207,7 +207,7 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
-      document: null
+      document: null,
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -242,7 +242,7 @@ export class NewMessageComponent implements OnInit {
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
+      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     if (this.localSt.retrieve("role") == "SECRETARY") {
@@ -352,7 +352,6 @@ export class NewMessageComponent implements OnInit {
     };
 
     this.innerWidth = window.innerWidth;
-
   }
 
   ccListSubscription() {
@@ -1020,7 +1019,7 @@ export class NewMessageComponent implements OnInit {
         name: selectedObj.title,
         body: null,
         file: null,
-        document: null
+        document: null,
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1055,9 +1054,14 @@ export class NewMessageComponent implements OnInit {
   }
 
   getPdfAsHtml(request, newData) {
-    return this.requestTypeService.getDocumentAsHtml(request).pipe(takeUntil(this._destroyed$)).pipe(tap((response) => {
-      newData.document = response.document;
-    }));
+    return this.requestTypeService
+      .getDocumentAsHtml(request)
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((response) => {
+          newData.document = response.document;
+        })
+      );
   }
 
   goToBack() {
@@ -1077,7 +1081,7 @@ export class NewMessageComponent implements OnInit {
         if (group && group.group) {
           this._messageTypesList = [
             { id: SendType.MESSAGING, text: "Messagerie" },
-            { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
+            { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
             { id: SendType.INSTRUCTION, text: "Consignes" },
           ];
           this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });

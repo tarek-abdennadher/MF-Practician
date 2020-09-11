@@ -55,9 +55,9 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     private messageWidgetService: NewMessageWidgetService,
     private cdr: ChangeDetectorRef
   ) {
+    this.avatars = this.globalService.avatars;
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
-    this.avatars = this.globalService.avatars;
   }
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
@@ -757,9 +757,9 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
-        fullName:
+        fullName: message.senderDetail[message.senderDetail.role.toLowerCase()] &&
           message.senderDetail[message.senderDetail.role.toLowerCase()]
-            .fullName,
+            .fullName || "",
         img: this.avatars.user,
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
