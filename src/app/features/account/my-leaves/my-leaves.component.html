@@ -1,67 +1,106 @@
 <div class="card-body Rectangle-body">
-    <div class="row">
-        <a *ngIf="isInvalidDates" id="isInvalidDates" (click)="close()"
-            class="alert alert-danger alert-dismissible fade show pointer" role="alert">
-            {{ messages.date_error }}
-            <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </a>
+  <div class="row">
+    <a
+      *ngIf="isInvalidDates"
+      id="isInvalidDates"
+      (click)="close()"
+      class="alert alert-danger alert-dismissible fade show pointer"
+      role="alert"
+    >
+      {{ messages.date_error }}
+      <button
+        type="button"
+        (click)="close()"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </a>
+  </div>
+  <form [formGroup]="leavesForm" class="Rectangle-inner-body">
+    <br />
+    <div class="row col-12 col-sm-12 ">
+      <label for="activateLeaveAutoMessage" class="col-form-label">
+        <input
+          type="checkbox"
+          formControlName="activateLeaveAutoMessage"
+          id="activateLeaveAutoMessage"
+        />
+        &nbsp;&nbsp; {{ messages.activate_auto_resp }}</label
+      >
     </div>
-    <form [formGroup]="leavesForm" class="Rectangle-inner-body">
-        <br>
-        <div class="row col-12 col-sm-12 ">
-            <label for="activateLeaveAutoMessage" class="col-form-label">
-                <input type="checkbox" formControlName="activateLeaveAutoMessage" id="activateLeaveAutoMessage" />
-                &nbsp;&nbsp; {{ messages.activate_auto_resp }}</label>
-        </div>
-        <br>
-        <div class="row">
-            <div for="leaveStartDate" class="col-12 col-sm-4 col-form-label">{{
-                messages.start_date_leave
-              }}</div>
-            <div class="col-12 col-sm-5">
-                <input type="text" formControlName="leaveStartDate" class="form-control"
-                    (bsValueChange)="dateChange($event, 'start')" placeholder="{{ messages.start_date_leave }}"
-                    bsDatepicker [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
-                'is-invalid': submitted && f.leaveStartDate.errors
-              }" id="leaveStartDate" />
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div for="title" class="col-12 col-sm-4 col-form-label">{{
-                messages.end_date_leave
-              }}</div>
-            <div class="col-12 col-sm-5">
-                <input type="text" formControlName="leaveEndDate" class="form-control"
-                    (bsValueChange)="dateChange($event, 'end')" placeholder="{{ messages.end_date_leave }}" bsDatepicker
-                    [bsConfig]="{ containerClass: 'theme-dark-blue' }" [ngClass]="{
-                'is-invalid': submitted && f.leaveEndDate.errors
-              }" id="leaveEndDate" />
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-12 col-sm-4 col-form-label">{{
-                messages.leave_message
-              }}</div>
-            <div class="col-12 col-sm-8">
-                <hls-ckeditor [ctrl]="f.leaveAutoMessage"></hls-ckeditor>
-            </div>
-        </div>
-        <br>
-        <div class="row justify-content-center">
-            <button type="submit" (click)="submit()" class="btn btn-primary" id="leave-submit-button">
-                {{ messages.validate }}
-            </button>
-        </div>
-    </form>
+    <br />
+    <div class="row">
+      <div for="leaveStartDate" class="col-12 col-sm-4 col-form-label">
+        {{ messages.start_date_leave }}
+      </div>
+      <div class="col-12 col-sm-5">
+        <input
+          type="text"
+          formControlName="leaveStartDate"
+          class="form-control"
+          (bsValueChange)="dateChange($event, 'start')"
+          placeholder="{{ messages.start_date_leave }}"
+          bsDatepicker
+          [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+          [ngClass]="{
+            'is-invalid': submitted && f.leaveStartDate.errors
+          }"
+          id="leaveStartDate"
+          (change)="isInvalidDate($event)"
+        />
+      </div>
+    </div>
+    <br />
+    <div class="row">
+      <div for="title" class="col-12 col-sm-4 col-form-label">
+        {{ messages.end_date_leave }}
+      </div>
+      <div class="col-12 col-sm-5">
+        <input
+          type="text"
+          formControlName="leaveEndDate"
+          class="form-control"
+          (bsValueChange)="dateChange($event, 'end')"
+          placeholder="{{ messages.end_date_leave }}"
+          bsDatepicker
+          [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+          [ngClass]="{
+            'is-invalid': submitted && f.leaveEndDate.errors
+          }"
+          id="leaveEndDate"
+          (change)="isInvalidDate($event)"
+        />
+      </div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col-12 col-sm-4 col-form-label">
+        {{ messages.leave_message }}
+      </div>
+      <div class="col-12 col-sm-8">
+        <hls-ckeditor [ctrl]="f.leaveAutoMessage"></hls-ckeditor>
+      </div>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+      <button
+        type="submit"
+        (click)="submit()"
+        class="btn btn-primary"
+        id="leave-submit-button"
+      >
+        {{ messages.validate }}
+      </button>
+    </div>
+  </form>
 </div>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
-    <div class="text-center" type="notificationData.type">
-        <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-        &nbsp;<span>{{ notificationData.message }}</span>
-    </div>
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
 </ng-template>
