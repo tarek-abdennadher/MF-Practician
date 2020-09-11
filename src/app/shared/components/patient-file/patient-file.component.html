@@ -1,6 +1,6 @@
 <div class="card rectangle-custom">
     <div class="card-body custom-card-message">
-        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'">
+        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'" [(selectedIndex)]="selectedTabIndex">
             <mat-tab label="Informations">
                 <ng-template mat-tab-label id="info-tab">
                     <i class="fas fa-info my-tab-icon pr-custom-11px"></i>
@@ -473,7 +473,7 @@
                             </div>
                             <br>
                             <div class="row justify-content-center actions">
-                                <button (click)="NoteSubmit()" type="submit" class="btn btn-primary mr-3">
+                                <button (click)="NoteSubmit()" class="btn btn-primary mr-3">
                                     {{ labels.save }}
                                 </button>
                                 <button (click)="cancelNoteAdd()" class="btn btn-cancel">
@@ -485,7 +485,8 @@
                     </div>
                     <br *ngIf="!isnoteList">
                     <lib-hls-generic-list [imageSource]="noteimageSource" [isCheckbox]="false" [list]="noteList"
-                        (archieveAction)="archieveNote($event)" (cardAction)="noteCardClicked($event)">
+                        (archieveAction)="archieveNote($event)" (cardAction)="noteCardClicked($event)"
+                        [caller]="'notes'">
                     </lib-hls-generic-list>
                 </div>
             </mat-tab>

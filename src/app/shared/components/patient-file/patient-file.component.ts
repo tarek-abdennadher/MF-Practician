@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { emailValidator } from '@app/core/Validators/email.validator';
 import { isBefore } from 'ngx-bootstrap/chronos';
 import { PatientFileService } from './patient-file.service';
@@ -11,6 +11,8 @@ import { MyDocumentsService } from '@app/features/my-documents/my-documents.serv
 import { MessagingListService } from '@app/features/services/messaging-list.service';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
 import { GlobalService } from '@app/core/services/global.service';
+import { DialogService } from '@app/features/services/dialog.service';
+import { PaginationService } from '@app/features/services/pagination.service';
 declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -26,6 +28,7 @@ function requiredValidator(c: AbstractControl): { [key: string]: any } {
   styleUrls: ['./patient-file.component.scss']
 })
 export class PatientFileComponent implements OnInit {
+  public selectedTabIndex: number = 0;
   labels;
   placement = "bottom";
   errors;
@@ -74,12 +77,12 @@ export class PatientFileComponent implements OnInit {
   @Output("submitNoteAction") submitNoteAction = new EventEmitter();
   @Output("archieveNoteAction") archieveNoteAction = new EventEmitter();
   @Output("cancelAction") cancelAction = new EventEmitter();
+  @Input("notes") notes = new BehaviorSubject([]);
   categories = [];
   attachedPatients = [];
   isLabelShow: boolean = false;
   phones = [];
-  notes: Array<any> = new Array();
-  noteList: Array<any> = new Array();
+  noteList = [];
   addnewPhone = new Subject<boolean>();
   otherPhones = new Subject<any[]>();
   isFutureDate: boolean;
@@ -93,7 +96,9 @@ export class PatientFileComponent implements OnInit {
     private documentService: MyDocumentsService,
     private messagesServ: MessagingListService,
     private router: Router,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    public dialogService: DialogService,
+    public pagination: PaginationService
   ) {
     this.isList = true;
     this.isnoteList = true;
@@ -113,8 +118,10 @@ export class PatientFileComponent implements OnInit {
     return <FormArray>this.personalInfoForm.get("otherPhones");
   }
   ngOnInit(): void {
+    this.selectedTabIndex = 0;
     this.filtredItemList = [];
     this.itemsList = [];
+    this.noteList = [];
     this.maxDate.setDate(new Date().getDate() - 1);
     this.initPersonalForm();
     this.initNoteForm();
@@ -134,6 +141,11 @@ export class PatientFileComponent implements OnInit {
     this.linkedPatients.subscribe((res) => {
       if (res) {
         this.attachedPatients = res;
+      }
+    });
+    this.notes.subscribe((res) => {
+      if (res) {
+        this.noteList = res;
       }
     });
     setTimeout(() => {
@@ -199,27 +211,6 @@ export class PatientFileComponent implements OnInit {
     if (patient.phones && patient?.phones.length != 0) {
       this.isLabelShow = true;
       this.otherPhones.next(patient.phones);
-    }
-    if (patient.notes) {
-      this.noteList = [];
-      this.notes = patient.notes;
-      this.notes.forEach((note) => {
-        this.noteList.push({
-          id: note.id,
-          users: [
-            {
-              fullName:
-                note.value.length < 60
-                  ? note.value
-                  : note.value.substring(0, 60) + "...",
-            },
-          ],
-          time: note.noteDate,
-          isViewDetail: false,
-          isArchieve: true,
-          isSeen: true,
-        });
-      });
     }
     if (patient?.civility == "MME") {
       this.displayMaidenName = true;
@@ -357,79 +348,32 @@ export class PatientFileComponent implements OnInit {
       value: this.noteForm.value.value,
       noteDate: this.noteForm.value.date,
     };
-    if (this.noteForm.value.id == null) {
-      this.noteList.push({
-        id: this.noteForm.value.id,
-        users: [
-          {
-            fullName:
-              this.noteForm.value.value.length < 60
-                ? this.noteForm.value.value
-                : this.noteForm.value.value.substring(0, 60) + "...",
-          },
-        ],
-        time: this.noteForm.value.date,
-        isViewDetail: false,
-        isArchieve: true,
-        isSeen: true,
-      });
-      this.notes.push(model);
-    } else {
-      let noteToUpdate = this.noteList.find((n) =>
-        n.id
-          ? n.id == this.noteForm.value.id
-          : n.time == this.noteForm.value.date
-      );
-      let index = this.noteList.indexOf(noteToUpdate);
-      if (index !== -1) {
-        this.noteList[index] = {
-          id: this.noteForm.value.id,
-          users: [
-            {
-              fullName:
-                this.noteForm.value.value.length < 60
-                  ? this.noteForm.value.value
-                  : this.noteForm.value.value.substring(0, 60) + "...",
-            },
-          ],
-          time: this.noteForm.value.date,
-          isViewDetail: false,
-          isArchieve: true,
-          isSeen: true,
-        };
-      }
-      noteToUpdate = this.notes.find((n) =>
-        n.id
-          ? n.id == this.noteForm.value.id
-          : n.noteDate == this.noteForm.value.date
-      );
-      index = this.notes.indexOf(noteToUpdate);
-      if (index !== -1) {
-        this.notes[index] = model;
-      }
-    }
     this.submitNoteAction.emit(model);
     this.isnoteList = true;
   }
   noteCardClicked(item) {
     this.isnoteList = false;
-    const noteToUpdate = this.notes.find((n) =>
-      n.id && n.id != null ? n.id == item.id : n.noteDate == item.noteDate
+    let note = this.noteList.find(
+      (element) => element.id == item.id
     );
     this.noteForm.patchValue({
-      id: noteToUpdate.id ? noteToUpdate.id : null,
-      value: noteToUpdate.value ? noteToUpdate.value : null,
-      date: noteToUpdate.noteDate ? new Date(noteToUpdate.noteDate) : null,
+      id: note.id ? note.id : null,
+      value: note.users[0].fullName ? note.users[0].fullName : null,
+      date: note.time ? new Date(note.time) : null,
     });
   }
   archieveNote(item) {
-    this.archieveNoteAction.emit(item.id);
-    this.notes = this.notes.filter((n) =>
-      n.id && n.id != null ? n.id != item.id : n.noteDate != item.noteDate
-    );
-    this.noteList = this.noteList.filter((n) =>
-      n.id && n.id != null ? n.id != item.id : n.time != item.time
-    );
+    this.dialogService
+      .openConfirmDialog(
+        "Etes vous sur de bien vouloir supprimer cette note",
+        "Confirmation de supression"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          this.archieveNoteAction.emit(item.id);
+        }
+      });
   }
 
   maxDatecheck(): Date {
