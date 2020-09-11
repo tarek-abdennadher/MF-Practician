@@ -1,4 +1,9 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ChangeDetectorRef
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
 import { PracticianSearchService } from "./practician-search/practician-search.service";
@@ -546,6 +551,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         this.featuresService
           .markNotificationAsSeen(notification.id)
           .subscribe(resp => {});
+      } else if (notification.type == "INSTRUCTION_TREATED") {
+        this.featuresService
+          .markNotificationAsSeen(notification.id)
+          .subscribe(resp => {});
       }
     });
   }
@@ -586,6 +595,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           this.router.navigate(["/mes-patients"], {
             queryParams: {
               section: "pending"
+            }
+          });
+        });
+    } else if (notification.type == "INSTRUCTION_TREATED") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+        .subscribe(resp => {
+          this.getMyNotificationsNotSeen();
+          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
+            queryParams: {
+              section: "sent"
             }
           });
         });
@@ -757,9 +777,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
-        fullName: message.senderDetail[message.senderDetail.role.toLowerCase()] &&
-          message.senderDetail[message.senderDetail.role.toLowerCase()]
-            .fullName || "",
+        fullName:
+          (message.senderDetail[message.senderDetail.role.toLowerCase()] &&
+            message.senderDetail[message.senderDetail.role.toLowerCase()]
+              .fullName) ||
+          "",
         img: this.avatars.user,
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
