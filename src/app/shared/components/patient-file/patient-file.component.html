@@ -84,7 +84,8 @@
                                     <input type="text" formControlName="birthday" class="form-control"
                                         placeholder="{{ labels.birth_date }}" bsDatepicker [maxDate]="maxDatecheck()"
                                         [placement]="placement" [bsConfig]="{ containerClass: 'theme-dark-blue' }"
-                                        [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }" />
+                                        [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }"
+                                        (change)="isInvalidDate($event)" />
                                     <div *ngIf="submitted && ctr.birthday.errors" class="invalid-feedback">
                                         <div *ngIf="ctr.birthday.errors.required">
                                             {{ errors.required }}
@@ -304,7 +305,7 @@
                                                         <input type="text" formControlName="birthday"
                                                             class="calender form-control"
                                                             placeholder="{{ attachedInfoForm.controls.birthday.value }}"
-                                                            bsDatepicker
+                                                            (change)="isInvalidDate($event)" bsDatepicker
                                                             [bsConfig]="{ containerClass: 'theme-dark-blue' }"
                                                             id="attached-birthdate" />
                                                     </div>
