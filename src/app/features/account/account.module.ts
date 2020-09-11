@@ -95,4 +95,5 @@ const notifierOptions: NotifierOptions = {
   ],
   providers: [AccountService],
 })
+
 export class AccountModule { }

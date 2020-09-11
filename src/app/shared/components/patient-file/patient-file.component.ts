@@ -85,7 +85,6 @@ export class PatientFileComponent implements OnInit {
   isFutureDate: boolean;
   public isPhonesValid = false;
   public info: any;
-  displayInvite: boolean = true;
   constructor(
     private formBuilder: FormBuilder,
     private patientFileService: PatientFileService,
@@ -196,9 +195,6 @@ export class PatientFileComponent implements OnInit {
     this.patientFileId = patient.id;
     if (patient.patientId) {
       this.getPatientInbox(this.pageNo);
-    }
-    if (patient.invitationStatus && patient.invitationStatus == "SENT") {
-      this.displayInvite = false;
     }
     if (patient.phones && patient?.phones.length != 0) {
       this.isLabelShow = true;
@@ -345,9 +341,6 @@ export class PatientFileComponent implements OnInit {
       notes: this.notes,
       invitationStatus: this.personalInfoForm.value.invitationStatus
     };
-    if (this.personalInfoForm.value.invitationStatus == "NOT_SENT") {
-      this.displayInvite = false;
-    }
     this.submitAction.emit(model);
   }
   addNote() {
