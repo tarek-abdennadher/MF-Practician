@@ -235,10 +235,10 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 701,
             options: {
               chart: {
-                width: 620
+                width: 293
               },
               legend: {
-                show: true
+                show: false
               }
             }
           },
@@ -246,7 +246,18 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 601,
             options: {
               chart: {
-                width: 520
+                width: 245
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 576,
+            options: {
+              chart: {
+                width: 495
               },
               legend: {
                 show: true
@@ -268,7 +279,7 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 401,
             options: {
               chart: {
-                width: 420
+                width: 320
               },
               legend: {
                 show: false
@@ -276,32 +287,10 @@ export class ApxPieComponent implements OnInit {
             }
           },
           {
-            breakpoint: 769,
+            breakpoint: 301,
             options: {
               chart: {
-                width: 329
-              },
-              legend: {
-                show: true
-              }
-            }
-          },
-          {
-            breakpoint: 361,
-            options: {
-              chart: {
-                width: 285
-              },
-              legend: {
-                show: false
-              }
-            }
-          },
-          {
-            breakpoint: 415,
-            options: {
-              chart: {
-                width: 338
+                width: 220
               },
               legend: {
                 show: false
