@@ -33,10 +33,10 @@
     </div>
     <br />
     <div class="row">
-      <div for="leaveStartDate" class="col-12 col-sm-4 col-form-label">
+      <div for="leaveStartDate" class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 col-form-label">
         {{ messages.start_date_leave }}
       </div>
-      <div class="col-12 col-sm-5">
+      <div class="col-12 col-sm-8 col-lg-8 col-md-8 col-xl-8">
         <input
           type="text"
           formControlName="leaveStartDate"
@@ -55,10 +55,10 @@
     </div>
     <br />
     <div class="row">
-      <div for="title" class="col-12 col-sm-4 col-form-label">
+      <div for="title" class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 col-form-label">
         {{ messages.end_date_leave }}
       </div>
-      <div class="col-12 col-sm-5">
+      <div class="col-12 col-sm-8 col-lg-8 col-md-8 col-xl-8">
         <input
           type="text"
           formControlName="leaveEndDate"
@@ -77,16 +77,19 @@
     </div>
     <br />
     <div class="row">
-      <div class="col-12 col-sm-4 col-form-label">
+      <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 col-form-label">
         {{ messages.leave_message }}
       </div>
-      <div class="col-12 col-sm-8">
+      <div class="col-12 col-sm-8 col-lg-8 col-md-8 col-xl-8">
         <hls-ckeditor [ctrl]="f.leaveAutoMessage"></hls-ckeditor>
       </div>
     </div>
     <br />
     <div class="row justify-content-center">
-      <button
+      <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4">
+      </div>
+      <div class="col-12 col-sm-8 col-lg-8 col-md-8 col-xl-8">
+        <button
         type="submit"
         (click)="submit()"
         class="btn btn-primary"
@@ -94,6 +97,7 @@
       >
         {{ messages.validate }}
       </button>
+      </div>
     </div>
   </form>
 </div>
