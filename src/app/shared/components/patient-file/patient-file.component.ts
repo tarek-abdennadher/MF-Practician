@@ -338,7 +338,6 @@ export class PatientFileComponent implements OnInit {
       photoId: this.personalInfoForm.value.photoId,
       categoryId: this.personalInfoForm.value.category,
       phones: this.phones,
-      notes: this.notes,
       invitationStatus: this.personalInfoForm.value.invitationStatus
     };
     this.submitAction.emit(model);

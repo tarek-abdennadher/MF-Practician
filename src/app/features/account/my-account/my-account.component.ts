@@ -8,7 +8,7 @@ declare var $: any;
 @Component({
   selector: "app-my-account",
   templateUrl: "./my-account.component.html",
-  styleUrls: ["./my-account.component.scss"],
+  styleUrls: ["./my-account.component.scss"]
 })
 export class MyAccountComponent implements OnInit {
   labels;
@@ -29,6 +29,7 @@ export class MyAccountComponent implements OnInit {
   }
   public userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.featureService.setActiveChild("account");
     this.featureService.setIsMessaging(false);
     this.getOptionById();
     this.getTls();
@@ -42,11 +43,10 @@ export class MyAccountComponent implements OnInit {
   }
 
   getOptionById() {
-    this.accountService.getOptionById(this.practicianId).subscribe((op) => {
-    });
+    this.accountService.getOptionById(this.practicianId).subscribe(op => {});
   }
   getTls() {
-    this.accountService.getPracticianTelesecretary().subscribe((practician) => {
+    this.accountService.getPracticianTelesecretary().subscribe(practician => {
       if (practician.group != null) {
         this.showTls = true;
       }
