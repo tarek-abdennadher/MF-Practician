@@ -1,4 +1,9 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ChangeDetectorRef
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
 import { PracticianSearchService } from "./practician-search/practician-search.service";
@@ -360,22 +365,28 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   displayInboxAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/messagerie-envoyes"]);
   }
   displayForwardedAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/messagerie-transferes"]);
   }
   displayArchieveAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/messagerie-archives"]);
   }
 
   displayMyPatientsAction(event) {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     switch (event) {
       case "accepted": {
         this.router.navigate(["/mes-patients"]);
@@ -396,12 +407,15 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     }
   }
   displayMyMedicalsAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/favorites"]);
   }
   displayMyProContactsAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/mes-contacts-pro"]);
   }
   displayMyDocumentsAction() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/mes-documents"]);
   }
   displayHelpAction() {
@@ -429,6 +443,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     console.log(event);
   }
   logoClicked() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["/messagerie"]);
   }
 
@@ -546,6 +561,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         this.featuresService
           .markNotificationAsSeen(notification.id)
           .subscribe(resp => {});
+      } else if (notification.type == "INSTRUCTION_TREATED") {
+        this.featuresService
+          .markNotificationAsSeen(notification.id)
+          .subscribe(resp => {});
       }
     });
   }
@@ -589,9 +608,21 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
             }
           });
         });
+    } else if (notification.type == "INSTRUCTION_TREATED") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+        .subscribe(resp => {
+          this.getMyNotificationsNotSeen();
+          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
+            queryParams: {
+              section: "sent"
+            }
+          });
+        });
     }
   }
   displayInboxOfPracticiansAction(event) {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.localSt.store("practicianId", event);
     this.router.navigate(["/messagerie/" + event]);
   }
@@ -757,9 +788,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
-        fullName: message.senderDetail[message.senderDetail.role.toLowerCase()] &&
-          message.senderDetail[message.senderDetail.role.toLowerCase()]
-            .fullName || "",
+        fullName:
+          (message.senderDetail[message.senderDetail.role.toLowerCase()] &&
+            message.senderDetail[message.senderDetail.role.toLowerCase()]
+              .fullName) ||
+          "",
         img: this.avatars.user,
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
@@ -828,9 +861,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   myObjects() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["mes-objets"]);
   }
   myCategories() {
+    jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["mes-categories"]);
   }
 }
