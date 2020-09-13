@@ -51,6 +51,14 @@ $color-helssy-white: #ffffff;
   margin-top: 4rem;
   max-width: 563px;
 }
+
+@media (max-width: 417px) {
+  .card-body {
+    padding: 0;
+  }
+}
+
+
 //@media (max-width: 399px) {
 //  .hls-connexion {
 //    margin-left: 0%;
