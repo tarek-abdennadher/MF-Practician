@@ -84,13 +84,20 @@ a {
 }
 
 #attachement {
-  width: 205px;
+  //width: 205px;
   height: 30px;
   border-radius: 15px;
   border: solid 1px $sapphire;
   background-color: rgba(198, 213, 233, 0.3);
   position: absolute;
   bottom: 8px;
+  width: 100% !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-4.col-sm-5.col-md-5.attach {
+  padding: 0;
 }
 
 #attachement-label {
@@ -234,4 +241,24 @@ a {
 }
 .checkbox-label {
   display: block !important;
+}
+
+@media(min-width: 400px)and(max-width: 580px) {
+  ::ng-deep {
+    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+      border-color: var(--ck-color-base-border);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  }
+}
+
+@media(max-width: 399px) {
+  ::ng-deep {
+    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+      border-color: var(--ck-color-base-border);
+      max-height: 85px;
+      overflow-y: auto;
+    }
+  }
 }
