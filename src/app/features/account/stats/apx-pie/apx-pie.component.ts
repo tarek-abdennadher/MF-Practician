@@ -8,6 +8,8 @@ import {
 import { Subject } from "rxjs";
 import { AccountService } from "@app/features/services/account.service";
 import { FeaturesService } from "@app/features/features.service";
+const { detect } = require("detect-browser");
+const browser = detect();
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -55,7 +57,7 @@ export class ApxPieComponent implements OnInit {
       legend: {
         floating: true,
         horizontalAlign: "left",
-        position: this.position == "bottom"? "bottom": "right",
+        position: this.position == "bottom" ? "bottom" : "right",
         fontSize: "16px",
         fontFamily: "Montserrat",
         fontWeight: "normal",
@@ -90,14 +92,14 @@ export class ApxPieComponent implements OnInit {
         ],
         legend: {
           horizontalAlign: "left",
-          position: this.position == "bottom"? "bottom": "right",
+          position: this.position == "bottom" ? "bottom" : "right",
           fontSize: "14px",
           fontFamily: "Montserrat",
           fontWeight: "normal",
           labels: {
             colors: ["#4a4a4a"]
           },
-          width: this.position == "bottom"? 211: 285,
+          width: this.position == "bottom" ? 211 : 285
         },
         labels: [...map.keys()],
         responsive: [
@@ -106,7 +108,7 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1921,
             options: {
               chart: {
-                width: this.position == "bottom"? 651: 751,
+                width: this.position == "bottom" ? 651 : 751
               },
               legend: {
                 show: true
@@ -117,7 +119,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1601,
             options: {
               chart: {
-                width: this.position == "bottom"? 491: 591,
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 680
+                      : 491
+                    : browser && browser.name === "chrome"
+                    ? 720
+                    : 591
               },
               legend: {
                 show: true
@@ -128,7 +137,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1537,
             options: {
               chart: {
-                width: this.position == "bottom"? 459: 559,
+                chart: {
+                  width:
+                    browser && browser.name === "chrome"
+                      ? 640
+                      : this.position === "bottom"
+                      ? 459
+                      : 559
+                }
               },
               legend: {
                 show: true
@@ -139,7 +155,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1441,
             options: {
               chart: {
-                width: this.position == "bottom"? 411: 511,
+                chart: {
+                  width:
+                    browser && browser.name === "chrome"
+                      ? 581
+                      : this.position === "bottom"
+                      ? 411
+                      : 511
+                }
               },
               legend: {
                 show: true
@@ -150,7 +173,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1367,
             options: {
               chart: {
-                width: this.position == "bottom"? 374: 474,
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 535
+                      : 374
+                    : browser && browser.name === "chrome"
+                    ? 600
+                    : 500
               },
               legend: {
                 show: true
@@ -162,7 +192,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1281,
             options: {
               chart: {
-                width: this.position == "bottom"? 381: 481,
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 532
+                      : 381
+                    : browser && browser.name === "chrome"
+                    ? 600
+                    : 500
               },
               legend: {
                 show: true
@@ -173,7 +210,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1025,
             options: {
               chart: {
-                width: this.position == "bottom"? 440: 540,
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 561
+                      : 440
+                    : browser && browser.name === "chrome"
+                    ? 620
+                    : 540
               },
               legend: {
                 show: true
@@ -184,11 +228,18 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 801,
             options: {
               chart: {
-                width: this.position == "bottom"? 343: 443,
-                height: this.position == "bottom"? 300: 150,
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 437
+                      : 343
+                    : browser && browser.name === "chrome"
+                    ? 500
+                    : 443,
+                height: this.position == "bottom" ? 300 : 150
               },
               legend: {
-                show: true,
+                show: true
               }
             }
           },
@@ -196,11 +247,18 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 769,
             options: {
               chart: {
-                width: this.position == "bottom"? 327: 427,
-                height: this.position == "bottom"? 300: 150,
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 418
+                      : 327
+                    : browser && browser.name === "chrome"
+                    ? 480
+                    : 427,
+                height: this.position == "bottom" ? 300 : 150
               },
               legend: {
-                show: true,
+                show: true
               }
             }
           },
@@ -208,7 +266,7 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 602,
             options: {
               chart: {
-                width: 244
+                width: browser && browser.name === "chrome" ? 315 : 243
               },
               legend: {
                 show: false
@@ -220,7 +278,7 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 415,
             options: {
               chart: {
-                width: 334
+                width: browser && browser.name === "chrome" ? 432 : 334
               },
               legend: {
                 show: false
