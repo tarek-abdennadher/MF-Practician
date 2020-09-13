@@ -137,14 +137,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1537,
             options: {
               chart: {
-                chart: {
-                  width:
-                    browser && browser.name === "chrome"
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
                       ? 640
-                      : this.position === "bottom"
-                      ? 459
-                      : 559
-                }
+                      : 459
+                    : browser && browser.name === "chrome"
+                    ? 640
+                    : 559
               },
               legend: {
                 show: true
@@ -155,14 +155,14 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1441,
             options: {
               chart: {
-                chart: {
-                  width:
-                    browser && browser.name === "chrome"
-                      ? 581
-                      : this.position === "bottom"
-                      ? 411
-                      : 511
-                }
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 580
+                      : 411
+                    : browser && browser.name === "chrome"
+                    ? 580
+                    : 511
               },
               legend: {
                 show: true
