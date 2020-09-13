@@ -108,7 +108,7 @@ export class AccountService {
     received: "Messages reçus",
     sent: "Messages envoyés",
     others: "Autres",
-    leave_message: "Message automatique en cas de congés",
+    leave_message: "Message automatique en cas de congés"
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -116,17 +116,18 @@ export class AccountService {
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
+    invalid_date: "Date invalide"
   };
   public stats = {
     patient_title: "Patients",
     patient_m_1: "Messages reçus des patients",
-    patient_m_2: "Messages envoyés aux patients",
+    patient_m_2: "Messages envoyés aux patients"
   };
   public colors = {
     blue: "#008fff",
     light_blue: "#82f8ff",
     dark_blue: "#1a56a7",
-    light_steel_blue: "#B0C4DE",
+    light_steel_blue: "#B0C4DE"
   };
   updateAccount(account) {
     return this.globalService.call(
