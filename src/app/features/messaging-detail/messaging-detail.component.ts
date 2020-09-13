@@ -72,6 +72,7 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
     tls: string;
   };
   showRefuseForTls: boolean;
+  public patientFileId: number;
   constructor(
     private _location: Location,
     private router: Router,
@@ -96,7 +97,7 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
   scrollToBottom(): void {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    } catch (err) { }
   }
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -521,6 +522,11 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN"
       };
+      this.patientService.getPatientFileByPracticianId(idAccount, this.featureService.getUserId()).subscribe(
+        res => {
+
+        }
+      )
       this.getPatientFile(info);
     } else {
       if (
@@ -573,6 +579,6 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
     }
   }
   getPatientFile(info) {
-    // this.dialogService.openPatientFile("Fiche Patient", info);
+    this.dialogService.openPatientFile("Fiche Patient", info);
   }
 }
