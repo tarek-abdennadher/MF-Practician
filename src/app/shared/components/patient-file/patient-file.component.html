@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <form [formGroup]="personalInfoForm">
                         <div class="row">
-                            <div class="col-12 col-sm-3 pr-0 pl-0">
+                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                                 <!-- civility Field -->
                                 <label for="civility"
                                     class="col-12 col-sm-12 col-form-label">{{ labels.civility }}</label>
@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4 pr-0 pl-0">
+                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                                 <!-- last name Field -->
                                 <label for="last_name"
                                     class="col-12 col-sm-12 col-form-label">{{ labels.last_name }}</label>
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-5 pr-0 pl-0">
+                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                                 <!-- first name Field -->
                                 <label for="firstName"
                                     class="col-12 col-sm-12  col-form-label">{{ labels.first_name }}</label>
@@ -240,7 +240,7 @@
                         <br *ngIf="isAdd ">
                         <div class="row justify-content-left">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary col-md-4 mr-4" id="submit-info-button"
+                                <button class="btn btn-primary col-md-4 mr-4" id="submit-info-button"
                                     (click)="patientSubmit()">{{ labels.save }}
                                 </button>
                                 <button (click)="cancelActionClicked()" class="btn btn-cancel col-md-4"

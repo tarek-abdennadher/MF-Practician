@@ -45,6 +45,6 @@ export class PatientFileService {
     age_18: "Votre âge doit étre supérieur à 18 ans ",
     futureDate: "Vous ne pouvez pas saisir une date future",
     email_invalid_format: "Le format de l'e-mail est invalide",
-    invalid_date: "date invalide"
+    invalid_date: "Date invalide"
   };
 }

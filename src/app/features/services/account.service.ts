@@ -116,7 +116,7 @@ export class AccountService {
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
-    invalid_date: "date invalide"
+    invalid_date: "Date invalide"
   };
   public stats = {
     patient_title: "Patients",
