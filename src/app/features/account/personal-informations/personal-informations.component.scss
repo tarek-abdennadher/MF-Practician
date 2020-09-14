@@ -219,7 +219,14 @@ hr {
 .password {
   border-top: solid 1px #d0d0d0;
   form {
-    margin-left: 50px;
+    margin-top: 35px;
+  }
+}
+
+
+@media (max-width: 575px) {
+  .new-password{
+    padding-left: 0px;
   }
 }
 .alert.alert-danger {

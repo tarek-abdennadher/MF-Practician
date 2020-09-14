@@ -123,6 +123,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.getPatients();
     }
+    $("#main-container").on("click", function(e) {
+      if (e.target.parentElement.id != "sideBar") {
+        jQuery("#sidebar").addClass("hidden-side-bar");
+      }
+    });
   }
 
   observeState() {
@@ -846,7 +851,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       case "SECRETARY":
         return senderDetail.secretary.photoId;
       case "TELESECRETARYGROUP":
-        return senderDetail.secretary.photoId;
+        return senderDetail.telesecretaryGroup.photoId;
       default:
         return null;
     }
