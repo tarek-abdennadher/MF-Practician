@@ -222,6 +222,13 @@ hr {
     margin-top: 35px;
   }
 }
+
+
+@media (max-width: 575px) {
+  .new-password{
+    padding-left: 0px;
+  }
+}
 .alert.alert-danger {
   font-family: Montserrat-Medium;
   font-size: 14px;
