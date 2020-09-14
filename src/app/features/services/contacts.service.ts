@@ -110,6 +110,13 @@ export class ContactsService {
     );
   }
 
+  getAllContactsPracticianWithSupervisors(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/contactsAndSupervisors"
+    );
+  }
+
   getAllContactsPracticianWithAditionalPatient(patientId): Observable<any> {
     return this.globalService.call(
       RequestType.GET,

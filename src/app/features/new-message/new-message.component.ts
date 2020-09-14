@@ -797,7 +797,7 @@ export class NewMessageComponent implements OnInit {
         );
     } else {
       return this.contactsService
-        .getAllContactsPractician()
+        .getAllContactsPracticianWithSupervisors()
         .pipe(takeUntil(this._destroyed$))
         .pipe(
           tap((contactsPractician: any) => {
@@ -849,7 +849,8 @@ export class NewMessageComponent implements OnInit {
         this.toList.next(myList);
       } else if (
         contactPractician.contactType == "SECRETARY" ||
-        contactPractician.contactType == "TELESECRETARYGROUP"
+        contactPractician.contactType == "TELESECRETARYGROUP" ||
+        contactPractician.contactType == "TELESECRETARY"
       ) {
         myList.push({
           id: contactPractician.id,
