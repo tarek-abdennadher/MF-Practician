@@ -180,12 +180,12 @@ $sapphire: #1a56a7;
 
 .fab-container {
   position: fixed;
-  bottom: 80px;
+  bottom: 160px;
   right: 15px;
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-end;
-  z-index: 999999;
+  z-index: 9;
 
   > div {
     display: flex;
