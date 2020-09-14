@@ -1,21 +1,27 @@
-<br />
-<br />
 <div class="row">
   <div class=" col-sm-9 col-md-10 form-group title">
     <span>&nbsp;&nbsp;{{ messages.categories }}</span>
   </div>
   <a (click)="addAction()" class="inline col-md-12">
-    <i class="fas fa-plus-circle"></i><label for="categoryPraticien" class="col-sm-2 col-form-label">{{
-        messages.add_Category
-      }}</label>
+    <i class="fas fa-plus-circle"></i
+    ><label for="categoryPraticien" class="col-sm-2 col-form-label">{{
+      messages.add_Category
+    }}</label>
   </a>
 </div>
 <br />
 <div class="row">
   <div class="col-md-5">
-    <lib-hls-generic-list [list]="itemsList" [isMyPatients]="false" (cardAction)="cardClicked($event)"
-      (detailAction)="cardClicked($event)" (archieveAction)="deleteCategory($event)" [isCheckbox]="false"
-      [caller]="'my_category'" [imageSource]="imageSource">
+    <lib-hls-generic-list
+      [list]="itemsList"
+      [isMyPatients]="false"
+      (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)"
+      (archieveAction)="deleteCategory($event)"
+      [isCheckbox]="false"
+      [caller]="'my_category'"
+      [imageSource]="imageSource"
+    >
     </lib-hls-generic-list>
   </div>
   <div class="col-md-7">
