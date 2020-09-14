@@ -99,7 +99,7 @@ export class SendMessageComponent implements OnInit {
   practicianFullToList: any[];
   sendTypeList = [
     { id: SendType.MESSAGING, text: "Messagerie" },
-    { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
+    { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
   ];
   lastObjectList: any[];
   constructor(
@@ -596,7 +596,7 @@ export class SendMessageComponent implements OnInit {
   }
 
   getTLSGroupByPracticianId() {
-    console.log("group")
+    console.log("group");
     return this.accountService
       .getPracticianTelesecretary()
       .pipe(takeUntil(this._destroyed$))
@@ -604,7 +604,7 @@ export class SendMessageComponent implements OnInit {
         if (group && group.group) {
           this.sendTypeList = [
             { id: SendType.MESSAGING, text: "Messagerie" },
-            { id: SendType.SEND_POSTAL, text: "Envoie Postal" },
+            { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
             { id: SendType.INSTRUCTION, text: "Consignes" },
           ];
           const groupValue = group.group;

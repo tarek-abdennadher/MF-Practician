@@ -8,8 +8,8 @@
     <div class="card-body Rectangle-body">
         <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
             <div class="row">
-                <div class="col col-12 col-sm-5">
-                    <div for="prohibitPatient" class="col-sm-12 col-form-label">{{ messages.cible}}</div>
+                <div class="col col-12 col-sm-8 col-lg-8 col-md-8 col-xl-8">
+                    <div for="prohibitPatient" class="col-12 col-form-label">{{ messages.cible}}</div>
                     <div class="col-sm-12">
                         <select formControlName="destination" class="form-control" id="destination">
                             <option [value]="null" disabled="true" [selected]="true">{{messages.cible}}</option>
@@ -20,8 +20,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="col col-12 col-sm-7">
-                    <div for="object" class="col-sm-3 col-form-label">{{
+                <div class="col col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4">
+                    <div for="object" class="col-12 col-form-label">{{
                         messages.object
                       }}</div>
                     <div class="col-sm-12">

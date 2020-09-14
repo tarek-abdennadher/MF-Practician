@@ -271,8 +271,8 @@ button.close {
   }
   .btn-light {
     border-radius: 6px;
-    background-color:$helssy_white;
-    border-color:$helssy_white;
+    background-color: $helssy_white;
+    border-color: $helssy_white;
   }
   .bootstrap-select > select.mobile-device:focus + .dropdown-toggle,
   .bootstrap-select .dropdown-toggle:focus {
@@ -305,3 +305,14 @@ button.close {
 }
 
 /* ============================================= */
+
+@media (max-width: 1280px) {
+  .Rectangle-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .Rectangle-body-pract {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

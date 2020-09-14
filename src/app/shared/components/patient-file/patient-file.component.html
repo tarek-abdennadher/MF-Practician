@@ -1,6 +1,6 @@
 <div class="card rectangle-custom">
     <div class="card-body custom-card-message">
-        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'">
+        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'" [(selectedIndex)]="selectedTabIndex">
             <mat-tab label="Informations">
                 <ng-template mat-tab-label id="info-tab">
                     <i class="fas fa-info my-tab-icon pr-custom-11px"></i>
@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <form [formGroup]="personalInfoForm">
                         <div class="row">
-                            <div class="col-12 col-sm-3 pr-0 pl-0">
+                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                                 <!-- civility Field -->
                                 <label for="civility"
                                     class="col-12 col-sm-12 col-form-label">{{ labels.civility }}</label>
@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4 pr-0 pl-0">
+                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                                 <!-- last name Field -->
                                 <label for="last_name"
                                     class="col-12 col-sm-12 col-form-label">{{ labels.last_name }}</label>
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-5 pr-0 pl-0">
+                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                                 <!-- first name Field -->
                                 <label for="firstName"
                                     class="col-12 col-sm-12  col-form-label">{{ labels.first_name }}</label>
@@ -84,7 +84,8 @@
                                     <input type="text" formControlName="birthday" class="form-control"
                                         placeholder="{{ labels.birth_date }}" bsDatepicker [maxDate]="maxDatecheck()"
                                         [placement]="placement" [bsConfig]="{ containerClass: 'theme-dark-blue' }"
-                                        [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }" />
+                                        [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }"
+                                        (change)="isInvalidDate($event)" />
                                     <div *ngIf="submitted && ctr.birthday.errors" class="invalid-feedback">
                                         <div *ngIf="ctr.birthday.errors.required">
                                             {{ errors.required }}
@@ -230,16 +231,16 @@
                             </div>
                         </div>
                         <br>
-                        <div *ngIf="displayInvite " class="row send-invitation">
+                        <div *ngIf="isAdd " class="row send-invitation">
                             <label for="invitationStatus" class=" invitation-text  ">
                                 <input type="checkbox" formControlName="invitationStatus"
                                     (change)="onCheckboxChange($event)" />&nbsp;&nbsp;
                                 {{ labels.send_invitation }}</label>
-                            <br>
                         </div>
+                        <br *ngIf="isAdd ">
                         <div class="row justify-content-left">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary col-md-4 mr-4" id="submit-info-button"
+                                <button class="btn btn-primary col-md-4 mr-4" id="submit-info-button"
                                     (click)="patientSubmit()">{{ labels.save }}
                                 </button>
                                 <button (click)="cancelActionClicked()" class="btn btn-cancel col-md-4"
@@ -304,7 +305,7 @@
                                                         <input type="text" formControlName="birthday"
                                                             class="calender form-control"
                                                             placeholder="{{ attachedInfoForm.controls.birthday.value }}"
-                                                            bsDatepicker
+                                                            (change)="isInvalidDate($event)" bsDatepicker
                                                             [bsConfig]="{ containerClass: 'theme-dark-blue' }"
                                                             id="attached-birthdate" />
                                                     </div>
@@ -473,7 +474,7 @@
                             </div>
                             <br>
                             <div class="row justify-content-center actions">
-                                <button (click)="NoteSubmit()" type="submit" class="btn btn-primary mr-3">
+                                <button (click)="NoteSubmit()" class="btn btn-primary mr-3">
                                     {{ labels.save }}
                                 </button>
                                 <button (click)="cancelNoteAdd()" class="btn btn-cancel">
@@ -485,7 +486,8 @@
                     </div>
                     <br *ngIf="!isnoteList">
                     <lib-hls-generic-list [imageSource]="noteimageSource" [isCheckbox]="false" [list]="noteList"
-                        (archieveAction)="archieveNote($event)" (cardAction)="noteCardClicked($event)">
+                        (archieveAction)="archieveNote($event)" (cardAction)="noteCardClicked($event)"
+                        [caller]="'notes'">
                     </lib-hls-generic-list>
                 </div>
             </mat-tab>

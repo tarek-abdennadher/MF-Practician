@@ -8,6 +8,8 @@ import {
 import { Subject } from "rxjs";
 import { AccountService } from "@app/features/services/account.service";
 import { FeaturesService } from "@app/features/features.service";
+const { detect } = require("detect-browser");
+const browser = detect();
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -26,6 +28,7 @@ export type ChartOptions = {
 export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
+  @Input() position: string;
   public emptyData = true;
   public colors = this.accountService.colors;
   public infoMessage = "Aucune valeur à afficher";
@@ -54,7 +57,7 @@ export class ApxPieComponent implements OnInit {
       legend: {
         floating: true,
         horizontalAlign: "left",
-        position: "bottom",
+        position: this.position == "bottom" ? "bottom" : "right",
         fontSize: "16px",
         fontFamily: "Montserrat",
         fontWeight: "normal",
@@ -64,18 +67,11 @@ export class ApxPieComponent implements OnInit {
       },
       responsive: [
         {
+          breakpoint: 480,
           options: {
-            breakpoint: 1000,
             chart: {
-              width: 100,
-              type: "donut"
-            },
-            colors: [
-              this.colors.blue,
-              this.colors.dark_blue,
-              this.colors.light_blue,
-              this.colors.light_steel_blue
-            ]
+              width: 200
+            }
           }
         }
       ]
@@ -85,7 +81,7 @@ export class ApxPieComponent implements OnInit {
       this.chartOptions = {
         series: [...map.values()],
         chart: {
-          width: 430,
+          width: 450,
           type: "donut"
         },
         colors: [
@@ -96,29 +92,219 @@ export class ApxPieComponent implements OnInit {
         ],
         legend: {
           horizontalAlign: "left",
-          position: "bottom",
+          position: this.position == "bottom" ? "bottom" : "right",
           fontSize: "14px",
           fontFamily: "Montserrat",
           fontWeight: "normal",
           labels: {
             colors: ["#4a4a4a"]
-          }
+          },
+          width: this.position == "bottom" ? 211 : 285
         },
         labels: [...map.keys()],
         responsive: [
+          // Most Common Mobile Screen Resolution Sizes
           {
+            breakpoint: 1921,
             options: {
-              breakpoint: 1000,
               chart: {
-                width: 100,
-                type: "donut"
+                width: this.position == "bottom" ? 651 : 751
               },
-              colors: [
-                this.colors.blue,
-                this.colors.dark_blue,
-                this.colors.light_blue,
-                this.colors.light_steel_blue
-              ]
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1601,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 680
+                      : 491
+                    : browser && browser.name === "chrome"
+                    ? 720
+                    : 591
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1537,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 640
+                      : 459
+                    : browser && browser.name === "chrome"
+                    ? 640
+                    : 559
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1441,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 580
+                      : 411
+                    : browser && browser.name === "chrome"
+                    ? 580
+                    : 511
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1367,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 535
+                      : 374
+                    : browser && browser.name === "chrome"
+                    ? 600
+                    : 500
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          // Most Common Tablet Screen Resolution Sizes
+          {
+            breakpoint: 1281,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 532
+                      : 381
+                    : browser && browser.name === "chrome"
+                    ? 600
+                    : 500
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 1025,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 561
+                      : 440
+                    : browser && browser.name === "chrome"
+                    ? 620
+                    : 540
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 801,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 437
+                      : 343
+                    : browser && browser.name === "chrome"
+                    ? 500
+                    : 443,
+                height: this.position == "bottom" ? 300 : 150
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 769,
+            options: {
+              chart: {
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 418
+                      : 327
+                    : browser && browser.name === "chrome"
+                    ? 480
+                    : 427,
+                height: this.position == "bottom" ? 300 : 150
+              },
+              legend: {
+                show: true
+              }
+            }
+          },
+          {
+            breakpoint: 602,
+            options: {
+              chart: {
+                width: browser && browser.name === "chrome" ? 315 : 243
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          // Most Common Mobile Screen Resolution Sizes
+          {
+            breakpoint: 415,
+            options: {
+              chart: {
+                width: browser && browser.name === "chrome" ? 432 : 334
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 376,
+            options: {
+              chart: {
+                width: 295
+              },
+              legend: {
+                show: false
+              }
+            }
+          },
+          {
+            breakpoint: 361,
+            options: {
+              chart: {
+                width: 280
+              },
+              legend: {
+                show: false
+              }
             }
           }
         ]
@@ -130,6 +316,8 @@ export class ApxPieComponent implements OnInit {
       });
       jQuery(document).ready(function() {
         jQuery(".apexcharts-pie-label").attr("fill", "#000000");
+        jQuery(".apexcharts-legend.position-bottom").css("margin", "auto");
+        jQuery(".apexcharts-legend.position-right").css("height", "100%");
       });
     });
     this.featureService.setIsMessaging(false);

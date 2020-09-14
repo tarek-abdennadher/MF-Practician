@@ -16,10 +16,10 @@
 <form [formGroup]="sendMessageForm">
   <!-- type DropDown-->
   <div class="row mb-2" *ngIf="messageTypesList && messageTypesList.length !== 0 ">
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label">Type</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect id="type-dropdown" [data]="messageTypesList" formControlName="type"
         [settings]="dropdownSettingsTypesList" [ngClass]="{
       'is-invalid': submited && ctr.type.errors,'invalid': submited && ctr.type.errors}" (click)="onTypeChanged()"
@@ -45,10 +45,10 @@
 
   <!-- To List DropDown-->
   <div class="row mb-2">
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label">À</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect id="to-dropdown" [data]="toListParsed" formControlName="to" [settings]="dropdownSettings"
         [ngClass]="{
           'is-invalid': submited && ctr.to.errors,
@@ -80,10 +80,10 @@
 
   <!-- CC List DropDown-->
   <div class="row mb-2" *ngIf="isCCListVisible">
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label">CC</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect id="cc-dropdown" [data]="ccParsedList" formControlName="cc" [settings]="dropdownSettings"
         [ngClass]="{
           'is-invalid': submited && ctr.cc.errors,
@@ -111,10 +111,10 @@
 
   <!-- for List DropDown-->
   <div class="row mb-2" *ngIf="forListParsed && forListParsed.length !== 0 && showPatientFile && isForListVisible">
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label">Pour</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect id="for-dropdown" [data]="forFilteredList" formControlName="for"
         [settings]="dropdownSettingsForList" [ngClass]="{
       'is-invalid': submited && ctr.for.errors,'invalid': submited && ctr.for.errors}">
@@ -139,10 +139,10 @@
 
   <!-- concerns List DropDown-->
   <div class="row mb-2" *ngIf="isSecretary && concernFilteredList && concernFilteredList.length !== 0 && !isInstruction">
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label">{{ texts.concerns }}</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9  ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect id="concern-dropdown" [data]="concernFilteredList" formControlName="concerns"
         [settings]="dropdownSettingsConcernList" [ngClass]="{
       'is-invalid': submited && ctr.concerns.errors,'invalid': submited && ctr.concerns.errors}" (click)="onConcernChanged()"
@@ -170,10 +170,10 @@
 
   <!-- object List DropDown-->
   <div class="row mb-4" *ngIf=" (contactType &&  ! isSecretary()) || isInstruction">
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label">{{ texts.object }}</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect id="objects-dropdown" [data]="objectsList" formControlName="object"
         [settings]="dropdownSettingsListObject" [ngClass]="{
       'is-invalid': submited && ctr.object.errors,'invalid': submited && ctr.object.errors}"
@@ -202,10 +202,10 @@
   <div class="row mb-4"
     *ngIf=" !isInstruction && (otherObject || !contactType || ( isSecretary() && contactType) || newFlag)">
 
-    <div class="col-md-1 col-sm-2 col-xs-2">
+    <div class="col-md-1 col-sm-2 col-2">
       <label class="label-free-object">{{ texts.free_object }}</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-xs-9 ml-4">
+    <div class="col-md-10 col-sm-9 col-10">
       <input formControlName="freeObject" class="form-control" type="text" id="input-free-object" [ngClass]="{
         'is-invalid': submited && ctr.freeObject.errors,'invalid': submited && ctr.freeObject.errors}"/>
       <div *ngIf="ctr.freeObject.errors" class="invalid-feedback">
@@ -270,27 +270,17 @@
 
   <br>
   <div class="row mb-2">
-    <div class="col-6 col-sm-3 col-md-3">
+    <div class="col-4 col-sm-3 col-md-3">
       <button *ngIf="!isInstruction" id="send-button" type="button" class="btn btn-primary" (click)="sendEmail()">ENVOYER</button>
       <button *ngIf="isInstruction" id="send-button-instruction" type="button" class="btn btn-primary" (click)="sendInstructionEmit()">ENVOYER</button>
     </div>
-    <div class="col-6 col-sm-3 col-md-2">
+    <div class="col-4 col-sm-3 col-md-2">
       <i id="attachement-button" class="far fa-paperclip action-btn mr-4"
         onclick="document.getElementById('file-input').click();"></i>
       <input [hidden]=true id="file-input" type="file" (change)="onFileChange($event)" />
       <i id="clear-button" class="fas fa-trash-alt action-btn" (click)="removeAttachment()"></i>
     </div>
-    <div *ngIf="sendMessageForm.get('file').value  && innerWidth >= 750" class="col-12 col-sm-5 col-md-5">
-      <div id="attachement" *ngFor="let file of sendMessageForm.get('file').value; let i = index">
-        <p id="attachement-label"> <i
-            class="far fa-paperclip mr-1"></i>{{ file.name.length < 20 ? file.name : file.name.substr(0,19) + "..." }}
-        </p>
-      </div>
-    </div>
-  </div>
-  <div class="row mb-2" *ngIf="innerWidth < 750">
-    <div *ngIf="sendMessageForm.get('file').value " class="col-12">
-      <br><br>
+    <div *ngIf="sendMessageForm.get('file').value" class="col-4 col-sm-5 col-md-5 attach">
       <div id="attachement" *ngFor="let file of sendMessageForm.get('file').value; let i = index">
         <p id="attachement-label"> <i
             class="far fa-paperclip mr-1"></i>{{ file.name.length < 20 ? file.name : file.name.substr(0,19) + "..." }}

@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class AccountService {
-  constructor(public router: Router, public globalService: GlobalService) { }
+  constructor(public router: Router, public globalService: GlobalService) {}
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
@@ -48,7 +48,7 @@ export class AccountService {
     my_secretaries_tab: "Mes secrétaires",
     tele_secretariat_tab: "Mon télésecrétariat",
     factures_tab: "Mes factures",
-    stats_tab: "Mes stats",
+    stats_tab: "Mes statistiques",
     categories_tab: "Mes catégories",
     categories: "Catégories",
     add_secretary: "Ajouter secrétaire",
@@ -86,7 +86,7 @@ export class AccountService {
     my_object: "Mes objets",
     cible: "Cible",
     practician: "Praticien",
-    secretary_tls: "Secretaire/Télésecretaire",
+    secretary_tls: "Secrétaire/Télésecrétaire",
     patient: "Patient",
     other: "Autre",
     object: "Objet",
@@ -95,7 +95,7 @@ export class AccountService {
     docModel: "Modèle de document",
     allowDocument: "Génération automatique d’un document",
     select_object: "Selectionnez un objet",
-    title: "Model de document",
+    title: "modèle de document",
     info:
       "Vous pouvez à partir de cet onglet, définir tous vos types objets qui vous servirons lors de la rédaction d'un message.",
     add_Object: "Ajouter un objet",
@@ -108,7 +108,7 @@ export class AccountService {
     received: "Messages reçus",
     sent: "Messages envoyés",
     others: "Autres",
-    leave_message: "Message automatique en cas de congés",
+    leave_message: "Message automatique en cas de congés"
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -116,17 +116,18 @@ export class AccountService {
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
+    invalid_date: "Date invalide"
   };
   public stats = {
     patient_title: "Patients",
     patient_m_1: "Messages reçus des patients",
-    patient_m_2: "Messages envoyés aux patients",
+    patient_m_2: "Messages envoyés aux patients"
   };
   public colors = {
     blue: "#008fff",
     light_blue: "#82f8ff",
     dark_blue: "#1a56a7",
-    light_steel_blue: "#B0C4DE",
+    light_steel_blue: "#B0C4DE"
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -158,8 +159,8 @@ export class AccountService {
     return this.globalService.call(
       RequestType.PUT,
       this.globalService.url.account_password_update +
-      "/" +
-      encodeURIComponent(pass)
+        "/" +
+        encodeURIComponent(pass)
     );
   }
   updatePasswordV2(pass) {
@@ -273,11 +274,11 @@ export class AccountService {
       this.globalService.url.option + "/" + id
     );
   }
-  updateLeavesInOptionByPractician(leaveDto
-  ) {
+  updateLeavesInOptionByPractician(leaveDto) {
     return this.globalService.call(
       RequestType.PUT,
-      this.globalService.url.option + "/leaves", leaveDto
+      this.globalService.url.option + "/leaves",
+      leaveDto
     );
   }
 

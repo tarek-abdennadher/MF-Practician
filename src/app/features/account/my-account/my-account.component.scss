@@ -1,11 +1,11 @@
-
 $hlessy-dark-grey: #344448;
 $hlessy-blue: #2460b4;
 $helssy_white: #ffffff;
 $color-helssy-grey: #545454;
 
-.mat-tab-nav-bar, .mat-tab-header {
-   border-bottom: none;
+.mat-tab-nav-bar,
+.mat-tab-header {
+  border-bottom: none;
 }
 /* Title */
 .Mon-compte {
@@ -18,7 +18,7 @@ $color-helssy-grey: #545454;
   letter-spacing: normal;
   color: $hlessy-dark-grey;
   margin-left: 50px;
-  margin-top: 50px ;
+  margin-top: 50px;
 }
 /* Navbar */
 .Rectangle {
@@ -27,7 +27,7 @@ $color-helssy-grey: #545454;
   box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
   background-color: $helssy_white;
   margin-left: 50px;
-  margin-right: 50px ;
+  margin-right: 50px;
 }
 .Mes-informations {
   font-family: Montserrat-Medium;
@@ -39,7 +39,7 @@ $color-helssy-grey: #545454;
   letter-spacing: -0.18px;
   text-align: left;
 }
-.my-tab-icon{
+.my-tab-icon {
   font-size: 15px;
   font-stretch: normal;
   font-style: normal;
@@ -51,14 +51,14 @@ $color-helssy-grey: #545454;
 
 a.mat-tab-link {
   min-width: 230px;
-  color:#5f5f5f;
+  color: #5f5f5f;
 }
 
 /* Styles for the active tab label */
 .mat-tab-label.mat-tab-label-active {
-  color: #1a56a7 ;
+  color: #1a56a7;
 }
-.mat-tab-label{
+.mat-tab-label {
   font-family: Montserrat-Medium;
   font-size: 13px;
   font-weight: 1000;
@@ -68,7 +68,14 @@ a.mat-tab-link {
   letter-spacing: -0.18px;
   text-align: center;
 }
-.actions span{
+.actions span {
   font-family: Montserrat-Medium !important;
   font-weight: 1000;
+}
+
+@media (max-width: 1280px) {
+  .Rectangle {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
