@@ -161,7 +161,7 @@ export class ApxPieComponent implements OnInit {
                       ? 580
                       : 411
                     : browser && browser.name === "chrome"
-                    ? 580
+                    ? 610
                     : 511
               },
               legend: {
