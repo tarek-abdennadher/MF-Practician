@@ -359,20 +359,23 @@ export class MessagingListService {
     );
   }
 
-  public getInboxByAccountId(id, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  public getInboxByAccountId(id, filter, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id, {
-      params: { 'pageNo': pageNo, 'order': order }
+      params: { 'pageNo': pageNo, 'order': order, 'senderType': filter }
     }
     );
   }
 
-  public countInboxByAccountId(id): Observable<any> {
+  public countInboxByAccountId(id, filter): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + "inbox-by-account/" + id + "/count"
-    );
+      this.globalService.url.messages + "inbox-by-account/" + id + "/count", {
+      params: {
+        'senderType': filter
+      }
+    });
   }
 
   public getAllInboxByAccountId(id, pageSize): Observable<any> {
