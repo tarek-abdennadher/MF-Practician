@@ -10,8 +10,8 @@ export class MessageDto {
   public hasFiles?: boolean;
   public requestTypeId?: number;
   public requestTitleId?: number;
-  public uuid?: string
-
+  public uuid?: string;
+  public showFileToPatient: boolean;
   constructor();
   constructor(message?: any) {
     this.id = (message && message.id) || "";
@@ -22,8 +22,9 @@ export class MessageDto {
     this.sender = (message && message.sender) || "";
     this.parent = (message && message.parent) || "";
     this.hasFiles = (message && message.hasFiles) || false;
+    this.showFileToPatient = (message && message.showFileToPatient) || false;
     this.requestTypeId = (message && message.requestTypeId) || "";
     this.requestTitleId = (message && message.requestTitleId) || "";
-    this.uuid = message && message.uuid || "";
+    this.uuid = (message && message.uuid) || "";
   }
 }
