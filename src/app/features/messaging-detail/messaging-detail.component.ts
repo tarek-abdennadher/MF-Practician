@@ -97,7 +97,7 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
   scrollToBottom(): void {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) { }
+    } catch (err) {}
   }
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -332,7 +332,19 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
           parent.sender.img = this.avatars.user;
         }
       );
-
+      if (parent.hasFiles) {
+        if (parent.nodesId) {
+          parent.attachements = [];
+          parent.nodesId.forEach(id => {
+            this.documentService
+              .getNodeDetailsFromAlfresco(id)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(node => {
+                parent.attachements.push(node.entry.name);
+              });
+          });
+        }
+      }
       this.setParentImg(parent.parent);
     }
   }
@@ -440,28 +452,39 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
   }
 
   archieveActionClicked() {
-    let ids = [];
-    ids.push(this.idMessage);
-    this.messagingDetailService.markMessageAsArchived(ids).subscribe(
-      resp => {
-        this.router.navigate([this.previousURL], {
-          queryParams: {
-            status: "archiveSuccess"
-          }
-        });
-        if (this.previousURL == "/messagerie-transferes") {
-          this.featureService.numberOfForwarded =
-            this.featureService.numberOfForwarded - 1;
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.archive_confirmation_message,
+        "Suppression"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          let ids = [];
+          ids.push(this.idMessage);
+          this.messagingDetailService.markMessageAsArchived(ids).subscribe(
+            resp => {
+              this.router.navigate([this.previousURL], {
+                queryParams: {
+                  status: "archiveSuccess"
+                }
+              });
+              if (this.previousURL == "/messagerie-transferes") {
+                this.featureService.numberOfForwarded =
+                  this.featureService.numberOfForwarded - 1;
+              }
+            },
+            error => {
+              this.notifier.show({
+                message: this.globalService.toastrMessages
+                  .archived_message_error,
+                type: "error",
+                template: this.customNotificationTmpl
+              });
+            }
+          );
         }
-      },
-      error => {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_error,
-          type: "error",
-          template: this.customNotificationTmpl
-        });
-      }
-    );
+      });
   }
 
   goToBack() {
@@ -522,11 +545,12 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN"
       };
-      this.patientService.getPatientFileByPracticianId(idAccount, this.featureService.getUserId()).subscribe(
-        res => {
-
-        }
-      )
+      this.patientService
+        .getPatientFileByPracticianId(
+          idAccount,
+          this.featureService.getUserId()
+        )
+        .subscribe(res => {});
       this.getPatientFile(info);
     } else {
       if (

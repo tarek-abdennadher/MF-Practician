@@ -9,7 +9,8 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer } from "@angular/platform-browser";
-import { PaginationService } from '../services/pagination.service';
+import { PaginationService } from "../services/pagination.service";
+import { DialogService } from "../services/dialog.service";
 
 @Component({
   selector: "app-sent-messages",
@@ -56,7 +57,8 @@ export class SentMessagesComponent implements OnInit {
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
     private sanitizer: DomSanitizer,
-    public pagination: PaginationService
+    public pagination: PaginationService,
+    private dialogService: DialogService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -80,12 +82,10 @@ export class SentMessagesComponent implements OnInit {
   }
 
   countSentMessage() {
-    this.messageService
-      .countSentMessage()
-      .subscribe(messages => {
-        this.pagination.init(messages);
-        this.loadPage();
-      });
+    this.messageService.countSentMessage().subscribe(messages => {
+      this.pagination.init(messages);
+      this.loadPage();
+    });
   }
 
   sentMessage() {
@@ -128,18 +128,18 @@ export class SentMessagesComponent implements OnInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-            ? "répondu"
-            : message.toReceivers[0].seen
-              ? "Lu"
-              : "Envoyé",
+          ? "répondu"
+          : message.toReceivers[0].seen
+          ? "Lu"
+          : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-            ? 100
-            : message.toReceivers[0].seen
-              ? 50
-              : 20
+          ? 100
+          : message.toReceivers[0].seen
+          ? 50
+          : 20
     };
     messageSent.users = [];
     message.toReceivers.forEach(r => {
@@ -222,56 +222,80 @@ export class SentMessagesComponent implements OnInit {
     console.log("deleteAction");
   }
   archieveActionClicked() {
-    const messagesId = this.filtredItemList
-      .filter(e => e.isChecked == true)
-      .map(e => e.id);
-    if (messagesId.length > 0) {
-      this.messageService.markMessageAsArchived(messagesId).subscribe(
-        resp => {
-          this.itemsList = this.itemsList.filter(
-            elm => !messagesId.includes(elm.id)
-          );
-          this.filtredItemList = this.filtredItemList.filter(
-            elm => !messagesId.includes(elm.id)
-          );
-          this.deleteElementsFromInbox(messagesId.slice(0));
-          this.featureService.archiveState.next(true);
-        },
-        error => {
-          console.log("We have to find a way to notify user by this error");
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.archive_confirmation_message,
+        "Suppression"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          const messagesId = this.filtredItemList
+            .filter(e => e.isChecked == true)
+            .map(e => e.id);
+          if (messagesId.length > 0) {
+            this.messageService.markMessageAsArchived(messagesId).subscribe(
+              resp => {
+                this.itemsList = this.itemsList.filter(
+                  elm => !messagesId.includes(elm.id)
+                );
+                this.filtredItemList = this.filtredItemList.filter(
+                  elm => !messagesId.includes(elm.id)
+                );
+                this.deleteElementsFromInbox(messagesId.slice(0));
+                this.featureService.archiveState.next(true);
+              },
+              error => {
+                console.log(
+                  "We have to find a way to notify user by this error"
+                );
+              }
+            );
+          }
         }
-      );
-    }
+      });
   }
   archieveMessage(event) {
-    let messageId = event.id;
-    this.messageService.markMessageAsArchived([messageId]).subscribe(
-      resp => {
-        this.itemsList = this.itemsList.filter(elm => messageId != elm.id);
-        this.filtredItemList = this.filtredItemList.filter(
-          elm => messageId != elm.id
-        );
-        this.deleteElementsFromInbox([messageId]);
-        this.featureService.archiveState.next(true);
-      },
-      error => {
-        console.log("We have to find a way to notify user by this error");
-      }
-    );
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.archive_confirmation_message,
+        "Suppression"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          let messageId = event.id;
+          this.messageService.markMessageAsArchived([messageId]).subscribe(
+            resp => {
+              this.itemsList = this.itemsList.filter(
+                elm => messageId != elm.id
+              );
+              this.filtredItemList = this.filtredItemList.filter(
+                elm => messageId != elm.id
+              );
+              this.deleteElementsFromInbox([messageId]);
+              this.featureService.archiveState.next(true);
+            },
+            error => {
+              console.log("We have to find a way to notify user by this error");
+            }
+          );
+        }
+      });
   }
   filterActionClicked(event) {
     this.filtredItemList =
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(
-          item =>
-            item.users[0].type.toLowerCase() ==
-            (event == "doctor"
-              ? "medical"
-              : event == "secretary"
+            item =>
+              item.users[0].type.toLowerCase() ==
+              (event == "doctor"
+                ? "medical"
+                : event == "secretary"
                 ? "telesecretarygroup" || "secretary"
                 : event)
-        );
+          );
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
@@ -306,7 +330,6 @@ export class SentMessagesComponent implements OnInit {
     this.filtredItemList = [];
     this.ngOnInit();
   }
-
 
   previousPageActionClicked() {
     if (this.pagination.hasPreviousPage() && !this.searchContext) {
