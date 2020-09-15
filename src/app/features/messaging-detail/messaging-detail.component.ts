@@ -452,28 +452,39 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
   }
 
   archieveActionClicked() {
-    let ids = [];
-    ids.push(this.idMessage);
-    this.messagingDetailService.markMessageAsArchived(ids).subscribe(
-      resp => {
-        this.router.navigate([this.previousURL], {
-          queryParams: {
-            status: "archiveSuccess"
-          }
-        });
-        if (this.previousURL == "/messagerie-transferes") {
-          this.featureService.numberOfForwarded =
-            this.featureService.numberOfForwarded - 1;
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.archive_confirmation_message,
+        "Suppression"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          let ids = [];
+          ids.push(this.idMessage);
+          this.messagingDetailService.markMessageAsArchived(ids).subscribe(
+            resp => {
+              this.router.navigate([this.previousURL], {
+                queryParams: {
+                  status: "archiveSuccess"
+                }
+              });
+              if (this.previousURL == "/messagerie-transferes") {
+                this.featureService.numberOfForwarded =
+                  this.featureService.numberOfForwarded - 1;
+              }
+            },
+            error => {
+              this.notifier.show({
+                message: this.globalService.toastrMessages
+                  .archived_message_error,
+                type: "error",
+                template: this.customNotificationTmpl
+              });
+            }
+          );
         }
-      },
-      error => {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_error,
-          type: "error",
-          template: this.customNotificationTmpl
-        });
-      }
-    );
+      });
   }
 
   goToBack() {
