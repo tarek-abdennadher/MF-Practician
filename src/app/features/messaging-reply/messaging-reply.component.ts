@@ -15,6 +15,9 @@ import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DomSanitizer } from "@angular/platform-browser";
+import { NodeeService } from "../services/node.service";
+import { v4 as uuid } from "uuid";
+
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
@@ -57,6 +60,7 @@ export class MessagingReplyComponent implements OnInit {
     user: string;
     tls: string;
   };
+  public uuid: string;
   constructor(
     private _location: Location,
     private featureService: FeaturesService,
@@ -70,7 +74,8 @@ export class MessagingReplyComponent implements OnInit {
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private spinner: NgxSpinnerService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private nodeService: NodeeService
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -235,6 +240,7 @@ export class MessagingReplyComponent implements OnInit {
 
   replyMessage(message) {
     this.spinner.show();
+    this.uuid = uuid();
     const replyMessage = new MessageDto();
     const parent = new MessageParent();
     parent.id = message.id;
@@ -243,6 +249,7 @@ export class MessagingReplyComponent implements OnInit {
     parent.sender = message.sender;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
+    replyMessage.showFileToPatient = true;
     replyMessage.document = message.document ? message.document : null;
     replyMessage.object = message.object;
     if (message.requestTypeId && message.requestTitleId) {
@@ -279,6 +286,7 @@ export class MessagingReplyComponent implements OnInit {
       const formData = new FormData();
       if (this.selectedFiles) {
         replyMessage.hasFiles = true;
+        replyMessage.uuid = this.uuid;
         formData.append("model", JSON.stringify(replyMessage));
         formData.append(
           "file",
@@ -286,8 +294,8 @@ export class MessagingReplyComponent implements OnInit {
           this.selectedFiles.item(0).name
         );
       }
-      this.messageService
-        .replyMessageWithFile(formData)
+      this.nodeService
+        .saveFileInMemory(this.uuid, formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           message => {
