@@ -285,6 +285,7 @@ export class MessagingReplyComponent implements OnInit {
       const formData = new FormData();
       if (this.selectedFiles) {
         replyMessage.hasFiles = true;
+        replyMessage.uuid = this.uuid;
         formData.append("model", JSON.stringify(replyMessage));
         formData.append(
           "file",
