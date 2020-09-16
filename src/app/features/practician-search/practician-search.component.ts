@@ -6,7 +6,9 @@ import { search } from "./search.model";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { GlobalService } from '@app/core/services/global.service';
+import { GlobalService } from "@app/core/services/global.service";
+import { Speciality } from "@app/shared/models/speciality";
+import { ContactsService } from "../services/contacts.service";
 
 @Component({
   selector: "app-practician-search",
@@ -14,18 +16,31 @@ import { GlobalService } from '@app/core/services/global.service';
   styleUrls: ["./practician-search.component.scss"],
 })
 export class PracticianSearchComponent implements OnInit {
-  imageSource : string;
+  specialities: Array<Speciality>;
   itemsList = [];
-  page = "SEARCH";
-  number = 0;
-  topText = "Résultats de recherche";
-  bottomText = "résultat";
-  backButton = false;
+  filtredItemsList: Array<any> = new Array<any>();
   text: string;
   city: string;
-  links = {};
   texts: any;
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; };
+  types: Array<string> = [];
+  imageSource: string;
+  links = {
+    isTypeFilter: false,
+    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
+  };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+  };
+  topText = "Résultats de recherche";
+  addText = "Parrainer un confrère";
+  page = "MY_PRACTICIANS";
+  backButton = true;
+  number = 0;
   constructor(
     public router: Router,
     private route: ActivatedRoute,
@@ -33,33 +48,34 @@ export class PracticianSearchComponent implements OnInit {
     private featureService: FeaturesService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private contactsService: ContactsService
   ) {
     this.texts = practicianSearchService.texts;
+    this.addText = this.texts.add_text;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
-
   }
 
   ngOnInit(): void {
-    this.featureService.getSearchFiltredPractician().subscribe(list => {
+    this.featureService.getSearchFiltredPractician().subscribe((list) => {
       this.getPractians(list);
     });
+    this.getAllSpeciality();
     this.featureService.setIsMessaging(false);
   }
   getPractians(list) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      list = list.filter(
-        (a) => a.accountId != this.featureService.getUserId()
-      );
+      list = list.filter((a) => a.accountId != this.featureService.getUserId());
     }
     this.itemsList = [];
+    this.filtredItemsList = [];
     this.number = list.length;
-    this.bottomText = this.number > 1 ? "résultats" : "résultat";
     list.forEach((message) => {
       let practician = this.mappingPracticians(message);
       this.itemsList.push(practician);
     });
+    this.filtredItemsList = this.itemsList;
     this.itemsList.forEach((item) => {
       if (item.photoId) {
         item.users.forEach((user) => {
@@ -94,7 +110,6 @@ export class PracticianSearchComponent implements OnInit {
     });
   }
 
-
   mappingPracticians(message) {
     const practician = new PracticianSearch();
     practician.id = message.id;
@@ -122,7 +137,7 @@ export class PracticianSearchComponent implements OnInit {
     return practician;
   }
   cardClicked(item) {
-    this.router.navigate(["/praticien-detail/" + item.id]);
+    this.router.navigate(["/praticien-recherche/praticien-detail/" + item.id]);
   }
   selectItem(event) {
     this.itemsList.forEach((a) => {
@@ -133,10 +148,28 @@ export class PracticianSearchComponent implements OnInit {
       }
     });
   }
-  return() {
-    this.router.navigate(["/messagerie"]);
-  }
   sendInvitation() {
-    this.router.navigate(["/praticien-invitation"]);
+    this.router.navigate(["/praticien-recherche/invitation"]);
+  }
+  listFilter(value: string) {
+    this.filtredItemsList =
+      value != "Tout" ? this.performFilter(value) : this.itemsList;
+  }
+  performFilter(filterBy: string) {
+    return this.itemsList.filter((item) =>
+      item.users[0].speciality.includes(filterBy)
+    );
+  }
+  getAllSpeciality() {
+    this.contactsService.getAllSpecialities().subscribe(
+      (specialitiesList) => {
+        this.specialities = specialitiesList;
+        this.types = this.specialities.map((s) => s.name);
+        this.types.unshift("Tout");
+      },
+      (error) => {
+        console.log("en attendant un model de popup à afficher");
+      }
+    );
   }
 }
