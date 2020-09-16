@@ -33,10 +33,11 @@ $light-fill: #ffffff;
   font-weight: 1000;
   background-color: $sapphire;
 }
-
+.bi {
+  cursor: pointer;
+}
 .action-btn {
   font-size: 20px;
-  padding-top: 16px;
   cursor: pointer;
 }
 
@@ -63,7 +64,10 @@ a {
     color: #fff;
   }
 }
-
+.file-clip {
+  align-items: center;
+  display: flex;
+}
 .loading {
   color: black;
   display: block;
@@ -142,12 +146,12 @@ a {
     width: unset;
   }
 
-  #attachement-label{
+  #attachement-label {
     padding-left: 6px;
     padding-right: 6px;
   }
 
-  #send-button{
+  #send-button {
     width: unset;
   }
 
@@ -243,9 +247,9 @@ a {
   display: block !important;
 }
 
-@media(min-width: 400px)and(max-width: 580px) {
+@media (min-width: 400px) and(max-width: 580px) {
   ::ng-deep {
-    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+    .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
       border-color: var(--ck-color-base-border);
       max-height: 300px;
       overflow-y: auto;
@@ -253,9 +257,9 @@ a {
   }
 }
 
-@media(max-width: 399px) {
+@media (max-width: 399px) {
   ::ng-deep {
-    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+    .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
       border-color: var(--ck-color-base-border);
       max-height: 85px;
       overflow-y: auto;
