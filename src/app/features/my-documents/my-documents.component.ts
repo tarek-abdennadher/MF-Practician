@@ -178,6 +178,12 @@ export class MyDocumentsComponent implements OnInit {
   }
 
   cardClicked(item) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#documentRecu").offset().top
+      },
+      1000
+    );
     this.documentService.setId(item.id);
     this.router.navigate(["/mes-documents/list/" + item.id], {
       queryParams: {
