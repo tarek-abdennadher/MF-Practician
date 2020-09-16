@@ -5,7 +5,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { search } from "./search.model";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class PracticianSearchService {
   private searchSource = new BehaviorSubject(new search());
@@ -19,7 +19,8 @@ export class PracticianSearchService {
     edit: "Modifier ma recherche",
     question: "Vous ne trouvez pas un praticien ? ",
     response: "Envoyez lui une invitation !",
-    return_chat: "Retour à la messagerie"
+    return_chat: "Retour à la messagerie",
+    add_text: "Vous ne trouvez pas un praticien ? Envoyez lui une invitation !",
   };
   constructor(private globalService: GlobalService) {}
   getPracticiansBytextAndCity(text, city): Observable<any> {

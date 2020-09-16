@@ -14,6 +14,8 @@ import { MyInvitationsComponent } from "./my-invitations/my-invitations.componen
 import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
 import { MyPatientsArchivedComponent } from "./my-patients-archived/my-patients-archived.component";
 import { MyPatientsBlockedComponent } from "./my-patients-blocked/my-patients-blocked.component";
+import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
+import { DirtyCheckGuard } from "./dirty-check.guard";
 const routes: Routes = [
   {
     path: "",
@@ -51,6 +53,17 @@ const routes: Routes = [
       {
         path: "praticien-recherche",
         component: PracticianSearchComponent,
+        children: [
+          {
+            path: "invitation",
+            component: ContactDetailComponent,
+            canDeactivate: [DirtyCheckGuard],
+          },
+          {
+            path: "praticien-detail/:id",
+            component: PracticianDetailComponent,
+          },
+        ],
       },
       {
         path: "praticien-detail/:id",
