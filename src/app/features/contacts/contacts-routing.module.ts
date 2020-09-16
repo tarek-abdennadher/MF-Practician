@@ -12,17 +12,13 @@ const routes: Routes = [
     component: ContactsComponent,
     children: [
       {
-        path: "contact-detail/:id",
+        path: "invitation",
         component: ContactDetailComponent,
         canDeactivate: [DirtyCheckGuard],
       },
       {
         path: "praticien-detail/:id",
         component: PracticianDetailComponent,
-      },
-      {
-        path: "secretaire-detail/:id",
-        component: SecretaryDetailsComponent,
       },
     ],
   },
