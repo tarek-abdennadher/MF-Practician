@@ -521,7 +521,6 @@ export class DocumentsListComponent implements OnInit {
         this.pageNo
       );
     } else {
-      console.log(this.idSenderReceiver)
       this.getAttachementById(this.idSenderReceiver, this.pageNo);
     }
   }

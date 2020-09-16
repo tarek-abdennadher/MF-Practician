@@ -101,15 +101,12 @@ export class ContactsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        if (event.url === "/mes-contacts-pro?status=add") {
-          let currentRoute = this.route;
-          while (currentRoute.firstChild)
-            currentRoute = currentRoute.firstChild;
-          if (this.userRole == "PRACTICIAN") {
-            this.getAllContacts();
-          } else if (this.userRole == "SECRETARY") {
-            this.getAllContactsForSecretary();
-          }
+        let currentRoute = this.route;
+        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+        if (this.userRole == "PRACTICIAN") {
+          this.getAllContacts();
+        } else if (this.userRole == "SECRETARY") {
+          this.getAllContactsForSecretary();
         }
       });
     this.featureService.setIsMessaging(false);
@@ -310,13 +307,6 @@ export class ContactsComponent implements OnInit {
   }
 
   cardClicked(item) {
-    jQuery([document.documentElement, document.body]).animate(
-      {
-        scrollTop: $("#contactPros").offset().top
-      },
-      1000
-    );
-
     if (item.users[0].contactType == "CONTACT") {
       this.router.navigate(["mes-contacts-pro/contact-detail/" + item.id]);
     } else if (
@@ -392,12 +382,6 @@ export class ContactsComponent implements OnInit {
     );
   }
   addContact() {
-    jQuery([document.documentElement, document.body]).animate(
-      {
-        scrollTop: $("#contactPros").offset().top
-      },
-      1000
-    );
     this.router.navigate(["mes-contacts-pro/contact-detail/add"]);
   }
   selectItem(event) {
