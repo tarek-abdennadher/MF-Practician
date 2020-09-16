@@ -11,7 +11,7 @@ import { CategoryService } from "../services/category.service";
 import { MyPatients } from "@app/shared/models/my-patients";
 import { filter } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
-import { NewMessageWidgetService } from '../new-message-widget/new-message-widget.service';
+import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 declare var $: any;
 @Component({
   selector: "app-my-patients",
@@ -19,7 +19,6 @@ declare var $: any;
   styleUrls: ["./my-patients.component.scss"]
 })
 export class MyPatientsComponent implements OnInit {
-
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -72,13 +71,17 @@ export class MyPatientsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        this.pageNo = 0;
-        this.getPatientsOfCurrentParactician(this.pageNo);
-        setTimeout(() => {
-          $(".selectpicker").selectpicker("refresh");
-        }, 500);
+        console.log(event);
+        if (event.url === "/mes-patients") {
+          let currentRoute = this.route;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
+          this.pageNo = 0;
+          this.getPatientsOfCurrentParactician(this.pageNo);
+          setTimeout(() => {
+            $(".selectpicker").selectpicker("refresh");
+          }, 500);
+        }
       });
   }
   initPatients() {
@@ -284,6 +287,12 @@ export class MyPatientsComponent implements OnInit {
   }
 
   cardClicked(item) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#appPatientFile").offset().top
+      },
+      1000
+    );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
         id: item.users[0].id
@@ -333,6 +342,12 @@ export class MyPatientsComponent implements OnInit {
     this.listFilter("Tout");
   }
   addPatient() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#appPatientFile").offset().top
+      },
+      1000
+    );
     this.router.navigate(["ajout-patient"], { relativeTo: this.route });
   }
 }
