@@ -40,15 +40,15 @@ import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobi
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
 import { SharedMaterialModule } from "@app/shared-material/shared-material.module";
-import { NewMessageWidgetComponent } from './new-message-widget/new-message-widget.component';
-import { NewMessageComponent } from './new-message/new-message.component';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
-import { HlsCkeditorModule } from 'hls-ckeditor';
-import { MyInvitationsComponent } from './my-invitations/my-invitations.component';
-import { PatientDetailComponent } from './patient-detail/patient-detail.component';
-import { MyPatientsArchivedComponent } from './my-patients-archived/my-patients-archived.component';
-import { MyPatientsBlockedComponent } from './my-patients-blocked/my-patients-blocked.component';
-import { MatPatientFileDialogComponent } from './mat-patient-file-dialog/mat-patient-file-dialog.component';
+import { NewMessageWidgetComponent } from "./new-message-widget/new-message-widget.component";
+import { NewMessageComponent } from "./new-message/new-message.component";
+import { AngularMultiSelectModule } from "angular2-multiselect-dropdown";
+import { HlsCkeditorModule } from "hls-ckeditor";
+import { MyInvitationsComponent } from "./my-invitations/my-invitations.component";
+import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
+import { MyPatientsArchivedComponent } from "./my-patients-archived/my-patients-archived.component";
+import { MyPatientsBlockedComponent } from "./my-patients-blocked/my-patients-blocked.component";
+import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -143,4 +143,4 @@ const notifierOptions: NotifierOptions = {
 
   providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
-export class FeaturesModule { }
+export class FeaturesModule {}
