@@ -122,7 +122,7 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
             break;
           }
           case "inbox": {
-            this.isFromInbox = false;
+            this.isFromInbox = true;
             this.IsinboxContext = true;
             this.showAcceptRefuse = this.userRole == "PRACTICIAN";
             this.hideTo = true;

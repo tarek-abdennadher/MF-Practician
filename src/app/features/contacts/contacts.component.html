@@ -20,11 +20,11 @@
       (archivedAction)="archieveClicked($event)"
       (selectItemAction)="selectItem($event)"
       [imageSource]="imageSource"
-      [isCheckbox]="userRole == 'PRACTICIAN'"
+      [isCheckbox]="false"
     >
     </lib-hls-generic-list>
   </div>
-  <div class="col-md-7 objects">
+  <div id="contactPro" class="col-md-7 objects">
     <!-- content for object details -->
     <router-outlet></router-outlet>
   </div>
@@ -32,7 +32,7 @@
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
