@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
-  styleUrls: ["./contact-detail.component.scss"],
+  styleUrls: ["./contact-detail.component.scss"]
 })
 export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   account: any;
@@ -53,7 +53,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   }
   ngOnInit(): void {
     this.getjobTitles();
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(params => {
       this.param = params["id"];
       this.getAllSpeciality();
       this.initForm();
@@ -81,7 +81,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
       phone: new FormControl("+33"),
       picture: new FormControl(null),
       zipCode: new FormControl(null),
-      city: new FormControl(null),
+      city: new FormControl(null)
     });
   }
   get ctr() {
@@ -89,7 +89,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   }
 
   getContact(id) {
-    this.contactsService.getContactById(id).subscribe((contact) => {
+    this.contactsService.getContactById(id).subscribe(contact => {
       this.account = contact;
       this.otherPhones.next(contact.otherPhones);
       this.infoForm.patchValue({
@@ -107,7 +107,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
         otherPhones: contact.otherPhones ? contact.otherPhones : [],
         picture: contact.photoId,
         zipCode: contact.zipCode ? contact.zipCode : null,
-        city: contact.city ? contact.city : null,
+        city: contact.city ? contact.city : null
       });
       this.bottomText = contact.firstName + " " + contact.lastName;
       if (contact.otherPhones.length > 0) {
@@ -116,14 +116,14 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
     });
   }
   getAllSpeciality() {
-    this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
+    this.contactsService.getAllSpecialities().subscribe(specialitiesList => {
       this.specialities.next(specialitiesList);
       $(".selectpicker").selectpicker("refresh");
       this.specialitiesContainingDeleted = specialitiesList;
     });
   }
   getjobTitles() {
-    this.accountService.getJobTiles().subscribe((resp) => {
+    this.accountService.getJobTiles().subscribe(resp => {
       this.jobTitlesList = resp;
     });
   }
@@ -131,7 +131,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
     this.submitted = true;
     if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
       this.infoForm.patchValue({
-        phone: "+33",
+        phone: "+33"
       });
       this.infoForm.controls["phone"].setErrors(null);
     }
@@ -140,7 +140,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
       $("#FailureAlert").alert();
       if (this.infoForm.controls["phone"].errors?.phoneEmptyError) {
         this.infoForm.patchValue({
-          phone: "+33",
+          phone: "+33"
         });
         this.infoForm.controls["phone"].setErrors(null);
       }
@@ -162,7 +162,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
       speciality:
         value.speciality != null
           ? this.specialitiesContainingDeleted.find(
-              (s) => s.id == value.speciality
+              s => s.id == value.speciality
             )
           : null,
       firstName: value.first_name,
@@ -173,25 +173,25 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
       address: value.address,
       additionalAddress: value.additional_address,
       zipCode: value.zipCode,
-      city: value.city,
+      city: value.city
     };
     let successResult = false;
     if (this.param == "add") {
-      this.contactsService.addContact(contact).subscribe((res) => {
+      this.contactsService.addContact(contact).subscribe(res => {
         successResult = res;
         this.router.navigate(["/mes-contacts-pro"], {
           queryParams: {
-            status: "add",
-          },
+            status: "add"
+          }
         });
       });
     } else {
-      this.contactsService.updateContact(contact).subscribe((res) => {
+      this.contactsService.updateContact(contact).subscribe(res => {
         successResult = res;
         this.router.navigate(["/mes-contacts-pro"], {
           queryParams: {
-            status: "edit",
-          },
+            status: "edit"
+          }
         });
       });
     }

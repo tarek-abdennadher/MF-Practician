@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { OrderDirection } from '@app/shared/enmus/order-direction';
-import { FeaturesService } from '../features.service';
-import { MyPatientsService } from '../services/my-patients.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { GlobalService } from '@app/core/services/global.service';
-import { MyDocumentsService } from '../my-documents/my-documents.service';
-import { MyPatients } from '@app/shared/models/my-patients';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { FeaturesService } from "../features.service";
+import { MyPatientsService } from "../services/my-patients.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
+import { GlobalService } from "@app/core/services/global.service";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { MyPatients } from "@app/shared/models/my-patients";
+import { filter } from "rxjs/operators";
 declare var $: any;
 @Component({
-  selector: 'app-my-patients-archived',
-  templateUrl: './my-patients-archived.component.html',
-  styleUrls: ['./my-patients-archived.component.scss']
+  selector: "app-my-patients-archived",
+  templateUrl: "./my-patients-archived.component.html",
+  styleUrls: ["./my-patients-archived.component.scss"]
 })
 export class MyPatientsArchivedComponent implements OnInit {
   isMyPatients = true;
@@ -33,7 +33,7 @@ export class MyPatientsArchivedComponent implements OnInit {
   };
   page = "PATIENT";
   topText = this.globalService.messagesDisplayScreen.archived_patients;
-  bottomText = ""
+  bottomText = "";
   imageSource: string;
   scroll = false;
   constructor(
@@ -43,7 +43,8 @@ export class MyPatientsArchivedComponent implements OnInit {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService) {
+    private globalService: GlobalService
+  ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
@@ -54,13 +55,16 @@ export class MyPatientsArchivedComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        this.pageNo = 0;
-        this.getPatientsArchivedOfCurrentParactician(this.pageNo);
-        setTimeout(() => {
-          $(".selectpicker").selectpicker("refresh");
-        }, 500);
+        if (event.url === "/mes-patients") {
+          let currentRoute = this.route;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
+          this.pageNo = 0;
+          this.getPatientsArchivedOfCurrentParactician(this.pageNo);
+          setTimeout(() => {
+            $(".selectpicker").selectpicker("refresh");
+          }, 500);
+        }
       });
   }
   initArchivedPatients() {
@@ -140,6 +144,12 @@ export class MyPatientsArchivedComponent implements OnInit {
     return myPatients;
   }
   cardClicked(item) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#appPatientFile").offset().top
+      },
+      1000
+    );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
         id: item.users[0].id
