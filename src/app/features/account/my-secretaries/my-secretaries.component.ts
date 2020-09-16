@@ -126,6 +126,12 @@ export class MySecretariesComponent implements OnInit {
     );
   }
   cardClicked(item) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#secretaires").offset().top
+      },
+      1000
+    );
     this.router.navigate([
       "compte/mes-secretaires/secretaire-detail/" + item.id
     ]);

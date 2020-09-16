@@ -48,9 +48,11 @@ export class MyObjectsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        this.getMyObject();
+        if (event.url === "/mes-objets") {
+          let currentRoute = this.route;
+          while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+          this.getMyObject();
+        }
       });
     this.featureService.setIsMessaging(false);
   }
@@ -62,6 +64,12 @@ export class MyObjectsComponent implements OnInit {
   }
 
   cardClicked(object) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#addObject").offset().top
+      },
+      1000
+    );
     this.router.navigate(["mes-objets/" + `${object.id}`]);
   }
 
@@ -87,6 +95,12 @@ export class MyObjectsComponent implements OnInit {
   }
 
   addAction() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#addObject").offset().top
+      },
+      1000
+    );
     this.router.navigate(["mes-objets/add"]);
   }
 
