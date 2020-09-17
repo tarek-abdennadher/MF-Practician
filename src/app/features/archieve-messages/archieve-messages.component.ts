@@ -99,24 +99,26 @@ export class ArchieveMessagesComponent implements OnInit {
 
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
+    const senderRole = message?.senderDetail?.role;
+    const senderRolePascalCase = senderRole.toLowerCase() != "telesecretarygroup"
+      ? senderRole.toLowerCase() : "telesecretaryGroup";
+
     messageArchived.id = message.id;
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
         fullName:
-          message.senderDetail[message.senderDetail.role.toLowerCase()]
+          message.senderDetail[senderRolePascalCase]
             .fullName,
         img: this.avatars.user,
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
           : "",
         type:
-          message.senderDetail.role == "PRACTICIAN"
-            ? "MEDICAL"
-            : message.senderDetail.role,
+          senderRole == "PRACTICIAN" ? "MEDICAL" : senderRole,
         photoId: this.getPhotoId(message.senderDetail),
         civility:
-          message.senderDetail.role == "PATIENT"
+          senderRole == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
         id: message.senderDetail.id
