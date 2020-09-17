@@ -48,7 +48,7 @@ export class CategoryComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        if (event.url === "/mes-categories") {
+        if (event.url === "/mes-categories?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
           this.getMyCategories();

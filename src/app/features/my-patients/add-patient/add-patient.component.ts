@@ -108,7 +108,7 @@ export class AddPatientComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
-      this.router.navigate(["/mes-patients"],);
+      this.router.navigate(["/mes-patients"], { queryParams: { loading: true } });
     } else {
       this.notifMessage = this.patientService.errors.failed_add;
       this.notifier.show({
@@ -141,7 +141,7 @@ export class AddPatientComponent implements OnInit {
   archieveNote(noteId) { }
 
   cancelAction() {
-    this.router.navigate(["."], { relativeTo: this.route.parent });
+    this.router.navigate(["."], { relativeTo: this.route.parent, queryParams: { loading: false } });
   }
   ngOnDestroy(): void {
     this._destroyed$.next();
