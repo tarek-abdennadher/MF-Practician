@@ -130,24 +130,22 @@ export class ContactsComponent implements OnInit {
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
-            this.documentService
-              .getDefaultImageEntity(user.id, "ACCOUNT")
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
-                  };
-                  let ok = myReader.readAsDataURL(response);
-                },
-                (error) => {
-                  user.img = this.avatars.user;
-                }
-              );
-          });
+          this.documentService
+            .getDefaultImageEntity(item.id, "ACCOUNT")
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              (error) => {
+                user.img = this.avatars.user;
+              }
+            );
         });
       },
       (error) => {
