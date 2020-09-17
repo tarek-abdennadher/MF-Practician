@@ -142,7 +142,7 @@ export class MyPatientsBlockedComponent implements OnInit {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top
+        scrollTop: $("#appPatientFile").offset().top - 100
       },
       1000
     );

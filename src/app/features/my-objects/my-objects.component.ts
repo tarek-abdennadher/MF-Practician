@@ -66,7 +66,7 @@ export class MyObjectsComponent implements OnInit {
   cardClicked(object) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top
+        scrollTop: $("#addObject").offset().top - 100
       },
       1000
     );
@@ -97,7 +97,7 @@ export class MyObjectsComponent implements OnInit {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top
+        scrollTop: $("#addObject").offset().top - 100
       },
       1000
     );

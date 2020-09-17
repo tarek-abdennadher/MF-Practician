@@ -180,7 +180,7 @@ export class MyDocumentsComponent implements OnInit {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#documentRecu").offset().top
+        scrollTop: $("#documentRecu").offset().top - 100
       },
       1000
     );
