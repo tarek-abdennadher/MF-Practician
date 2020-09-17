@@ -91,13 +91,14 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
+  ngAfterViewChecked() {}
   scrollToBottom(): void {
-    try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#reply").offset().top - 100
+      },
+      1000
+    );
   }
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -154,7 +155,6 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
       this.getMessageDetailById(this.idMessage);
     });
     this.featureService.setIsMessaging(true);
-    this.scrollToBottom();
   }
 
   getMessageDetailById(id) {
