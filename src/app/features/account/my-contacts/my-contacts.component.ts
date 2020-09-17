@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { GlobalService } from '@app/core/services/global.service';
-import { AccountService } from '@app/features/services/account.service';
-import { LocalStorageService } from 'ngx-webstorage';
-import { FeaturesService } from '@app/features/features.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ContactBookService } from '@app/features/services/contact-book.service';
-import { DialogService } from '@app/features/services/dialog.service';
-import { NotifierService } from 'angular-notifier';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { GlobalService } from "@app/core/services/global.service";
+import { AccountService } from "@app/features/services/account.service";
+import { LocalStorageService } from "ngx-webstorage";
+import { FeaturesService } from "@app/features/features.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { ContactBookService } from "@app/features/services/contact-book.service";
+import { DialogService } from "@app/features/services/dialog.service";
+import { NotifierService } from "angular-notifier";
 
 @Component({
-  selector: 'app-my-contacts',
-  templateUrl: './my-contacts.component.html',
-  styleUrls: ['./my-contacts.component.scss']
+  selector: "app-my-contacts",
+  templateUrl: "./my-contacts.component.html",
+  styleUrls: ["./my-contacts.component.scss"]
 })
 export class MyContactsComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -32,7 +32,8 @@ export class MyContactsComponent implements OnInit {
     private route: ActivatedRoute,
     private contactBookService: ContactBookService,
     private dialogService: DialogService,
-    notifierService: NotifierService) {
+    notifierService: NotifierService
+  ) {
     this.notifier = notifierService;
     this.labels = this.accountService.messages;
     this.imageSource = this.globalService.avatars.user;
@@ -40,33 +41,33 @@ export class MyContactsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      if (params["status"] == "createSuccess") {
-        this.notifier.show({
-          message: this.contactBookService.messages.add_success,
-          type: "info",
-          template: this.customNotificationTmpl,
-        });
-      }
-      if (params["status"] == "editSuccess") {
-        this.notifier.show({
-          message: this.contactBookService.messages.edit_info_success,
-          type: "info",
-          template: this.customNotificationTmpl,
-        });
-      }
-    });
+    // this.route.queryParams.subscribe((params) => {
+    //   if (params["status"] == "createSuccess") {
+    //     this.notifier.show({
+    //       message: this.contactBookService.messages.add_success,
+    //       type: "info",
+    //       template: this.customNotificationTmpl,
+    //     });
+    //   }
+    //   if (params["status"] == "editSuccess") {
+    //     this.notifier.show({
+    //       message: this.contactBookService.messages.edit_info_success,
+    //       type: "info",
+    //       template: this.customNotificationTmpl,
+    //     });
+    //   }
+    // });
     this.getMyContacts();
     this.featureService.setIsMessaging(false);
   }
 
   getMyContacts() {
-    this.contactBookService.getAllContactBookByPracticianId(this.practicianId).subscribe(
-      (contacts) => {
+    this.contactBookService
+      .getAllContactBookByPracticianId(this.practicianId)
+      .subscribe(contacts => {
         this.users = contacts;
-        this.itemsList = this.users.map((elm) => this.parseContact(elm));
-      }
-    );
+        this.itemsList = this.users.map(elm => this.parseContact(elm));
+      });
   }
   parseContact(contact): any {
     let parsedContact = {
@@ -78,8 +79,8 @@ export class MyContactsComponent implements OnInit {
           fullName: contact.firstName + " " + contact.lastName,
           type: "CONTACT-BOOK",
           fonction: contact?.fonction,
-          img: this.globalService.avatars.user,
-        },
+          img: this.globalService.avatars.user
+        }
       ],
       object: {
         name: contact.email
@@ -94,7 +95,6 @@ export class MyContactsComponent implements OnInit {
     };
     return parsedContact;
   }
-
 
   cardClicked(contact) {
     this.router.navigate([`${contact.id}`], { relativeTo: this.route });
@@ -111,10 +111,10 @@ export class MyContactsComponent implements OnInit {
         this.contactBookService.messages.delete_contact
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.contactBookService.deleteContactBook(event.id).subscribe(() => {
-            this.itemsList = this.itemsList.filter((elm) => elm.id != event.id);
+            this.itemsList = this.itemsList.filter(elm => elm.id != event.id);
           });
         }
       });

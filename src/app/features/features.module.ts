@@ -58,7 +58,7 @@ const notifierOptions: NotifierOptions = {
     },
     vertical: {
       position: "bottom",
-      distance: 150
+      distance: 250
     }
   },
   theme: "material",

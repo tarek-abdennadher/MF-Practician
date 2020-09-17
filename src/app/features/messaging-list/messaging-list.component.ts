@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  Input,
-  HostListener
-} from "@angular/core";
+import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
 import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
@@ -16,7 +10,6 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { MyPatientsService } from "../services/my-patients.service";
-import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { PaginationService } from "../services/pagination.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
