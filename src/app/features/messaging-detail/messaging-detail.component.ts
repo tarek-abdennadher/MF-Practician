@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  AfterViewChecked
-} from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -18,7 +11,6 @@ import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
-import { AccountService } from "../services/account.service";
 import { MyPatientsService } from "../services/my-patients.service";
 import { DomSanitizer } from "@angular/platform-browser";
 @Component({
@@ -26,8 +18,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"]
 })
-export class MessagingDetailComponent implements OnInit, AfterViewChecked {
-  @ViewChild("reply") private myScrollContainer: ElementRef;
+export class MessagingDetailComponent implements OnInit {
   private _destroyed$ = new Subject();
   previousURL = "";
   role: string = "PRACTICIAN";
@@ -91,7 +82,6 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
-  ngAfterViewChecked() {}
   scrollToBottom(): void {
     jQuery([document.documentElement, document.body]).animate(
       {
