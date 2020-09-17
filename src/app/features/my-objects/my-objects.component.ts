@@ -48,7 +48,8 @@ export class MyObjectsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        if (event.url === "/mes-objets") {
+        console.log(event.url)
+        if (event.url === "/mes-objets?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
           this.getMyObject();
