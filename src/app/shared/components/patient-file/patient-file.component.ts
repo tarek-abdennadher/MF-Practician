@@ -206,7 +206,7 @@ export class PatientFileComponent implements OnInit {
     this.noteForm = this.formBuilder.group({
       id: new FormControl(null),
       value: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required)
+      date: new FormControl(new Date(), Validators.required)
     });
   }
 
@@ -309,6 +309,7 @@ export class PatientFileComponent implements OnInit {
     this.isList = true;
   }
   cancelNoteAdd() {
+    this.noteForm.reset();
     this.isnoteList = true;
     this.initNoteForm();
   }
@@ -343,6 +344,7 @@ export class PatientFileComponent implements OnInit {
     this.submitAction.emit(model);
   }
   addNote() {
+    this.noteForm.reset();
     this.isnoteList = false;
     this.initNoteForm();
   }
@@ -358,6 +360,8 @@ export class PatientFileComponent implements OnInit {
     };
     this.submitNoteAction.emit(model);
     this.isnoteList = true;
+    this.noteForm.reset();
+    this.initNoteForm();
   }
   noteCardClicked(item) {
     this.isnoteList = false;
