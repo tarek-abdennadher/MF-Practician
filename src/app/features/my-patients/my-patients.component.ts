@@ -71,8 +71,7 @@ export class MyPatientsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        console.log(event);
-        if (event.url === "/mes-patients") {
+        if (event.url === "/mes-patients?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;

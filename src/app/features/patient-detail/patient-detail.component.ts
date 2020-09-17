@@ -221,7 +221,7 @@ export class PatientDetailComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
-      this.router.navigate(["."], { relativeTo: this.route.parent });
+      this.router.navigate(["."], { relativeTo: this.route.parent  ,  queryParams: { loading: true }});
     } else {
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
@@ -318,7 +318,7 @@ export class PatientDetailComponent implements OnInit {
   }
 
   cancelAction() {
-    this.router.navigate(["."], { relativeTo: this.route.parent });
+    this.router.navigate(["."], { relativeTo: this.route.parent ,  queryParams: { loading: false } });
   }
 
 
