@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, AfterViewChecked } from "@angular/core";
 import { ActivatedRoute, Router, Params } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { MessageService } from "../services/message.service";
@@ -106,8 +106,13 @@ export class MessagingReplyComponent implements OnInit {
   }
   ngOnInit(): void {
     this.realTime();
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#reply").offset().top
+      },
+      1000
+    );
   }
-
   getForwardToList() {
     this.messagingDetailService
       .getTlsSecretaryList()
