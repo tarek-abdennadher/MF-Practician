@@ -34,7 +34,7 @@ export class CachingInterceptor implements HttpInterceptor {
       tap(event => {
         if (event instanceof HttpResponse) {
           const fullPathNames = this.utils.parseURL(req.url).pathname;
-          const getMatches = this.matchesCachedList(fullPathNames, "[0-9]+$");
+          const getMatches = this.matchesCachedList(fullPathNames, "[A-Za-z0-9/-]*$");
           if (getMatches && 'GET'.includes(req.method)) {
             cache.put(req, event);
           }

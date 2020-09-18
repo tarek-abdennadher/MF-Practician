@@ -230,3 +230,8 @@ input[type="checkbox"]:focus {
     margin-right: 0;
   }
 }
+@media (max-width: 767px) {
+  .btn.btn-primary.col-md-4.mr-4 {
+    margin-bottom: 10px;
+  }
+}

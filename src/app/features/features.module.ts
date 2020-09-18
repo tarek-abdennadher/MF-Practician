@@ -24,7 +24,6 @@ import { SendMessageComponent } from "./send-message/send-message.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
@@ -49,6 +48,7 @@ import { PatientDetailComponent } from "./patient-detail/patient-detail.componen
 import { MyPatientsArchivedComponent } from "./my-patients-archived/my-patients-archived.component";
 import { MyPatientsBlockedComponent } from "./my-patients-blocked/my-patients-blocked.component";
 import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
+import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -98,7 +98,6 @@ const notifierOptions: NotifierOptions = {
     SendMessageComponent,
     ArchieveMessagesComponent,
     MatConfirmDialogComponent,
-    PracticianInvitationComponent,
     PersonalInformationsComponent,
     NewMessageMobileComponent,
     NewMessageWidgetComponent,
@@ -107,7 +106,8 @@ const notifierOptions: NotifierOptions = {
     MyInvitationsComponent,
     MyPatientsArchivedComponent,
     MyPatientsBlockedComponent,
-    MatPatientFileDialogComponent
+    MatPatientFileDialogComponent,
+    ContactDetailComponent
   ],
   imports: [
     FormsModule,

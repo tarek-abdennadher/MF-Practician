@@ -29,7 +29,7 @@ export class ContactsService {
     other_phone: "Autre tél",
     validate: "Enregistrer",
     title: "Titre (*)",
-    speciality: "Spécialité (*)",
+    speciality: "Spécialité",
     civility: "Civilité (*)",
     facility_name: "Nom de l'établissement",
     confirm: "Confirmer",
@@ -41,12 +41,15 @@ export class ContactsService {
     note: " Note",
     additionalEmail: "Email secondaire",
     category: "Nom de la catégorie ",
-    contact_pro: "Fiche contact Pro",
+    contact_pro:
+      "Parrainer un confrère et bénéficiez d'un mois d'abonnement offert",
     category_name: "Nom de la catégorie (*)",
     zip_code: "Code postal",
-    city: "Ville"
+    city: "Ville",
+    send: "Envoyer",
+    email_exist: "Email déja utilisé",
   };
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
 
   getContactsPro() {
     return this.globalService.call(
@@ -110,12 +113,19 @@ export class ContactsService {
     );
   }
 
+  getAllContactsPracticianWithSupervisors(): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/contactsAndSupervisors"
+    );
+  }
+
   getAllContactsPracticianWithAditionalPatient(patientId): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.contact_pro +
-      "/contacts-practician/additionalId/" +
-      patientId
+        "/contacts-practician/additionalId/" +
+        patientId
     );
   }
 }

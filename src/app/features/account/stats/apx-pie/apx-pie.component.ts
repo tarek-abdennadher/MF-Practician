@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent, ApexLegend, ApexFill } from "ng-apexcharts";
+import { ChartComponent, ApexLegend } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -64,17 +64,7 @@ export class ApxPieComponent implements OnInit {
         labels: {
           colors: ["#4a4a4a"]
         }
-      },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            }
-          }
-        }
-      ]
+      }
     };
     this.stats.subscribe(myMap => {
       const map: Map<string, number> = new Map(Object.entries(myMap));
@@ -143,7 +133,7 @@ export class ApxPieComponent implements OnInit {
                       ? 640
                       : 459
                     : browser && browser.name === "chrome"
-                    ? 640
+                    ? 670
                     : 559
               },
               legend: {
@@ -266,7 +256,8 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 602,
             options: {
               chart: {
-                width: browser && browser.name === "chrome" ? 315 : 243
+                width: browser && browser.name === "chrome" ? 315 : 243,
+                height: browser && browser.name === "chrome" ? 315 : 243
               },
               legend: {
                 show: false
@@ -278,7 +269,8 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 415,
             options: {
               chart: {
-                width: browser && browser.name === "chrome" ? 432 : 334
+                width: browser && browser.name === "chrome" ? 432 : 334,
+                height: browser && browser.name === "chrome" ? 432 : 334
               },
               legend: {
                 show: false
@@ -289,7 +281,8 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 376,
             options: {
               chart: {
-                width: 295
+                width: 295,
+                height: 295
               },
               legend: {
                 show: false
@@ -300,7 +293,8 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 361,
             options: {
               chart: {
-                width: 280
+                width: 280,
+                height: 280
               },
               legend: {
                 show: false
