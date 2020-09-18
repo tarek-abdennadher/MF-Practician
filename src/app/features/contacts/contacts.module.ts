@@ -13,40 +13,40 @@ import { NotifierModule, NotifierOptions } from "angular-notifier";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
-      position: "left",
-      distance: 370,
+      position: "right",
+      distance: 20
     },
     vertical: {
-      position: "top",
-      distance: 90,
-    },
+      position: "bottom",
+      distance: 250
+    }
   },
   theme: "material",
   behaviour: {
     autoHide: 2000,
     onClick: false,
     onMouseover: "pauseAutoHide",
-    showDismissButton: false,
+    showDismissButton: false
   },
   animations: {
     enabled: true,
     show: {
       preset: "fade",
       speed: 1500,
-      easing: "ease",
+      easing: "ease"
     },
     hide: {
       preset: "fade",
       speed: 300,
       easing: "ease",
-      offset: 50,
+      offset: 50
     },
     shift: {
       speed: 300,
-      easing: "ease",
+      easing: "ease"
     },
-    overlap: 150,
-  },
+    overlap: 150
+  }
 };
 
 @NgModule({
@@ -62,7 +62,7 @@ const notifierOptions: NotifierOptions = {
     HlsGenericListLinksModule,
     PipesModule,
     InternationalPhoneNumberModule,
-    NotifierModule.withConfig(notifierOptions),
-  ],
+    NotifierModule.withConfig(notifierOptions)
+  ]
 })
 export class ContactsModule {}

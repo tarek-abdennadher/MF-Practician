@@ -19,11 +19,12 @@ import { MyPatientsService } from "../services/my-patients.service";
 import { AccountService } from "../services/account.service";
 import { SendType } from "@app/shared/enmus/send-type";
 import { ObjectsService } from "../services/objects.service";
+import { FeaturesComponent } from "../features.component";
 declare var $: any;
 @Component({
   selector: "app-send-message",
   templateUrl: "./send-message.component.html",
-  styleUrls: ["./send-message.component.scss"],
+  styleUrls: ["./send-message.component.scss"]
 })
 export class SendMessageComponent implements OnInit {
   addOptionConfirmed: boolean = false;
@@ -66,26 +67,26 @@ export class SendMessageComponent implements OnInit {
       id: 1111,
       name: "Instructions Urgentes",
       information: "Instructions Urgentes",
-      body: "",
+      body: ""
     },
     {
       id: 2222,
       name: "Reports de rdv",
       information: "Reports de rdv",
-      body: "",
+      body: ""
     },
     {
       id: 3333,
       name: "Modifications de plannings",
       information: "Modifications de plannings",
-      body: "",
+      body: ""
     },
     {
       id: 4444,
       name: "Instructions diverses",
       information: "Instructions diverses",
-      body: "",
-    },
+      body: ""
+    }
   ];
   isTypesVisible: boolean = true;
   isCCListVisible: boolean = true;
@@ -99,7 +100,7 @@ export class SendMessageComponent implements OnInit {
   practicianFullToList: any[];
   sendTypeList = [
     { id: SendType.MESSAGING, text: "Messagerie" },
-    { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+    { id: SendType.SEND_POSTAL, text: "Envoi Postal" }
   ];
   lastObjectList: any[];
   constructor(
@@ -118,7 +119,8 @@ export class SendMessageComponent implements OnInit {
     private patientService: MyPatientsService,
     private spinner: NgxSpinnerService,
     private accountService: AccountService,
-    private objectsService: ObjectsService
+    private objectsService: ObjectsService,
+    private featureComp: FeaturesComponent
   ) {
     this.sendPostal = false;
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
@@ -126,7 +128,7 @@ export class SendMessageComponent implements OnInit {
       this.connectedUserType = "MEDICAL";
       this.getTLSGroupByPracticianId();
     }
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       this.selectedPracticianId = params["id"] || null;
     });
     this.notifier = notifierService;
@@ -139,14 +141,14 @@ export class SendMessageComponent implements OnInit {
     this.sendPostal = false;
     if (this.user?.photoId) {
       this.documentService.downloadFile(this.user?.photoId).subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             this.imageSource = myReader.result;
           };
           let ok = myReader.readAsDataURL(response.body);
         },
-        (error) => {
+        error => {
           this.imageSource = this.avatars.user;
         }
       );
@@ -159,19 +161,19 @@ export class SendMessageComponent implements OnInit {
     }
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
-      this.featureService.getSecretaryPracticians().subscribe((value) => {
-        value.forEach((item) => {
+      this.featureService.getSecretaryPracticians().subscribe(value => {
+        value.forEach(item => {
           item.type = "CONTACT_PRO";
           if (item.photo) {
             this.documentService.downloadFile(item.photo).subscribe(
-              (response) => {
+              response => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
+                myReader.onloadend = e => {
                   item.img = myReader.result;
                 };
                 let ok = myReader.readAsDataURL(response.body);
               },
-              (error) => {
+              error => {
                 item.img = this.avatars.doctor;
               }
             );
@@ -186,7 +188,7 @@ export class SendMessageComponent implements OnInit {
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {});
+      .subscribe(res => {});
     this.featureService.setIsMessaging(false);
   }
 
@@ -216,19 +218,19 @@ export class SendMessageComponent implements OnInit {
       this.patientService
         .getAllPatientFilesByPracticianId(this.featureService.getUserId())
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((patientFiles) => {
+        .subscribe(patientFiles => {
           let list = [];
-          patientFiles.forEach((item) => {
+          patientFiles.forEach(item => {
             if (item.photoId) {
               this.documentService.downloadFile(item.photo).subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     item.img = myReader.result;
                   };
                   let ok = myReader.readAsDataURL(response.body);
                 },
-                (error) => {
+                error => {
                   if (item?.civility == "MME") {
                     item.img = this.avatars.women;
                   } else {
@@ -256,20 +258,20 @@ export class SendMessageComponent implements OnInit {
         this.patientService
           .getAllPatientFilesByPracticianId(this.selectedPracticianId)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((patientFiles) => {
+          .subscribe(patientFiles => {
             let list = [];
-            patientFiles.forEach((item) => {
+            patientFiles.forEach(item => {
               item.type = "PATIENT_FILE";
               if (item.photoId) {
                 this.documentService.downloadFile(item.photo).subscribe(
-                  (response) => {
+                  response => {
                     let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
+                    myReader.onloadend = e => {
                       item.img = myReader.result;
                     };
                     let ok = myReader.readAsDataURL(response.body);
                   },
-                  (error) => {
+                  error => {
                     if (item?.civility == "MME") {
                       item.img = this.avatars.women;
                     } else {
@@ -293,12 +295,12 @@ export class SendMessageComponent implements OnInit {
   }
   parseContactsPractician(contactsPractician) {
     let myList = [];
-    contactsPractician.forEach((contactPractician) => {
+    contactsPractician.forEach(contactPractician => {
       if (contactPractician.photoId && contactPractician.photoId != null) {
         this.documentService.downloadFile(contactPractician.photoId).subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               myList.push({
                 id: contactPractician.id,
                 fullName: contactPractician.fullName,
@@ -307,13 +309,13 @@ export class SendMessageComponent implements OnInit {
                   this.selectedPracticianId == contactPractician.id
                     ? true
                     : false,
-                img: myReader.result,
+                img: myReader.result
               });
               this.toList.next(myList);
             };
             let ok = myReader.readAsDataURL(response.body);
           },
-          (error) => {
+          error => {
             myList.push({
               id: contactPractician.id,
               fullName: contactPractician.fullName,
@@ -322,7 +324,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: null,
+              img: null
             });
             this.toList.next(myList);
           }
@@ -335,7 +337,7 @@ export class SendMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.doctor,
+            img: this.avatars.doctor
           });
           this.toList.next(myList);
         } else if (
@@ -348,7 +350,7 @@ export class SendMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.secretary,
+            img: this.avatars.secretary
           });
           this.toList.next(myList);
         } else if (contactPractician.contactType == "PATIENT") {
@@ -361,7 +363,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: this.avatars.man,
+              img: this.avatars.man
             });
             this.toList.next(myList);
           } else if (contactPractician.civility == "MME") {
@@ -373,7 +375,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: this.avatars.women,
+              img: this.avatars.women
             });
             this.toList.next(myList);
           } else if (contactPractician.civility == "CHILD") {
@@ -385,7 +387,7 @@ export class SendMessageComponent implements OnInit {
                 this.selectedPracticianId == contactPractician.id
                   ? true
                   : false,
-              img: this.avatars.child,
+              img: this.avatars.child
             });
             this.toList.next(myList);
           }
@@ -402,14 +404,14 @@ export class SendMessageComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((requestTypes: any) => {
-          this.practicianObjectList = requestTypes.map((e) => {
+          this.practicianObjectList = requestTypes.map(e => {
             return {
               id: e.id,
               title: e.object,
               name: e.object,
               destination: e.destination,
               allowDocument: e.allowDocument,
-              body: "",
+              body: ""
             };
           });
         })
@@ -418,7 +420,7 @@ export class SendMessageComponent implements OnInit {
 
   sendMessage(message) {
     if (message.type[0].id == SendType.SEND_POSTAL) {
-      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
+      this.featureService.checkIfSendPostalEnabled().subscribe(result => {
         this.sendPostal = result;
         if (this.sendPostal) {
           this.send(message);
@@ -440,7 +442,7 @@ export class SendMessageComponent implements OnInit {
       let type = event.to[0].type;
       if (type == "MEDICAL") {
         this.objectsList = this.practicianObjectList.filter(
-          (item) =>
+          item =>
             item.destination == "PRACTICIAN" || item.destination == "OTHER"
         );
       } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
@@ -448,29 +450,29 @@ export class SendMessageComponent implements OnInit {
           this.objectsList = this.instructionObjectsList;
         } else {
           this.objectsList = this.practicianObjectList.filter(
-            (item) =>
+            item =>
               item.destination == "SECRETARY" || item.destination == "OTHER"
           );
         }
       } else if (type == "PATIENT") {
         this.objectsList = this.practicianObjectList.filter(
-          (item) => item.destination == "PATIENT" || item.destination == "OTHER"
+          item => item.destination == "PATIENT" || item.destination == "OTHER"
         );
       } else {
         this.objectsList = this.practicianObjectList.filter(
-          (item) => item.destination == "OTHER"
+          item => item.destination == "OTHER"
         );
       }
       const objectListContainsOther =
         this.objectsList.findIndex(
-          (obj) => obj.id == 0 && obj.title == "Autre"
+          obj => obj.id == 0 && obj.title == "Autre"
         ) !== -1;
       if (!objectListContainsOther && !this.isInstruction) {
         this.objectsList.push({
           id: 0,
           title: "Autre",
           name: "Autre",
-          destination: "Autre",
+          destination: "Autre"
         });
       }
       if (
@@ -481,20 +483,20 @@ export class SendMessageComponent implements OnInit {
         this.patientService
           .getAllPatientFilesByPracticianId(selectedPractician)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((patientFiles) => {
+          .subscribe(patientFiles => {
             let list = [];
-            patientFiles.forEach((item) => {
+            patientFiles.forEach(item => {
               item.type = "PATIENT_FILE";
               if (item.photoId) {
                 this.documentService.downloadFile(item.photo).subscribe(
-                  (response) => {
+                  response => {
                     let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
+                    myReader.onloadend = e => {
                       item.img = myReader.result;
                     };
                     let ok = myReader.readAsDataURL(response.body);
                   },
-                  (error) => {
+                  error => {
                     if (item?.civility == "MME") {
                       item.img = this.avatars.women;
                     } else {
@@ -534,14 +536,14 @@ export class SendMessageComponent implements OnInit {
         senderId: this.featureService.getUserId(),
         sendedForId: item.for && item.for[0] && item.for[0].id,
         receiverId: item.to && item.to[0] && item.to[0].id,
-        objectId: selectedObj.id,
+        objectId: selectedObj.id
       };
       selectedObj.requestDto = objectDto;
       let newData = {
         id: selectedObj.id,
         name: selectedObj.title,
         body: null,
-        file: null,
+        file: null
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -564,13 +566,13 @@ export class SendMessageComponent implements OnInit {
           );
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((res) => {
+          .subscribe(res => {
             this.selectedObject.next(newData);
           });
       } else {
         forkJoin(body)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((res) => {
+          .subscribe(res => {
             this.selectedObject.next(newData);
           });
       }
@@ -581,7 +583,7 @@ export class SendMessageComponent implements OnInit {
         id: null,
         title: "Autre",
         name: "Autre",
-        body: "",
+        body: ""
       });
     }
   }
@@ -605,7 +607,7 @@ export class SendMessageComponent implements OnInit {
           this.sendTypeList = [
             { id: SendType.MESSAGING, text: "Messagerie" },
             { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
-            { id: SendType.INSTRUCTION, text: "Consignes" },
+            { id: SendType.INSTRUCTION, text: "Consignes" }
           ];
           const groupValue = group.group;
           this.getInstructionObjectListByTLSGroupId(groupValue.id);
@@ -614,18 +616,18 @@ export class SendMessageComponent implements OnInit {
             fullName: groupValue.title,
             isSelected: true,
             img: null,
-            type: "TELESECRETARYGROUP",
+            type: "TELESECRETARYGROUP"
           };
           if (groupValue.photoId) {
             this.documentService.downloadFile(groupValue.photoId).subscribe(
-              (response) => {
+              response => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
+                myReader.onloadend = e => {
                   item.img = myReader.result;
                 };
                 let ok = myReader.readAsDataURL(response.body);
               },
-              (error) => {
+              error => {
                 item.img = this.avatars.doctor;
               }
             );
@@ -635,8 +637,8 @@ export class SendMessageComponent implements OnInit {
       });
   }
   getInstructionObjectListByTLSGroupId(id: any) {
-    this.objectsService.getAllByTLS(id).subscribe((objects) => {
-      this.instructionObjectsList = objects.map((e) => {
+    this.objectsService.getAllByTLS(id).subscribe(objects => {
+      this.instructionObjectsList = objects.map(e => {
         return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
       });
     });
@@ -683,7 +685,7 @@ export class SendMessageComponent implements OnInit {
             this.toList.next([this.practicianTLSGroup]);
             this.ccList.next(
               this.practicianFullToList.filter(
-                (e) => e.id !== this.practicianTLSGroup.id
+                e => e.id !== this.practicianTLSGroup.id
               )
             );
             break;
@@ -699,11 +701,11 @@ export class SendMessageComponent implements OnInit {
     this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
-    message.to.forEach((to) => {
+    message.to.forEach(to => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
     message.cc
-      ? message.cc.forEach((cc) => {
+      ? message.cc.forEach(cc => {
           newMessage.ccReceivers.push({ receiverId: cc.id });
         })
       : null;
@@ -718,7 +720,7 @@ export class SendMessageComponent implements OnInit {
         senderForPhotoId:
           message.for && message.for[0] ? message.for[0]?.photoId : null,
         senderForfullName:
-          message.for && message.for[0] ? message.for[0]?.fullName : null,
+          message.for && message.for[0] ? message.for[0]?.fullName : null
       };
     }
     newMessage.sendType = message.type[0].id;
@@ -733,22 +735,19 @@ export class SendMessageComponent implements OnInit {
       .sendMessage(newMessage)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (mess) => {
+        mess => {
           this.featureService.sentState.next(true);
           this.spinner.hide();
-          this.router.navigate(["/messagerie-envoyes"], {
-            queryParams: {
-              status: "sentSuccess",
-            },
-          });
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_success
+          );
+          this.router.navigate(["/messagerie-envoyes"]);
         },
-        (error) => {
+        error => {
           this.spinner.hide();
-          this.notifier.show({
-            message: this.globalService.toastrMessages.send_message_error,
-            type: "error",
-            template: this.customNotificationTmpl,
-          });
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_error
+          );
         }
       );
   }
@@ -765,7 +764,7 @@ export class SendMessageComponent implements OnInit {
     return (
       (this.objectsList &&
         this.objectsList.findIndex(
-          (obj) => obj.id == 0 && obj.title == "Autre"
+          obj => obj.id == 0 && obj.title == "Autre"
         ) !== -1) ||
       false
     );
@@ -775,11 +774,11 @@ export class SendMessageComponent implements OnInit {
     this.uuid = uuid();
     const newMessage = new Message();
     newMessage.sendType = this.lastSendType;
-    message.to.forEach((to) => {
+    message.to.forEach(to => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
     message.cc
-      ? message.cc.forEach((cc) => {
+      ? message.cc.forEach(cc => {
           newMessage.ccReceivers.push({ receiverId: cc.id });
         })
       : null;
@@ -794,13 +793,13 @@ export class SendMessageComponent implements OnInit {
         senderForPhotoId:
           message.for && message.for[0] ? message.for[0]?.photoId : null,
         senderForfullName:
-          message.for && message.for[0] ? message.for[0]?.fullName : null,
+          message.for && message.for[0] ? message.for[0]?.fullName : null
       };
     } else {
       newMessage.sender = {
         senderId: this.featureService.getUserId(),
         originalSenderId: this.featureService.getUserId(),
-        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
+        sendedForId: message.for && message.for[0] ? message.for[0].id : null
       };
       if (message.concerns && message.concerns[0]) {
         newMessage.sender.concernsId =
@@ -846,22 +845,19 @@ export class SendMessageComponent implements OnInit {
         .saveFileInMemory(this.uuid, formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (mess) => {
+          mess => {
             this.featureService.sentState.next(true);
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
           },
-          (error) => {
+          error => {
             this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl,
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
           }
         );
     } else {
@@ -869,22 +865,19 @@ export class SendMessageComponent implements OnInit {
         .sendMessage(newMessage)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (mess) => {
+          mess => {
             this.featureService.sentState.next(true);
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
           },
-          (error) => {
+          error => {
             this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl,
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
           }
         );
     }
@@ -895,7 +888,7 @@ export class SendMessageComponent implements OnInit {
   }
   activateSenPostalOption() {
     if (this.addOptionConfirmed) {
-      this.featureService.activateSendPostal().subscribe((res) => {
+      this.featureService.activateSendPostal().subscribe(res => {
         this.sendPostal = true;
         $("#confirmModal").modal("hide");
         $("#successModal").modal("toggle");
