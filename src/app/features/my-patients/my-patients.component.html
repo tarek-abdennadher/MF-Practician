@@ -3,7 +3,7 @@
     <lib-hls-generic-list-links [links]="links" [page]="page" [topText]="topText" [number]="number" [addText]="addText"
       [types]="mesCategories" (addAction)="addPatient()" (typeAction)="listFilter($event)">
     </lib-hls-generic-list-links>
-    <lib-hls-generic-list [caller]="my-patients" [isCheckbox]="false" [list]="filtredPatients"
+    <lib-hls-generic-list [caller]="'my-patients'" [isCheckbox]="false" [list]="filtredPatients"
       [imageSource]="imageSource" [isMyPatients]="isMyPatients" (markAsSeenAction)="writeAction($event)"
       (writeAction)="writeAction($event)" (prohibitAction)="prohibitAction($event)" (editAction)="editAction($event)"
       (deleteAction)="deleteAction($event)" (archivedAction)="archivedAction($event)" (cardAction)="cardClicked($event)"
