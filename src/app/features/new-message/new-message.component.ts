@@ -1350,7 +1350,6 @@ export class NewMessageComponent implements OnInit {
               type: "info",
               template: this.customNotificationTmpl
             });
-            console.log("1");
           },
           error => {
             this.spinner.hide();
@@ -1375,7 +1374,6 @@ export class NewMessageComponent implements OnInit {
             this.featureService.sentState.next(true);
             this.spinner.hide();
             this.messageWidgetService.toggleObs.next();
-            console.log("2");
           },
           error => {
             this.spinner.hide();

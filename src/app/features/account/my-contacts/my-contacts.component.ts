@@ -41,22 +41,6 @@ export class MyContactsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.route.queryParams.subscribe((params) => {
-    //   if (params["status"] == "createSuccess") {
-    //     this.notifier.show({
-    //       message: this.contactBookService.messages.add_success,
-    //       type: "info",
-    //       template: this.customNotificationTmpl,
-    //     });
-    //   }
-    //   if (params["status"] == "editSuccess") {
-    //     this.notifier.show({
-    //       message: this.contactBookService.messages.edit_info_success,
-    //       type: "info",
-    //       template: this.customNotificationTmpl,
-    //     });
-    //   }
-    // });
     this.getMyContacts();
     this.featureService.setIsMessaging(false);
   }
