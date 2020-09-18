@@ -10,11 +10,12 @@ import { FeaturesService } from "@app/features/features.service";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 import { EmailUniqueValidatorService } from "@app/core/Validators/email-unique-validator.service";
 import { PracticianInvitationService } from "../practician-invitation.service";
+import { FeaturesComponent } from "@app/features/features.component";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
-  styleUrls: ["./contact-detail.component.scss"],
+  styleUrls: ["./contact-detail.component.scss"]
 })
 export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   alertMessage = "Erreur survenue lors de l'invitation' du praticien";
@@ -39,7 +40,8 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
     private contactsService: ContactsService,
     private featureService: FeaturesService,
     public accountService: AccountService,
-    private emailUnique: EmailUniqueValidatorService
+    private emailUnique: EmailUniqueValidatorService,
+    private featureComp: FeaturesComponent
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
@@ -63,10 +65,10 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, emailValidator],
+        validators: [Validators.required, emailValidator]
       }),
       title: new FormControl(null, Validators.required),
-      speciality: new FormControl(null),
+      speciality: new FormControl(null)
     });
     this.ctr.email.setAsyncValidators([this.emailUnique.emailExist()]);
   }
@@ -75,14 +77,14 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   }
 
   getAllSpeciality() {
-    this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
+    this.contactsService.getAllSpecialities().subscribe(specialitiesList => {
       this.specialities.next(specialitiesList);
       this.mySpecialities = specialitiesList;
       $(".selectpicker").selectpicker("refresh");
     });
   }
   getjobTitles() {
-    this.accountService.getJobTiles().subscribe((resp) => {
+    this.accountService.getJobTiles().subscribe(resp => {
       this.jobTitlesList = resp;
     });
   }
@@ -102,17 +104,17 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
         speciality:
           this.infoForm.value.speciality != null
             ? this.mySpecialities.find(
-                (s) => s.id == this.infoForm.value.speciality
+                s => s.id == this.infoForm.value.speciality
               )
             : null,
-        address: this.infoForm.value.address,
-      },
+        address: this.infoForm.value.address
+      }
     };
     this.service
       .invitePractician(model)
       .subscribe(this.handleResponseInvitation, this.handleError);
   }
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
       this.errorMessage = err.error.apierror.message;
       this.alertMessage = this.errorMessage;
@@ -121,21 +123,14 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
       throw err;
     }
   };
-  handleResponseInvitation = (response) => {
+  handleResponseInvitation = response => {
     if (response) {
       this.submitted = false;
-      this.router.navigate(["/mes-contacts-pro"], {
-        queryParams: {
-          status: "success",
-        },
-      });
+      this.featureComp.setNotif(this.service.texts.invite_success);
+      this.router.navigate(["/mes-contacts-pro"]);
     } else {
-      this.errorMessage = this.service.texts.invite_failure;
-      this.router.navigate(["/mes-contacts-pro"], {
-        queryParams: {
-          status: "failure",
-        },
-      });
+      this.featureComp.setNotif(this.service.texts.invite_failure);
+      this.router.navigate(["/mes-contacts-pro"]);
     }
   };
   cancel() {

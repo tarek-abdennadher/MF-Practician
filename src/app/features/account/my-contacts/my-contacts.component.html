@@ -1,25 +1,27 @@
 <br />
 <div class="card">
-    <br />
-    <notifier-container></notifier-container>
-    <ng-template #customNotification let-notificationData="notification">
-        <div class="text-center" type="notificationData.type">
-            <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-            &nbsp;<span>{{ notificationData.message }}</span>
-        </div>
-    </ng-template>
-    <div class="row">
-        <div class="col-md-10">
-            <div class="form-group title">
-                <hr width="3%" color="#ff0063" align="left" />
-                <i class="far fa-user-md"><span>&nbsp;&nbsp;{{ labels.my_contacts }}</span></i>
-            </div>
-        </div>
-        <a (click)="addAction()" class="inline col-md-1">
-            <i class="far fa-plus"></i><br /><span>Ajouter</span>
-        </a>
+  <br />
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group title">
+        <hr width="3%" color="#ff0063" align="left" />
+        <i class="far fa-user-md"
+          ><span>&nbsp;&nbsp;{{ labels.my_contacts }}</span></i
+        >
+      </div>
     </div>
-    <br />
-    <lib-hlsMessagingList [isCheckbox]="false" [list]="itemsList" [imageSource]="imageSource"
-        (cardAction)="cardClicked($event)" (detailAction)="cardClicked($event)" (archieveAction)="delete($event)">
-    </lib-hlsMessagingList>
+    <a (click)="addAction()" class="inline col-md-1">
+      <i class="far fa-plus"></i><br /><span>Ajouter</span>
+    </a>
+  </div>
+  <br />
+  <lib-hlsMessagingList
+    [isCheckbox]="false"
+    [list]="itemsList"
+    [imageSource]="imageSource"
+    (cardAction)="cardClicked($event)"
+    (detailAction)="cardClicked($event)"
+    (archieveAction)="delete($event)"
+  >
+  </lib-hlsMessagingList>
+</div>

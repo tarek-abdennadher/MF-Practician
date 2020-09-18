@@ -54,39 +54,39 @@ const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
       position: "right",
-      distance: 20,
+      distance: 20
     },
     vertical: {
       position: "bottom",
-      distance: 150,
-    },
+      distance: 250
+    }
   },
   theme: "material",
   behaviour: {
     autoHide: 2000,
     onClick: false,
     onMouseover: "pauseAutoHide",
-    showDismissButton: false,
+    showDismissButton: false
   },
   animations: {
     enabled: true,
     show: {
       preset: "fade",
       speed: 1500,
-      easing: "ease",
+      easing: "ease"
     },
     hide: {
       preset: "fade",
       speed: 300,
       easing: "ease",
-      offset: 50,
+      offset: 50
     },
     shift: {
       speed: 300,
-      easing: "ease",
+      easing: "ease"
     },
-    overlap: 150,
-  },
+    overlap: 150
+  }
 };
 @NgModule({
   declarations: [
@@ -107,7 +107,7 @@ const notifierOptions: NotifierOptions = {
     MyPatientsArchivedComponent,
     MyPatientsBlockedComponent,
     MatPatientFileDialogComponent,
-    ContactDetailComponent,
+    ContactDetailComponent
   ],
   imports: [
     FormsModule,
@@ -138,9 +138,9 @@ const notifierOptions: NotifierOptions = {
     SharedMaterialModule,
     HlsNewMessageDetailModule,
     AngularMultiSelectModule,
-    HlsCkeditorModule,
+    HlsCkeditorModule
   ],
 
-  providers: [MessageService, ContactsService, JobtitlePipe, AccountService],
+  providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
 })
 export class FeaturesModule {}
