@@ -23,44 +23,44 @@ import { MyLeavesComponent } from "./my-leaves/my-leaves.component";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { ApxPieComponent } from "./stats/apx-pie/apx-pie.component";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { HlsGenericListModule } from 'hls-generic-list';
+import { HlsGenericListModule } from "hls-generic-list";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
-      position: "left",
-      distance: 400,
+      position: "right",
+      distance: 20
     },
     vertical: {
-      position: "top",
-      distance: 90,
-    },
+      position: "bottom",
+      distance: 250
+    }
   },
   theme: "material",
   behaviour: {
     autoHide: 2000,
     onClick: false,
     onMouseover: "pauseAutoHide",
-    showDismissButton: false,
+    showDismissButton: false
   },
   animations: {
     enabled: true,
     show: {
       preset: "fade",
       speed: 1500,
-      easing: "ease",
+      easing: "ease"
     },
     hide: {
       preset: "fade",
       speed: 300,
       easing: "ease",
-      offset: 50,
+      offset: 50
     },
     shift: {
       speed: 300,
-      easing: "ease",
+      easing: "ease"
     },
-    overlap: 150,
-  },
+    overlap: 150
+  }
 };
 @NgModule({
   declarations: [
@@ -73,7 +73,7 @@ const notifierOptions: NotifierOptions = {
     MyContactDetailComponent,
     MyLeavesComponent,
     MyContactDetailComponent,
-    ApxPieComponent,
+    ApxPieComponent
   ],
   imports: [
     FormsModule,
@@ -91,9 +91,8 @@ const notifierOptions: NotifierOptions = {
     NotifierModule.withConfig(notifierOptions),
     BsDatepickerModule.forRoot(),
     NgApexchartsModule,
-    HlsGenericListModule,
+    HlsGenericListModule
   ],
-  providers: [AccountService],
+  providers: [AccountService]
 })
-
-export class AccountModule { }
+export class AccountModule {}

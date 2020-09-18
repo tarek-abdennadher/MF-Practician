@@ -11,13 +11,6 @@
   [forwardedResponse]="forwardedResponse"
   (sendAction)="replyMessage($event)"
 ></lib-hls-new-message-detail>
-<notifier-container></notifier-container>
-<ng-template #customNotification let-notificationData="notification">
-  <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-    &nbsp;<span>{{ notificationData.message }}</span>
-  </div>
-</ng-template>
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
   <div class="card" id="card-gif">
     <div class="card-body">

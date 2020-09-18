@@ -1343,12 +1343,13 @@ export class NewMessageComponent implements OnInit {
           mess => {
             this.featureService.sentState.next(true);
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess"
-              }
-            });
+
             this.messageWidgetService.toggleObs.next();
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_success,
+              type: "info",
+              template: this.customNotificationTmpl
+            });
           },
           error => {
             this.spinner.hide();
@@ -1365,13 +1366,13 @@ export class NewMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           mess => {
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_success,
+              type: "info",
+              template: this.customNotificationTmpl
+            });
             this.featureService.sentState.next(true);
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess"
-              }
-            });
             this.messageWidgetService.toggleObs.next();
           },
           error => {
