@@ -206,15 +206,12 @@ export class PatientFileComponent implements OnInit {
     this.noteForm = this.formBuilder.group({
       id: new FormControl(null),
       value: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required)
+      date: new FormControl(new Date(), Validators.required)
     });
   }
 
   getPersonalInformation(patient) {
     this.patientFileId = patient.id;
-    if (patient.patientId) {
-      this.getPatientInbox(this.pageNo);
-    }
     if (patient.phones && patient?.phones.length != 0) {
       this.isLabelShow = true;
       this.otherPhones.next(patient.phones);
@@ -247,6 +244,7 @@ export class PatientFileComponent implements OnInit {
         ? patient.invitationStatus
         : null
     });
+    this.getPatientInbox(this.pageNo);
   }
   changeMaidenName() {
     if (this.personalInfoForm.value.civility == "MME") {
@@ -309,6 +307,7 @@ export class PatientFileComponent implements OnInit {
     this.isList = true;
   }
   cancelNoteAdd() {
+    this.noteForm.reset();
     this.isnoteList = true;
     this.initNoteForm();
   }
@@ -343,6 +342,7 @@ export class PatientFileComponent implements OnInit {
     this.submitAction.emit(model);
   }
   addNote() {
+    this.noteForm.reset();
     this.isnoteList = false;
     this.initNoteForm();
   }
@@ -358,6 +358,8 @@ export class PatientFileComponent implements OnInit {
     };
     this.submitNoteAction.emit(model);
     this.isnoteList = true;
+    this.noteForm.reset();
+    this.initNoteForm();
   }
   noteCardClicked(item) {
     this.isnoteList = false;
@@ -422,7 +424,7 @@ export class PatientFileComponent implements OnInit {
 
   getPatientInbox(pageNo) {
     this.messagesServ
-      .getMessagesByPatientFile(this.patientFileId, pageNo, this.direction)
+      .getMessagesByPatientFile(this.patientFileId, this.personalInfoForm.value.practicianId, pageNo, this.direction)
       .subscribe(res => {
         this.messages = res;
         this.messages.sort(function (m1, m2) {
@@ -436,7 +438,7 @@ export class PatientFileComponent implements OnInit {
   }
   getPatientNextInbox(pageNo) {
     this.messagesServ
-      .getMessagesByPatientFile(this.patientFileId, pageNo, this.direction)
+      .getMessagesByPatientFile(this.patientFileId, this.personalInfoForm.value.practicianId, pageNo, this.direction)
       .subscribe(res => {
         this.messages = res;
         this.messages.sort(function (m1, m2) {

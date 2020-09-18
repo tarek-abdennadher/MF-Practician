@@ -55,7 +55,7 @@ export class MyInvitationsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        if (event.url === "/mes-patients") {
+        if (event.url === "/mes-invitations?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
