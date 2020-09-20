@@ -55,7 +55,7 @@ export class MyPatientsArchivedComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        if (event.url === "/mes-patients") {
+        if (event.url === "/mes-patients-archives?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
@@ -146,7 +146,7 @@ export class MyPatientsArchivedComponent implements OnInit {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top
+        scrollTop: $("#appPatientFile").offset().top - 100
       },
       1000
     );

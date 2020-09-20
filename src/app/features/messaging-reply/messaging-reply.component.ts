@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, AfterViewChecked } from "@angular/core";
 import { ActivatedRoute, Router, Params } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { MessageService } from "../services/message.service";
@@ -7,7 +7,6 @@ import { MessageDto } from "@app/shared/models/message-dto";
 import { MessageParent } from "@app/shared/models/message-parent";
 import { GlobalService } from "@app/core/services/global.service";
 import { Location } from "@angular/common";
-import { NotifierService } from "angular-notifier";
 import { takeUntil } from "rxjs/operators";
 import { Subject, BehaviorSubject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
@@ -17,6 +16,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NodeeService } from "../services/node.service";
 import { v4 as uuid } from "uuid";
+import { FeaturesComponent } from "../features.component";
 
 @Component({
   selector: "app-messaging-reply",
@@ -44,8 +44,6 @@ export class MessagingReplyComponent implements OnInit {
       : this.globalService.messagesDisplayScreen.newMessage;
   backButton = true;
   selectedFiles: any;
-  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
-  private readonly notifier: NotifierService;
   refuseResponse = false;
   acceptResponse = false;
   forwardedResponse = false;
@@ -69,15 +67,14 @@ export class MessagingReplyComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     private globalService: GlobalService,
-    notifierService: NotifierService,
     private refuseTypeService: RefuseTypeService,
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private spinner: NgxSpinnerService,
     private sanitizer: DomSanitizer,
-    private nodeService: NodeeService
+    private nodeService: NodeeService,
+    private featureComp: FeaturesComponent
   ) {
-    this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
@@ -106,8 +103,13 @@ export class MessagingReplyComponent implements OnInit {
   }
   ngOnInit(): void {
     this.realTime();
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#reply").offset().top
+      },
+      1000
+    );
   }
-
   getForwardToList() {
     this.messagingDetailService
       .getTlsSecretaryList()
@@ -304,19 +306,16 @@ export class MessagingReplyComponent implements OnInit {
                 this.featureService.numberOfForwarded + 1;
             }
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess"
-              }
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
           },
           error => {
             this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
           }
         );
     } else {
@@ -330,19 +329,16 @@ export class MessagingReplyComponent implements OnInit {
                 this.featureService.numberOfForwarded + 1;
             }
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess"
-              }
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
           },
           error => {
             this.spinner.hide();
-            this.notifier.show({
-              message: this.globalService.toastrMessages.send_message_error,
-              type: "error",
-              template: this.customNotificationTmpl
-            });
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
           }
         );
     }

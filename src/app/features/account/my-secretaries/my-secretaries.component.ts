@@ -128,7 +128,7 @@ export class MySecretariesComponent implements OnInit {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#secretaires").offset().top
+        scrollTop: $("#secretaires").offset().top - 100
       },
       1000
     );

@@ -1,17 +1,12 @@
 import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
-import {
-  FormGroup,
-  Validators,
-  FormControl,
-  AbstractControl
-} from "@angular/forms";
+import { FormGroup, FormControl } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 import { defineLocale, frLocale, isBefore } from "ngx-bootstrap/chronos";
 import { FeaturesService } from "@app/features/features.service";
-import { NotifierService } from "angular-notifier";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
+import { FeaturesComponent } from "@app/features/features.component";
 declare var $: any;
 
 @Component({
@@ -30,19 +25,15 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
   isInvalidDates: boolean;
   practicianId: number = null;
   notifMessage = "";
-  private readonly notifier: NotifierService;
   constructor(
     private service: AccountService,
-    private route: ActivatedRoute,
-    private router: Router,
     private localeService: BsLocaleService,
     private featureService: FeaturesService,
-    notifierService: NotifierService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    private featureComp: FeaturesComponent
   ) {
     defineLocale(this.locale, frLocale);
     this.localeService.use(this.locale);
-    this.notifier = notifierService;
     this.practicianId = this.featureService.getUserId();
     this.messages = this.service.messages;
     this.errors = this.service.errors;
@@ -110,19 +101,9 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
     };
     this.service.updateLeavesInOptionByPractician(model).subscribe(elm => {
       if (elm) {
-        this.notifMessage = this.service.messages.update_leaves_success;
-        this.notifier.show({
-          message: this.notifMessage,
-          type: "info",
-          template: this.customNotificationTmpl
-        });
+        this.featureComp.setNotif(this.service.messages.update_leaves_success);
       } else {
-        this.notifMessage = this.service.messages.update_leaves_fail;
-        this.notifier.show({
-          message: this.notifMessage,
-          type: "error",
-          template: this.customNotificationTmpl
-        });
+        this.featureComp.setNotif(this.service.messages.update_leaves_fail);
         return;
       }
     });

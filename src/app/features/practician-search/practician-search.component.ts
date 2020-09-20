@@ -9,6 +9,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { Speciality } from "@app/shared/models/speciality";
 import { ContactsService } from "../services/contacts.service";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-practician-search",
@@ -49,7 +50,8 @@ export class PracticianSearchComponent implements OnInit {
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private globalService: GlobalService,
-    private contactsService: ContactsService
+    private contactsService: ContactsService,
+    private sanitizer: DomSanitizer
   ) {
     this.texts = practicianSearchService.texts;
     this.addText = this.texts.add_text;
@@ -77,30 +79,24 @@ export class PracticianSearchComponent implements OnInit {
     });
     this.filtredItemsList = this.itemsList;
     this.itemsList.forEach((item) => {
-      if (item.photoId) {
-        item.users.forEach((user) => {
-          this.documentService.downloadFile(item.photoId).subscribe(
+      item.users.forEach((user) => {
+        this.documentService
+          .getDefaultImageEntity(user.id, "ACCOUNT")
+          .subscribe(
             (response) => {
               let myReader: FileReader = new FileReader();
               myReader.onloadend = (e) => {
-                user.img = myReader.result;
+                user.img = this.sanitizer.bypassSecurityTrustUrl(
+                  myReader.result as string
+                );
               };
-              let ok = myReader.readAsDataURL(response.body);
+              let ok = myReader.readAsDataURL(response);
             },
             (error) => {
               user.img = this.avatars.user;
             }
           );
-        });
-      } else {
-        item.users.forEach((user) => {
-          if (user.type == "MEDICAL") {
-            user.img = this.avatars.doctor;
-          } else if (user.type == "SECRETARY") {
-            user.img = this.avatars.secretary;
-          }
-        });
-      }
+      });
     });
   }
   edit() {
@@ -116,6 +112,7 @@ export class PracticianSearchComponent implements OnInit {
     practician.isSeen = true;
     practician.users = [
       {
+        id: message.accountId,
         fullName: message.fullName,
         img: this.avatars.user,
         title: message.title,

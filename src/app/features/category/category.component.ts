@@ -48,7 +48,7 @@ export class CategoryComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        if (event.url === "/mes-categories") {
+        if (event.url === "/mes-categories?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
           this.getMyCategories();
@@ -60,7 +60,7 @@ export class CategoryComponent implements OnInit {
   cardClicked(category) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#categoty").offset().top
+        scrollTop: $("#categoty").offset().top - 100
       },
       1000
     );
@@ -90,7 +90,7 @@ export class CategoryComponent implements OnInit {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#categoty").offset().top
+        scrollTop: $("#categoty").offset().top - 100
       },
       1000
     );

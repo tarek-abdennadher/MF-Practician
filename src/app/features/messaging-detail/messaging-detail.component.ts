@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  AfterViewChecked
-} from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -18,16 +11,15 @@ import { NotifierService } from "angular-notifier";
 import { FeaturesService } from "../features.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
-import { AccountService } from "../services/account.service";
 import { MyPatientsService } from "../services/my-patients.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { FeaturesComponent } from "../features.component";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"]
 })
-export class MessagingDetailComponent implements OnInit, AfterViewChecked {
-  @ViewChild("reply") private myScrollContainer: ElementRef;
+export class MessagingDetailComponent implements OnInit {
   private _destroyed$ = new Subject();
   previousURL = "";
   role: string = "PRACTICIAN";
@@ -85,19 +77,20 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
     private localSt: LocalStorageService,
     private dialogService: DialogService,
     private patientService: MyPatientsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private featureComp: FeaturesComponent
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
   scrollToBottom(): void {
-    try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#reply").offset().top - 100
+      },
+      1000
+    );
   }
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -154,7 +147,6 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
       this.getMessageDetailById(this.idMessage);
     });
     this.featureService.setIsMessaging(true);
-    this.scrollToBottom();
   }
 
   getMessageDetailById(id) {
@@ -433,20 +425,15 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
       .subscribe(
         message => {
           this.links.isImportant = false;
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_success,
-            type: "info",
-            template: this.customNotificationTmpl
-          });
+
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.mark_important_message_success
+          );
         },
         error => {
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_error,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.mark_important_message_error
+          );
         }
       );
   }
@@ -464,23 +451,19 @@ export class MessagingDetailComponent implements OnInit, AfterViewChecked {
           ids.push(this.idMessage);
           this.messagingDetailService.markMessageAsArchived(ids).subscribe(
             resp => {
-              this.router.navigate([this.previousURL], {
-                queryParams: {
-                  status: "archiveSuccess"
-                }
-              });
+              this.router.navigate([this.previousURL]);
+              this.featureComp.setNotif(
+                this.globalService.toastrMessages.archived_message_success
+              );
               if (this.previousURL == "/messagerie-transferes") {
                 this.featureService.numberOfForwarded =
                   this.featureService.numberOfForwarded - 1;
               }
             },
             error => {
-              this.notifier.show({
-                message: this.globalService.toastrMessages
-                  .archived_message_error,
-                type: "error",
-                template: this.customNotificationTmpl
-              });
+              this.featureComp.setNotif(
+                this.globalService.toastrMessages.archived_message_error
+              );
             }
           );
         }

@@ -1,32 +1,13 @@
 <div class="row">
   <div class="col-md-5">
-    <lib-hls-generic-list-links
-      [links]="links"
-      [page]="page"
-      [topText]="topText"
-      [number]="number"
-      [addText]="addText"
-      [types]="mesCategories"
-      (addAction)="addPatient()"
-      (typeAction)="listFilter($event)"
-    >
+    <lib-hls-generic-list-links [links]="links" [page]="page" [topText]="topText" [number]="number" [addText]="addText"
+      [types]="mesCategories" (addAction)="addPatient()" (typeAction)="listFilter($event)">
     </lib-hls-generic-list-links>
-    <lib-hls-generic-list
-      [isCheckbox]="false"
-      [list]="filtredPatients"
-      [imageSource]="imageSource"
-      [isMyPatients]="isMyPatients"
-      (markAsSeenAction)="writeAction($event)"
-      (writeAction)="writeAction($event)"
-      (prohibitAction)="prohibitAction($event)"
-      (editAction)="editAction($event)"
-      (deleteAction)="deleteAction($event)"
-      (archivedAction)="archivedAction($event)"
-      (cardAction)="cardClicked($event)"
-      (upSortAction)="upSortClicked()"
-      (downSortAction)="downSortClicked()"
-      [hasPaging]="true"
-    >
+    <lib-hls-generic-list [caller]="'my-patients'" [isCheckbox]="false" [list]="filtredPatients"
+      [imageSource]="imageSource" [isMyPatients]="isMyPatients" (markAsSeenAction)="writeAction($event)"
+      (writeAction)="writeAction($event)" (prohibitAction)="prohibitAction($event)" (editAction)="editAction($event)"
+      (deleteAction)="deleteAction($event)" (archivedAction)="archivedAction($event)" (cardAction)="cardClicked($event)"
+      (upSortAction)="upSortClicked()" (downSortAction)="downSortClicked()" [hasPaging]="true">
     </lib-hls-generic-list>
   </div>
   <div class="col-md-7 objects" id="appPatientFile">
@@ -34,17 +15,7 @@
   </div>
 </div>
 
-<div
-  class="search-results"
-  infiniteScroll
-  [infiniteScrollDistance]="2"
-  [infiniteScrollThrottle]="50"
-  (scrolled)="onScroll()"
-></div>
-<mat-progress-spinner
-  *ngIf="scroll"
-  diameter="20"
-  mode="indeterminate"
-  value="100"
->
+<div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+  (scrolled)="onScroll()"></div>
+<mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
 </mat-progress-spinner>

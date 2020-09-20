@@ -15,7 +15,7 @@ import { DialogService } from "../services/dialog.service";
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
-  styleUrls: ["./contacts.component.scss"],
+  styleUrls: ["./contacts.component.scss"]
 })
 export class ContactsComponent implements OnInit {
   specialities: Array<Speciality>;
@@ -26,7 +26,7 @@ export class ContactsComponent implements OnInit {
   imageSource: string;
   links = {
     isTypeFilter: true,
-    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
+    isAdd: this.localSt.retrieve("role") == "PRACTICIAN"
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts Pros";
@@ -66,26 +66,6 @@ export class ContactsComponent implements OnInit {
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.featureService.setActiveChild("practician");
-    this.route.queryParams.subscribe((params) => {
-      if (params["status"]) {
-        let notifMessage = "";
-        switch (params["status"]) {
-          case "success": {
-            notifMessage = "Invitation envoyée avec succès";
-            break;
-          }
-          case "failure": {
-            notifMessage = "Erreur survenue lors de l'invitation' du praticien";
-            break;
-          }
-        }
-        this.notifier.show({
-          message: notifMessage,
-          type: "info",
-          template: this.customNotificationTmpl,
-        });
-      }
-    });
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
     this.types = new Array();
@@ -101,9 +81,9 @@ export class ContactsComponent implements OnInit {
 
   getAllContactsForSecretary() {
     this.contactsService.getContactsProForSecretary().subscribe(
-      (contacts) => {
+      contacts => {
         this.users = contacts;
-        this.itemsList = this.users.map((elm) => {
+        this.itemsList = this.users.map(elm => {
           return {
             id: elm.id,
             practicianId: elm.entityId,
@@ -115,8 +95,8 @@ export class ContactsComponent implements OnInit {
                 img: this.avatars.user,
                 title: elm.speciality ? elm.speciality : elm.title,
                 type: "MEDICAL",
-                speciality: elm.speciality ? elm.speciality : "Tout",
-              },
+                speciality: elm.speciality ? elm.speciality : "Tout"
+              }
             ],
             isArchieve: false,
             isImportant: false,
@@ -124,42 +104,42 @@ export class ContactsComponent implements OnInit {
             isViewDetail: false,
             isMarkAsSeen: false,
             isChecked: false,
-            photoId: elm.photoId,
+            photoId: elm.photoId
           };
         });
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
             this.documentService
               .getDefaultImageEntity(user.id, "ACCOUNT")
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = this.avatars.user;
                 }
               );
           });
         });
       },
-      (error) => {
+      error => {
         console.log("en attendant un model de popup à afficher");
       }
     );
   }
   getAllContacts() {
     this.contactsService.getContactsPro().subscribe(
-      (contacts) => {
+      contacts => {
         this.users = contacts;
-        this.itemsList = this.users.map((elm) => {
+        this.itemsList = this.users.map(elm => {
           return {
             id: elm.id,
             practicianId: elm.entityId,
@@ -171,8 +151,8 @@ export class ContactsComponent implements OnInit {
                 img: this.avatars.user,
                 title: elm.speciality ? elm.speciality : elm.title,
                 type: "MEDICAL",
-                speciality: elm.speciality ? elm.speciality : "Tout",
-              },
+                speciality: elm.speciality ? elm.speciality : "Tout"
+              }
             ],
             isArchieve: true,
             isImportant: false,
@@ -181,33 +161,33 @@ export class ContactsComponent implements OnInit {
             isMarkAsSeen: false,
             isContact: true,
             isChecked: false,
-            photoId: elm.photoId,
+            photoId: elm.photoId
           };
         });
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
             this.documentService
               .getDefaultImageEntity(user.id, "ACCOUNT")
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = this.avatars.user;
                 }
               );
           });
         });
       },
-      (error) => {
+      error => {
         console.log("en attendant un model de popup à afficher");
       }
     );
@@ -218,18 +198,18 @@ export class ContactsComponent implements OnInit {
   }
 
   performFilter(filterBy: string) {
-    return this.itemsList.filter((item) =>
+    return this.itemsList.filter(item =>
       item.users[0].speciality.includes(filterBy)
     );
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = true;
     });
   }
   deselectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = false;
     });
   }
@@ -240,10 +220,10 @@ export class ContactsComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           const practicianIds = [];
-          this.itemsList.forEach((a) => {
+          this.itemsList.forEach(a => {
             if (a.isChecked) {
               practicianIds.push(a.id);
             }
@@ -251,7 +231,7 @@ export class ContactsComponent implements OnInit {
           if (practicianIds.length > 0) {
             this.contactsService
               .deleteMultiplePracticianContactPro(practicianIds)
-              .subscribe((res) => {
+              .subscribe(res => {
                 this.deleteItemFromList(practicianIds);
               });
           }
@@ -265,7 +245,7 @@ export class ContactsComponent implements OnInit {
       1000
     );
     this.router.navigate([
-      "mes-contacts-pro/praticien-detail/" + item.practicianId,
+      "mes-contacts-pro/praticien-detail/" + item.practicianId
     ]);
   }
   markAsSeenClicked(item) {
@@ -278,14 +258,14 @@ export class ContactsComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           const practicianIds = [];
           practicianIds.push(event.id);
           if (practicianIds.length > 0) {
             this.contactsService
               .deleteMultiplePracticianContactPro(practicianIds)
-              .subscribe((res) => {
+              .subscribe(res => {
                 this.deleteItemFromList(practicianIds);
               });
           }
@@ -294,12 +274,12 @@ export class ContactsComponent implements OnInit {
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe(
-      (specialitiesList) => {
+      specialitiesList => {
         this.specialities = specialitiesList;
-        this.types = this.specialities.map((s) => s.name);
+        this.types = this.specialities.map(s => s.name);
         this.types.unshift("Tout");
       },
-      (error) => {
+      error => {
         console.log("en attendant un model de popup à afficher");
       }
     );
@@ -312,16 +292,16 @@ export class ContactsComponent implements OnInit {
     this.router.navigate(["mes-contacts-pro/invitation"]);
   }
   selectItem(event) {
-    this.selectedObjects = event.filter((a) => a.isChecked == true);
+    this.selectedObjects = event.filter(a => a.isChecked == true);
   }
   BackButton() {
     this._location.back();
   }
   deleteItemFromList(ids) {
     if (ids && ids.length > 0) {
-      this.itemsList = this.itemsList.filter((item) => ids.includes(item.id));
+      this.itemsList = this.itemsList.filter(item => ids.includes(item.id));
       this.filtredItemsList = this.filtredItemsList.filter(
-        (item) => !ids.includes(item.id)
+        item => !ids.includes(item.id)
       );
     }
   }
