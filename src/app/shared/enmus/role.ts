@@ -1,0 +1,9 @@
+export enum Role {
+    PATIENT,
+    PRACTICIAN,
+    SECRETARY,
+    OPERATOR,
+    SUPERVISOR,
+    COMMERCIAL,
+    ADMINISTRATOR
+};

@@ -1,0 +1,105 @@
+/* Informations */
+.Rectangle-body {
+  background-color: rgba(243, 243, 243, 0.5);
+  margin-left: 50px;
+  margin-right: 50px;
+}
+.chart {
+  height: 500px;
+  min-height: 500px;
+  max-height: 500px;
+}
+.border_ {
+  border-right: 2px solid #e1e8f3;
+}
+
+.center_ {
+  margin: 0 auto;
+  margin-top: 5%;
+  width: 600px;
+}
+
+.chart-title {
+  font-family: Montserrat-Medium;
+  font-size: 30px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.42px;
+  text-align: center;
+  margin: 0 auto;
+  color: #4a4a4a;
+}
+
+@media (max-width: 1920px) {
+  .margin-right_ {
+    margin-left: 31.5%;
+  }
+}
+
+@media (max-width: 1600px) {
+  .margin-right_ {
+    margin-left: 33.5%;
+  }
+}
+
+@media (max-width: 1536px) {
+  .margin-right_ {
+    margin-left: 34%;
+  }
+}
+
+@media (max-width: 1440px) {
+  .margin-right_ {
+    margin-left: 35%;
+  }
+}
+@media (max-width: 1366px) {
+  .margin-right_ {
+    margin-left: 34.5%;
+  }
+}
+
+@media (max-width: 1280px) {
+  .Rectangle-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .margin-right_ {
+    margin-left: 34.5%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .margin-right_ {
+    margin-left: 34.5%;
+  }
+}
+
+@media (max-width: 800px) {
+  .margin-right_ {
+    margin-left: 37%;
+  }
+}
+
+@media (max-width: 768px) {
+  .margin-right_ {
+    margin-left: 37.5%;
+  }
+}
+
+@media (max-width: 601px) {
+  .margin-right_ {
+    margin-left: 23%;
+  }
+}
+
+@media (max-width: 575px) {
+  .border_ {
+    border-right: 0;
+  }
+  .margin-right_ {
+    margin-left: 0;
+  }
+}

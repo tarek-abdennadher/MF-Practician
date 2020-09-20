@@ -1,0 +1,26 @@
+<div class="group-element">
+  <span class="title-span"><i class="fas fa-times-circle"></i></span>
+</div>
+<br />
+<div class="group-element">
+  <p class="content-p">
+    {{ data.message }}
+  </p>
+  <br />
+  <button
+    mat-flat-button
+    id="yes-button"
+    [mat-dialog-close]="true"
+    class="btn-space btn"
+  >
+    Confirmer
+  </button>
+  <button
+    mat-flat-button
+    id="no-button"
+    [mat-dialog-close]="false"
+    class="btn-space btn"
+  >
+    Annuler
+  </button>
+</div>

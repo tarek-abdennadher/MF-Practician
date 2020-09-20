@@ -1,0 +1,131 @@
+<br />
+<div class="card">
+    <br />
+    <div class="col-md-12">
+        <div class="form-group title">
+            <hr width="3%" color="#ff0063" align="left" />
+            <i class="far fa-user-md"><span>&nbsp;&nbsp;{{ messages.my_contacts }}</span></i>
+        </div>
+    </div>
+    <br />
+    <a *ngIf="failureAlert" id="FailureAlert" (click)="close()"
+        class="alert alert-danger alert-dismissible fade show pointer" role="alert">
+        {{ messages.phone_error }}
+        <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </a>
+    <br />
+    <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group row">
+                        <label for="last_name" class="col-sm-3 col-form-label">{{
+                messages.last_name
+              }}</label>
+                        <div class="col-sm-9">
+                            <input type="text" formControlName="last_name" class="form-control" id="last_name"
+                                [ngClass]="{
+                    'is-invalid': submitted && ctr.last_name.errors
+                  }" />
+                            <div *ngIf="submitted && ctr.last_name.errors" class="invalid-feedback">
+                                <div *ngIf="ctr.last_name.errors.required">
+                                    {{ messages.required }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="first_name" class="col-sm-3 col-form-label">{{
+                messages.first_name
+              }}</label>
+                        <div class="col-sm-9">
+                            <input type="text" formControlName="first_name" class="form-control" id="first_name"
+                                [ngClass]="{
+                    'is-invalid': submitted && ctr.first_name.errors
+                  }" />
+                            <div *ngIf="submitted && ctr.first_name.errors" class="invalid-feedback">
+                                <div *ngIf="ctr.first_name.errors.required">
+                                    {{ messages.required }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="address" class="col-sm-3 col-form-label">{{ messages.function }}</label>
+                        <div class="col-sm-9">
+                            <input type="text" formControlName="fonction" class="form-control" id="fonction"
+                                [ngClass]="{ 'is-invalid': submitted && ctr.fonction.errors }" />
+                            <div *ngIf="submitted && ctr.fonction.errors" class="invalid-feedback">
+                                <div *ngIf="ctr.fonction.errors.required">
+                                    {{ messages.required }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-3 col-form-label">{{ messages.email }}</label>
+                        <div class="col-sm-9">
+                            <input type="text" formControlName="email" class="form-control" id="email"
+                                [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }" />
+                            <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+                                <div *ngIf="ctr.email.errors.required">
+                                    {{ messages.required }}
+                                </div>
+                                <div *ngIf="ctr.email.errors.email">
+                                    {{ messages.email_invalid_format }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="phone" class="col-sm-3 col-form-label">{{ messages.phone }}</label>
+                        <div class="col-sm-8">
+                            <international-phone-number class="form-control phone" id="phone" formControlName="phone"
+                                placeholder="Téléphone" [maxlength]="20" [defaultCountry]=""
+                                [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }">
+                            </international-phone-number>
+                            <div *ngIf="submitted && ctr.phone.errors" class="invalid-feedback">
+                                <div *ngIf="ctr.phone.errors.required">
+                                    {{ messages.required }}
+                                </div>
+                            </div>
+                            <div *ngIf="ctr.phone.invalid" class="invalid-feedback">
+                                {{ messages.invalid_phone }}
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button (click)="addPhone()" class="btn btn-xs btn-icon">
+                                <i class="far fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label *ngIf="isLabelShow" for="other_phone" class="col-sm-3 col-form-label">{{
+                messages.other_phone
+              }}</label>
+                        <div id="otherPhone" class="col-sm-9">
+                            <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)"
+                                [addnewPhone]="addnewPhone" (validPhones)="submitPhones($event)">
+                            </int-phone>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row justify-content-center">
+            <button (click)="submit()" type="submit" class="btn btn-primary mr-2">
+                <i class="fal fa-save">&nbsp;&nbsp; {{ messages.save }}</i>
+            </button>
+            <button (click)="cancel()" class="btn btn-success">
+                <i class="far fa-undo-alt">&nbsp;&nbsp;{{ messages.cancel }}</i>
+            </button>
+        </div>
+
+        <br />
+    </form>
+</div>

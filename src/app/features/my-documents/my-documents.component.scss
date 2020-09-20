@@ -1,0 +1,63 @@
+.bloc-links {
+  margin-left: -30px;
+}
+.bloc-search {
+  margin-left: 15px;
+}
+
+#patients {
+  outline: 0px !important;
+  -webkit-appearance: none;
+  box-shadow: none !important;
+}
+#documents {
+  margin-left: 15px;
+  margin-right: 5px;
+}
+#documentType,
+#destination {
+  margin: 10px;
+  width: 200px;
+  background-color: white;
+}
+.p-2 {
+  margin-right: 28px;
+}
+
+.form-inline {
+  align-items: flex-start;
+}
+.list {
+  margin-top: 140px;
+}
+select {
+  background-color: white;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  line-height: 1.5em;
+  padding: 0.5em 3.5em 0.5em 1em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: #6e819bd4 !important;
+}
+select.arrows {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA3klEQVRIS+3VMU9CMRTF8d8zBL+aizoQFhx0kUk33RzdYMNFXUFnYeGrYYyaJiUxJHDLSxodbNKpfeffc9/pbaPyaCrr+3OA++z4rtT5Pg5GuMnCY9yWQEoBE1xhlUUP8YDrCBIB0vojLvGO0yz4hm4JJAKcYYoPHGOZAUdYoIMBXrc5iQAHeMlzviFygj7O8dkWEJU4XI8chALRhn9AVKHf70VRTHu4wFfbmKZLNKt50dLBnna0imcMd/2I0phWa3Y/D1e1Xa9BCZJG0VuQNpaWKMx72xS1Fl5/WN3BN+AgJhnZQlq4AAAAAElFTkSuQmCC");
+  background-position: calc(100% - 0.5rem), 100% 0;
+  background-size: 1.5em 1.5em;
+  background-repeat: no-repeat;
+}
+
+select.arrows:focus {
+  border-color: red;
+  outline: 0;
+}
+
+@media only screen and (max-width: 767px) {
+  .list {
+    margin-top: 10px;
+  }
+}

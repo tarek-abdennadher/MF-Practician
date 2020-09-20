@@ -1,0 +1,268 @@
+$sapphire: #1a56a7;
+$light-fill: #ffffff;
+.label {
+  height: 19px;
+  font-size: 16px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #b7b7b7;
+  padding-top: 11px;
+  margin-bottom: 0;
+}
+
+.label-free-object {
+  height: 19px;
+  font-size: 16px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #b7b7b7;
+  margin-bottom: 0;
+}
+
+#send-button,
+#send-button-instruction {
+  width: 142px;
+  height: 46px;
+  border-radius: 6px;
+  font-weight: 1000;
+  background-color: $sapphire;
+}
+.bi {
+  cursor: pointer;
+}
+.action-btn {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+::ng-deep {
+  .invalid {
+    .selected-list .c-btn {
+      border: solid 0.5px !important;
+      border-color: red !important;
+    }
+    .ck.ck-editor {
+      border: solid 0.5px;
+      border-color: red;
+    }
+    border: solid 0.5px !important;
+    border-color: red !important;
+  }
+}
+
+a {
+  color: #8ab4f8;
+}
+::deep {
+  .notifier__container {
+    color: #fff;
+  }
+}
+.file-clip {
+  align-items: center;
+  display: flex;
+}
+.loading {
+  color: black;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  text-align: center;
+}
+
+#loading-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+}
+#card-gif {
+  border-radius: 28px;
+}
+
+#attachement {
+  //width: 205px;
+  height: 30px;
+  border-radius: 15px;
+  border: solid 1px $sapphire;
+  background-color: rgba(198, 213, 233, 0.3);
+  position: absolute;
+  bottom: 8px;
+  width: 100% !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-4.col-sm-5.col-md-5.attach {
+  padding: 0;
+}
+
+#attachement-label {
+  text-align: center;
+  color: $sapphire;
+  font-weight: 1000;
+  font-size: 12px;
+}
+
+#attachement-button,
+#clear-button {
+  color: rgba(74, 74, 74, 0.8);
+}
+
+#input-free-object {
+  margin-left: 8px;
+}
+
+::ng-deep .mat-tab-group-inverted-header .mat-tab-header {
+  border-top: none !important;
+  border-bottom: none;
+  margin-top: 5px !important;
+  //padding-left: 34px !important;
+}
+
+::ng-deep .mat-ink-bar {
+  background-color: #1a56a7 !important;
+  height: 5px !important;
+  //margin-left: 6px;
+}
+
+::ng-deep .mat-tab-label-active {
+  color: #1a56a7 !important;
+  font-family: Montserrat, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.67px !important;
+}
+
+@media (max-width: 720px) {
+  #attachement {
+    width: unset;
+  }
+
+  #attachement-label {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  #send-button {
+    width: unset;
+  }
+
+  ::ng-deep {
+    .ck-editor__editable {
+      height: unset !important;
+    }
+  }
+}
+
+.modal-dialog {
+  width: 580px !important;
+  max-width: 580px !important;
+  border-radius: 6px;
+}
+.modal-content {
+  box-shadow: 0 2px 20px 6px rgba(56, 96, 165, 0.3);
+  background-color: $light-fill;
+}
+.modal-header {
+  justify-content: center;
+  align-items: center;
+  border-bottom: 0 none;
+}
+
+.modal-footer {
+  justify-content: center;
+  align-items: center;
+  border-top: 0 none;
+}
+.modal-body {
+  font-family: Montserrat !important;
+  font-size: 16px !important;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.2px;
+  text-align: center;
+  color: #1a56a7;
+}
+.close-icon {
+  cursor: pointer;
+  color: $sapphire;
+  font-size: 33px;
+}
+.btn.btn-ok {
+  width: 120px;
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border-color: #1a56a7;
+  background-color: #1a56a7;
+  color: white;
+}
+.btn.btn-cancel {
+  width: 120px;
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  //Button CSS
+  height: 40px;
+  color: #1a56a7;
+  border-radius: 6px;
+  border-color: #1a56a7;
+}
+.confirm {
+  width: auto !important;
+}
+.checkbox-div {
+}
+.checkbox-input {
+  width: 16px !important;
+  height: 16px !important;
+  vertical-align: bottom !important;
+  position: relative !important;
+  *overflow: hidden !important;
+}
+.checkbox-label {
+  display: block !important;
+}
+
+@media (min-width: 400px) and(max-width: 580px) {
+  ::ng-deep {
+    .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+      border-color: var(--ck-color-base-border);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  }
+}
+
+@media (max-width: 399px) {
+  ::ng-deep {
+    .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+      border-color: var(--ck-color-base-border);
+      max-height: 85px;
+      overflow-y: auto;
+    }
+  }
+}

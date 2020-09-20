@@ -1,0 +1,180 @@
+<lib-hlsLinks
+  class="links"
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  [imageSource]="imageSource"
+  [person]="person"
+  [paginationText]="this.searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !this.searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !this.searchContext"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (importantAction) = "importantAction()"
+  (filterAction)="filterActionClicked($event)"
+  (refreshMessagingListAction)="refreshMessagingList()"
+  (notSeenAction) = "notSeenActionClicked()"
+  (checkSeenMessagesAction) = "checkSeenMessagingList()"
+  (checkNotSeenMessagesAction) = "checkNotSeenMessagingList()"
+  (checkImportantMessagesAction) = "checkImportantMessagingList()"
+></lib-hlsLinks>
+
+<div class="card rectangle-custom">
+  <div class="card-body custom-card-message">
+    <mat-tab-group
+    *ngIf="!isSecretary"
+    class="links" mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)" [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="TousMessages" >
+        <ng-template mat-tab-label>
+          <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
+          <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          [hasPaging]="true"
+          (cardAction)="cardClicked($event)"
+          (markAsSeenAction)="markMessageAsSeen($event)"
+          (archieveAction)="archieveMessage($event)"
+          (selectItemAction)="selectItem($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+      <mat-tab label="Secrétaire">
+        <ng-template mat-tab-label>
+          <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
+          <span (click)="filterActionClicked('secretary')">Secrétaire</span>
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          [hasPaging]="true"
+          (cardAction)="cardClicked($event)"
+          (markAsSeenAction)="markMessageAsSeen($event)"
+          (archieveAction)="archieveMessage($event)"
+          (selectItemAction)="selectItem($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+      <mat-tab label="Patients" (click)="filterActionClicked('patient')">
+        <ng-template mat-tab-label>
+          <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
+          Patients
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          [hasPaging]="true"
+          (cardAction)="cardClicked($event)"
+          (markAsSeenAction)="markMessageAsSeen($event)"
+          (archieveAction)="archieveMessage($event)"
+          (selectItemAction)="selectItem($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+      <mat-tab label="Praticiens">
+        <ng-template mat-tab-label>
+          <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
+          Praticiens
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          [hasPaging]="true"
+          (cardAction)="cardClicked($event)"
+          (markAsSeenAction)="markMessageAsSeen($event)"
+          (archieveAction)="archieveMessage($event)"
+          (selectItemAction)="selectItem($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+    </mat-tab-group>
+
+    <lib-hlsMessagingList class="mobile-links"
+      *ngIf="!loading"
+      [list]="filtredItemList"
+      [hasPaging]="true"
+      (cardAction)="cardClicked($event)"
+      (markAsSeenAction)="markMessageAsSeen($event)"
+      (archieveAction)="archieveMessage($event)"
+      (selectItemAction)="selectItem($event)"
+      [imageSource]="imageSource"
+      [hasPaging]="true"
+      (upSortAction)="upSortClicked()"
+      (downSortAction)="downSortClicked()"
+    ></lib-hlsMessagingList>
+
+    <lib-hlsMessagingList
+      class="links"
+      *ngIf="!loading && isSecretary"
+      [list]="filtredItemList"
+      [hasPaging]="true"
+      (cardAction)="cardClicked($event)"
+      (markAsSeenAction)="markMessageAsSeen($event)"
+      (archieveAction)="archieveMessage($event)"
+      (selectItemAction)="selectItem($event)"
+      [imageSource]="imageSource"
+      [hasPaging]="true"
+      (upSortAction)="upSortClicked()"
+      (downSortAction)="downSortClicked()"
+    ></lib-hlsMessagingList>
+  </div>
+</div>
+
+
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
+</ng-template>
+
+<mat-progress-spinner *ngIf="loading" diameter="20"
+mode="indeterminate" value="100"> </mat-progress-spinner>
+<lib-hlsLinks
+  class="mobile-links"
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  [imageSource]="imageSource"
+  [person]="person"
+  [paginationText]="pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
+  [isNextPageAllowed]="pagination.hasNext && !loading"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (importantAction) = "importantAction()"
+  (filterAction)="filterActionClicked($event)"
+  (refreshMessagingListAction)="refreshMessagingList()"
+  (notSeenAction) = "notSeenActionClicked()"
+  (checkSeenMessagesAction) = "checkSeenMessagingList()"
+  (checkNotSeenMessagesAction) = "checkNotSeenMessagingList()"
+  (checkImportantMessagesAction) = "checkImportantMessagingList()"
+></lib-hlsLinks>

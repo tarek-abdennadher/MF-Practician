@@ -1,0 +1,27 @@
+<div class="form-inline">
+  <div class="col-md-5">
+    <lib-hls-generic-list-links
+      [links]="links"
+      [types]="documentTypes"
+      [page]="page"
+      [topText]="topText"
+      [number]="number"
+      [backButton]="backButton"
+      (backButtonAction)="goBack()"
+      (typeAction)="filter($event)"
+      (searchAction)="searchAction($event)"
+    >
+    </lib-hls-generic-list-links>
+    <lib-hls-generic-list
+      [isCheckbox]="isCheckbox"
+      [list]="itemsList"
+      (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)"
+      [caller]="'myDocuments'"
+      [imageSource]="imageSource"
+    ></lib-hls-generic-list>
+  </div>
+  <div id="documentRecu" class="col-md-7 list">
+    <router-outlet></router-outlet>
+  </div>
+</div>

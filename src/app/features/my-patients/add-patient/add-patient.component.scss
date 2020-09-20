@@ -1,0 +1,68 @@
+$color-helssy-grey: #6e819b;
+$helsey_blue: #1a56a7;
+$input-color: #f1f1f1;
+
+.title {
+  color: $color-helssy-grey;
+  font-size: 18px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Montserrat" !important;
+  i,
+  hr {
+    margin-left: 10px;
+  }
+  i {
+    font-size: 17px;
+  }
+  span {
+    font-size: 17px !important;
+    line-height: 0px !important;
+    letter-spacing: -0.75px;
+    color: $color-helssy-grey;
+    font-family: "Montserrat-Medium" !important;
+  }
+}
+.input-icons i {
+  position: absolute;
+}
+.icon {
+  color: $color-helssy-grey;
+  width: 40px;
+  text-align: right;
+  font-size: 17px;
+  padding: 12px;
+}
+.calender.form-control {
+  padding: 6px 6px 6px 50px !important;
+}
+
+label {
+  font-size: 15px !important;
+  color: $color-helssy-grey;
+  font-family: "Montserrat-Medium" !important;
+}
+input,
+select {
+  border-color: $input-color;
+  background-color: $input-color;
+}
+
+::ng-deep {
+  international-phone-number .form-control {
+    height: 30px;
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+  }
+  international-phone-number .dropdown button.dropbtn.btn,
+  button.dropbtn.btn:hover {
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+    padding: 6px;
+    height: 30px;
+  }
+  international-phone-number .dropdown button.dropbtn.btn .arrow-down {
+    border-bottom: #f1f1f1;
+  }
+}

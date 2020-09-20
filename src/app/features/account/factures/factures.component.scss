@@ -1,0 +1,26 @@
+$color-helssy-blue: #1a56a7;
+$color-helssy-grey: #6e819bd4;
+$color-white: #ffffff;
+
+.title {
+  color: $color-helssy-grey;
+  font-size: 18px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Montserrat" !important;
+  i,
+  hr {
+    margin-left: 10px;
+  }
+  i {
+    font-size: 17px;
+  }
+  span {
+    font-size: 17px !important;
+    line-height: 0px !important;
+    letter-spacing: -0.75px;
+    color: $color-helssy-grey;
+    font-family: "Montserrat-Medium" !important;
+  }
+}

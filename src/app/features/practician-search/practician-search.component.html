@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-5">
+    <lib-hls-generic-list-links
+      [links]="links"
+      [types]="types"
+      [topText]="topText"
+      [addText]="addText"
+      [page]="page"
+      [number]="number"
+      (addAction)="sendInvitation()"
+      (typeAction)="listFilter($event)"
+    >
+    </lib-hls-generic-list-links>
+    <lib-hls-generic-list
+      [list]="filtredItemsList"
+      [isMyPatients]="false"
+      (cardAction)="cardClicked($event)"
+      (detailAction)="cardClicked($event)"
+      (selectItemAction)="selectItem($event)"
+      [imageSource]="imageSource"
+      [isCheckbox]="false"
+    >
+    </lib-hls-generic-list>
+  </div>
+  <div id="contactPro" class="col-md-7 objects">
+    <!-- content for object details -->
+    <router-outlet></router-outlet>
+  </div>
+</div>

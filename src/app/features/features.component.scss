@@ -1,0 +1,57 @@
+* {
+  -webkit-transition: margin-left 0.2s ease-in-out;
+  -moz-transition: margin-left 0.2s ease-in-out;
+  -ms-transition: margin-left 0.2s ease-in-out;
+  -o-transition: margin-left 0.2s ease-in-out;
+  transition: margin-left 0.2s ease-in-out;
+}
+.bg-color-grey {
+  background-color: #fbfbfb;
+  padding-top: 1px;
+}
+
+.main-container {
+  margin-left: 374px;
+  margin-top: 100px;
+  padding: 15px;
+  -ms-overflow-x: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: relative;
+  overflow: hidden;
+}
+.collapsed {
+  margin-left: 60px;
+}
+@media screen and (max-width: 1183px) {
+  .main-container {
+    margin-left: 0px !important;
+    margin-top: 70px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .main-container {
+    margin-top: 120px;
+  }
+}
+
+@media print {
+  .main-container {
+    margin-top: 0px !important;
+    margin-left: 0px !important;
+  }
+}
+::ng-deep .non-clickable {
+  font-weight: normal !important;
+}
+::ng-deep .list-group-item {
+  font-weight: normal !important;
+}
+
+@media only screen and (max-width: 899px) {
+  .main-container {
+    padding: unset;
+    margin-top: 114px;
+  }
+}

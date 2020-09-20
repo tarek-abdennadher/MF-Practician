@@ -1,0 +1,113 @@
+$helssy_white: #ffffff;
+/* Informations */
+.Rectangle-body {
+  background-color: rgba(243, 243, 243, 0.5);
+  margin-left: 50px;
+  margin-right: 50px;
+  min-height: 946px;
+}
+@media screen and (min-width: 540px) {
+  .Rectangle-inner-body {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+}
+/* Form */
+.form-control {
+  border-radius: 6px;
+  background-color: $helssy_white;
+  border-color: $helssy_white;
+}
+
+.col-form-label {
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: #4a4a4a;
+}
+input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+}
+input[type="checkbox"]:checked,
+input[type="checkbox"]:focus {
+  background-color: #1a56a7;
+}
+.btn.btn-primary {
+  // Text CSS
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 1000;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  //Button CSS
+  height: 40px;
+  border-radius: 6px;
+  border-color: transparent;
+  background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
+  width: 169px;
+}
+.alert.alert-danger {
+  font-family: Montserrat-Medium;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.18px;
+  color: rgba(248, 46, 108, 0.9);
+  //Button CSS
+  border-radius: 6px;
+  border: solid 1px #f82e6c;
+  background-color: #ffffff;
+}
+// placeholder CSS
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  font-family: Montserrat-Medium;
+  font-size: 12px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+@media (max-width: 1280px) {
+  .Rectangle-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

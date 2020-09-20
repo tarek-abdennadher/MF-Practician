@@ -1,0 +1,63 @@
+<div class="bg-color-grey">
+  <lib-hlsNavBar
+    [fullName]="featuresService.fullName"
+    [imageSource]="featuresService.imageSource"
+    [activatedSearch]="featuresService.activeChild"
+    (accountButton)="openAccountInterface()"
+    (signOut)="signOutAction()"
+    (searchAction)="searchActionClicked($event)"
+    [listNotifications]="featuresService.listNotifications"
+    (notificationsOpened)="openNotifications()"
+    (notificationClosed)="closeNotification()"
+    (notificationSelected)="selectNotification($event)"
+    (notificationsViewed)="markNotificationsAsViewed($event)"
+    (logoAction)="logoClicked()"
+    (resetSearchInputAction)="resetInputs()"
+  ></lib-hlsNavBar>
+  <lib-hlsSideBar
+    [practicianInbox]="myPracticians"
+    (practicianInboxEvent)="displayInboxOfPracticiansAction($event)"
+    [inboxNumber]="inboxNumber"
+    [forwardedNumber]="featuresService.numberOfForwarded"
+    [archieveNumber]="featuresService.numberOfArchieve"
+    [acceptedNumber]="featuresService.numberOfAccepted"
+    [pendingNumber]="numberOfPending"
+    [prohibitNumber]="featuresService.numberOfProhibited"
+    [archivedNumber]="featuresService.numberOfArchivedPatient"
+    [listNotifications]="featuresService.listNotifications"
+    [role]="role"
+    [fullName]="fullname"
+    [imageSource]="featuresService.imageSource"
+    (inboxEvent)="displayInboxAction()"
+    (sendEvent)="displaySendAction()"
+    (signOut)="signOutAction()"
+    (sentEvent)="displaySentAction()"
+    (forwardedEvent)="displayForwardedAction()"
+    (archieveEvent)="displayArchieveAction()"
+    (myPatientsEvent)="displayMyPatientsAction($event)"
+    (myProContactsEvent)="displayMyMedicalsAction()"
+    (myMedicalsEvent)="displayMyProContactsAction()"
+    (myDocumentsEvent)="displayMyDocumentsAction()"
+    (helpEvent)="displayHelpAction()"
+    (mycategoriesEvent)="myCategories()"
+    (myObjectsEvent)="myObjects()"
+  >
+  </lib-hlsSideBar>
+  <app-new-message-widget></app-new-message-widget>
+  <section
+    id="main-container"
+    class="main-container"
+    [ngClass]="{ collapsed: collapedSideBar }"
+  >
+    <!-- components will be implemented here -->
+    <router-outlet></router-outlet>
+    <app-new-message-mobile *ngIf="messaging === true"></app-new-message-mobile>
+  </section>
+</div>
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
+</ng-template>

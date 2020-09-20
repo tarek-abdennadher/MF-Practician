@@ -1,0 +1,21 @@
+<lib-hls-new-message-detail
+  [imageSource]="imageSource"
+  [messagingDetail]="messagingDetail"
+  [body]="bodyObs"
+  [role]="role"
+  [isReply]="true"
+  [senderRolePatient]="messagingDetail.sender.role == 'PATIENT'"
+  [objectsList]="objectsList"
+  [toList]="toList"
+  [refuseResponse]="false"
+  [forwardedResponse]="forwardedResponse"
+  (sendAction)="replyMessage($event)"
+></lib-hls-new-message-detail>
+<ngx-spinner [fullScreen]="true" type="none" size="medium">
+  <div class="card" id="card-gif">
+    <div class="card-body">
+      <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'" />
+      <p class="loading">Envoi du message en cours...</p>
+    </div>
+  </div>
+</ngx-spinner>

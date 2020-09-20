@@ -1,0 +1,94 @@
+#documents {
+  margin-left: 15px;
+  margin-right: 5px;
+}
+#documentType,
+#destination {
+  margin: 10px;
+  width: 200px;
+  background-color: white;
+  border: 0;
+}
+.p-2 {
+  margin-right: 28px;
+}
+.form-control {
+  background-color: #f1f1f1;
+}
+.top {
+  padding: 18px 13px 0px 18px;
+}
+.text-bold {
+  text-align: left;
+  font-weight: bold;
+  letter-spacing: -0.66px;
+  color: #1a56a7;
+  opacity: 1;
+}
+::ng-deep {
+  .card-body .form-inline .col-md-12 {
+    padding: 0 !important;
+  }
+}
+.titles {
+  align-items: center !important;
+}
+#cercle {
+  width: 26px;
+  height: 26px;
+  border-radius: 20px;
+  background: #1a56a7;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.fa-file-plus {
+  color: white;
+  font-size: 13px;
+}
+.Rectangle {
+  border-radius: 6px;
+  border-bottom: none;
+  box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
+  background-color: white !important;
+  margin-left: 25px;
+  margin-right: 50px;
+}
+.card {
+  border: 0px;
+  box-shadow: 0 0 14px 2px rgba(56, 96, 165, 0.1);
+  background-color: rgba(243, 243, 243, 0.5);
+  display: inline !important;
+}
+.card-body {
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: rgba(243, 243, 243, 0.5) !important;
+  padding: 0 !important;
+}
+select {
+  background-color: white;
+  border: thin solid grey;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  line-height: 1.5em;
+  padding: 0.5em 3.5em 0.5em 1em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: #6e819bd4;
+}
+select.arrows {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA3klEQVRIS+3VMU9CMRTF8d8zBL+aizoQFhx0kUk33RzdYMNFXUFnYeGrYYyaJiUxJHDLSxodbNKpfeffc9/pbaPyaCrr+3OA++z4rtT5Pg5GuMnCY9yWQEoBE1xhlUUP8YDrCBIB0vojLvGO0yz4hm4JJAKcYYoPHGOZAUdYoIMBXrc5iQAHeMlzviFygj7O8dkWEJU4XI8chALRhn9AVKHf70VRTHu4wFfbmKZLNKt50dLBnna0imcMd/2I0phWa3Y/D1e1Xa9BCZJG0VuQNpaWKMx72xS1Fl5/WN3BN+AgJhnZQlq4AAAAAElFTkSuQmCC");
+  background-position: calc(100% - 0.5rem), 100% 0;
+  background-size: 1.5em 1.5em;
+  background-repeat: no-repeat;
+}
+
+select.arrows:focus {
+  border-color: red;
+  outline: 0;
+}

@@ -1,0 +1,72 @@
+$color-helssy-blue: #1a56a7;
+$color-helssy-grey: #344448;
+$color-white: #ffffff;
+$helssy-grey: #6e819bd4;
+$input-color: #f1f1f1;
+.title {
+  color: $color-helssy-grey;
+  font-size: 18px !important;
+  line-height: 0px !important;
+  letter-spacing: -0.75px;
+  color: $color-helssy-grey;
+  font-family: "Montserrat-Medium" !important;
+  margin-left: 15px;
+  i,
+  hr {
+    margin-left: 10px;
+  }
+  i {
+    font-size: 17px;
+  }
+  span {
+    font-family: "Montserrat-Medium" !important;
+    font-size: 28px !important;
+    font-weight: 1000 !important;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal !important;
+    letter-spacing: normal !important;
+    color: $color-helssy-grey;
+  }
+}
+
+.inline {
+  display: flex !important;
+  align-items: center;
+  font-family: "Montserrat";
+  text-align: center;
+  color: $helssy-grey !important;
+  display: inline-block;
+  margin-left: 30px;
+  color: $helssy-grey !important;
+  text-decoration: none;
+  font-size: 10px;
+  line-height: 14px;
+  cursor: pointer;
+}
+.fa,
+.far,
+.fal,
+.fas {
+  font-size: 23px;
+  line-height: 20px;
+  color: $color-helssy-blue;
+}
+#card {
+  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.col-form-label {
+  font-size: 16px !important;
+  color: $color-helssy-blue;
+  font-family: "Montserrat-SemiBold" !important;
+  display: inline-flex;
+}
+.form-group {
+  margin-bottom: 36px;
+  margin-top: -6px;
+}

@@ -1,0 +1,33 @@
+<lib-hlsLinks
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [backButton]="backButton"
+  (backButtonAction)="BackButton()"
+  [links]="links"
+  [paginationText]="searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
+  (refreshMessagingListAction)="refreshMessagingList()"
+  (nextPageAction) = "nextPageActionClicked()"
+  (previousPageAction) = "previousPageActionClicked()"
+></lib-hlsLinks>
+<div class="card rectangle-custom">
+  <div class="card-body custom-card-message">
+<lib-hlsMessagingList *ngIf="!loading"
+  [list]="filtredItemList"
+  (cardAction)="cardClicked($event)"
+  [isCheckbox]="false"
+  [imageSource]="imageSource"
+  [hasPaging]="true"
+  (upSortAction)="upSortClicked()"
+  (downSortAction)="downSortClicked()"
+  [caller]="'archieve'"
+></lib-hlsMessagingList>
+  </div>
+</div>
+
+<mat-progress-spinner *ngIf="loading" diameter="20"
+mode="indeterminate" value="100"> </mat-progress-spinner>
+
