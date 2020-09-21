@@ -65,6 +65,7 @@ export class MessagingDetailComponent implements OnInit {
   };
   showRefuseForTls: boolean;
   public patientFileId: number;
+  context: string;
   constructor(
     private _location: Location,
     private router: Router,
@@ -95,6 +96,7 @@ export class MessagingDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       if (params["context"]) {
+        this.context = params["context"];
         switch (params["context"]) {
           case "sent": {
             this.isFromInbox = false;
@@ -141,14 +143,14 @@ export class MessagingDetailComponent implements OnInit {
           }
         }
       }
+      this.route.params.subscribe(params => {
+        this.idMessage = params["id"];
+        this.getMessageDetailById(this.idMessage);
+      });
+      this.featureService.setIsMessaging(true);
     });
-    this.route.params.subscribe(params => {
-      this.idMessage = params["id"];
-      this.getMessageDetailById(this.idMessage);
-    });
-    this.featureService.setIsMessaging(true);
   }
-
+  checkContect(context) {}
   getMessageDetailById(id) {
     if (this.isFromArchive && this.showAcceptRefuse == false) {
       this.messagingDetailService
@@ -471,7 +473,12 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   goToBack() {
-    this._location.back();
+    // this._location.back();
+    this.router.navigate(["/messagerie-lire/" + this.idMessage], {
+      queryParams: {
+        context: this.context
+      }
+    });
   }
 
   download(nodesId: Array<string>) {
@@ -509,6 +516,7 @@ export class MessagingDetailComponent implements OnInit {
 
   getAttachements(nodesId: string[]) {
     if (nodesId) {
+      this.attachements = [];
       nodesId.forEach(id => {
         this.documentService
           .getNodeDetailsFromAlfresco(id)
