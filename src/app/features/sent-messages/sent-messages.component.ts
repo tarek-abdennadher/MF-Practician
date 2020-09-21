@@ -94,8 +94,8 @@ export class SentMessagesComponent implements OnInit {
       .sentMessage(this.pagination.pageNo, this.pagination.direction)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
+        this.loading = false;
         messages.forEach(message => {
-          this.loading = false;
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           messageSent.users.forEach(user => {
