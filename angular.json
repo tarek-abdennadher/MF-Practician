@@ -32,7 +32,6 @@
               "node_modules/@fortawesome/fontawesome-pro/css/all.css",
               "node_modules/bootstrap/dist/css/bootstrap.css",
               "src/styles/app.scss",
-              "node_modules/angular2-multiselect-dropdown/themes/default.theme.css",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "node_modules/bootstrap-select/dist/css/bootstrap-select.css"
             ],
