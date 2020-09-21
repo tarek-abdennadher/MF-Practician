@@ -124,6 +124,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.getAllInbox();
     this.getAllArchive();
     this.sentMessage();
+    this.forwardedMessage();
     this.observeState();
     this.subscribeIsMessaging();
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
@@ -200,6 +201,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   sentMessage() {
     this.messageService.sentMessage().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
+    });
+  }
+  forwardedMessage() {
+    this.messageService.forwardedMessage().subscribe(res => {
+      this.featuresService.setSearchForwarded(this.parseMessages(res));
     });
   }
 
@@ -523,6 +529,20 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         this.featuresService.setFilteredSentSearch(result);
       } else {
         this.featuresService.setFilteredSentSearch([]);
+      }
+    } else if (this.featuresService.activeChild.getValue() == "forwarded") {
+      if (event) {
+        let result = this.featuresService
+          .getSearchForwardedValue()
+          .filter(
+            x =>
+              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
+              x.object.name.toLowerCase().includes(event.toLowerCase())
+          );
+        result = result.length > 0 ? result : null;
+        this.featuresService.setFilteredForwardedSearch(result);
+      } else {
+        this.featuresService.setFilteredForwardedSearch([]);
       }
     } else if (this.featuresService.activeChild.getValue() == "archived") {
       if (event) {

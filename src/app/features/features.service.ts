@@ -42,6 +42,8 @@ export class FeaturesService {
   public searchFiltredPractician = new BehaviorSubject([]);
   public searchFilteredSent = new BehaviorSubject([]);
   public searchSent = new BehaviorSubject([]);
+  public searchFilteredForwarded = new BehaviorSubject([]);
+  public searchForwarded = new BehaviorSubject([]);
   public searchFilteredArchive = new BehaviorSubject([]);
   public searchArchive = new BehaviorSubject([]);
   public activeChild = new BehaviorSubject("inbox");
@@ -122,7 +124,20 @@ export class FeaturesService {
   }
 
   setFilteredSentSearch(list) {
-    this.searchFilteredSent.next(list);
+    this.searchFilteredForwarded.next(list);
+  }
+  getSearchForwardedValue() {
+    return this.searchForwarded.getValue();
+  }
+  setSearchForwarded(list) {
+    this.searchForwarded.next(list);
+  }
+  getFilteredForwardedSearch() {
+    return this.searchFilteredForwarded.asObservable();
+  }
+
+  setFilteredForwardedSearch(list) {
+    this.searchFilteredForwarded.next(list);
   }
 
   // SentSearch getter and setter
