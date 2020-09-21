@@ -426,7 +426,6 @@ export class NewMessageComponent implements OnInit {
   }
 
   selectedObjectSubscription() {
-    this.loading = true;
     let selectedElements;
     this.selectedObject.subscribe((res) => {
       if (res) {
@@ -457,12 +456,10 @@ export class NewMessageComponent implements OnInit {
             });
           }
         }
-        this.loading = false;
       } else {
         this.sendMessageForm.patchValue({
           object: "",
         });
-        this.loading = false;
       }
     });
   }
@@ -1034,11 +1031,13 @@ export class NewMessageComponent implements OnInit {
           })
         );
       if (selectedObj.allowDocument) {
+        this.loading = true;
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((res) => {
             this.selectedObject.next(newData);
+            this.loading = false;
           });
       } else {
         forkJoin(body)
