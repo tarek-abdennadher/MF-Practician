@@ -4,7 +4,7 @@ import {
   FormGroup,
   Validators,
   FormControl,
-  FormBuilder
+  FormBuilder,
 } from "@angular/forms";
 import { GlobalService } from "@app/core/services/global.service";
 import { ViewChild } from "@angular/core";
@@ -38,7 +38,7 @@ declare var $: any;
 @Component({
   selector: "app-new-message",
   templateUrl: "./new-message.component.html",
-  styleUrls: ["./new-message.component.scss"]
+  styleUrls: ["./new-message.component.scss"],
 })
 export class NewMessageComponent implements OnInit {
   @Input() id: number;
@@ -75,26 +75,26 @@ export class NewMessageComponent implements OnInit {
       id: 1111,
       name: "Instructions Urgentes",
       information: "Instructions Urgentes",
-      body: ""
+      body: "",
     },
     {
       id: 2222,
       name: "Reports de rdv",
       information: "Reports de rdv",
-      body: ""
+      body: "",
     },
     {
       id: 3333,
       name: "Modifications de plannings",
       information: "Modifications de plannings",
-      body: ""
+      body: "",
     },
     {
       id: 4444,
       name: "Instructions diverses",
       information: "Instructions diverses",
-      body: ""
-    }
+      body: "",
+    },
   ];
   isTypesVisible: boolean = true;
   isCCListVisible: boolean = true;
@@ -108,7 +108,7 @@ export class NewMessageComponent implements OnInit {
   practicianFullToList: any[];
 
   lastObjectList: any[];
-
+  loading: boolean = false;
   //////
   private _forList = [];
   private _objectsList = [];
@@ -134,7 +134,7 @@ export class NewMessageComponent implements OnInit {
   set messageTypesList(messageTypesList: any) {
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoi Postal" }
+      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [messageTypesList[0]] });
   }
@@ -207,7 +207,7 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
-      document: null
+      document: null,
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -242,13 +242,13 @@ export class NewMessageComponent implements OnInit {
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoi Postal" }
+      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
-      this.featureService.getSecretaryPracticians().subscribe(value => {
-        value.forEach(item => {
+      this.featureService.getSecretaryPracticians().subscribe((value) => {
+        value.forEach((item) => {
           item.type = "CONTACT_PRO";
 
           this.forFieldList.push(item);
@@ -259,11 +259,11 @@ export class NewMessageComponent implements OnInit {
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {});
+      .subscribe((res) => {});
     this.featureService.setIsMessaging(false);
 
-    $(document).ready(function() {
-      $(window).keydown(function(event) {
+    $(document).ready(function () {
+      $(window).keydown(function (event) {
         if (event.keyCode == 13) {
           event.preventDefault();
           return false;
@@ -299,7 +299,7 @@ export class NewMessageComponent implements OnInit {
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
-      limitSelection: 100
+      limitSelection: 100,
     };
     this.dropdownSettingsPatientToList = {
       singleSelection: true,
@@ -314,7 +314,7 @@ export class NewMessageComponent implements OnInit {
       noDataLabel: "Aucune données",
       badgeShowLimit: 3,
       maxHeight: "auto",
-      enableCheckAll: false
+      enableCheckAll: false,
     };
     Object.assign(
       this.dropdownSettingsForList,
@@ -338,17 +338,17 @@ export class NewMessageComponent implements OnInit {
       noDataLabel: "Aucune données",
       badgeShowLimit: 3,
       maxHeight: "auto",
-      enableCheckAll: false
+      enableCheckAll: false,
     };
 
     this.dropdownSettingsTypesList = {
       ...this.dropdownSettingsListObject,
-      text: "Sélectionner le type d'envoi"
+      text: "Sélectionner le type d'envoi",
     };
 
     this.dropdownSettingsConcernList = {
       ...this.dropdownSettingsListObject,
-      text: "Sélectionner un patient concerné si nécessaire"
+      text: "Sélectionner un patient concerné si nécessaire",
     };
 
     this.innerWidth = window.innerWidth;
@@ -357,53 +357,57 @@ export class NewMessageComponent implements OnInit {
   ccListSubscription() {
     let selectedElements;
     if (this.ccList) {
-      this.ccList.subscribe(elm => {
+      this.ccList.subscribe((elm) => {
         this.ccParsedList = elm;
         selectedElements = elm.filter(
-          e => e.isSelected && e.isSelected == true
+          (e) => e.isSelected && e.isSelected == true
         );
         this.sendMessageForm.patchValue({
-          cc: selectedElements
+          cc: selectedElements,
         });
       });
     }
   }
   private toListSubscription() {
     let selectedElements;
-    this.toList.subscribe(elm => {
+    this.toList.subscribe((elm) => {
       this.toListParsed = elm;
       this.toFilteredList = elm;
       if (!this.isInstruction) {
         this.ccParsedList = elm;
       }
-      selectedElements = elm.filter(e => e.isSelected && e.isSelected == true);
+      selectedElements = elm.filter(
+        (e) => e.isSelected && e.isSelected == true
+      );
       if (!this.isPatient) {
         if (this.sendMessageForm.value.to?.length !== 0) {
-          this.sendMessageForm.value.to?.forEach(to => {
+          this.sendMessageForm.value.to?.forEach((to) => {
             this.contactType = to.type !== "PATIENT" ? true : false;
           });
         }
       }
       this.otherObjectUpdate();
       this.sendMessageForm.patchValue({
-        to: selectedElements
+        to: selectedElements,
       });
     });
   }
 
   private forListSubscription() {
     let selectedElements;
-    this.forList.subscribe(elm => {
+    this.forList.subscribe((elm) => {
       this.forListParsed = elm;
       this.forFilteredList = elm;
 
-      selectedElements = elm.filter(e => e.isSelected && e.isSelected == true);
+      selectedElements = elm.filter(
+        (e) => e.isSelected && e.isSelected == true
+      );
       if (!this.isPatient) {
         if (
           this.sendMessageForm.value.for &&
           this.sendMessageForm.value.for.length !== 0
         ) {
-          this.sendMessageForm.value.for.forEach(forItem => {
+          this.sendMessageForm.value.for.forEach((forItem) => {
             this.contactType = forItem.type !== "PATIENT" ? true : false;
           });
         }
@@ -412,50 +416,53 @@ export class NewMessageComponent implements OnInit {
       this.otherObjectUpdate();
     });
     this.sendMessageForm.patchValue({
-      for: selectedElements
+      for: selectedElements,
     });
   }
   private concernListSubscription() {
-    this.concernList.subscribe(elm => {
+    this.concernList.subscribe((elm) => {
       this.concernFilteredList = elm;
     });
   }
 
   selectedObjectSubscription() {
+    this.loading = true;
     let selectedElements;
-    this.selectedObject.subscribe(res => {
+    this.selectedObject.subscribe((res) => {
       if (res) {
         if (res.update) {
           this.sendMessageForm.patchValue({
-            body: res.body
+            body: res.body,
           });
           if (res.document) {
             this.sendMessageForm.patchValue({
-              document: res.document
+              document: res.document,
             });
           }
         } else {
           selectedElements = this.objectFilteredList.filter(
-            e => e.id == res.id
+            (e) => e.id == res.id
           );
           selectedElements[0].name = res.name;
           this.sendMessageForm.patchValue({
-            object: selectedElements
+            object: selectedElements,
           });
 
           this.sendMessageForm.patchValue({
-            body: res.body
+            body: res.body,
           });
           if (res.document) {
             this.sendMessageForm.patchValue({
-              document: res.document
+              document: res.document,
             });
           }
         }
+        this.loading = false;
       } else {
         this.sendMessageForm.patchValue({
-          object: ""
+          object: "",
         });
+        this.loading = false;
       }
     });
   }
@@ -474,19 +481,19 @@ export class NewMessageComponent implements OnInit {
       body:
         this.sendMessageForm.value.object.length == 1
           ? this.sendMessageForm.value.object[0].body
-          : ""
+          : "",
     });
     this.onObjectChanged();
   }
   onFileChange(event) {
     this.sendMessageForm.patchValue({
-      file: event.target.files
+      file: event.target.files,
     });
   }
 
   public removeAttachment() {
     this.sendMessageForm.patchValue({
-      file: undefined
+      file: undefined,
     });
   }
 
@@ -526,7 +533,7 @@ export class NewMessageComponent implements OnInit {
         this.newFlag)
     ) {
       this.sendMessageForm.controls.freeObject.setValidators([
-        Validators.required
+        Validators.required,
       ]);
     } else {
       this.sendMessageForm.controls.freeObject.clearValidators();
@@ -571,13 +578,13 @@ export class NewMessageComponent implements OnInit {
 
   search(query: string) {
     let result = this.select(query);
-    this.toList.subscribe(elm => {
+    this.toList.subscribe((elm) => {
       elm = result;
     });
   }
   select(query: string): string[] {
     let result: string[] = [];
-    this.toList.subscribe(areas => {
+    this.toList.subscribe((areas) => {
       for (let a of areas) {
         if (a.toLowerCase().indexOf(query) > -1) {
           result.push(a);
@@ -592,7 +599,7 @@ export class NewMessageComponent implements OnInit {
       this.sendMessageForm.value.to[0].requestTypes.length === 0
       ? 0
       : this.sendMessageForm.value.to[0].requestTypes.filter(
-          a => a.id === this.sendMessageForm.value.object[0].id
+          (a) => a.id === this.sendMessageForm.value.object[0].id
         ).length;
   }
   onForChanged() {
@@ -601,11 +608,11 @@ export class NewMessageComponent implements OnInit {
       let selectedFor = this.sendMessageForm.value.for;
       selectedTo = this.sendMessageForm.value.to;
       if (selectedTo && selectedTo.length > 0 && selectedFor.length == 1) {
-        selectedTo = selectedTo.filter(e =>
-          selectedFor.some(s => s.id != e.id)
+        selectedTo = selectedTo.filter((e) =>
+          selectedFor.some((s) => s.id != e.id)
         );
         this.sendMessageForm.patchValue({
-          to: selectedTo
+          to: selectedTo,
         });
       }
     }
@@ -614,9 +621,9 @@ export class NewMessageComponent implements OnInit {
       let selectedFor = this.sendMessageForm.value.for;
       selectedTo = this.sendMessageForm.value.to;
       if (selectedTo && selectedTo.length > 0) {
-        selectedTo = selectedTo.filter(e => e.id != selectedFor.id);
+        selectedTo = selectedTo.filter((e) => e.id != selectedFor.id);
         this.sendMessageForm.patchValue({
-          to: selectedTo
+          to: selectedTo,
         });
       }
     }
@@ -636,7 +643,7 @@ export class NewMessageComponent implements OnInit {
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
-      limitSelection: limitSelection
+      limitSelection: limitSelection,
     };
   }
   onObjectChanedSelect() {
@@ -659,13 +666,13 @@ export class NewMessageComponent implements OnInit {
       this.selectContext = false;
     } else {
       this.sendMessageForm.patchValue({
-        object: ""
+        object: "",
       });
       this.sendMessageForm.patchValue({
-        file: null
+        file: null,
       });
       this.sendMessageForm.patchValue({
-        document: null
+        document: null,
       });
 
       this.selectContext = false;
@@ -690,7 +697,7 @@ export class NewMessageComponent implements OnInit {
         this.otherObject = true;
         this.sendMessageForm.patchValue({
           freeObject: "",
-          body: null
+          body: null,
         });
       }
     }
@@ -717,7 +724,7 @@ export class NewMessageComponent implements OnInit {
       this.hasError = false;
       this.sendMessageForm.controls["body"].enable();
       this.sendMessageForm.patchValue({
-        body: this.sendMessageForm.value.object[0].body
+        body: this.sendMessageForm.value.object[0].body,
       });
     } else {
       this.otherObject = false;
@@ -733,11 +740,11 @@ export class NewMessageComponent implements OnInit {
         selectedFor &&
         selectedFor.length > 0
       ) {
-        selectedFor = selectedFor.filter(e =>
-          selectedTo.some(s => s.id != e.id)
+        selectedFor = selectedFor.filter((e) =>
+          selectedTo.some((s) => s.id != e.id)
         );
         this.sendMessageForm.patchValue({
-          for: null
+          for: null,
         });
       }
     }
@@ -751,9 +758,9 @@ export class NewMessageComponent implements OnInit {
         selectedFor != "" &&
         selectedFor != null
       ) {
-        if (selectedTo.some(s => s.id == selectedFor.id)) {
+        if (selectedTo.some((s) => s.id == selectedFor.id)) {
           this.sendMessageForm.patchValue({
-            for: null
+            for: null,
           });
         }
       }
@@ -807,9 +814,9 @@ export class NewMessageComponent implements OnInit {
       this.patientService
         .getAllPatientFilesByPracticianId(this.featureService.getUserId())
         .pipe(takeUntil(this._destroyed$))
-        .subscribe(patientFiles => {
+        .subscribe((patientFiles) => {
           let list = [];
-          patientFiles.forEach(item => {
+          patientFiles.forEach((item) => {
             list.push(item);
           });
           this.forList.next(list);
@@ -819,9 +826,9 @@ export class NewMessageComponent implements OnInit {
         this.patientService
           .getAllPatientFilesByPracticianId(this.selectedPracticianId)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(patientFiles => {
+          .subscribe((patientFiles) => {
             let list = [];
-            patientFiles.forEach(item => {
+            patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE";
               list.push(item);
             });
@@ -832,7 +839,7 @@ export class NewMessageComponent implements OnInit {
   }
   parseContactsPractician(contactsPractician) {
     let myList = [];
-    contactsPractician.forEach(contactPractician => {
+    contactsPractician.forEach((contactPractician) => {
       if (contactPractician.contactType == "MEDICAL") {
         myList.push({
           id: contactPractician.id,
@@ -840,7 +847,7 @@ export class NewMessageComponent implements OnInit {
           type: contactPractician.contactType,
           isSelected:
             this.selectedPracticianId == contactPractician.id ? true : false,
-          img: this.avatars.doctor
+          img: this.avatars.doctor,
         });
         this.toList.next(myList);
       } else if (
@@ -854,7 +861,7 @@ export class NewMessageComponent implements OnInit {
           type: contactPractician.contactType,
           isSelected:
             this.selectedPracticianId == contactPractician.id ? true : false,
-          img: this.avatars.secretary
+          img: this.avatars.secretary,
         });
         this.toList.next(myList);
       } else if (contactPractician.contactType == "PATIENT") {
@@ -865,7 +872,7 @@ export class NewMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.man
+            img: this.avatars.man,
           });
           this.toList.next(myList);
         } else if (contactPractician.civility == "MME") {
@@ -875,7 +882,7 @@ export class NewMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.women
+            img: this.avatars.women,
           });
           this.toList.next(myList);
         } else if (contactPractician.civility == "CHILD") {
@@ -885,7 +892,7 @@ export class NewMessageComponent implements OnInit {
             type: contactPractician.contactType,
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.child
+            img: this.avatars.child,
           });
           this.toList.next(myList);
         }
@@ -901,14 +908,14 @@ export class NewMessageComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((requestTypes: any) => {
-          this.practicianObjectList = requestTypes.map(e => {
+          this.practicianObjectList = requestTypes.map((e) => {
             return {
               id: e.id,
               title: e.object,
               name: e.object,
               destination: e.destination,
               allowDocument: e.allowDocument,
-              body: ""
+              body: "",
             };
           });
         })
@@ -917,7 +924,7 @@ export class NewMessageComponent implements OnInit {
 
   sendMessage(message) {
     if (message.type[0].id == SendType.SEND_POSTAL) {
-      this.featureService.checkIfSendPostalEnabled().subscribe(result => {
+      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
         this.sendPostal = result;
         if (this.sendPostal) {
           this.sendMessage2(message);
@@ -938,7 +945,7 @@ export class NewMessageComponent implements OnInit {
       let type = event.to[0].type;
       if (type == "MEDICAL") {
         this.objectsList = this.practicianObjectList.filter(
-          item =>
+          (item) =>
             item.destination == "PRACTICIAN" || item.destination == "OTHER"
         );
       } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
@@ -946,29 +953,29 @@ export class NewMessageComponent implements OnInit {
           this.objectsList = this.instructionObjectsList;
         } else {
           this.objectsList = this.practicianObjectList.filter(
-            item =>
+            (item) =>
               item.destination == "SECRETARY" || item.destination == "OTHER"
           );
         }
       } else if (type == "PATIENT") {
         this.objectsList = this.practicianObjectList.filter(
-          item => item.destination == "PATIENT" || item.destination == "OTHER"
+          (item) => item.destination == "PATIENT" || item.destination == "OTHER"
         );
       } else {
         this.objectsList = this.practicianObjectList.filter(
-          item => item.destination == "OTHER"
+          (item) => item.destination == "OTHER"
         );
       }
       const objectListContainsOther =
         this.objectsList.findIndex(
-          obj => obj.id == 0 && obj.title == "Autre"
+          (obj) => obj.id == 0 && obj.title == "Autre"
         ) !== -1;
       if (!objectListContainsOther && !this.isInstruction) {
         this.objectsList.push({
           id: 0,
           title: "Autre",
           name: "Autre",
-          destination: "Autre"
+          destination: "Autre",
         });
       }
       if (
@@ -979,9 +986,9 @@ export class NewMessageComponent implements OnInit {
         this.patientService
           .getAllPatientFilesByPracticianId(selectedPractician)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(patientFiles => {
+          .subscribe((patientFiles) => {
             let list = [];
-            patientFiles.forEach(item => {
+            patientFiles.forEach((item) => {
               item.type = "PATIENT_FILE";
               list.push(item);
             });
@@ -1008,7 +1015,7 @@ export class NewMessageComponent implements OnInit {
         senderId: this.featureService.getUserId(),
         sendedForId: item.for && item.for[0] && item.for[0].id,
         receiverId: item.to && item.to[0] && item.to[0].id,
-        objectId: selectedObj.id
+        objectId: selectedObj.id,
       };
       selectedObj.requestDto = objectDto;
       let newData = {
@@ -1016,7 +1023,7 @@ export class NewMessageComponent implements OnInit {
         name: selectedObj.title,
         body: null,
         file: null,
-        document: null
+        document: null,
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1030,13 +1037,13 @@ export class NewMessageComponent implements OnInit {
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(res => {
+          .subscribe((res) => {
             this.selectedObject.next(newData);
           });
       } else {
         forkJoin(body)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe(res => {
+          .subscribe((res) => {
             this.selectedObject.next(newData);
           });
       }
@@ -1045,7 +1052,7 @@ export class NewMessageComponent implements OnInit {
         id: null,
         title: "Autre",
         name: "Autre",
-        body: ""
+        body: "",
       });
     }
   }
@@ -1055,7 +1062,7 @@ export class NewMessageComponent implements OnInit {
       .getDocumentAsHtml(request)
       .pipe(takeUntil(this._destroyed$))
       .pipe(
-        tap(response => {
+        tap((response) => {
           newData.document = response.document;
         })
       );
@@ -1079,7 +1086,7 @@ export class NewMessageComponent implements OnInit {
           this._messageTypesList = [
             { id: SendType.MESSAGING, text: "Messagerie" },
             { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
-            { id: SendType.INSTRUCTION, text: "Consignes" }
+            { id: SendType.INSTRUCTION, text: "Consignes" },
           ];
           this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
           const groupValue = group.group;
@@ -1089,7 +1096,7 @@ export class NewMessageComponent implements OnInit {
             fullName: groupValue.title,
             isSelected: true,
             img: null,
-            type: "TELESECRETARYGROUP"
+            type: "TELESECRETARYGROUP",
           };
 
           this.practicianTLSGroup = item;
@@ -1097,8 +1104,8 @@ export class NewMessageComponent implements OnInit {
       });
   }
   getInstructionObjectListByTLSGroupId(id: any) {
-    this.objectsService.getAllByTLS(id).subscribe(objects => {
-      this.instructionObjectsList = objects.map(e => {
+    this.objectsService.getAllByTLS(id).subscribe((objects) => {
+      this.instructionObjectsList = objects.map((e) => {
         return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
       });
     });
@@ -1145,7 +1152,7 @@ export class NewMessageComponent implements OnInit {
             this.toList.next([this.practicianTLSGroup]);
             this.ccList.next(
               this.practicianFullToList.filter(
-                e => e.id !== this.practicianTLSGroup.id
+                (e) => e.id !== this.practicianTLSGroup.id
               )
             );
             break;
@@ -1165,11 +1172,11 @@ export class NewMessageComponent implements OnInit {
     this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
-    message.to.forEach(to => {
+    message.to.forEach((to) => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
     message.cc
-      ? message.cc.forEach(cc => {
+      ? message.cc.forEach((cc) => {
           newMessage.ccReceivers.push({ receiverId: cc.id });
         })
       : null;
@@ -1184,7 +1191,7 @@ export class NewMessageComponent implements OnInit {
         senderForPhotoId:
           message.for && message.for[0] ? message.for[0]?.photoId : null,
         senderForfullName:
-          message.for && message.for[0] ? message.for[0]?.fullName : null
+          message.for && message.for[0] ? message.for[0]?.fullName : null,
       };
     }
     newMessage.sendType = message.type[0].id;
@@ -1199,22 +1206,22 @@ export class NewMessageComponent implements OnInit {
       .sendMessage(newMessage)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        mess => {
+        (mess) => {
           this.featureService.sentState.next(true);
           this.spinner.hide();
           this.router.navigate(["/messagerie-envoyes"], {
             queryParams: {
-              status: "sentSuccess"
-            }
+              status: "sentSuccess",
+            },
           });
           this.messageWidgetService.toggleObs.next();
         },
-        error => {
+        (error) => {
           this.spinner.hide();
           this.notifier.show({
             message: this.globalService.toastrMessages.send_message_error,
             type: "error",
-            template: this.customNotificationTmpl
+            template: this.customNotificationTmpl,
           });
         }
       );
@@ -1232,7 +1239,7 @@ export class NewMessageComponent implements OnInit {
     return (
       (this.objectsList &&
         this.objectsList.findIndex(
-          obj => obj.id == 0 && obj.title == "Autre"
+          (obj) => obj.id == 0 && obj.title == "Autre"
         ) !== -1) ||
       false
     );
@@ -1248,7 +1255,7 @@ export class NewMessageComponent implements OnInit {
   }
   activateSenPostalOption() {
     if (this.addOptionConfirmed) {
-      this.featureService.activateSendPostal().subscribe(res => {
+      this.featureService.activateSendPostal().subscribe((res) => {
         this.sendPostal = true;
         $("#confirmModal").modal("hide");
         $("#successModal").modal("toggle");
@@ -1267,11 +1274,11 @@ export class NewMessageComponent implements OnInit {
     this.uuid = uuid();
     const newMessage = new Message();
     newMessage.sendType = this.lastSendType;
-    message.to.forEach(to => {
+    message.to.forEach((to) => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
     message.cc
-      ? message.cc.forEach(cc => {
+      ? message.cc.forEach((cc) => {
           newMessage.ccReceivers.push({ receiverId: cc.id });
         })
       : null;
@@ -1286,13 +1293,13 @@ export class NewMessageComponent implements OnInit {
         senderForPhotoId:
           message.for && message.for[0] ? message.for[0]?.photoId : null,
         senderForfullName:
-          message.for && message.for[0] ? message.for[0]?.fullName : null
+          message.for && message.for[0] ? message.for[0]?.fullName : null,
       };
     } else {
       newMessage.sender = {
         senderId: this.featureService.getUserId(),
         originalSenderId: this.featureService.getUserId(),
-        sendedForId: message.for && message.for[0] ? message.for[0].id : null
+        sendedForId: message.for && message.for[0] ? message.for[0].id : null,
       };
       if (message.concerns && message.concerns[0]) {
         newMessage.sender.concernsId =
@@ -1340,7 +1347,7 @@ export class NewMessageComponent implements OnInit {
         .saveFileInMemory(this.uuid, formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          mess => {
+          (mess) => {
             this.featureService.sentState.next(true);
             this.spinner.hide();
 
@@ -1348,15 +1355,15 @@ export class NewMessageComponent implements OnInit {
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_success,
               type: "info",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
           },
-          error => {
+          (error) => {
             this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
           }
         );
@@ -1365,22 +1372,22 @@ export class NewMessageComponent implements OnInit {
         .sendMessage(newMessage)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          mess => {
+          (mess) => {
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_success,
               type: "info",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             this.featureService.sentState.next(true);
             this.spinner.hide();
             this.messageWidgetService.toggleObs.next();
           },
-          error => {
+          (error) => {
             this.spinner.hide();
             this.notifier.show({
               message: this.globalService.toastrMessages.send_message_error,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
           }
         );
