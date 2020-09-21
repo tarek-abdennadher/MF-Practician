@@ -200,8 +200,10 @@ export class ArchieveMessagesComponent implements OnInit {
         return senderDetail.practician.photoId;
       case "SECRETARY":
         return senderDetail.secretary.photoId;
+        case "SUPER_SUPERVISOR" || "SUPERVISOR" || "OPERATOR":
+        return senderDetail.telesecretary.photoId;
       case "TELESECRETARYGROUP":
-        return senderDetail.secretary.photoId;
+        return senderDetail.telesecretaryGroup.photoId;
       default:
         return null;
     }
