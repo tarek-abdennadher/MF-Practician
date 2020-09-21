@@ -20,6 +20,7 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from '@app/features/services/dialog.service';
 import { PaginationService } from '@app/features/services/pagination.service';
+import { DomSanitizer } from '@angular/platform-browser';
 declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -105,7 +106,8 @@ export class PatientFileComponent implements OnInit {
     private router: Router,
     private globalService: GlobalService,
     public dialogService: DialogService,
-    public pagination: PaginationService
+    public pagination: PaginationService,
+    private sanitizer: DomSanitizer
   ) {
     this.isList = true;
     this.isnoteList = true;
@@ -460,7 +462,7 @@ export class PatientFileComponent implements OnInit {
         {
           id: message.sender.id,
           fullName: message.sender.fullName,
-          img: this.avatars.user,
+          img: null,
           title: message.sender.jobTitle,
           civility: message.sender.civility,
           type:
@@ -480,38 +482,20 @@ export class PatientFileComponent implements OnInit {
       isMarkAsSeen: true,
       photoId: message.sender.photoId
     };
-    if (parsedMessage.photoId) {
-      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
-        response => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
-            parsedMessage.users[0].img = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        error => {
-          parsedMessage.users[0].img = this.avatars.user;
-        }
-      );
-    } else {
-      parsedMessage.users.forEach(user => {
-        if (user.type == "MEDICAL") {
-          user.img = this.avatars.doctor;
-        } else if (user.type == "SECRETARY") {
-          user.img = this.avatars.secretary;
-        } else if (user.type == "TELESECRETARYGROUP") {
-          user.img = this.avatars.tls;
-        } else if (user.type == "PATIENT") {
-          if (user.civility == "M") {
-            user.img = this.avatars.man;
-          } else if (user.civility == "MME") {
-            user.img = this.avatars.women;
-          } else if (user.civility == "CHILD") {
-            user.img = this.avatars.child;
-          }
-        }
-      });
-    }
+    this.documentService.getDefaultImageEntity(message.sender.senderId, "ACCOUNT").subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        parsedMessage.users[0].img = this.avatars.user;
+      }
+    );
     return parsedMessage;
   }
 
