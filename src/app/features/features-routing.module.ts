@@ -5,7 +5,6 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
-import { SendMessageComponent } from "./send-message/send-message.component";
 import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
@@ -77,10 +76,6 @@ const routes: Routes = [
         path: "compte",
         loadChildren: () =>
           import("./account/account.module").then((m) => m.AccountModule),
-      },
-      {
-        path: "messagerie-ecrire",
-        component: SendMessageComponent,
       },
       {
         path: "mes-documents",
