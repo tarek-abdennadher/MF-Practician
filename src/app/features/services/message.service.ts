@@ -3,47 +3,54 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { GlobalService } from "@app/core/services/global.service";
 import { Observable } from "rxjs";
 import { Message } from "@app/shared/models/message";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
   providedIn: "root"
 })
 export class MessageService {
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   sentMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
     let params = {};
     if (pageNo && order) {
-      params = { params: { 'pageNo': pageNo, 'order': order } }
+      params = { params: { pageNo: pageNo, order: order } };
     }
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.sentMessage, params
+      this.globalService.url.sentMessage,
+      params
     );
   }
 
-  forwardedMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+  forwardedMessage(
+    pageNo?,
+    order?: OrderDirection
+  ): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo != undefined && order != undefined) {
+      params = { params: { pageNo: pageNo, order: order } };
+    }
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.forwardedMessage, {
-      params: { 'pageNo': pageNo, 'order': order }
-    }
+      this.globalService.url.forwardedMessage,
+      params
     );
   }
 
   countForwardedMessage(): Observable<number> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + 'countForwarded'
+      this.globalService.url.messages + "countForwarded"
     );
   }
 
   countSentMessage(): Observable<number> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + 'countSentInBox'
+      this.globalService.url.messages + "countSentInBox"
     );
   }
 

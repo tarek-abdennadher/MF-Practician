@@ -65,18 +65,9 @@ export class ForwardedMessagesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.featureService.setActiveChild("sent");
-    this.route.queryParams.subscribe(params => {
-      if (params["status"] == "archiveSuccess") {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_success,
-          type: "info",
-          template: this.customNotificationTmpl
-        });
-      }
-    });
+    this.featureService.setActiveChild("forwarded");
     this.countAllMyForwardedMessages();
-    this.searchSent();
+    this.searchForwarded();
   }
 
   countAllMyForwardedMessages() {
@@ -92,8 +83,8 @@ export class ForwardedMessagesComponent implements OnInit {
       .forwardedMessage(this.pagination.pageNo, this.pagination.direction)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
+        this.loading = false;
         messages.forEach(message => {
-          this.loading = false;
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           messageSent.users.forEach(user => {
@@ -309,8 +300,8 @@ export class ForwardedMessagesComponent implements OnInit {
     this.featureService.setSearchSent(searchList);
   }
 
-  searchSent() {
-    this.featureService.getFilteredSentSearch().subscribe(res => {
+  searchForwarded() {
+    this.featureService.getFilteredForwardedSearch().subscribe(res => {
       if (res == null) {
         this.filtredItemList = [];
       } else if (res?.length > 0) {
