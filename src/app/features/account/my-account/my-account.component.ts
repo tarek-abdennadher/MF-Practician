@@ -7,7 +7,7 @@ declare var $: any;
 @Component({
   selector: "app-my-account",
   templateUrl: "./my-account.component.html",
-  styleUrls: ["./my-account.component.scss"]
+  styleUrls: ["./my-account.component.scss"],
 })
 export class MyAccountComponent implements OnInit {
   labels;
@@ -42,15 +42,15 @@ export class MyAccountComponent implements OnInit {
   }
 
   getOptionById() {
-    this.accountService.getOptionById(this.practicianId).subscribe(op => {
-      if (op.id != null) {
-        this.showLeaves = true
+    this.accountService.getOptionById(this.practicianId).subscribe((op) => {
+      if (op && op.id != null) {
+        this.showLeaves = true;
       }
     });
   }
   getTls() {
-    this.accountService.getPracticianTelesecretary().subscribe(practician => {
-      if (practician.group != null) {
+    this.accountService.getPracticianTelesecretary().subscribe((practician) => {
+      if (practician && practician.group != null) {
         this.showTls = true;
       }
     });

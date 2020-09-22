@@ -1,48 +1,48 @@
-$input-color: #F1F1F1;
-$color-helssy-blue: #1A56A7;
+$input-color: #f1f1f1;
+$color-helssy-blue: #1a56a7;
 $helssy_white: #ffffff;
-.form-control{
-    opacity: 1;
-    margin:-6px;
-    font-family: "Montserrat-Medium";
-    font-size:12px ;
-    line-height: 24px;
-    height: 40px;
-    padding-right: 5px;
-    border-radius: 6px;
-    background-color:$helssy_white;
-    border-color:$helssy_white;;
-    }
+.form-control {
+  opacity: 1;
+  margin: -6px;
+  font-family: "Montserrat-Medium";
+  font-size: 12px;
+  line-height: 24px;
+  height: 40px;
+  padding-right: 5px;
+  border-radius: 6px;
+  background-color: $helssy_white;
+  border-color: $helssy_white;
+}
 
-    // buttons add phone CSS
-    button.btn-icon {
-      width: 40px;
-      height: 40px;
-      color: white;
-      cursor: pointer;
-      font-weight: lighter;
-      background-color: #1a56a7;
-      border-color: #1a56a7;
-      border-radius: 6px;
-      border-radius: 5px;
-      opacity: 1;
-      margin-top: -6px;
-      margin-left: -3px;
-        }
-        ::ng-deep {
-          international-phone-number .form-control {
-                height: 30px;
-                border-color:$helssy_white;
-                background-color: $helssy_white;
-              }
-              international-phone-number .dropdown button.dropbtn.btn,  button.dropbtn.btn:hover{
-                  border-color: $helssy_white;
-                  background-color: $helssy_white;
-                  padding: 6px !important;
-                  height: 30px !important;
-              }
-            }
-
+// buttons add phone CSS
+button.btn-icon {
+  width: 40px;
+  height: 40px;
+  color: white;
+  cursor: pointer;
+  font-weight: lighter;
+  background-color: #1a56a7;
+  border-color: #1a56a7;
+  border-radius: 6px;
+  border-radius: 5px;
+  opacity: 1;
+  margin-top: -6px;
+  margin-left: -3px;
+}
+::ng-deep {
+  international-phone-number .form-control {
+    height: 30px;
+    border-color: $helssy_white;
+    background-color: $helssy_white;
+  }
+  international-phone-number .dropdown button.dropbtn.btn,
+  button.dropbtn.btn:hover {
+    border-color: $helssy_white;
+    background-color: $helssy_white;
+    padding: 6px !important;
+    height: 30px !important;
+  }
+}
 
 @media only screen and (max-width: 575px) {
   .mobile-display-flex {
@@ -51,28 +51,26 @@ $helssy_white: #ffffff;
   .mobile-display-none {
     display: none;
   }
-    .phone-mobile{
-      margin-left: -25px;
-    }
+  .phone-mobile {
+    margin-left: -25px;
+  }
 }
 
-@media only screen and (min-width: 576px){
+@media only screen and (min-width: 576px) {
   .mobile-display-flex {
     display: none;
   }
   .mobile-display-none {
     display: flex;
   }
-    .phone-mobile{
-      margin-left: 2px;
-    }
+  .phone-mobile {
+    margin-left: -4px;
+  }
 }
 
 /* ============= flags of phone component ============ */
 ::ng-deep {
   .flag {
-    background-image: url('assets/imgs/flags.jpg') !important;
-      }
-      }
-      /* ============================================= */
-
+    background-image: url("assets/imgs/flags.jpg") !important;
+  }
+}
