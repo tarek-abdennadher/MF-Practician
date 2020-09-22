@@ -201,39 +201,16 @@ $sapphire: #1a56a7;
   }
 }
 
-@media (min-width: 400px) {
+@media (max-width: 579px) {
   .fab-container {
     position: fixed;
-    bottom: 40px;
+    bottom: 160px;
     right: 15px;
     display: flex;
     flex-direction: column-reverse;
     align-items: flex-end;
-    z-index: 999999;
-
-    > div {
-      display: flex;
-      flex-direction: column-reverse;
-      align-items: flex-start;
-      margin-bottom: 5px;
-
-      button {
-        margin-bottom: 557px;
-      }
-    }
-  }
-}
-
-@media (max-width: 399px) {
-  .fab-container {
-    position: fixed;
-    bottom: 0px;
-    right: 15px;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-end;
-    z-index: 999999;
-
+    z-index: 9;
+    width: 98%;
     > div {
       display: flex;
       flex-direction: column-reverse;
@@ -366,4 +343,3 @@ $sapphire: #1a56a7;
     overflow-x: hidden;
   }
 }
-
