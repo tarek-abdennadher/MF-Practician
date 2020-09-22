@@ -224,9 +224,8 @@ hr {
   }
 }
 
-
 @media (max-width: 575px) {
-  .new-password{
+  .new-password {
     padding-left: 0px;
   }
 }
@@ -323,4 +322,7 @@ button.close {
     margin-left: 0;
     margin-right: 0;
   }
+}
+.submit-btn {
+  margin: auto;
 }
