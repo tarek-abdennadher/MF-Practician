@@ -2,13 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
-import { DialogService } from "@app/features/services/dialog.service";
 import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
 @Component({
   selector: "app-my-account",
   templateUrl: "./my-account.component.html",
-  styleUrls: ["./my-account.component.scss"]
+  styleUrls: ["./my-account.component.scss"],
 })
 export class MyAccountComponent implements OnInit {
   labels;
@@ -17,11 +16,11 @@ export class MyAccountComponent implements OnInit {
   backButton = true;
   practicianId: number;
   public showTls: boolean = false;
+  public showLeaves: boolean = false;
   constructor(
     private accountService: AccountService,
     private router: Router,
     private localSt: LocalStorageService,
-    private dialogService: DialogService,
     private featureService: FeaturesService
   ) {
     this.labels = this.accountService.messages;
@@ -43,11 +42,15 @@ export class MyAccountComponent implements OnInit {
   }
 
   getOptionById() {
-    this.accountService.getOptionById(this.practicianId).subscribe(op => {});
+    this.accountService.getOptionById(this.practicianId).subscribe((op) => {
+      if (op && op.id != null) {
+        this.showLeaves = true;
+      }
+    });
   }
   getTls() {
-    this.accountService.getPracticianTelesecretary().subscribe(practician => {
-      if (practician.group != null) {
+    this.accountService.getPracticianTelesecretary().subscribe((practician) => {
+      if (practician && practician.group != null) {
         this.showTls = true;
       }
     });
