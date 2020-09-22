@@ -201,16 +201,38 @@ $sapphire: #1a56a7;
   }
 }
 
-@media (max-width: 579px) {
+@media (min-width: 400px) {
   .fab-container {
     position: fixed;
-    bottom: 80px;
+    bottom: 40px;
     right: 15px;
     display: flex;
     flex-direction: column-reverse;
     align-items: flex-end;
     z-index: 999999;
-    width: 98%;
+
+    > div {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      margin-bottom: 5px;
+
+      button {
+        margin-bottom: 557px;
+      }
+    }
+  }
+}
+
+@media (max-width: 399px) {
+  .fab-container {
+    position: fixed;
+    bottom: 0px;
+    right: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    z-index: 999999;
 
     > div {
       display: flex;
@@ -305,7 +327,7 @@ $sapphire: #1a56a7;
 
 #controls {
   color: #fff;
-  margin-left: 24px;
+  margin-left: 10px;
   cursor: pointer;
 }
 
@@ -315,10 +337,33 @@ $sapphire: #1a56a7;
   }
 }
 
+@media (max-width: 360px) {
+  #message-card {
+    width: 100%;
+    max-height: 600px;
+  }
+}
+
+@media (max-width: 320px) {
+  #message-card {
+    width: 100%;
+    max-height: 600px;
+  }
+}
+
 @media (max-width: 580px) {
+  .widget-body {
+    max-height: 556px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 360px) {
   .widget-body {
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
   }
 }
+
