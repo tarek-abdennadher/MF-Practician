@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { OrderDirection } from '@app/shared/enmus/order-direction';
-import { FeaturesService } from '../features.service';
-import { MyPatientsService } from '../services/my-patients.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MyDocumentsService } from '../my-documents/my-documents.service';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { GlobalService } from '@app/core/services/global.service';
-import { MyPatients } from '@app/shared/models/my-patients';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { FeaturesService } from "../features.service";
+import { MyPatientsService } from "../services/my-patients.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
+import { GlobalService } from "@app/core/services/global.service";
+import { MyPatients } from "@app/shared/models/my-patients";
+import { filter } from "rxjs/operators";
 declare var $: any;
 @Component({
-  selector: 'app-my-patients-blocked',
-  templateUrl: './my-patients-blocked.component.html',
-  styleUrls: ['./my-patients-blocked.component.scss']
+  selector: "app-my-patients-blocked",
+  templateUrl: "./my-patients-blocked.component.html",
+  styleUrls: ["./my-patients-blocked.component.scss"]
 })
 export class MyPatientsBlockedComponent implements OnInit {
   isMyPatients = true;
@@ -42,7 +42,8 @@ export class MyPatientsBlockedComponent implements OnInit {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService) {
+    private globalService: GlobalService
+  ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
@@ -53,13 +54,16 @@ export class MyPatientsBlockedComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        this.pageNo = 0;
-        this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
-        setTimeout(() => {
-          $(".selectpicker").selectpicker("refresh");
-        }, 500);
+        if (event.url === "/mes-patients-bloques?loading=true") {
+          let currentRoute = this.route;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
+          this.pageNo = 0;
+          this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
+          setTimeout(() => {
+            $(".selectpicker").selectpicker("refresh");
+          }, 500);
+        }
       });
   }
   initProhibitedPatients() {
@@ -136,6 +140,12 @@ export class MyPatientsBlockedComponent implements OnInit {
     return myPatients;
   }
   cardClicked(item) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#appPatientFile").offset().top - 100
+      },
+      1000
+    );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
         id: item.users[0].id

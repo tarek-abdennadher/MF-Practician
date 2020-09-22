@@ -44,9 +44,20 @@
   >
   </lib-hlsSideBar>
   <app-new-message-widget></app-new-message-widget>
-  <section class="main-container" [ngClass]="{ collapsed: collapedSideBar }">
+  <section
+    id="main-container"
+    class="main-container"
+    [ngClass]="{ collapsed: collapedSideBar }"
+  >
     <!-- components will be implemented here -->
     <router-outlet></router-outlet>
     <app-new-message-mobile *ngIf="messaging === true"></app-new-message-mobile>
   </section>
 </div>
+<notifier-container></notifier-container>
+<ng-template #customNotification let-notificationData="notification">
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span>{{ notificationData.message }}</span>
+  </div>
+</ng-template>

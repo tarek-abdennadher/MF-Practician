@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FeaturesService } from '@app/features/features.service';
-import { MyPatientsService } from '@app/features/services/my-patients.service';
-import { OrderDirection } from '@app/shared/enmus/order-direction';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
-import { MyPatients } from '@app/shared/models/my-patients';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { GlobalService } from '@app/core/services/global.service';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { FeaturesService } from "@app/features/features.service";
+import { MyPatientsService } from "@app/features/services/my-patients.service";
+import { OrderDirection } from "@app/shared/enmus/order-direction";
+import { DomSanitizer } from "@angular/platform-browser";
+import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
+import { MyPatients } from "@app/shared/models/my-patients";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { GlobalService } from "@app/core/services/global.service";
+import { filter } from "rxjs/operators";
 declare var $: any;
 @Component({
-  selector: 'app-my-invitations',
-  templateUrl: './my-invitations.component.html',
-  styleUrls: ['./my-invitations.component.scss']
+  selector: "app-my-invitations",
+  templateUrl: "./my-invitations.component.html",
+  styleUrls: ["./my-invitations.component.scss"]
 })
 export class MyInvitationsComponent implements OnInit {
   isMyPatients = true;
@@ -43,7 +43,8 @@ export class MyInvitationsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService) {
+    private globalService: GlobalService
+  ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
@@ -54,13 +55,16 @@ export class MyInvitationsComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        this.pageNo = 0;
-        this.getPendingListRealTime(this.pageNo);
-        setTimeout(() => {
-          $(".selectpicker").selectpicker("refresh");
-        }, 500);
+        if (event.url === "/mes-invitations?loading=true") {
+          let currentRoute = this.route;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
+          this.pageNo = 0;
+          this.getPendingListRealTime(this.pageNo);
+          setTimeout(() => {
+            $(".selectpicker").selectpicker("refresh");
+          }, 500);
+        }
       });
   }
   initPendingPatients() {
@@ -117,7 +121,7 @@ export class MyInvitationsComponent implements OnInit {
     if (this.listLength != this.filtredPatients.length) {
       this.listLength = this.filtredPatients.length;
       this.pageNo++;
-      this.getNextPatientsPendingOfCurrentParactician(this.pageNo)
+      this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
     }
   }
   mappingMyPatients(patient, prohibited, archived) {
@@ -160,6 +164,12 @@ export class MyInvitationsComponent implements OnInit {
     return myPatients;
   }
   cardClicked(item) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#appPatientFile").offset().top - 100
+      },
+      1000
+    );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
         id: item.users[0].id
@@ -184,7 +194,7 @@ export class MyInvitationsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
-            .subscribe(resp => { });
+            .subscribe(resp => {});
         }
       });
   }
@@ -206,5 +216,4 @@ export class MyInvitationsComponent implements OnInit {
         }
       });
   }
-
 }

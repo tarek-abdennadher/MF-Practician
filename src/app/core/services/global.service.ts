@@ -108,6 +108,10 @@ export class GlobalService {
     my_patients: "Mes patients",
     documents: "Documents reçus",
     delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
+    delete_confirmation_contact: "Voulez vous vraiment archiver ce contact ?",
+    archive_confirmation_message:
+      "Voulez vous vraiment archiver ce(s) message(s) ?",
+    delete_confirmation_phone: "Voulez vous vraiment supprimer ce téléphone ?",
     delete_title_patient: "Supprimer le patient",
     newArchivedMessage: "message non lu",
     newArchivedMessages: "messages non lus",

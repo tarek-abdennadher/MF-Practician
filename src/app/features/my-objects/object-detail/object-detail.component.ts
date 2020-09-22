@@ -116,18 +116,18 @@ export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate(["mes-objets"]);
+        this.router.navigate(["mes-objets"], { queryParams: { loading: true }});
       });
     } else {
       this.accountService.updatePracticianObject(model).subscribe((res) => {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate(["mes-objets"]);
+        this.router.navigate(["mes-objets"],  {queryParams: { loading: true }});
       });
     }
   }
   cancel() {
-    this.router.navigate(["mes-objets"]);
+    this.router.navigate(["mes-objets"] ,{ queryParams: { loading: false }});
   }
 }

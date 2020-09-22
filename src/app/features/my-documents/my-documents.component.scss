@@ -55,3 +55,9 @@ select.arrows:focus {
   border-color: red;
   outline: 0;
 }
+
+@media only screen and (max-width: 767px) {
+  .list {
+    margin-top: 10px;
+  }
+}

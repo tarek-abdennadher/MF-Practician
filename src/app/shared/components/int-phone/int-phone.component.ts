@@ -1,11 +1,13 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Component, OnInit, EventEmitter, Output, Input } from "@angular/core";
+import { FormGroup, FormBuilder, FormArray, Validators } from "@angular/forms";
+import { Subject } from "rxjs";
+import { GlobalService } from "@app/core/services/global.service";
+import { DialogService } from "@app/features/services/dialog.service";
 
 @Component({
-  selector: 'int-phone',
-  templateUrl: './int-phone.component.html',
-  styleUrls: ['./int-phone.component.scss']
+  selector: "int-phone",
+  templateUrl: "./int-phone.component.html",
+  styleUrls: ["./int-phone.component.scss"]
 })
 export class IntPhoneComponent implements OnInit {
   public phoneForm: FormGroup;
@@ -21,17 +23,21 @@ export class IntPhoneComponent implements OnInit {
 
   public submitted = false;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private globalConfig: GlobalService,
+    private dialogService: DialogService
+  ) {}
 
   get phoneList() {
     return <FormArray>this.phoneForm.get("phoneList");
   }
   /* Method to add a new phone number field */
   newPhone(): FormGroup {
-    this.validPhones.emit(false)
+    this.validPhones.emit(false);
     return this.formBuilder.group({
-      phoneNumber: ['', Validators.required],
-      note: ''
+      phoneNumber: ["", Validators.required],
+      note: ""
     });
   }
   /* Method to update an exisiting phone number field */
@@ -44,7 +50,7 @@ export class IntPhoneComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.validPhones.emit(true)
+    this.validPhones.emit(true);
     this.addnewPhone.subscribe(val => {
       if (val) {
         this.addPhone();
@@ -56,11 +62,9 @@ export class IntPhoneComponent implements OnInit {
     /* Patch list if contains elements */
     this.phonesToEdit.subscribe(list => {
       if (list) {
-        list.forEach(p =>
-          this.phoneList.push(this.updatePhone(p)));
-      }
-      /* Initialize list when there is no exisiting elements */
-      else {
+        list.forEach(p => this.phoneList.push(this.updatePhone(p)));
+      } else {
+        /* Initialize list when there is no exisiting elements */
         this.phoneForm = this.formBuilder.group({
           phoneList: this.formBuilder.array([this.newPhone()])
         });
@@ -73,7 +77,7 @@ export class IntPhoneComponent implements OnInit {
   addPhone(): void {
     this.submitted = true;
     if (this.phoneForm.invalid) {
-      this.validPhones.emit(false)
+      this.validPhones.emit(false);
       return;
     }
     if (this.phoneList.length > 2) {
@@ -83,36 +87,45 @@ export class IntPhoneComponent implements OnInit {
   }
   /* Method to remove an exisiting phone number */
   removePhone(index) {
-    if (this.phoneList.length == 1) {
-      this.phoneList.removeAt(index);
-      this.phoneForm = this.formBuilder.group({
-        phoneList: this.formBuilder.array([this.newPhone()])
+    this.dialogService
+      .openConfirmDialog(
+        this.globalConfig.messagesDisplayScreen.delete_confirmation_phone,
+        "Suppression"
+      )
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          if (this.phoneList.length == 1) {
+            this.phoneList.removeAt(index);
+            this.phoneForm = this.formBuilder.group({
+              phoneList: this.formBuilder.array([this.newPhone()])
+            });
+            this.submitted = false;
+            this.phoneForm.reset();
+            this.phoneList.clear();
+            this.validPhones.emit(true);
+            return;
+          }
+          this.phoneList.removeAt(index);
+          this.validPhones.emit(true);
+        }
       });
-      this.submitted = false;
-      this.phoneForm.reset();
-      this.phoneList.clear();
-      this.validPhones.emit(true)
-      return;
-    }
-    this.phoneList.removeAt(index);
-    this.validPhones.emit(true)
   }
 
   onChanges(): void {
     this.phoneForm.valueChanges.subscribe(val => {
-      this.phones.emit(this.phoneList)
+      this.phones.emit(this.phoneList);
     });
   }
   /* Method to emit changes constantly to main component */
   onValueChange(): void {
     if (this.phoneForm.invalid) {
-      this.validPhones.emit(false)
-    }
-    else {
-      this.validPhones.emit(true)
+      this.validPhones.emit(false);
+    } else {
+      this.validPhones.emit(true);
     }
     this.phoneForm.valueChanges.subscribe(val => {
-      this.phones.emit(this.phoneList)
+      this.phones.emit(this.phoneList);
     });
   }
 }

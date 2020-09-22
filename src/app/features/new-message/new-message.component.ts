@@ -108,7 +108,7 @@ export class NewMessageComponent implements OnInit {
   practicianFullToList: any[];
 
   lastObjectList: any[];
-
+  loading: boolean = false;
   //////
   private _forList = [];
   private _objectsList = [];
@@ -1031,11 +1031,13 @@ export class NewMessageComponent implements OnInit {
           })
         );
       if (selectedObj.allowDocument) {
+        this.loading = true;
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin(body, doc)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((res) => {
             this.selectedObject.next(newData);
+            this.loading = false;
           });
       } else {
         forkJoin(body)
@@ -1323,6 +1325,7 @@ export class NewMessageComponent implements OnInit {
       ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
+    newMessage.showFileToPatient = true;
     newMessage.document = message.document;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
@@ -1346,12 +1349,13 @@ export class NewMessageComponent implements OnInit {
           (mess) => {
             this.featureService.sentState.next(true);
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
+
             this.messageWidgetService.toggleObs.next();
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_success,
+              type: "info",
+              template: this.customNotificationTmpl,
+            });
           },
           (error) => {
             this.spinner.hide();
@@ -1368,13 +1372,13 @@ export class NewMessageComponent implements OnInit {
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {
+            this.notifier.show({
+              message: this.globalService.toastrMessages.send_message_success,
+              type: "info",
+              template: this.customNotificationTmpl,
+            });
             this.featureService.sentState.next(true);
             this.spinner.hide();
-            this.router.navigate(["/messagerie"], {
-              queryParams: {
-                status: "sentSuccess",
-              },
-            });
             this.messageWidgetService.toggleObs.next();
           },
           (error) => {

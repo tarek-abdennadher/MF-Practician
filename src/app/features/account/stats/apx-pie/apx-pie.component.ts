@@ -1,9 +1,9 @@
 import { Component, ViewChild, OnInit, Input } from "@angular/core";
-import { ChartComponent, ApexLegend, ApexFill } from "ng-apexcharts";
+import { ChartComponent, ApexLegend } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
-  ApexChart
+  ApexChart,
 } from "ng-apexcharts";
 import { Subject } from "rxjs";
 import { AccountService } from "@app/features/services/account.service";
@@ -23,12 +23,13 @@ export type ChartOptions = {
 @Component({
   selector: "app-apx-pie",
   templateUrl: "./apx-pie.component.html",
-  styleUrls: ["./apx-pie.component.scss"]
+  styleUrls: ["./apx-pie.component.scss"],
 })
 export class ApxPieComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
   @Input() position: string;
+  loading: boolean = true;
   public emptyData = true;
   public colors = this.accountService.colors;
   public infoMessage = "Aucune valeur à afficher";
@@ -41,17 +42,18 @@ export class ApxPieComponent implements OnInit {
     this.messages = this.accountService.stats;
   }
   ngOnInit() {
+    this.loading = true;
     this.chartOptions = {
       series: [0, 0],
       chart: {
         width: 200,
-        type: "donut"
+        type: "donut",
       },
       colors: [
         this.colors.blue,
         this.colors.dark_blue,
         this.colors.light_blue,
-        this.colors.light_steel_blue
+        this.colors.light_steel_blue,
       ],
       labels: ["Chargement..", "Chargement.."],
       legend: {
@@ -62,33 +64,24 @@ export class ApxPieComponent implements OnInit {
         fontFamily: "Montserrat",
         fontWeight: "normal",
         labels: {
-          colors: ["#4a4a4a"]
-        }
+          colors: ["#4a4a4a"],
+        },
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            }
-          }
-        }
-      ]
     };
-    this.stats.subscribe(myMap => {
+    this.stats.subscribe((myMap) => {
+      this.loading = true;
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
         series: [...map.values()],
         chart: {
           width: 450,
-          type: "donut"
+          type: "donut",
         },
         colors: [
           this.colors.blue,
           this.colors.dark_blue,
           this.colors.light_blue,
-          this.colors.light_steel_blue
+          this.colors.light_steel_blue,
         ],
         legend: {
           horizontalAlign: "left",
@@ -97,9 +90,9 @@ export class ApxPieComponent implements OnInit {
           fontFamily: "Montserrat",
           fontWeight: "normal",
           labels: {
-            colors: ["#4a4a4a"]
+            colors: ["#4a4a4a"],
           },
-          width: this.position == "bottom" ? 211 : 285
+          width: this.position == "bottom" ? 211 : 285,
         },
         labels: [...map.keys()],
         responsive: [
@@ -108,12 +101,12 @@ export class ApxPieComponent implements OnInit {
             breakpoint: 1921,
             options: {
               chart: {
-                width: this.position == "bottom" ? 651 : 751
+                width: this.position == "bottom" ? 651 : 751,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 1601,
@@ -126,48 +119,48 @@ export class ApxPieComponent implements OnInit {
                       : 491
                     : browser && browser.name === "chrome"
                     ? 720
-                    : 591
+                    : 591,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 1537,
             options: {
               chart: {
-                chart: {
-                  width:
-                    browser && browser.name === "chrome"
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
                       ? 640
-                      : this.position === "bottom"
-                      ? 459
-                      : 559
-                }
+                      : 459
+                    : browser && browser.name === "chrome"
+                    ? 670
+                    : 559,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 1441,
             options: {
               chart: {
-                chart: {
-                  width:
-                    browser && browser.name === "chrome"
-                      ? 581
-                      : this.position === "bottom"
-                      ? 411
-                      : 511
-                }
+                width:
+                  this.position === "bottom"
+                    ? browser && browser.name === "chrome"
+                      ? 580
+                      : 411
+                    : browser && browser.name === "chrome"
+                    ? 610
+                    : 511,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 1367,
@@ -180,12 +173,12 @@ export class ApxPieComponent implements OnInit {
                       : 374
                     : browser && browser.name === "chrome"
                     ? 600
-                    : 500
+                    : 500,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           // Most Common Tablet Screen Resolution Sizes
           {
@@ -199,12 +192,12 @@ export class ApxPieComponent implements OnInit {
                       : 381
                     : browser && browser.name === "chrome"
                     ? 600
-                    : 500
+                    : 500,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 1025,
@@ -217,12 +210,12 @@ export class ApxPieComponent implements OnInit {
                       : 440
                     : browser && browser.name === "chrome"
                     ? 620
-                    : 540
+                    : 540,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 801,
@@ -236,12 +229,12 @@ export class ApxPieComponent implements OnInit {
                     : browser && browser.name === "chrome"
                     ? 500
                     : 443,
-                height: this.position == "bottom" ? 300 : 150
+                height: this.position == "bottom" ? 300 : 150,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 769,
@@ -255,70 +248,75 @@ export class ApxPieComponent implements OnInit {
                     : browser && browser.name === "chrome"
                     ? 480
                     : 427,
-                height: this.position == "bottom" ? 300 : 150
+                height: this.position == "bottom" ? 300 : 150,
               },
               legend: {
-                show: true
-              }
-            }
+                show: true,
+              },
+            },
           },
           {
             breakpoint: 602,
             options: {
               chart: {
-                width: browser && browser.name === "chrome" ? 315 : 243
+                width: browser && browser.name === "chrome" ? 315 : 243,
+                height: browser && browser.name === "chrome" ? 315 : 243,
               },
               legend: {
-                show: false
-              }
-            }
+                show: false,
+              },
+            },
           },
           // Most Common Mobile Screen Resolution Sizes
           {
             breakpoint: 415,
             options: {
               chart: {
-                width: browser && browser.name === "chrome" ? 432 : 334
+                width: browser && browser.name === "chrome" ? 432 : 334,
+                height: browser && browser.name === "chrome" ? 432 : 334,
               },
               legend: {
-                show: false
-              }
-            }
+                show: false,
+              },
+            },
           },
           {
             breakpoint: 376,
             options: {
               chart: {
-                width: 295
+                width: 295,
+                height: 295,
               },
               legend: {
-                show: false
-              }
-            }
+                show: false,
+              },
+            },
           },
           {
             breakpoint: 361,
             options: {
               chart: {
-                width: 280
+                width: 280,
+                height: 280,
               },
               legend: {
-                show: false
-              }
-            }
-          }
-        ]
+                show: false,
+              },
+            },
+          },
+        ],
       };
-      this.chartOptions.series.forEach(n => {
+      this.chartOptions.series.forEach((n) => {
         if (n != 0) {
           this.emptyData = false;
         }
       });
-      jQuery(document).ready(function() {
+      jQuery(document).ready(function () {
         jQuery(".apexcharts-pie-label").attr("fill", "#000000");
         jQuery(".apexcharts-legend.position-bottom").css("margin", "auto");
         jQuery(".apexcharts-legend.position-right").css("height", "100%");
       });
+      this.loading = false;
     });
     this.featureService.setIsMessaging(false);
   }

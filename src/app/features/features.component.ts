@@ -2,7 +2,8 @@ import {
   Component,
   OnInit,
   AfterViewInit,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ViewChild
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
@@ -24,12 +25,14 @@ import { MessageArchived } from "./archieve-messages/message-archived";
 import { MyPatientsService } from "./services/my-patients.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
+import { NotifierService } from "angular-notifier";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
   styleUrls: ["./features.component.scss"]
 })
 export class FeaturesComponent implements OnInit, AfterViewInit {
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   collapedSideBar: boolean;
   account: any;
   hasImage: boolean;
@@ -42,6 +45,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   patients: any;
   secretaryIds: any = [];
   public messaging: boolean = true;
+  private readonly notifier: NotifierService;
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -58,8 +62,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     private patientService: MyPatientsService,
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    notifierService: NotifierService
   ) {
+    this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
@@ -118,13 +124,25 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.getAllInbox();
     this.getAllArchive();
     this.sentMessage();
+    this.forwardedMessage();
     this.observeState();
     this.subscribeIsMessaging();
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.getPatients();
     }
+    $("#main-container").on("click", function(e) {
+      if (e.target.parentElement.id != "sideBar") {
+        jQuery("#sidebar").addClass("hidden-side-bar");
+      }
+    });
   }
-
+  setNotif(msg) {
+    this.notifier.show({
+      message: msg,
+      type: "error",
+      template: this.customNotificationTmpl
+    });
+  }
   observeState() {
     this.featuresService.inboxState.subscribe(state => {
       if (state) {
@@ -183,6 +201,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   sentMessage() {
     this.messageService.sentMessage().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
+    });
+  }
+  forwardedMessage() {
+    this.messageService.forwardedMessage().subscribe(res => {
+      this.featuresService.setSearchForwarded(this.parseMessages(res));
     });
   }
 
@@ -507,6 +530,20 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       } else {
         this.featuresService.setFilteredSentSearch([]);
       }
+    } else if (this.featuresService.activeChild.getValue() == "forwarded") {
+      if (event) {
+        let result = this.featuresService
+          .getSearchForwardedValue()
+          .filter(
+            x =>
+              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
+              x.object.name.toLowerCase().includes(event.toLowerCase())
+          );
+        result = result.length > 0 ? result : null;
+        this.featuresService.setFilteredForwardedSearch(result);
+      } else {
+        this.featuresService.setFilteredForwardedSearch([]);
+      }
     } else if (this.featuresService.activeChild.getValue() == "archived") {
       if (event) {
         let result = this.featuresService
@@ -523,7 +560,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
-        // this.router.navigate(["/praticien-recherche"]);
+        this.router.navigate(["/praticien-recherche"]);
         let result = this.practicians.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
@@ -846,7 +883,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       case "SECRETARY":
         return senderDetail.secretary.photoId;
       case "TELESECRETARYGROUP":
-        return senderDetail.secretary.photoId;
+        return senderDetail.telesecretaryGroup.photoId;
       default:
         return null;
     }

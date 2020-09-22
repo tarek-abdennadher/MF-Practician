@@ -3,6 +3,7 @@ export class PracticianSearch {
   isSeen: boolean;
   users: [
     {
+      id: number;
       fullName: string;
       img: any;
       title: string;

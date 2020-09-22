@@ -1,8 +1,6 @@
 import {
   Component,
-  OnInit,
-  AfterViewChecked,
-  AfterContentChecked
+  OnInit
 } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
@@ -29,7 +27,6 @@ export class CategoryComponent implements OnInit {
     secretary: string;
     user: string;
   };
-  private componentBeforeNavigation = null;
 
   constructor(
     public accountService: AccountService,
@@ -51,14 +48,22 @@ export class CategoryComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        let currentRoute = this.route;
-        while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
-        this.getMyCategories();
+        if (event.url === "/mes-categories?loading=true") {
+          let currentRoute = this.route;
+          while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+          this.getMyCategories();
+        }
       });
     this.featureService.setIsMessaging(false);
   }
 
   cardClicked(category) {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#categoty").offset().top - 100
+      },
+      1000
+    );
     this.router.navigate(["mes-categories/" + `${category.id}`]);
   }
 
@@ -83,6 +88,12 @@ export class CategoryComponent implements OnInit {
   }
 
   addAction() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#categoty").offset().top - 100
+      },
+      1000
+    );
     this.router.navigate(["mes-categories/add"]);
   }
 

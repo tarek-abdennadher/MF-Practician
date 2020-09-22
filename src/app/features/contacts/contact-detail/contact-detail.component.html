@@ -6,7 +6,7 @@
     class="alert alert-danger alert-dismissible fade show pointer"
     role="alert"
   >
-    {{ labels.phone_error }}
+    {{ alertMessage }}
     <button
       type="button"
       (click)="close()"
@@ -23,36 +23,26 @@
     <i class="fas fa-info-circle fa-icon"></i>
     <span class="Mes-informations">{{ labels.contact_pro }} </span>
   </div>
+  <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <p class="Mes-informations-lighter">
+      Inviter un confrère à s'inscrire sur Helssy et bénéficiez d'un mois
+      d'abonnement offert dès la création de son compte par les administrateurs
+      d'Helssy.
+    </p>
+    <p class="Mes-informations-lighter">
+      En cliquant sur envoyer un message en votre nom sera envoyé directement à
+      votre destinataire l'informant que vous êtes inscrit sur Helssy et que
+      vous l'invitez à vous rejoindre.
+    </p>
+    <p class="Mes-informations-lighter">
+      N'hésitez pas à en parler autour de vous et continuer à bénéficier de
+      notre offre de parrainage.
+    </p>
+  </div>
   <!-- Contact Pro Form -->
   <div class="card-body Rectangle-body">
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
       <div class="row">
-        <!-- Contact Type -->
-        <div class="col-12 col-sm-5 col-lg-5 col-md-7 col-xl-7 pr-0 pl-0">
-          <div for="type_contact" class="col-sm-12 col-form-label">
-            {{ labels.type_contact }}
-          </div>
-          <div class="col-sm-12">
-            <select
-              formControlName="type"
-              class="form-control"
-              id="type"
-              [ngClass]="{ 'is-invalid': submitted && ctr.type.errors }"
-            >
-              <option value="null" disabled="true">
-                {{ labels.type_contact }}
-              </option>
-              <option value="MEDICAL">Praticien</option>
-              <option value="CABINET">Cabinet médical</option>
-              <option value="LABORATORY">Laboratoire</option>
-            </select>
-            <div *ngIf="submitted && ctr.type.errors" class="invalid-feedback">
-              <div *ngIf="ctr.type.errors.required">
-                {{ labels.required }}
-              </div>
-            </div>
-          </div>
-        </div>
         <!-- Contact Title -->
         <div class="col-12 col-sm-3 col-lg-3 col-md-5 col-xl-5 pr-0 pl-0">
           <div for="title" class="col-sm-12 col-form-label">
@@ -78,9 +68,10 @@
           </div>
         </div>
       </div>
+      <br />
       <div class="row">
         <!-- Contact Pro speciality -->
-        <div class="col-12  pr-0 pl-0">
+        <div class="col-12 pr-0 pl-0">
           <div for="speciality" class="col-12 col-form-label">
             {{ labels.speciality }}
           </div>
@@ -91,35 +82,15 @@
               data-none-results-text="Pas de correspondance"
               class="selectpicker form-control"
               data-container="body"
-              [ngClass]="{
-                'is-invalid': submitted && ctr.speciality.errors
-              }"
               id="speciality"
             >
               <option value="null" disabled="true" selected>
                 {{ labels.speciality }}
               </option>
-              <option
-                *ngIf="
-                  account && account.speciality && account.speciality.deleted
-                "
-                [value]="account.speciality.id"
-                disabled="true"
-              >
-                {{ account.speciality.name }}
-              </option>
               <option *ngFor="let s of specialities | async" [value]="s.id">
                 {{ s.name }}
               </option>
             </select>
-            <div
-              *ngIf="submitted && ctr.speciality.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="ctr.speciality.errors.required">
-                {{ labels.required }}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -177,151 +148,33 @@
         </div>
       </div>
       <br />
-      <!--  Facility name -->
-      <div class="row">
-        <div class="col-12 pr-0 pl-0">
-          <div for="facility_name" class="col-sm-12 col-form-label">
-            {{ labels.facility_name }}
-          </div>
-          <div class="col-sm-12">
-            <input
-              type="text"
-              formControlName="name"
-              class="form-control"
-              id="facility_name"
-            />
-          </div>
-        </div>
-      </div>
-      <br />
-      <!--  Contact Pro address -->
-      <div class="row">
-        <div class="col-12 pr-0 pl-0">
-          <div for="address" class="col-sm-12 col-form-label">
-            {{ labels.address }}
-          </div>
-          <div class="col-sm-12">
-            <input
-              type="text"
-              formControlName="address"
-              class="form-control"
-              id="address"
-            />
-          </div>
-        </div>
-      </div>
-      <br />
-      <!--  Contact Pro additional address -->
-      <div class="row">
-        <div class="col-12 pr-0 pl-0">
-          <div for="additional_address" class="col-sm-12 col-form-label">
-            {{ labels.additional_address }}
-          </div>
-          <div class="col-sm-12">
-            <input
-              type="text"
-              formControlName="additional_address"
-              class="form-control"
-              id="additional_address"
-            />
-          </div>
-        </div>
-      </div>
-      <br />
-      <!--  Contact Pro zipCode + city -->
-      <div class="row">
-        <div class="col-12 col-sm-5 pl-0 pr-0">
-          <div class="col-12 col-form-label">{{ labels.zip_code }}</div>
-          <div class="col-sm-12">
-            <input
-              type="text"
-              formControlName="zipCode"
-              class="form-control"
-              id="zipCode"
-            />
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 pl-0 pr-0">
-          <div class="col-12 col-form-label">{{ labels.city }}</div>
-          <div class="col-sm-12">
-            <input
-              type="text"
-              formControlName="city"
-              class="form-control"
-              id="city"
-            />
-          </div>
-        </div>
-      </div>
-      <br />
-      <!-- Phone number -->
-      <div class="row">
-        <div class="col col-12 pr-0 pl-0">
-          <div class="col-12 col-form-label">{{ labels.phone }}</div>
-          <div class="col-12 row">
-            <div class="col-10 col-sm-11">
-              <international-phone-number
-                class="form-control phone"
-                id="phone"
-                formControlName="phone"
-                placeholder="Téléphone"
-                [maxlength]="20"
-                [defaultCountry]=""
-                [ngClass]="{ 'is-invalid': submitted && ctr.phone.errors }"
-              >
-              </international-phone-number>
-              <div
-                *ngIf="ctr.phone.invalid && ctr.phone.touched"
-                class="text-danger"
-              >
-                {{ labels.phone_invalid }}
-              </div>
-            </div>
-            <div class="col-1 col-sm-1">
-              <button
-                (click)="addPhone()"
-                class="btn btn-xs btn-icon"
-                id="add-phone-button"
-              >
-                <i class="far fa-plus"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <br />
-      <!-- Other Phones -->
-      <div class="row">
-        <div class="col pr-0 pl-0">
-          <div *ngIf="isLabelShow" class="col-12 col-form-label">
-            {{ labels.other_phone }}
-          </div>
-          <div class="col-12 col-sm-12">
-            <int-phone
-              [editList]="otherPhones"
-              (phones)="getPhoneList($event)"
-              [addnewPhone]="addnewPhone"
-              (validPhones)="submitPhones($event)"
-              id="other-phones"
-            >
-            </int-phone>
-          </div>
-        </div>
-      </div>
-      <br *ngIf="isLabelShow" />
       <!--  Contact Pro email -->
       <div class="row">
         <div class="col-12 pr-0 pl-0">
           <div for="email" class="col-sm-12 col-form-label">
-            {{ labels.email_input }}
+            {{ labels.email_input }} (*)
           </div>
           <div class="col-sm-12">
             <input
               type="text"
               formControlName="email"
               class="form-control"
+              [ngClass]="{
+                'is-invalid': submitted && ctr.email.errors
+              }"
               id="email"
             />
+            <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
+              <div *ngIf="ctr.email.errors.required">
+                {{ labels.required }}
+              </div>
+              <div *ngIf="ctr.email.errors.email">
+                {{ labels.email_invalid_format }}
+              </div>
+              <div *ngIf="ctr.email.errors.emailExist">
+                {{ labels.email_exist }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -333,7 +186,7 @@
             class="btn btn-primary col-md-4 mr-4"
             (click)="submit()"
           >
-            {{ labels.validate }}
+            {{ labels.send }}
           </button>
           <button (click)="cancel()" class="btn btn-cancel col-md-4">
             {{ labels.cancel }}

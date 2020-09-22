@@ -16,15 +16,12 @@ import { HlsMessagingListModule } from "hls-messaging-list";
 import { ContactsService } from "./services/contacts.service";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
-import { HlsSendMessageModule } from "hls-send-message";
 import { HlsGenericListModule } from "hls-generic-list";
 import { HlsNewMessageDetailModule } from "hls-new-message-detail";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
-import { SendMessageComponent } from "./send-message/send-message.component";
 import { MatConfirmDialogComponent } from "./mat-confirm-dialog/mat-confirm-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { PracticianInvitationComponent } from "./practician-invitation/practician-invitation.component";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { SharedModule } from "@app/shared/shared.module";
@@ -40,53 +37,54 @@ import { NewMessageMobileComponent } from "./new-message-mobile/new-message-mobi
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
 import { AccountService } from "./services/account.service";
 import { SharedMaterialModule } from "@app/shared-material/shared-material.module";
-import { NewMessageWidgetComponent } from './new-message-widget/new-message-widget.component';
-import { NewMessageComponent } from './new-message/new-message.component';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
-import { HlsCkeditorModule } from 'hls-ckeditor';
-import { MyInvitationsComponent } from './my-invitations/my-invitations.component';
-import { PatientDetailComponent } from './patient-detail/patient-detail.component';
-import { MyPatientsArchivedComponent } from './my-patients-archived/my-patients-archived.component';
-import { MyPatientsBlockedComponent } from './my-patients-blocked/my-patients-blocked.component';
-import { MatPatientFileDialogComponent } from './mat-patient-file-dialog/mat-patient-file-dialog.component';
+import { NewMessageWidgetComponent } from "./new-message-widget/new-message-widget.component";
+import { NewMessageComponent } from "./new-message/new-message.component";
+import { AngularMultiSelectModule } from "hls-multiselect";
+import { HlsCkeditorModule } from "hls-ckeditor";
+import { MyInvitationsComponent } from "./my-invitations/my-invitations.component";
+import { PatientDetailComponent } from "./patient-detail/patient-detail.component";
+import { MyPatientsArchivedComponent } from "./my-patients-archived/my-patients-archived.component";
+import { MyPatientsBlockedComponent } from "./my-patients-blocked/my-patients-blocked.component";
+import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
+import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
       position: "right",
-      distance: 20
+      distance: 20,
     },
     vertical: {
       position: "bottom",
-      distance: 150
-    }
+      distance: 250,
+    },
   },
   theme: "material",
   behaviour: {
     autoHide: 2000,
     onClick: false,
     onMouseover: "pauseAutoHide",
-    showDismissButton: false
+    showDismissButton: false,
   },
   animations: {
     enabled: true,
     show: {
       preset: "fade",
       speed: 1500,
-      easing: "ease"
+      easing: "ease",
     },
     hide: {
       preset: "fade",
       speed: 300,
       easing: "ease",
-      offset: 50
+      offset: 50,
     },
     shift: {
       speed: 300,
-      easing: "ease"
+      easing: "ease",
     },
-    overlap: 150
-  }
+    overlap: 150,
+  },
 };
 @NgModule({
   declarations: [
@@ -95,10 +93,8 @@ const notifierOptions: NotifierOptions = {
     SentMessagesComponent,
     ForwardedMessagesComponent,
     PracticianSearchComponent,
-    SendMessageComponent,
     ArchieveMessagesComponent,
     MatConfirmDialogComponent,
-    PracticianInvitationComponent,
     PersonalInformationsComponent,
     NewMessageMobileComponent,
     NewMessageWidgetComponent,
@@ -107,7 +103,8 @@ const notifierOptions: NotifierOptions = {
     MyInvitationsComponent,
     MyPatientsArchivedComponent,
     MyPatientsBlockedComponent,
-    MatPatientFileDialogComponent
+    MatPatientFileDialogComponent,
+    ContactDetailComponent,
   ],
   imports: [
     FormsModule,
@@ -121,7 +118,6 @@ const notifierOptions: NotifierOptions = {
     HlsLinksModule,
     HlsMessagingListModule,
     HlsSearchModule,
-    HlsSendMessageModule,
     MatDialogModule,
     MatIconModule,
     NgxSpinnerModule,
@@ -138,9 +134,9 @@ const notifierOptions: NotifierOptions = {
     SharedMaterialModule,
     HlsNewMessageDetailModule,
     AngularMultiSelectModule,
-    HlsCkeditorModule
+    HlsCkeditorModule,
   ],
 
-  providers: [MessageService, ContactsService, JobtitlePipe, AccountService]
+  providers: [MessageService, ContactsService, JobtitlePipe, AccountService],
 })
-export class FeaturesModule { }
+export class FeaturesModule {}

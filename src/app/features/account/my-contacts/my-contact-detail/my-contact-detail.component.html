@@ -16,14 +16,6 @@
         </button>
     </a>
     <br />
-    <notifier-container></notifier-container>
-    <ng-template #customNotification let-notificationData="notification">
-        <div class="text-center" type="notificationData.type">
-            <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-            &nbsp;<span>{{ notificationData.message }}</span>
-        </div>
-    </ng-template>
-
     <form [formGroup]="infoForm" (ngSubmit)="(submitted)" #f="ngForm">
         <div class="container">
             <div class="row">

@@ -20,6 +20,7 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from '@app/features/services/dialog.service';
 import { PaginationService } from '@app/features/services/pagination.service';
+import { DomSanitizer } from '@angular/platform-browser';
 declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -105,7 +106,8 @@ export class PatientFileComponent implements OnInit {
     private router: Router,
     private globalService: GlobalService,
     public dialogService: DialogService,
-    public pagination: PaginationService
+    public pagination: PaginationService,
+    private sanitizer: DomSanitizer
   ) {
     this.isList = true;
     this.isnoteList = true;
@@ -206,15 +208,12 @@ export class PatientFileComponent implements OnInit {
     this.noteForm = this.formBuilder.group({
       id: new FormControl(null),
       value: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required)
+      date: new FormControl(new Date(), Validators.required)
     });
   }
 
   getPersonalInformation(patient) {
     this.patientFileId = patient.id;
-    if (patient.patientId) {
-      this.getPatientInbox(this.pageNo);
-    }
     if (patient.phones && patient?.phones.length != 0) {
       this.isLabelShow = true;
       this.otherPhones.next(patient.phones);
@@ -247,6 +246,7 @@ export class PatientFileComponent implements OnInit {
         ? patient.invitationStatus
         : null
     });
+    this.getPatientInbox(this.pageNo);
   }
   changeMaidenName() {
     if (this.personalInfoForm.value.civility == "MME") {
@@ -309,6 +309,7 @@ export class PatientFileComponent implements OnInit {
     this.isList = true;
   }
   cancelNoteAdd() {
+    this.noteForm.reset();
     this.isnoteList = true;
     this.initNoteForm();
   }
@@ -343,6 +344,7 @@ export class PatientFileComponent implements OnInit {
     this.submitAction.emit(model);
   }
   addNote() {
+    this.noteForm.reset();
     this.isnoteList = false;
     this.initNoteForm();
   }
@@ -358,6 +360,8 @@ export class PatientFileComponent implements OnInit {
     };
     this.submitNoteAction.emit(model);
     this.isnoteList = true;
+    this.noteForm.reset();
+    this.initNoteForm();
   }
   noteCardClicked(item) {
     this.isnoteList = false;
@@ -422,7 +426,7 @@ export class PatientFileComponent implements OnInit {
 
   getPatientInbox(pageNo) {
     this.messagesServ
-      .getMessagesByPatientFile(this.patientFileId, pageNo, this.direction)
+      .getMessagesByPatientFile(this.patientFileId, this.personalInfoForm.value.practicianId, pageNo, this.direction)
       .subscribe(res => {
         this.messages = res;
         this.messages.sort(function (m1, m2) {
@@ -436,7 +440,7 @@ export class PatientFileComponent implements OnInit {
   }
   getPatientNextInbox(pageNo) {
     this.messagesServ
-      .getMessagesByPatientFile(this.patientFileId, pageNo, this.direction)
+      .getMessagesByPatientFile(this.patientFileId, this.personalInfoForm.value.practicianId, pageNo, this.direction)
       .subscribe(res => {
         this.messages = res;
         this.messages.sort(function (m1, m2) {
@@ -458,7 +462,7 @@ export class PatientFileComponent implements OnInit {
         {
           id: message.sender.id,
           fullName: message.sender.fullName,
-          img: this.avatars.user,
+          img: null,
           title: message.sender.jobTitle,
           civility: message.sender.civility,
           type:
@@ -478,38 +482,20 @@ export class PatientFileComponent implements OnInit {
       isMarkAsSeen: true,
       photoId: message.sender.photoId
     };
-    if (parsedMessage.photoId) {
-      this.documentService.downloadFile(parsedMessage.photoId).subscribe(
-        response => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
-            parsedMessage.users[0].img = myReader.result.toString();
-          };
-          let ok = myReader.readAsDataURL(response.body);
-        },
-        error => {
-          parsedMessage.users[0].img = this.avatars.user;
-        }
-      );
-    } else {
-      parsedMessage.users.forEach(user => {
-        if (user.type == "MEDICAL") {
-          user.img = this.avatars.doctor;
-        } else if (user.type == "SECRETARY") {
-          user.img = this.avatars.secretary;
-        } else if (user.type == "TELESECRETARYGROUP") {
-          user.img = this.avatars.tls;
-        } else if (user.type == "PATIENT") {
-          if (user.civility == "M") {
-            user.img = this.avatars.man;
-          } else if (user.civility == "MME") {
-            user.img = this.avatars.women;
-          } else if (user.civility == "CHILD") {
-            user.img = this.avatars.child;
-          }
-        }
-      });
-    }
+    this.documentService.getDefaultImageEntity(message.sender.senderId, "ACCOUNT").subscribe(
+      response => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = e => {
+          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      error => {
+        parsedMessage.users[0].img = this.avatars.user;
+      }
+    );
     return parsedMessage;
   }
 
