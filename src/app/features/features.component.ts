@@ -770,7 +770,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           ? "En cours"
           : message.messageStatus == "TREATED"
           ? "répondu"
-          : message.toReceivers[0].seen
+          : message.toReceivers[0] && message.toReceivers[0].seen
           ? "Lu"
           : "Envoyé",
       value:
@@ -778,7 +778,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           ? 80
           : message.messageStatus == "TREATED"
           ? 100
-          : message.toReceivers[0].seen
+          : message.toReceivers[0] && message.toReceivers[0].seen
           ? 50
           : 20,
     };
