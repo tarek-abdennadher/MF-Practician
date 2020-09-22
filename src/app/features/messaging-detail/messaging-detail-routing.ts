@@ -13,15 +13,15 @@ const routes: Routes = [
         path: "messagerie-repondre/:id",
         component: MessagingReplyComponent,
         resolve: {
-          messagingdetail: MessagingDetailResolve
-        }
-      }
-    ]
-  }
+          messagingdetail: MessagingDetailResolve,
+        },
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class MessageDetailRoutingModule {}

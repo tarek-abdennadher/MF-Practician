@@ -20,7 +20,8 @@ import { FeaturesComponent } from "../features.component";
   styleUrls: ["./messaging-detail.component.scss"],
 })
 export class MessagingDetailComponent implements OnInit {
-  loading: boolean = true;
+  message: any;
+  loading: boolean = false;
   private _destroyed$ = new Subject();
   previousURL = "";
   role: string = "PRACTICIAN";
@@ -82,6 +83,7 @@ export class MessagingDetailComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private featureComp: FeaturesComponent
   ) {
+    this.loading = false;
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -95,9 +97,8 @@ export class MessagingDetailComponent implements OnInit {
     );
   }
   ngOnInit(): void {
-    this.loading = true;
+    this.loading = false;
     this.route.queryParams.subscribe((params) => {
-      this.loading = true;
       if (params["context"]) {
         this.context = params["context"];
         switch (params["context"]) {
@@ -147,20 +148,39 @@ export class MessagingDetailComponent implements OnInit {
         }
       }
       this.route.params.subscribe((params) => {
-        this.loading = true;
-        this.idMessage = params["id"];
-        this.getMessageDetailById(this.idMessage);
+        if (this.message && this.message != null) {
+          this.showRefuseForTls =
+            (this.message.sender.role == "TELESECRETARYGROUP" ||
+              this.message.sender.role == "TELESECRETARYGROUP") &&
+            this.message.requestTypeId != null &&
+            this.message.requestTitleId != null;
+          this.showAcceptRefuse =
+            this.message.sender.role == "PATIENT" &&
+            this.message.requestTypeId != null &&
+            this.message.requestTitleId != null;
+          if (this.isFromArchive && this.showAcceptRefuse == false) {
+            this.isFromInbox = true;
+          } else {
+            this.isFromInbox = this.IsinboxContext;
+          }
+        }
+        if (this.idMessage !== params["id"]) {
+          this.idMessage = params["id"];
+          this.getMessageDetailById(this.idMessage);
+        }
       });
       this.featureService.setIsMessaging(true);
     });
   }
   checkContect(context) {}
   getMessageDetailById(id) {
+    this.loading = true;
     if (this.isFromArchive && this.showAcceptRefuse == false) {
       this.messagingDetailService
         .getMessageArchivedById(id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
+          this.message = message;
           this.getAttachements(message.nodesId);
           message.sender = message.senderArchived;
           message.toReceivers = message.toReceiversArchived;
@@ -234,6 +254,7 @@ export class MessagingDetailComponent implements OnInit {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .subscribe((message) => {
+          this.message = message;
           this.showRefuseForTls =
             (message.sender.role == "TELESECRETARYGROUP" ||
               message.sender.role == "TELESECRETARYGROUP") &&
@@ -368,59 +389,46 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   replyAction() {
+    this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
-    this.router.navigate([
-      "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
-      this.idMessage,
-    ]);
+    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+      relativeTo: this.route.parent,
+    });
   }
 
   forwardAction() {
+    this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
-    this.router.navigate(
-      [
-        "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
-        this.idMessage,
-      ],
-      {
-        queryParams: {
-          context: "forward",
-        },
-      }
-    );
+    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        context: "forward",
+      },
+      relativeTo: this.route.parent,
+    });
   }
 
   acceptAction() {
+    this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
-    this.router.navigate(
-      [
-        "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
-        this.idMessage,
-      ],
-      {
-        queryParams: {
-          status: "accept",
-        },
-      }
-    );
+    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        status: "accept",
+      },
+      relativeTo: this.route.parent,
+    });
     this.scrollToBottom();
   }
 
   refuseAction() {
     this.messagingDetailService.setId(this.idMessage);
-    this.router.navigate(
-      [
-        "/messagerie-lire/" + this.idMessage + "/messagerie-repondre/",
-        this.idMessage,
-      ],
-      {
-        queryParams: {
-          status: "refus",
-        },
-      }
-    );
+    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+      queryParams: {
+        status: "refus",
+      },
+      relativeTo: this.route.parent,
+    });
     this.scrollToBottom();
   }
 
@@ -479,12 +487,7 @@ export class MessagingDetailComponent implements OnInit {
   }
 
   goToBack() {
-    // this._location.back();
-    this.router.navigate(["/messagerie-lire/" + this.idMessage], {
-      queryParams: {
-        context: this.context,
-      },
-    });
+    this._location.back();
   }
 
   download(nodesId: Array<string>) {
