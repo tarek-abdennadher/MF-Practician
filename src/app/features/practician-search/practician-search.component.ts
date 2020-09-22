@@ -60,6 +60,7 @@ export class PracticianSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild("practician-search");
     this.featureService.getSearchFiltredPractician().subscribe((list) => {
       this.getPractians(list);
     });
@@ -68,7 +69,11 @@ export class PracticianSearchComponent implements OnInit {
   }
   getPractians(list) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      list = list.filter((a) => a.accountId != this.featureService.getUserId());
+      if (list && list.length > 0) {
+        list = list.filter(
+          (a) => a.accountId != this.featureService.getUserId()
+        );
+      }
     }
     this.itemsList = [];
     this.filtredItemsList = [];
