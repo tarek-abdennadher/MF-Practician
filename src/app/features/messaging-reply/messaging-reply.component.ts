@@ -21,9 +21,10 @@ import { FeaturesComponent } from "../features.component";
 @Component({
   selector: "app-messaging-reply",
   templateUrl: "./messaging-reply.component.html",
-  styleUrls: ["./messaging-reply.component.scss"]
+  styleUrls: ["./messaging-reply.component.scss"],
 })
 export class MessagingReplyComponent implements OnInit {
+  loadingReply: boolean = true;
   isMyMessage = false;
   private _destroyed$ = new Subject();
   role: string = "MEDICAL";
@@ -79,8 +80,8 @@ export class MessagingReplyComponent implements OnInit {
     this.imageSource = this.avatars.user;
   }
   realTime() {
-    this.messagingDetailService.getIdObs().subscribe(resp => {
-      this.route.queryParams.subscribe(params => {
+    this.messagingDetailService.getIdObs().subscribe((resp) => {
+      this.route.queryParams.subscribe((params) => {
         this.forwardedResponse = false;
         this.acceptResponse = false;
         this.refuseResponse = false;
@@ -93,7 +94,7 @@ export class MessagingReplyComponent implements OnInit {
           this.getForwardToList();
         }
       });
-      this.route.params.subscribe(params => {
+      this.route.params.subscribe((params) => {
         this.idMessage = params["id"];
         this.messagingDetail = this.route.snapshot.data.messagingdetail;
         this.getMessageDetailById(this.idMessage);
@@ -105,7 +106,7 @@ export class MessagingReplyComponent implements OnInit {
     this.realTime();
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#reply").offset().top
+        scrollTop: $("#reply").offset().top,
       },
       1000
     );
@@ -114,8 +115,8 @@ export class MessagingReplyComponent implements OnInit {
     this.messagingDetailService
       .getTlsSecretaryList()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(list => {
-        list.forEach(receiver => {
+      .subscribe((list) => {
+        list.forEach((receiver) => {
           this.loadPhoto(receiver);
         });
         this.toList.next(list);
@@ -126,8 +127,8 @@ export class MessagingReplyComponent implements OnInit {
     this.messagingDetailService
       .getMessagingDetailById(id)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(message => {
-        message.toReceivers.forEach(element => {
+      .subscribe((message) => {
+        message.toReceivers.forEach((element) => {
           if (element.receiverId == this.featureService.getUserId()) {
             this.isMyMessage = true;
           }
@@ -136,29 +137,30 @@ export class MessagingReplyComponent implements OnInit {
         message.hasFiles = false;
         message.body = "";
         this.messagingDetail = message;
-        this.messagingDetail.toReceivers.forEach(receiver => {
+        this.messagingDetail.toReceivers.forEach((receiver) => {
           this.loadPhoto(receiver);
         });
-        this.messagingDetail.ccReceivers.forEach(receiver => {
+        this.messagingDetail.ccReceivers.forEach((receiver) => {
           this.loadPhoto(receiver);
         });
         this.loadPhoto(this.messagingDetail.sender);
         this.loadSenderForPhoto(this.messagingDetail);
+        this.loadingReply = false;
       });
   }
 
   loadPhoto(user) {
     this.documentService.getDefaultImage(user.id).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           user.img = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      error => {
+      (error) => {
         user.img = this.avatars.user;
       }
     );
@@ -166,16 +168,16 @@ export class MessagingReplyComponent implements OnInit {
 
   loadSenderForPhoto(message) {
     this.documentService.getDefaultImage(message.sender.senderForId).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           message.sender.forImg = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      error => {
+      (error) => {
         message.sender.forImg = this.avatars.user;
       }
     );
@@ -185,7 +187,7 @@ export class MessagingReplyComponent implements OnInit {
     return this.refuseTypeService
       .getAllRefuseTypes()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(refuseTypes => {
+      .subscribe((refuseTypes) => {
         this.objectsList = refuseTypes;
       });
   }
@@ -200,7 +202,7 @@ export class MessagingReplyComponent implements OnInit {
           practicianId: this.featureService.getUserId(),
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
-          websiteOrigin: "PATIENT"
+          websiteOrigin: "PATIENT",
         };
       } else if (
         message.sender.role == "TELESECRETARYGROUP" ||
@@ -212,20 +214,20 @@ export class MessagingReplyComponent implements OnInit {
           practicianId: this.featureService.getUserId(),
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
-          websiteOrigin: "TLS"
+          websiteOrigin: "TLS",
         };
       }
       if (this.refuseResponse) {
         this.messagingDetailService
           .getRefuseRequest(requestDto)
-          .subscribe(resp => {
+          .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
       }
       if (this.acceptResponse) {
         this.messagingDetailService
           .getAcceptRequest(requestDto)
-          .subscribe(resp => {
+          .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
       }
@@ -233,7 +235,7 @@ export class MessagingReplyComponent implements OnInit {
         requestDto.websiteOrigin = "TLS";
         this.messagingDetailService
           .getAcceptRequest(requestDto)
-          .subscribe(resp => {
+          .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
       }
@@ -270,15 +272,15 @@ export class MessagingReplyComponent implements OnInit {
       senderId: this.featureService.getUserId(),
       originalSenderId: this.featureService.getUserId(),
       sendedForId: sendedFor,
-      forwarded: this.forwardedResponse
+      forwarded: this.forwardedResponse,
     };
     if (this.forwardedResponse) {
       replyMessage.toReceivers = [
-        { receiverId: message.trReceiver[0].id, seen: 0 }
+        { receiverId: message.trReceiver[0].id, seen: 0 },
       ];
     } else {
       replyMessage.toReceivers = [
-        { receiverId: message.sender.senderId, seen: 0 }
+        { receiverId: message.sender.senderId, seen: 0 },
       ];
     }
 
@@ -300,7 +302,7 @@ export class MessagingReplyComponent implements OnInit {
         .saveFileInMemory(this.uuid, formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          message => {
+          (message) => {
             if (this.forwardedResponse) {
               this.featureService.numberOfForwarded =
                 this.featureService.numberOfForwarded + 1;
@@ -311,7 +313,7 @@ export class MessagingReplyComponent implements OnInit {
             );
             this.router.navigate(["/messagerie"]);
           },
-          error => {
+          (error) => {
             this.spinner.hide();
             this.featureComp.setNotif(
               this.globalService.toastrMessages.send_message_error
@@ -323,7 +325,7 @@ export class MessagingReplyComponent implements OnInit {
         .replyMessage(replyMessage)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          message => {
+          (message) => {
             if (this.forwardedResponse) {
               this.featureService.numberOfForwarded =
                 this.featureService.numberOfForwarded + 1;
@@ -334,7 +336,7 @@ export class MessagingReplyComponent implements OnInit {
             );
             this.router.navigate(["/messagerie"]);
           },
-          error => {
+          (error) => {
             this.spinner.hide();
             this.featureComp.setNotif(
               this.globalService.toastrMessages.send_message_error

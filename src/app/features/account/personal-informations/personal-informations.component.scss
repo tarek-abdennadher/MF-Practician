@@ -97,7 +97,7 @@ label {
   transition: 0.5s ease;
   opacity: 0;
   position: absolute;
-  top: 8%;
+  top: 10%;
   left: 50%;
   right: 50%;
   transform: translate(-50%, -50%);
@@ -182,6 +182,7 @@ input[type="file"] {
   letter-spacing: -0.18px;
   //Button CSS
   height: 40px;
+  min-width: 169px;
   border-radius: 6px;
   border-color: transparent;
   background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
@@ -223,9 +224,8 @@ hr {
   }
 }
 
-
 @media (max-width: 575px) {
-  .new-password{
+  .new-password {
     padding-left: 0px;
   }
 }
@@ -322,4 +322,7 @@ button.close {
     margin-left: 0;
     margin-right: 0;
   }
+}
+.submit-btn {
+  margin: auto;
 }

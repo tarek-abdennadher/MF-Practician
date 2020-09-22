@@ -1,4 +1,13 @@
+<mat-progress-spinner
+  class="spinner"
+  *ngIf="loadingReply"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
+</mat-progress-spinner>
 <lib-hls-new-message-detail
+  *ngIf="!loadingReply"
   [imageSource]="imageSource"
   [messagingDetail]="messagingDetail"
   [body]="bodyObs"
