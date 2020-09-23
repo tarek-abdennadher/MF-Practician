@@ -8,9 +8,9 @@
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
-  [paginationText]="this.searchContext ? '-' : pagination.text"
-  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !this.searchContext"
-  [isNextPageAllowed]="pagination.hasNext && !loading && !this.searchContext"
+  [paginationText]="searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
   (nextPageAction) = "nextPageActionClicked()"
   (previousPageAction) = "previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
@@ -38,7 +38,7 @@
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -57,7 +57,7 @@
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -76,7 +76,7 @@
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -95,7 +95,7 @@
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -111,7 +111,7 @@
 
     <lib-hlsMessagingList class="mobile-links"
       *ngIf="!loading"
-      [list]="filtredItemList"
+      [list]="itemsList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
@@ -126,7 +126,7 @@
     <lib-hlsMessagingList
       class="links"
       *ngIf="!loading && isSecretary"
-      [list]="filtredItemList"
+      [list]="itemsList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
