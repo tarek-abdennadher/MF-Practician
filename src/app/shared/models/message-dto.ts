@@ -1,7 +1,9 @@
 export class MessageDto {
   public id?: number;
   public body?: string;
-  public document?: string;
+  public documentHeader?: string;
+  public documentBody?: string;
+  public documentFooter?: string;
   public object?: any;
   public toReceivers?: any;
   public ccReceivers?: any;
@@ -16,7 +18,9 @@ export class MessageDto {
   constructor(message?: any) {
     this.id = (message && message.id) || "";
     this.body = (message && message.body) || "";
-    this.document = (message && message.document) || "";
+    this.documentHeader = (message && message.documentHeader) || "";
+    this.documentBody = (message && message.documentBody) || "";
+    this.documentFooter = (message && message.documentFooter) || "";
     this.toReceivers = (message && message.toReceivers) || [];
     this.ccReceivers = (message && message.ccReceivers) || [];
     this.sender = (message && message.sender) || "";
