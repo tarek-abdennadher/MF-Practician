@@ -1,13 +1,7 @@
 import { Injectable } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-} from "@angular/router";
+import { CanActivate, Router } from "@angular/router";
 import { FeaturesService } from "@app/features/features.service";
 import { AccountService } from "@app/features/services/account.service";
-import { Observable } from "rxjs";
 
 @Injectable()
 export class LeavesGuard implements CanActivate {
@@ -19,21 +13,17 @@ export class LeavesGuard implements CanActivate {
   ) {
     this.practicianId = this.featureService.getUserId();
   }
-  getOptionById(): boolean {
-    this.accountService.getOptionById(this.practicianId).subscribe((op) => {
-      if (op && op.id != null) {
-        return true;
-      }
+
+  canActivate(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.accountService.getOptionById(this.practicianId).subscribe((op) => {
+        if (op && op.id) {
+          resolve(true);
+        } else {
+          this.router.navigate(["/compte/mes-informations"]);
+          resolve(false);
+        }
+      });
     });
-    return false;
-  }
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
-    if (!this.getOptionById()) {
-      this.router.navigate(["/compte/mes-informations"]);
-    }
-    return this.getOptionById();
   }
 }
