@@ -13,6 +13,7 @@ import { MyPatientsService } from "../services/my-patients.service";
 import { PaginationService } from "../services/pagination.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
+import { SenderRole } from '@app/shared/enmus/sender-role';
 
 @Component({
   selector: "app-messaging-list",
@@ -72,7 +73,7 @@ export class MessagingListComponent implements OnInit {
   };
   searchContext = false;
   listLength = 10;
-  userTypeTabsFilter: string = "all";
+  userTypeTabsFilter: SenderRole = SenderRole.ALL;
   isSecretary = this.localSt.retrieve("role") == "SECRETARY";
   constructor(
     private messagesServ: MessagingListService,
@@ -306,7 +307,7 @@ export class MessagingListComponent implements OnInit {
               resp => {
                 let listToArchive = this.itemsList
                   .slice(0)
-                  .filter(function(elm, ind) {
+                  .filter(function (elm, ind) {
                     return messagesId.indexOf(elm.id) != -1;
                   });
                 listToArchive.forEach(message => {
@@ -347,19 +348,38 @@ export class MessagingListComponent implements OnInit {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(item => {
-            switch (event) {
-              case "doctor":
-                return item.users[0].type.toLowerCase() == "medical";
-              case "secretary":
-                return (
-                  item.users[0].type.toLowerCase() == "secretary" ||
-                  item.users[0].type.toLowerCase() == "telesecretarygroup"
-                );
-              default:
-                return item.users[0].type.toLowerCase() == event;
-            }
-          });
-    this.userTypeTabsFilter = event;
+          switch (event) {
+            case "doctor":
+              return item.users[0].type.toLowerCase() == "medical";
+            case "secretary":
+              return (
+                item.users[0].type.toLowerCase() == "secretary" ||
+                item.users[0].type.toLowerCase() == "telesecretarygroup"
+              );
+            default:
+              return item.users[0].type.toLowerCase() == event;
+          }
+        });
+    switch (event) {
+      case "all":
+        this.userTypeTabsFilter = SenderRole.ALL;
+        break;
+      case "doctor":
+        this.userTypeTabsFilter = SenderRole.PRACTICIAN;
+        break;
+      case "secretary":
+        this.userTypeTabsFilter = SenderRole.SECRETARY;
+        break;
+      default:
+        this.userTypeTabsFilter = SenderRole.PATIENT;
+        break;
+    }
+    this.refreshCurrentPage();
+  }
+
+  private refreshCurrentPage() {
+    this.resetData();
+    this.getMyInbox(this.paramsId);
   }
 
   getMyInbox(accountId) {
@@ -390,17 +410,9 @@ export class MessagingListComponent implements OnInit {
                       : this.globalService.messagesDisplayScreen.newMessage;
                 });
             } else {
-              this.messages = retrievedMess;
-              this.messages.sort(function(m1, m2) {
-                return (
-                  new Date(m2.updatedAt).getTime() -
-                  new Date(m1.updatedAt).getTime()
-                );
-              });
               this.itemsList.push(
-                ...this.messages.map(item => this.parseMessage(item))
+                ...retrievedMess.map(item => this.parseMessage(item))
               );
-              this.filtredItemList = this.itemsList;
             }
           });
       });
@@ -417,27 +429,9 @@ export class MessagingListComponent implements OnInit {
       )
       .subscribe(retrievedMess => {
         this.loading = false;
-        this.listLength = retrievedMess.length;
-        if (retrievedMess.length > 0) {
-          this.messages = retrievedMess;
-          this.messages.sort(function(m1, m2) {
-            return (
-              new Date(m2.updatedAt).getTime() -
-              new Date(m1.updatedAt).getTime()
-            );
-          });
-          this.itemsList.push(
-            ...this.messages.map(item => this.parseMessage(item))
-          );
-
-          if (this.filtredItemList.length != this.itemsList.length) {
-            this.filtredItemList = this.itemsList.filter(item =>
-              [item.users[0].type.toLowerCase(), "all"].includes(
-                this.userTypeTabsFilter
-              )
-            );
-          }
-        }
+        this.itemsList.push(
+          ...retrievedMess.map(item => this.parseMessage(item))
+        );
       });
   }
 
@@ -583,10 +577,10 @@ export class MessagingListComponent implements OnInit {
           let messageId = event.id;
           this.messagesServ.markMessageAsArchived([messageId]).subscribe(
             resp => {
-              this.itemsList = this.itemsList.filter(function(elm, ind) {
+              this.itemsList = this.itemsList.filter(function (elm, ind) {
                 return elm.id != event.id;
               });
-              this.filtredItemList = this.filtredItemList.filter(function(
+              this.filtredItemList = this.filtredItemList.filter(function (
                 elm,
                 ind
               ) {
@@ -604,6 +598,7 @@ export class MessagingListComponent implements OnInit {
                   notification => notification.messageId != event.id
                 );
               }
+              this.refreshCurrentPage();
             },
             error => {
               console.log("We have to find a way to notify user by this error");
@@ -883,9 +878,13 @@ export class MessagingListComponent implements OnInit {
     }
   }
 
-  loadPage() {
+  private resetData() {
     this.itemsList = [];
     this.filtredItemList = [];
+  }
+
+  loadPage() {
+    this.resetData();
     this.getMyInboxNextPage(this.paramsId);
   }
 }
