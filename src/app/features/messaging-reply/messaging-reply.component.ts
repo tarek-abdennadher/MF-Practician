@@ -254,7 +254,9 @@ export class MessagingReplyComponent implements OnInit {
     replyMessage.parent = parent;
     replyMessage.body = message.body;
     replyMessage.showFileToPatient = true;
-    replyMessage.document = message.document ? message.document : null;
+    replyMessage.documentHeader = message.documentHeader ? message.documentHeader : null;
+    replyMessage.documentBody = message.documentBody ? message.documentBody : null;
+    replyMessage.documentFooter = message.documentFooter ? message.documentFooter : null;
     replyMessage.object = message.object;
     if (message.requestTypeId && message.requestTitleId) {
       replyMessage.requestTypeId = message.requestTypeId;
