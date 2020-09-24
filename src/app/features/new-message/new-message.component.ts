@@ -207,7 +207,9 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
-      document: null,
+      documentHeader: null,
+      documentBody: null,
+      documentFooter: null,
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -433,9 +435,12 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.document) {
+          if (res.documentBody) {
             this.sendMessageForm.patchValue({
               document: res.document,
+              documentHeader: res.documentHeader,
+              documentBody: res.documentBody,
+              documentFooter: res.documentFooter,
             });
           }
         } else {
@@ -450,9 +455,11 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.document) {
+          if (res.documentBody) {
             this.sendMessageForm.patchValue({
-              document: res.document,
+              documentHeader: res.documentHeader,
+              documentBody: res.documentBody,
+              documentFooter: res.documentFooter,
             });
           }
         }
@@ -669,7 +676,9 @@ export class NewMessageComponent implements OnInit {
         file: null,
       });
       this.sendMessageForm.patchValue({
-        document: null,
+        documentHeader: null,
+        documentBody: null,
+        documentFooter: null,
       });
 
       this.selectContext = false;
@@ -1020,7 +1029,9 @@ export class NewMessageComponent implements OnInit {
         name: selectedObj.title,
         body: null,
         file: null,
-        document: null,
+        documentHeader: null,
+        documentBody: null,
+        documentFooter: null,
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1058,11 +1069,13 @@ export class NewMessageComponent implements OnInit {
 
   getPdfAsHtml(request, newData) {
     return this.requestTypeService
-      .getDocumentAsHtml(request)
+      .getDocumentField(request)
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((response) => {
-          newData.document = response.document;
+          newData.documentHeader = response.header;
+          newData.documentBody = response.body;
+          newData.documentFooter = response.footer;
         })
       );
   }
@@ -1326,7 +1339,9 @@ export class NewMessageComponent implements OnInit {
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
     newMessage.showFileToPatient = true;
-    newMessage.document = message.document;
+    newMessage.documentHeader = message.documentHeader;
+    newMessage.documentBody = message.documentBody;
+    newMessage.documentFooter = message.documentFooter;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
