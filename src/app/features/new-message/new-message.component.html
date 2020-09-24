@@ -294,7 +294,7 @@
   </div>
   <hr />
   <!-- body with no document-->
-  <div class="row mb-2" *ngIf="!ctr.document.value">
+  <div class="row mb-2" *ngIf="!ctr.documentBody.value">
     <div class="col-md-12">
       <lib-hls-ckeditor
         id="body"
@@ -321,7 +321,7 @@
   >
   </mat-progress-spinner>
   <!-- body with document-->
-  <mat-tab-group headerPosition="below" *ngIf="ctr.document.value">
+  <mat-tab-group headerPosition="below" *ngIf="ctr.documentBody.value">
     <mat-tab label="Message">
       <div class="row mb-2">
         <div class="col-md-12">
@@ -346,14 +346,14 @@
         <div class="col-md-12">
           <lib-hls-ckeditor
             [ngClass]="{
-              'is-invalid': submited && ctr.document.errors,
-              invalid: submited && ctr.document.errors
+              'is-invalid': submited && ctr.documentBody.errors,
+              invalid: submited && ctr.documentBody.errors
             }"
-            [ctrl]="ctr.document"
+            [ctrl]="ctr.documentBody"
           >
           </lib-hls-ckeditor>
-          <div *ngIf="ctr.document.errors" class="invalid-feedback">
-            <div *ngIf="ctr.document.errors.required">
+          <div *ngIf="ctr.documentBody.errors" class="invalid-feedback">
+            <div *ngIf="ctr.documentBody.errors.required">
               {{ texts.required }}
             </div>
           </div>
