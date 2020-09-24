@@ -881,12 +881,14 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       (response) => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
-          user.img = myReader.result;
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
       (error) => {
-        user.img = this.avatars.user;
+        user.img = "assets/imgs/user.png";
       }
     );
   }
