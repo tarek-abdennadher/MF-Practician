@@ -65,7 +65,7 @@ export class PaginationService {
         this.text = `${this.pageNo + 1}-${this.maxPages} Page`;
         break;
       default:
-        this.text = `${this.pageNo + 1}-${this.maxPages} Pqges`;
+        this.text = `${this.pageNo + 1}-${this.maxPages} Pages`;
         break;
     }
     this.hasNext = this.maxPages > (this.pageNo + 1);
