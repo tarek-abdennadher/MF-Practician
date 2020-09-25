@@ -88,8 +88,12 @@ export class ArchieveMessagesComponent implements OnInit {
           this.number > 1
             ? this.globalService.messagesDisplayScreen.newArchivedMessages
             : this.globalService.messagesDisplayScreen.newArchivedMessage;
+        messages.sort((m1, m2) =>
+          new Date(m2.updatedAt).getTime() -
+          new Date(m1.updatedAt).getTime()
+        );
         messages.forEach(message => {
-          let archivedMessage = this.mappingMessageArchived(message);
+          const archivedMessage = this.mappingMessageArchived(message);
           archivedMessage.users.forEach(user => {
             this.loadPhoto(user);
           });
@@ -201,7 +205,7 @@ export class ArchieveMessagesComponent implements OnInit {
         return senderDetail.practician.photoId;
       case "SECRETARY":
         return senderDetail.secretary.photoId;
-        case "SUPER_SUPERVISOR" || "SUPERVISOR" || "OPERATOR":
+      case "SUPER_SUPERVISOR" || "SUPERVISOR" || "OPERATOR":
         return senderDetail.telesecretary.photoId;
       case "TELESECRETARYGROUP":
         return senderDetail.telesecretaryGroup.photoId;

@@ -57,7 +57,17 @@ export class PaginationService {
   }
 
   loadPage() {
-    this.text = `${this.pageNo + 1}-${this.maxPages} Pages`;
+    switch (this.maxPages) {
+      case 0:
+        this.text = `${this.maxPages} Page`;
+        break;
+      case 1:
+        this.text = `${this.pageNo + 1}-${this.maxPages} Page`;
+        break;
+      default:
+        this.text = `${this.pageNo + 1}-${this.maxPages} Pqges`;
+        break;
+    }
     this.hasNext = this.maxPages > (this.pageNo + 1);
     this.hasPrevious = this.pageNo > 0;
   }
