@@ -1016,7 +1016,7 @@ export class NewMessageComponent implements OnInit {
 
   objectSelection(item) {
     let selectedObj = item.object[0];
-    if (selectedObj && selectedObj.title != "autre") {
+    if (selectedObj && selectedObj.title != "autre" && !this.isInstruction) {
       const objectDto = {
         senderId: this.featureService.getUserId(),
         sendedForId: item.for && item.for[0] && item.for[0].id,
