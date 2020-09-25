@@ -17,7 +17,7 @@ export class PracticianDetailComponent implements OnInit {
   practician: any;
   imageSource: string;
   public isFavorite: boolean = false;
-  public isArchive: boolean = true;
+  public isArchive: boolean = false;
   isPractician = true;
   links = {};
   avatars: {
@@ -54,7 +54,7 @@ export class PracticianDetailComponent implements OnInit {
   getPractician(id) {
     this.practicianDetailService.getPracticiansById(id).subscribe(response => {
       if (this.localSt.retrieve("role") == "SECRETARY") {
-        this.isArchive = false;
+        this.isArchive = true;
       }
       this.practician = response;
       this.documentService.getDefaultImage(this.practician.accountId).subscribe(
