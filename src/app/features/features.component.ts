@@ -26,6 +26,7 @@ import { MyPatientsService } from "./services/my-patients.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
+import { RoleObjectPipe } from '@app/shared/pipes/role-object';
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -63,7 +64,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
     private cdr: ChangeDetectorRef,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    public roleObjectPipe: RoleObjectPipe
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -233,7 +235,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
-    this.stompClient.debug = () => {};
+    this.stompClient.debug = () => { };
     const that = this;
     this.stompClient.connect({}, function (frame) {
       that.stompClient.subscribe(
@@ -276,7 +278,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         let id = ids[i];
         const ws = new SockJS(this.globalService.BASE_URL + "/socket");
         this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => {};
+        this.stompClientList[i].debug = () => { };
         const that = this;
         this.stompClientList[i].connect({}, function (frame) {
           this.subscribe("/topic/notification/" + id, (message) => {
@@ -306,8 +308,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
             id: notif.id,
             sender: notif.jobTitle
               ? this.jobTitlePipe.transform(notif.jobTitle) +
-                " " +
-                notif.senderFullName
+              " " +
+              notif.senderFullName
               : notif.senderFullName,
             senderId: notif.senderId,
             picture: this.avatars.user,
@@ -470,7 +472,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.router.navigate(["/messagerie"]);
   }
 
-  openNotifications() {}
+  openNotifications() { }
   closeNotification() {
     this.getMyNotificationsNotSeen();
   }
@@ -600,22 +602,22 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       if (notification.type == "MESSAGE") {
         this.featuresService
           .markMessageAsSeenByNotification(notification.messageId)
-          .subscribe(() => {});
+          .subscribe(() => { });
       } else if (
         notification.type == "MESSAGE_IN_PROGRESS" ||
         notification.type == "MESSAGE_TREATED"
       ) {
         this.featuresService
           .markNotificationAsSeen(notification.id)
-          .subscribe((resp) => {});
+          .subscribe((resp) => { });
       } else if (notification.type == "INVITATION") {
         this.featuresService
           .markNotificationAsSeen(notification.id)
-          .subscribe((resp) => {});
+          .subscribe((resp) => { });
       } else if (notification.type == "INSTRUCTION_TREATED") {
         this.featuresService
           .markNotificationAsSeen(notification.id)
-          .subscribe((resp) => {});
+          .subscribe((resp) => { });
       }
     });
   }
@@ -742,7 +744,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isArchieve: true,
       photoId: message.sender.photoId,
     };
-    this.documentService.getDefaultImage(message.sender.senderId).subscribe(
+    this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
       (response) => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
@@ -769,18 +771,18 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-          ? "répondu"
-          : message.toReceivers[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "répondu"
+            : message.toReceivers[0] && message.toReceivers[0].seen
+              ? "Lu"
+              : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-          ? 100
-          : message.toReceivers[0].seen
-          ? 50
-          : 20,
+            ? 100
+            : message.toReceivers[0] && message.toReceivers[0].seen
+              ? 50
+              : 20,
     };
     messageSent.users = [];
     message.toReceivers.forEach((r) => {
@@ -837,11 +839,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     const messageArchived = new MessageArchived();
     messageArchived.id = message.id;
     messageArchived.isSeen = message.seen;
+    const senderRolePascalCase = this.roleObjectPipe.transform(message.senderDetail.role);
     messageArchived.users = [
       {
         fullName:
-          (message.senderDetail[message.senderDetail.role.toLowerCase()] &&
-            message.senderDetail[message.senderDetail.role.toLowerCase()]
+          (message.senderDetail[senderRolePascalCase] &&
+            message.senderDetail[senderRolePascalCase]
               .fullName) ||
           "",
         img: this.avatars.user,
@@ -874,16 +877,18 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   loadPhoto(user) {
-    this.documentService.downloadFile(user.photoId).subscribe(
+    this.documentService.getDefaultImage(user.id).subscribe(
       (response) => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
-          user.img = myReader.result;
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
       (error) => {
-        user.img = this.avatars.user;
+        user.img = "assets/imgs/user.png";
       }
     );
   }
@@ -898,6 +903,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         return senderDetail.secretary.photoId;
       case "TELESECRETARYGROUP":
         return senderDetail.telesecretaryGroup.photoId;
+      case "SUPERVISOR" || "SUPER_SUPERVISOR" || "OPERATOR":
+        return senderDetail.telesecretary.photoId;
       default:
         return null;
     }

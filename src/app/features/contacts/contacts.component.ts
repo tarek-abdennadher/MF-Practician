@@ -107,6 +107,7 @@ export class ContactsComponent implements OnInit {
             photoId: elm.photoId,
           };
         });
+        this.types = this.types.filter(s => -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s));
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {
@@ -164,6 +165,7 @@ export class ContactsComponent implements OnInit {
             photoId: elm.photoId,
           };
         });
+        this.types = this.types.filter(s => -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s));
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {

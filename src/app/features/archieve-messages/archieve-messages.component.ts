@@ -9,6 +9,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { DomSanitizer } from "@angular/platform-browser";
 import { PaginationService } from '../services/pagination.service';
+import { RoleObjectPipe } from '@app/shared/pipes/role-object';
 
 @Component({
   selector: "app-archieve-messages",
@@ -53,7 +54,8 @@ export class ArchieveMessagesComponent implements OnInit {
     private documentService: MyDocumentsService,
     private globalService: GlobalService,
     private sanitizer: DomSanitizer,
-    public pagination: PaginationService
+    public pagination: PaginationService,
+    public roleObjectPipe: RoleObjectPipe
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -100,8 +102,7 @@ export class ArchieveMessagesComponent implements OnInit {
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
     const senderRole = message?.senderDetail?.role;
-    const senderRolePascalCase = senderRole.toLowerCase() != "telesecretarygroup"
-      ? senderRole.toLowerCase() : "telesecretaryGroup";
+    const senderRolePascalCase = this.roleObjectPipe.transform(senderRole);
 
     messageArchived.id = message.id;
     messageArchived.isSeen = message.seen;
