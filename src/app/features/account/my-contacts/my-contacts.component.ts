@@ -42,7 +42,9 @@ export class MyContactsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyContacts();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   getMyContacts() {

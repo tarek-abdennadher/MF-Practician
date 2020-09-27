@@ -10,7 +10,7 @@ import { DialogService } from "../services/dialog.service";
 @Component({
   selector: "app-my-objects",
   templateUrl: "./my-objects.component.html",
-  styleUrls: ["./my-objects.component.scss"]
+  styleUrls: ["./my-objects.component.scss"],
 })
 export class MyObjectsComponent implements OnInit {
   public messages: any;
@@ -46,20 +46,23 @@ export class MyObjectsComponent implements OnInit {
     this.getSearchList();
     // update categories after detail view
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        console.log(event.url)
+        console.log(event.url);
         if (event.url === "/mes-objets?loading=true") {
           let currentRoute = this.route;
-          while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
           this.getMyObject();
         }
       });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   getSearchList() {
-    this.accountService.getObjectSearchList().subscribe(list => {
+    this.accountService.getObjectSearchList().subscribe((list) => {
       this.searchList = list;
     });
   }
@@ -67,7 +70,7 @@ export class MyObjectsComponent implements OnInit {
   cardClicked(object) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top - 100
+        scrollTop: $("#addObject").offset().top - 100,
       },
       1000
     );
@@ -81,13 +84,13 @@ export class MyObjectsComponent implements OnInit {
         "Confirmation de supression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.accountService
             .deletePracticianObject(object.id)
-            .subscribe(result => {
+            .subscribe((result) => {
               this.itemsList = this.itemsList.filter(
-                cat => cat.id != object.id
+                (cat) => cat.id != object.id
               );
               this.getSearchList();
             });
@@ -98,7 +101,7 @@ export class MyObjectsComponent implements OnInit {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top - 100
+        scrollTop: $("#addObject").offset().top - 100,
       },
       1000
     );
@@ -107,31 +110,31 @@ export class MyObjectsComponent implements OnInit {
 
   onChange(item) {
     const id = item.target.value;
-    this.accountService.clonePracticianObject(id).subscribe(requestClone => {
+    this.accountService.clonePracticianObject(id).subscribe((requestClone) => {
       this.itemsList.push(this.parseObject(requestClone));
-      this.searchList = this.searchList.filter(elm => elm.id != id);
+      this.searchList = this.searchList.filter((elm) => elm.id != id);
     });
   }
 
   getMyObject() {
     this.itemsList = [];
-    this.accountService.getPracticianObjectList().subscribe(categories => {
-      categories.forEach(res => {
+    this.accountService.getPracticianObjectList().subscribe((categories) => {
+      categories.forEach((res) => {
         this.itemsList.push({
           id: res.id,
           isSeen: true,
           users: [
             {
               id: res.id,
-              fullName: res.object
-            }
+              fullName: res.object,
+            },
           ],
           isArchieve: true,
           isImportant: false,
           hasFiles: false,
           isViewDetail: false,
           isMarkAsSeen: false,
-          isChecked: false
+          isChecked: false,
         });
       });
     });
@@ -144,15 +147,15 @@ export class MyObjectsComponent implements OnInit {
       users: [
         {
           id: res.id,
-          fullName: res.object
-        }
+          fullName: res.object,
+        },
       ],
       isArchieve: true,
       isImportant: false,
       hasFiles: false,
       isViewDetail: false,
       isMarkAsSeen: false,
-      isChecked: false
+      isChecked: false,
     };
     return parsed;
   }

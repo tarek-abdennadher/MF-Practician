@@ -29,7 +29,9 @@ export class MyAccountComponent implements OnInit {
   public userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.featureService.setActiveChild("account");
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
     this.getOptionById();
     this.getTls();
   }

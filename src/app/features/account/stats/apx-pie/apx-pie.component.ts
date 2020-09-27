@@ -318,6 +318,8 @@ export class ApxPieComponent implements OnInit {
       });
       this.loading = false;
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 }
