@@ -11,7 +11,7 @@ import { NotifierService } from "angular-notifier";
 @Component({
   selector: "app-my-contacts",
   templateUrl: "./my-contacts.component.html",
-  styleUrls: ["./my-contacts.component.scss"]
+  styleUrls: ["./my-contacts.component.scss"],
 })
 export class MyContactsComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -48,9 +48,9 @@ export class MyContactsComponent implements OnInit {
   getMyContacts() {
     this.contactBookService
       .getAllContactBookByPracticianId(this.practicianId)
-      .subscribe(contacts => {
+      .subscribe((contacts) => {
         this.users = contacts;
-        this.itemsList = this.users.map(elm => this.parseContact(elm));
+        this.itemsList = this.users.map((elm) => this.parseContact(elm));
       });
   }
   parseContact(contact): any {
@@ -63,11 +63,11 @@ export class MyContactsComponent implements OnInit {
           fullName: contact.firstName + " " + contact.lastName,
           type: "CONTACT-BOOK",
           fonction: contact?.fonction,
-          img: this.globalService.avatars.user
-        }
+          img: this.globalService.avatars.user,
+        },
       ],
       object: {
-        name: contact.email
+        name: contact.email,
       },
       isArchieve: true,
       isImportant: false,
@@ -75,7 +75,7 @@ export class MyContactsComponent implements OnInit {
       isViewDetail: true,
       isMarkAsSeen: false,
       isChecked: false,
-      photoId: null
+      photoId: null,
     };
     return parsedContact;
   }
@@ -95,10 +95,10 @@ export class MyContactsComponent implements OnInit {
         this.contactBookService.messages.delete_contact
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.contactBookService.deleteContactBook(event.id).subscribe(() => {
-            this.itemsList = this.itemsList.filter(elm => elm.id != event.id);
+            this.itemsList = this.itemsList.filter((elm) => elm.id != event.id);
           });
         }
       });

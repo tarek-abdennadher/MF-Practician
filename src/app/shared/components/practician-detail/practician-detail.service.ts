@@ -8,6 +8,10 @@ import { RequestType } from "@app/shared/enmus/requestType";
 })
 export class PracticianDetailService {
   constructor(private globalService: GlobalService) {}
+  public messages = {
+    delete_favorite_confirm: "Êtes-vous sûr de vouloir retirer ce praticien ?",
+    delete_favorite: "Retirer un praticien",
+  };
   getPracticiansById(id): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
