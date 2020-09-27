@@ -7,7 +7,7 @@ import { FeaturesService } from "@app/features/features.service";
 @Component({
   selector: "app-stats",
   templateUrl: "./stats.component.html",
-  styleUrls: ["./stats.component.scss"]
+  styleUrls: ["./stats.component.scss"],
 })
 export class StatsComponent implements OnInit {
   selectedId: Number;
@@ -26,7 +26,9 @@ export class StatsComponent implements OnInit {
   ngOnInit(): void {
     this.selectedId = this.featureService.getUserId();
     this.messages = this.service.messages;
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
     this.service
       .getreceivedStats(this.selectedId)
       .subscribe((r: Map<string, number>) => {

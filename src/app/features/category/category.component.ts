@@ -1,7 +1,4 @@
-import {
-  Component,
-  OnInit
-} from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { CategoryService } from "@app/features/services/category.service";
@@ -13,7 +10,7 @@ import { DialogService } from "../services/dialog.service";
 @Component({
   selector: "app-category",
   templateUrl: "./category.component.html",
-  styleUrls: ["./category.component.scss"]
+  styleUrls: ["./category.component.scss"],
 })
 export class CategoryComponent implements OnInit {
   public messages: any;
@@ -46,21 +43,24 @@ export class CategoryComponent implements OnInit {
     this.getMyCategories();
     // update categories after detail view
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-categories?loading=true") {
           let currentRoute = this.route;
-          while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
           this.getMyCategories();
         }
       });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   cardClicked(category) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#categoty").offset().top - 100
+        scrollTop: $("#categoty").offset().top - 100,
       },
       1000
     );
@@ -74,15 +74,17 @@ export class CategoryComponent implements OnInit {
         "Confirmation de supression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
-          this.categoryService.deleteCategory(category.id).subscribe(result => {
-            if (result) {
-              this.itemsList = this.itemsList.filter(
-                cat => cat.id != category.id
-              );
-            }
-          });
+          this.categoryService
+            .deleteCategory(category.id)
+            .subscribe((result) => {
+              if (result) {
+                this.itemsList = this.itemsList.filter(
+                  (cat) => cat.id != category.id
+                );
+              }
+            });
         }
       });
   }
@@ -90,7 +92,7 @@ export class CategoryComponent implements OnInit {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#categoty").offset().top - 100
+        scrollTop: $("#categoty").offset().top - 100,
       },
       1000
     );
@@ -99,23 +101,23 @@ export class CategoryComponent implements OnInit {
 
   getMyCategories() {
     this.itemsList = [];
-    this.categoryService.getMyCategories().subscribe(categories => {
-      categories.forEach(category => {
+    this.categoryService.getMyCategories().subscribe((categories) => {
+      categories.forEach((category) => {
         this.itemsList.push({
           id: category.id,
           isSeen: true,
           users: [
             {
               id: category.id,
-              fullName: category.name
-            }
+              fullName: category.name,
+            },
           ],
           isArchieve: true,
           isImportant: false,
           hasFiles: false,
           isViewDetail: false,
           isMarkAsSeen: false,
-          isChecked: false
+          isChecked: false,
         });
       });
     });

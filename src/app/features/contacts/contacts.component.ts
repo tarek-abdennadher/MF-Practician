@@ -85,7 +85,9 @@ export class ContactsComponent implements OnInit {
       this.getAllContactsForSecretary();
     }
 
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   getAllContactsForSecretary() {
     this.contactsService.getContactsProForSecretary().subscribe(

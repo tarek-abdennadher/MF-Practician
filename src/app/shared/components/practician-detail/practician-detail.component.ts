@@ -57,7 +57,9 @@ export class PracticianDetailComponent implements OnInit {
       this.isMyFAvorite(params["id"]);
       this.getPractician(params["id"]);
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   getPractician(id) {
     this.practicianDetailService

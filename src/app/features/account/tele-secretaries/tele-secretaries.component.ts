@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, AfterViewInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { ContactsService } from "@app/features/services/contacts.service";
@@ -10,7 +10,7 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 @Component({
   selector: "app-tele-secretaries",
   templateUrl: "./tele-secretaries.component.html",
-  styleUrls: ["./tele-secretaries.component.scss"]
+  styleUrls: ["./tele-secretaries.component.scss"],
 })
 export class TeleSecretariesComponent implements OnInit {
   public messages: any;
@@ -41,11 +41,13 @@ export class TeleSecretariesComponent implements OnInit {
   ngOnInit(): void {
     this.initInfoForm();
     this.getTls();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   getTls() {
-    this.accountService.getPracticianTelesecretary().subscribe(practician => {
+    this.accountService.getPracticianTelesecretary().subscribe((practician) => {
       this.tls = practician.group;
       this.infoForm.patchValue({
         id: this.tls.id,
@@ -61,7 +63,7 @@ export class TeleSecretariesComponent implements OnInit {
         photoId: this.tls.photoId,
         resp: this.tls.supervisor
           ? this.tls.supervisor.civility + " " + this.tls.supervisor.fullName
-          : ""
+          : "",
       });
 
       this.hasImage = true;
@@ -88,22 +90,22 @@ export class TeleSecretariesComponent implements OnInit {
       phoneNumber: new FormControl(null),
       website: new FormControl(null),
       photoId: new FormControl(null),
-      resp: new FormControl(null)
+      resp: new FormControl(null),
     });
   }
 
   getPictureProfile(id) {
     this.documentService.getDefaultImage(id).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           this.image = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      error => {
+      (error) => {
         this.image = this.avatars.telesecretary;
       }
     );

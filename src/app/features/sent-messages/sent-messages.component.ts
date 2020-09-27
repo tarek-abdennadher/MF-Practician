@@ -78,7 +78,9 @@ export class SentMessagesComponent implements OnInit {
     });
     this.countSentMessage();
     this.searchSent();
-    this.featureService.setIsMessaging(true);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(true);
+    });
   }
 
   countSentMessage() {

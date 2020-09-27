@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewChecked } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, Params } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { MessageService } from "../services/message.service";
@@ -99,7 +99,9 @@ export class MessagingReplyComponent implements OnInit {
         this.messagingDetail = this.route.snapshot.data.messagingdetail;
         this.getMessageDetailById(this.idMessage);
       });
-      this.featureService.setIsMessaging(true);
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
     });
   }
   ngOnInit(): void {
@@ -254,9 +256,15 @@ export class MessagingReplyComponent implements OnInit {
     replyMessage.parent = parent;
     replyMessage.body = message.body;
     replyMessage.showFileToPatient = true;
-    replyMessage.documentHeader = message.documentHeader ? message.documentHeader : null;
-    replyMessage.documentBody = message.documentBody ? message.documentBody : null;
-    replyMessage.documentFooter = message.documentFooter ? message.documentFooter : null;
+    replyMessage.documentHeader = message.documentHeader
+      ? message.documentHeader
+      : null;
+    replyMessage.documentBody = message.documentBody
+      ? message.documentBody
+      : null;
+    replyMessage.documentFooter = message.documentFooter
+      ? message.documentFooter
+      : null;
     replyMessage.object = message.object;
     if (message.requestTypeId && message.requestTitleId) {
       replyMessage.requestTypeId = message.requestTypeId;
