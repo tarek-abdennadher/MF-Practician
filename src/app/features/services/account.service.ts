@@ -86,7 +86,7 @@ export class AccountService {
     my_object: "Mes objets",
     cible: "Cible",
     practician: "Praticien",
-    secretary_tls: "Secrétaire/Télésecrétaire",
+    secretary_tls: "Ma secrétaire",
     patient: "Patient",
     other: "Autre",
     object: "Objet",
