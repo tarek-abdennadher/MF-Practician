@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { speedDialFabAnimations } from "./new-message-widget.animations";
 import { GlobalService } from "@app/core/services/global.service";
-import { NewMessageWidgetService } from './new-message-widget.service';
+import { NewMessageWidgetService } from "./new-message-widget.service";
 
 @Component({
   selector: "app-new-message-widget",
@@ -21,8 +21,13 @@ export class NewMessageWidgetComponent implements OnInit {
   id: number;
 
   toggle: boolean = false;
-  minimize = { height: '1.5rem', position: 'fixed', bottom: 0, overflow: 'hidden' }
-  maximize = { }
+  minimize = {
+    height: "1.5rem",
+    position: "fixed",
+    bottom: 0,
+    overflow: "hidden",
+  };
+  maximize = {};
   constructor(
     private globalService: GlobalService,
     private messageWidgetService: NewMessageWidgetService
@@ -30,9 +35,9 @@ export class NewMessageWidgetComponent implements OnInit {
     this.messages = this.globalService.messagesDisplayScreen;
   }
   ngOnInit(): void {
-    this.messageWidgetService.toggleObs.subscribe(data => {
+    this.messageWidgetService.toggleObs.subscribe((data) => {
       this.onToggleFab(data);
-    })
+    });
   }
 
   showItems() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import {
@@ -16,12 +16,11 @@ import { MyDocumentsService } from "@app/features/my-documents/my-documents.serv
 import { HttpResponse } from "@angular/common/http";
 import { FeaturesService } from "@app/features/features.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
-import { CategoryService } from "@app/features/services/category.service";
-import { MyPatientsService } from "@app/features/services/my-patients.service";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
+import { takeUntil } from "rxjs/operators";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -30,9 +29,9 @@ declare var $: any;
   providers: [JobtitlePipe],
 })
 export class PersonalInformationsComponent
-  implements OnInit, ComponentCanDeactivate {
+  implements OnInit, ComponentCanDeactivate, OnDestroy {
   @Input("practicianId") practicianId;
-
+  private _destroyed$ = new Subject();
   specialities = new Subject<Array<Speciality>>();
   specialitiesContainingDeleted: Array<Speciality>;
   isPasswordValid = false;
@@ -82,8 +81,6 @@ export class PersonalInformationsComponent
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
-    private categoryService: CategoryService,
-    private patientService: MyPatientsService,
     private globalService: GlobalService,
     private jobTitlePipe: JobtitlePipe,
     private sanitizer: DomSanitizer
@@ -100,6 +97,12 @@ export class PersonalInformationsComponent
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   canDeactivate(): boolean {
     return !this.infoForm.dirty;
@@ -174,12 +177,15 @@ export class PersonalInformationsComponent
     return this.passwordForm.controls;
   }
   getAllSpeciality() {
-    this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
-      $(".selectpicker").selectpicker();
-      this.specialities.next(specialitiesList);
-      $(".selectpicker").selectpicker("refresh");
-      this.specialitiesContainingDeleted = specialitiesList;
-    });
+    this.contactsService
+      .getAllSpecialities()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((specialitiesList) => {
+        $(".selectpicker").selectpicker();
+        this.specialities.next(specialitiesList);
+        $(".selectpicker").selectpicker("refresh");
+        this.specialitiesContainingDeleted = specialitiesList;
+      });
   }
 
   passwordValid(event) {
@@ -194,70 +200,75 @@ export class PersonalInformationsComponent
     this.showPasswordFailure = false;
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
-      if (account && account.practician) {
-        this.accountId = account.id;
-        this.account = account.practician;
-        this.otherPhones.next(account.otherPhones);
-        this.hasImage = true;
-        this.getPictureProfile(account.id);
-        this.infoForm.patchValue({
-          id: account.practician.id ? account.practician.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "+33",
-          last_name: account.practician.lastName
-            ? account.practician.lastName
-            : "",
-          first_name: account.practician.firstName
-            ? account.practician.firstName
-            : "",
-          title: account.practician.jobTitle
-            ? account.practician.jobTitle
-            : null,
-          civility: account.practician.civility
-            ? account.practician.civility
-            : null,
-          speciality: account.practician.speciality
-            ? account.practician.speciality.id
-            : null,
-          address: account.practician.address ? account.practician.address : "",
-          additional_address: account.practician.additionalAddress
-            ? account.practician.additionalAddress
-            : "",
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-          picture: account.practician.photoId
-            ? account.practician.photoId
-            : null,
-          city: account.practician.city ? account.practician.city : null,
-          zipCode: account.practician.zipCode
-            ? account.practician.zipCode
-            : null,
-          additionalEmail: account.practician.additionalEmail
-            ? account.practician.additionalEmail
-            : null,
-        });
-      } else if (account && account.secretary) {
-        this.account = account.secretary;
-        this.otherPhones.next(account.otherPhones);
-        this.hasImage = true;
-        this.getPictureProfile(account.id);
-        this.infoForm.patchValue({
-          id: account.secretary.id ? account.secretary.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "+33",
-          last_name: account.secretary.lastName
-            ? account.secretary.lastName
-            : "",
-          first_name: account.secretary.firstName
-            ? account.secretary.firstName
-            : "",
-          civility: account.secretary.civility
-            ? account.secretary.civility
-            : null,
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-        });
-      }
-    });
+    this.accountService
+      .getCurrentAccount()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((account) => {
+        if (account && account.practician) {
+          this.accountId = account.id;
+          this.account = account.practician;
+          this.otherPhones.next(account.otherPhones);
+          this.hasImage = true;
+          this.getPictureProfile(account.id);
+          this.infoForm.patchValue({
+            id: account.practician.id ? account.practician.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.practician.lastName
+              ? account.practician.lastName
+              : "",
+            first_name: account.practician.firstName
+              ? account.practician.firstName
+              : "",
+            title: account.practician.jobTitle
+              ? account.practician.jobTitle
+              : null,
+            civility: account.practician.civility
+              ? account.practician.civility
+              : null,
+            speciality: account.practician.speciality
+              ? account.practician.speciality.id
+              : null,
+            address: account.practician.address
+              ? account.practician.address
+              : "",
+            additional_address: account.practician.additionalAddress
+              ? account.practician.additionalAddress
+              : "",
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+            picture: account.practician.photoId
+              ? account.practician.photoId
+              : null,
+            city: account.practician.city ? account.practician.city : null,
+            zipCode: account.practician.zipCode
+              ? account.practician.zipCode
+              : null,
+            additionalEmail: account.practician.additionalEmail
+              ? account.practician.additionalEmail
+              : null,
+          });
+        } else if (account && account.secretary) {
+          this.account = account.secretary;
+          this.otherPhones.next(account.otherPhones);
+          this.hasImage = true;
+          this.getPictureProfile(account.id);
+          this.infoForm.patchValue({
+            id: account.secretary.id ? account.secretary.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.secretary.lastName
+              ? account.secretary.lastName
+              : "",
+            first_name: account.secretary.firstName
+              ? account.secretary.firstName
+              : "",
+            civility: account.secretary.civility
+              ? account.secretary.civility
+              : null,
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+          });
+        }
+      });
     if (this.account?.otherPhones) {
       this.isLabelShow = true;
     }
@@ -315,27 +326,30 @@ export class PersonalInformationsComponent
         },
       };
     }
-    this.accountService.updateAccount(model).subscribe((res) => {
-      this.showAlert = true;
-      $(".alert").alert();
-      this.submitted = false;
-      if (this.image) {
-        this.featureService.imageSource = this.image;
-      } else {
-        if (this.isPractician) {
-          this.featureService.imageSource = this.avatars.doctor;
+    this.accountService
+      .updateAccount(model)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {
+        this.showAlert = true;
+        $(".alert").alert();
+        this.submitted = false;
+        if (this.image) {
+          this.featureService.imageSource = this.image;
         } else {
-          this.featureService.imageSource = this.avatars.secretary;
+          if (this.isPractician) {
+            this.featureService.imageSource = this.avatars.doctor;
+          } else {
+            this.featureService.imageSource = this.avatars.secretary;
+          }
         }
-      }
-      if (this.isPractician) {
-        this.featureService.fullName = `${this.jobTitlePipe.transform(
-          model.practician.jobTitle
-        )} ${model.practician.firstName} ${model.practician.lastName}`;
-      } else {
-        this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`;
-      }
-    });
+        if (this.isPractician) {
+          this.featureService.fullName = `${this.jobTitlePipe.transform(
+            model.practician.jobTitle
+          )} ${model.practician.firstName} ${model.practician.lastName}`;
+        } else {
+          this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`;
+        }
+      });
   }
   resetPasswordSubmit() {
     this.passwordSubmitted = true;
@@ -344,6 +358,7 @@ export class PersonalInformationsComponent
     }
     this.accountService
       .updatePasswordV2(this.passwordForm.value.new_password)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponsePasswordUpdate, this.handleError);
   }
   getPhoneList(event) {
@@ -360,20 +375,23 @@ export class PersonalInformationsComponent
 
   // initialise profile picture
   getPictureProfile(id) {
-    this.documentService.getDefaultImage(id).subscribe(
-      (response) => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          this.image = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      (error) => {
-        this.image = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            this.image = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        (error) => {
+          this.image = this.avatars.user;
+        }
+      );
   }
 
   // Select file to upload
@@ -385,6 +403,7 @@ export class PersonalInformationsComponent
       const currentFileUpload = selectedFiles.item(0);
       this.documentService
         .uploadFileSelected(this.nodeId, currentFileUpload)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((event) => {
           if (event.body) {
             const bodySplited = event.body.toString().split("/");
@@ -407,20 +426,25 @@ export class PersonalInformationsComponent
   getAttachementFolderId() {
     this.documentService
       .getSiteById("helssycoreapplication")
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((directory) => {
         const guid = directory.entry.guid;
-        this.documentService.getAllChildFolders(guid).subscribe((data) => {
-          const profilAttachementFolder = data.list.entries.filter(
-            (directory) => directory.entry.name === "Profiles Pictures"
-          )[0].entry;
-          this.nodeId = profilAttachementFolder.id;
-        });
+        this.documentService
+          .getAllChildFolders(guid)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((data) => {
+            const profilAttachementFolder = data.list.entries.filter(
+              (directory) => directory.entry.name === "Profiles Pictures"
+            )[0].entry;
+            this.nodeId = profilAttachementFolder.id;
+          });
       });
   }
 
   deletePicture() {
     this.documentService
       .getLettersImageEntity(this.accountId, "ACCOUNT")
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (response) => {
           let myReader: FileReader = new FileReader();
@@ -470,8 +494,11 @@ export class PersonalInformationsComponent
     this.isLabelShow = true;
   }
   getjobTitles() {
-    this.accountService.getJobTiles().subscribe((resp) => {
-      this.jobTitlesList = resp;
-    });
+    this.accountService
+      .getJobTiles()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
+        this.jobTitlesList = resp;
+      });
   }
 }

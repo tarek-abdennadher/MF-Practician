@@ -1,11 +1,11 @@
-import { Component, OnInit, OnChanges } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MyDocumentsService } from "../my-documents.service";
 import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
 import { GlobalService } from "@app/core/services/global.service";
-import { observable, forkJoin, of } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { forkJoin, of, Subject } from "rxjs";
+import { catchError, takeUntil } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
 import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
@@ -13,11 +13,11 @@ import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
 @Component({
   selector: "app-documents-list",
   templateUrl: "./documents-list.component.html",
-  styleUrls: ["./documents-list.component.scss"]
+  styleUrls: ["./documents-list.component.scss"],
 })
-export class DocumentsListComponent implements OnInit {
+export class DocumentsListComponent implements OnInit, OnDestroy {
   idSenderReceiver: any;
-
+  private _destroyed$ = new Subject();
   page = this.globalService.messagesDisplayScreen.documents;
   topText = this.globalService.messagesDisplayScreen.documents;
 
@@ -55,144 +55,164 @@ export class DocumentsListComponent implements OnInit {
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
-      destination: [""]
+      destination: [""],
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   realTime() {
-    this.documentsService.getIdObs().subscribe(resp => {
-      this.idSenderReceiver = resp;
-      this.filter();
-    });
+    this.documentsService
+      .getIdObs()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
+        this.idSenderReceiver = resp;
+        this.filter();
+      });
   }
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
       this.idSenderReceiver = params["id"];
     });
-    this.route.queryParams.subscribe(params => {
-      this.filterDocumentsForm.patchValue({
-        documentType: params["type"]
+    this.route.queryParams
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((params) => {
+        this.filterDocumentsForm.patchValue({
+          documentType: params["type"],
+        });
       });
-    });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);
     this.realTime();
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe(account => {
-      if (account && account.patient) {
-        this.account = account.patient;
-        this.linkedPatients = this.account.linkedPatients;
-        this.linkedPatients.forEach(patient => {
-          this.destinations.add(patient);
-        });
-      }
-    });
+    this.accountService
+      .getCurrentAccount()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((account) => {
+        if (account && account.patient) {
+          this.account = account.patient;
+          this.linkedPatients = this.account.linkedPatients;
+          this.linkedPatients.forEach((patient) => {
+            this.destinations.add(patient);
+          });
+        }
+      });
   }
 
   getAccountDetails(id) {
-    this.accountService.getAccountDetails(id).subscribe(account => {
-      let details = this.getDetailSwitchRole(account);
-      if (details.photoId) {
-        this.documentsService.downloadFile(details.photoId).subscribe(
-          response => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              if (account.role == "PRACTICIAN") {
-                this.documentsService.person = {
-                  fullName: `${details.jobTitle} ${details.fullName}`,
-                  picture: myReader.result
+    this.accountService
+      .getAccountDetails(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((account) => {
+        let details = this.getDetailSwitchRole(account);
+        if (details.photoId) {
+          this.documentsService
+            .downloadFile(details.photoId)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  if (account.role == "PRACTICIAN") {
+                    this.documentsService.person = {
+                      fullName: `${details.jobTitle} ${details.fullName}`,
+                      picture: myReader.result,
+                    };
+                  } else {
+                    this.documentsService.person = {
+                      fullName: `${this.civilityPipe.transform(
+                        details.civility
+                      )} ${details.fullName}`,
+                      picture: myReader.result,
+                    };
+                  }
                 };
-              } else {
-                this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${
-                    details.fullName
-                  }`,
-                  picture: myReader.result
-                };
+                let ok = myReader.readAsDataURL(response.body);
+              },
+              (error) => {
+                if (account.role == "PATIENT") {
+                  if (details.civility == "M") {
+                    this.documentsService.person = {
+                      fullName: `${this.civilityPipe.transform(
+                        details.civility
+                      )} ${details.fullName}`,
+                      picture: this.avatars.man,
+                    };
+                  } else if (details.civility == "MME") {
+                    this.documentsService.person = {
+                      fullName: `${this.civilityPipe.transform(
+                        details.civility
+                      )} ${details.fullName}`,
+                      picture: this.avatars.women,
+                    };
+                  } else if (details.civility == "CHILD") {
+                    this.documentsService.person = {
+                      fullName: `${this.civilityPipe.transform(
+                        details.civility
+                      )} ${details.fullName}`,
+                      picture: this.avatars.child,
+                    };
+                  }
+                } else if (account.role == "PRACTICIAN") {
+                  this.documentsService.person = {
+                    fullName: `${details.jobTitle} ${details.fullName}`,
+                    picture: this.avatars.doctor,
+                  };
+                } else if (account.role == "SECRETARY") {
+                  this.documentsService.person = {
+                    fullName: `${this.civilityPipe.transform(
+                      details.civility
+                    )} ${details.fullName}`,
+                    picture: this.avatars.secretary,
+                  };
+                }
               }
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          error => {
-            if (account.role == "PATIENT") {
-              if (details.civility == "M") {
-                this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${
-                    details.fullName
-                  }`,
-                  picture: this.avatars.man
-                };
-              } else if (details.civility == "MME") {
-                this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${
-                    details.fullName
-                  }`,
-                  picture: this.avatars.women
-                };
-              } else if (details.civility == "CHILD") {
-                this.documentsService.person = {
-                  fullName: `${this.civilityPipe.transform(details.civility)} ${
-                    details.fullName
-                  }`,
-                  picture: this.avatars.child
-                };
-              }
-            } else if (account.role == "PRACTICIAN") {
-              this.documentsService.person = {
-                fullName: `${details.jobTitle} ${details.fullName}`,
-                picture: this.avatars.doctor
-              };
-            } else if (account.role == "SECRETARY") {
+            );
+        } else {
+          if (account.role == "PATIENT") {
+            if (details.civility == "M") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
-                picture: this.avatars.secretary
+                picture: this.avatars.man,
+              };
+            } else if (details.civility == "MME") {
+              this.documentsService.person = {
+                fullName: `${this.civilityPipe.transform(details.civility)} ${
+                  details.fullName
+                }`,
+                picture: this.avatars.women,
+              };
+            } else if (details.civility == "CHILD") {
+              this.documentsService.person = {
+                fullName: `${this.civilityPipe.transform(details.civility)} ${
+                  details.fullName
+                }`,
+                picture: this.avatars.child,
               };
             }
-          }
-        );
-      } else {
-        if (account.role == "PATIENT") {
-          if (details.civility == "M") {
+          } else if (account.role == "PRACTICIAN") {
             this.documentsService.person = {
-              fullName: `${this.civilityPipe.transform(details.civility)} ${
-                details.fullName
-              }`,
-              picture: this.avatars.man
+              fullName: `${details.jobTitle} ${details.fullName}`,
+              picture: this.avatars.doctor,
             };
-          } else if (details.civility == "MME") {
+          } else if (account.role == "SECRETARY") {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${
                 details.fullName
               }`,
-              picture: this.avatars.women
-            };
-          } else if (details.civility == "CHILD") {
-            this.documentsService.person = {
-              fullName: `${this.civilityPipe.transform(details.civility)} ${
-                details.fullName
-              }`,
-              picture: this.avatars.child
+              picture: this.avatars.secretary,
             };
           }
-        } else if (account.role == "PRACTICIAN") {
-          this.documentsService.person = {
-            fullName: `${details.jobTitle} ${details.fullName}`,
-            picture: this.avatars.doctor
-          };
-        } else if (account.role == "SECRETARY") {
-          this.documentsService.person = {
-            fullName: `${this.civilityPipe.transform(details.civility)} ${
-              details.fullName
-            }`,
-            picture: this.avatars.secretary
-          };
         }
-      }
-    });
+      });
   }
 
   getAttachementById(id, pageNo) {
@@ -201,35 +221,38 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsBySenderOrReceiverId(id, pageNo)
-      .subscribe(attachements => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((attachements) => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach(attachement => {
+        attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
+              .pipe(catchError((error) => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe(nodes => {
-          this.scroll = false;
-          nodes.forEach((node: any) => {
-            if (node.entry) {
-              const splitName = node.entry.name.split(".");
-              const extention = splitName[splitName.length - 1];
+        forkJoin(this.observables)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((nodes) => {
+            this.scroll = false;
+            nodes.forEach((node: any) => {
+              if (node.entry) {
+                const splitName = node.entry.name.split(".");
+                const extention = splitName[splitName.length - 1];
 
-              const attachement = this.attachementsList.find(
-                x => x.nodeId == node.entry.id
-              );
+                const attachement = this.attachementsList.find(
+                  (x) => x.nodeId == node.entry.id
+                );
 
-              this.itemList.push(this.parseMessage(attachement, node.entry));
-            }
+                this.itemList.push(this.parseMessage(attachement, node.entry));
+              }
+            });
           });
-        });
       });
   }
   parseMessage(attachement, node): any {
@@ -246,21 +269,21 @@ export class DocumentsListComponent implements OnInit {
           ),
           title: attachement.senderForId
             ? "Pour " + attachement.senderForDetails.fullName
-            : null
-        }
+            : null,
+        },
       ],
       object: {
         name:
           node.name.length < 30
             ? node.name
             : node.name.substring(0, 30) + "...",
-        isImportant: false
+        isImportant: false,
       },
       nodeId: attachement.nodeId,
       time: attachement.updatedAt,
       download: true,
       visualize: true,
-      realName: node.name
+      realName: node.name,
     };
   }
 
@@ -301,7 +324,8 @@ export class DocumentsListComponent implements OnInit {
   downloadFile(attachement) {
     this.documentsService
       .downloadFile(attachement.nodeId)
-      .subscribe(response => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((response) => {
         const blob = new Blob([response.body]);
         const filename = attachement.realName;
         const filenameDisplay = filename;
@@ -335,14 +359,15 @@ export class DocumentsListComponent implements OnInit {
   visualizeFile(attachement) {
     this.documentsService
       .downloadFile(attachement.nodeId)
-      .subscribe(response => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((response) => {
         const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
 
         const blob = new Blob([response.body], {
-          type: this.getType(extension)
+          type: this.getType(extension),
         });
 
         let resultname: string;
@@ -384,35 +409,38 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsByObject(id, object, pageNo)
-      .subscribe(attachements => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((attachements) => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach(attachement => {
+        attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
+              .pipe(catchError((error) => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe(nodes => {
-          this.scroll = false;
-          nodes.forEach((node: any) => {
-            if (node.entry) {
-              const splitName = node.entry.name.split(".");
-              const extention = splitName[splitName.length - 1];
+        forkJoin(this.observables)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((nodes) => {
+            this.scroll = false;
+            nodes.forEach((node: any) => {
+              if (node.entry) {
+                const splitName = node.entry.name.split(".");
+                const extention = splitName[splitName.length - 1];
 
-              const attachement = this.attachementsList.find(
-                x => x.nodeId == node.entry.id
-              );
+                const attachement = this.attachementsList.find(
+                  (x) => x.nodeId == node.entry.id
+                );
 
-              this.itemList.push(this.parseMessage(attachement, node.entry));
-            }
+                this.itemList.push(this.parseMessage(attachement, node.entry));
+              }
+            });
           });
-        });
       });
   }
   getAttachementBySenderFor(id, senderForId, pageNo) {
@@ -421,35 +449,38 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsBySenderForId(id, senderForId, pageNo)
-      .subscribe(attachements => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((attachements) => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach(attachement => {
+        attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
+              .pipe(catchError((error) => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe(nodes => {
-          this.scroll = false;
-          nodes.forEach((node: any) => {
-            if (node.entry) {
-              const splitName = node.entry.name.split(".");
-              const extention = splitName[splitName.length - 1];
+        forkJoin(this.observables)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((nodes) => {
+            this.scroll = false;
+            nodes.forEach((node: any) => {
+              if (node.entry) {
+                const splitName = node.entry.name.split(".");
+                const extention = splitName[splitName.length - 1];
 
-              const attachement = this.attachementsList.find(
-                x => x.nodeId == node.entry.id
-              );
+                const attachement = this.attachementsList.find(
+                  (x) => x.nodeId == node.entry.id
+                );
 
-              this.itemList.push(this.parseMessage(attachement, node.entry));
-            }
+                this.itemList.push(this.parseMessage(attachement, node.entry));
+              }
+            });
           });
-        });
       });
   }
 
@@ -459,34 +490,37 @@ export class DocumentsListComponent implements OnInit {
     this.observables = [];
     this.documentsService
       .getMyAttachementsBySenderForIdAndObject(id, senderForId, object, pageNo)
-      .subscribe(attachements => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((attachements) => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach(attachement => {
+        attachements.forEach((attachement) => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
+              .pipe(catchError((error) => of(error)))
           );
         });
 
-        forkJoin(this.observables).subscribe(nodes => {
-          this.scroll = false;
-          nodes.forEach((node: any) => {
-            if (node.entry) {
-              const splitName = node.entry.name.split(".");
-              const extention = splitName[splitName.length - 1];
+        forkJoin(this.observables)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((nodes) => {
+            this.scroll = false;
+            nodes.forEach((node: any) => {
+              if (node.entry) {
+                const splitName = node.entry.name.split(".");
+                const extention = splitName[splitName.length - 1];
 
-              const attachement = this.attachementsList.find(
-                x => x.nodeId == node.entry.id
-              );
-              this.itemList.push(this.parseMessage(attachement, node.entry));
-            }
+                const attachement = this.attachementsList.find(
+                  (x) => x.nodeId == node.entry.id
+                );
+                this.itemList.push(this.parseMessage(attachement, node.entry));
+              }
+            });
           });
-        });
       });
   }
   filter() {
