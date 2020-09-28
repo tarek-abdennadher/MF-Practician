@@ -70,42 +70,38 @@ export class PracticianSearchComponent implements OnInit {
     });
   }
   getPractians(list) {
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.itemsList = [];
-      this.filtredItemsList = [];
-      if (list && list.length > 0) {
-        list = list.filter(
-          (a) => a.accountId != this.featureService.getUserId()
-        );
-        this.number = list.length;
-        list.forEach((message) => {
-          let practician = this.mappingPracticians(message);
-          this.itemsList.push(practician);
+    this.itemsList = [];
+    this.filtredItemsList = [];
+    if (list && list.length > 0) {
+      list = list.filter((a) => a.accountId != this.featureService.getUserId());
+      this.number = list.length;
+      list.forEach((message) => {
+        let practician = this.mappingPracticians(message);
+        this.itemsList.push(practician);
+      });
+      this.filtredItemsList = this.itemsList;
+      this.itemsList.forEach((item) => {
+        item.users.forEach((user) => {
+          this.documentService
+            .getDefaultImageEntity(user.id, "ACCOUNT")
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              (error) => {
+                user.img = this.avatars.user;
+              }
+            );
         });
-        this.filtredItemsList = this.itemsList;
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
-            this.documentService
-              .getDefaultImageEntity(user.id, "ACCOUNT")
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    user.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
-                  };
-                  let ok = myReader.readAsDataURL(response);
-                },
-                (error) => {
-                  user.img = this.avatars.user;
-                }
-              );
-          });
-        });
-      } else {
-        this.number = 0;
-      }
+      });
+    } else {
+      this.number = 0;
     }
   }
   edit() {
