@@ -8,6 +8,7 @@ import { MyDocumentsService } from "@app/features/my-documents/my-documents.serv
 import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "@app/features/new-message-widget/new-message-widget.service";
 import { ContactsService } from "@app/features/services/contacts.service";
+import { DialogService } from "@app/features/services/dialog.service";
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
@@ -38,7 +39,8 @@ export class PracticianDetailComponent implements OnInit {
     private globalService: GlobalService,
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
-    private contactService: ContactsService
+    private contactService: ContactsService,
+    private dialogService: DialogService
   ) {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -102,12 +104,23 @@ export class PracticianDetailComponent implements OnInit {
     this.messageWidgetService.toggleObs.next(item.accountId);
   }
   archieveClicked(item) {
-    let array = [];
-    array.push(item.accountId);
-    this.contactService
-      .deleteMultiplePracticianContactPro(array)
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.delete_confirmation_contact,
+        "Suppression"
+      )
+      .afterClosed()
       .subscribe(res => {
-        this.router.navigate(["/mes-contacts-pro"]);
+        if (res) {
+          let array = [];
+          array.push(item.accountId);
+          this.contactService
+            .deleteMultiplePracticianContactPro(array)
+            .subscribe(res => {
+              this.contactService.setId(item.accountId);
+              this.router.navigate(["/mes-contacts-pro"]);
+            });
+        }
       });
   }
 }
