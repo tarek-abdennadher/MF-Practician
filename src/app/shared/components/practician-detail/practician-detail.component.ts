@@ -13,7 +13,7 @@ import { Location } from "@angular/common";
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
-  styleUrls: ["./practician-detail.component.scss"],
+  styleUrls: ["./practician-detail.component.scss"]
 })
 export class PracticianDetailComponent implements OnInit {
   fromSearch: boolean = false;
@@ -51,9 +51,9 @@ export class PracticianDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(
-      (params) => (this.fromSearch = params["search"] || false)
+      params => (this.fromSearch = params["search"] || false)
     );
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(params => {
       this.isMyFAvorite(params["id"]);
       this.getPractician(params["id"]);
     });
@@ -62,42 +62,38 @@ export class PracticianDetailComponent implements OnInit {
     });
   }
   getPractician(id) {
-    this.practicianDetailService
-      .getPracticiansById(id)
-      .subscribe((response) => {
-        if (this.localSt.retrieve("role") == "SECRETARY") {
-          this.isArchive = true;
+    this.practicianDetailService.getPracticiansById(id).subscribe(response => {
+      if (this.localSt.retrieve("role") == "SECRETARY") {
+        this.isArchive = true;
+      }
+      this.practician = response;
+      this.documentService.getDefaultImage(this.practician.accountId).subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            this.practician.img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          this.practician.img = this.avatars.user;
         }
-        this.practician = response;
-        this.documentService
-          .getDefaultImage(this.practician.accountId)
-          .subscribe(
-            (response) => {
-              let myReader: FileReader = new FileReader();
-              myReader.onloadend = (e) => {
-                this.practician.img = this.sanitizer.bypassSecurityTrustUrl(
-                  myReader.result as string
-                );
-              };
-              let ok = myReader.readAsDataURL(response);
-            },
-            (error) => {
-              this.practician.img = this.avatars.user;
-            }
-          );
-      });
+      );
+    });
   }
 
   isMyFAvorite(id) {
     this.practicianDetailService
       .isPracticianFavorite(id)
-      .subscribe((resp) => (this.isFavorite = resp));
+      .subscribe(resp => (this.isFavorite = resp));
   }
   addToFavoriteClicked() {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.practicianDetailService
         .addPracticianToFavorite(this.practician.id)
-        .subscribe((resp) => {
+        .subscribe(resp => {
           if (resp == true) {
             this.isFavorite = true;
           }
@@ -105,7 +101,7 @@ export class PracticianDetailComponent implements OnInit {
     } else if (this.localSt.retrieve("role") == "SECRETARY") {
       this.practicianDetailService
         .addPracticianToSecretaryContactPro(this.practician.id)
-        .subscribe((resp) => {
+        .subscribe(resp => {
           if (resp == true) {
             this.isFavorite = true;
           }
@@ -124,17 +120,17 @@ export class PracticianDetailComponent implements OnInit {
         this.practicianDetailService.messages.delete_favorite
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.contactService
             .deleteMultiplePracticianContactPro(array)
-            .subscribe((res) => {
+            .subscribe(res => {
               this.isFavorite = false;
               if (!this.fromSearch) {
                 this.router.navigate(["/mes-contacts-pro"], {
                   queryParams: {
-                    refresh: true,
-                  },
+                    refresh: true
+                  }
                 });
               }
             });
