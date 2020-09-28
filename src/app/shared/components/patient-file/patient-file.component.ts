@@ -68,6 +68,7 @@ export class PatientFileComponent implements OnInit {
   direction: OrderDirection = OrderDirection.DESC;
   filtredItemList: Array<any> = new Array();
   scroll = false;
+  isCheckbox = false;
   /** Inputs */
   @Input("imageSource") imageSource: string;
   @Input("practicianImage") practicianImage: string;
