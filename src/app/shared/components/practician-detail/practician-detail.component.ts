@@ -64,7 +64,14 @@ export class PracticianDetailComponent implements OnInit {
   getPractician(id) {
     this.practicianDetailService.getPracticiansById(id).subscribe(response => {
       if (this.localSt.retrieve("role") == "SECRETARY") {
-        this.isArchive = true;
+        this.isArchive = false;
+        if (
+          this.featureService.myPracticians.value.filter(
+            x => x.id == response.accountId
+          ).length > 0
+        ) {
+          this.isArchive = true;
+        }
       }
       this.practician = response;
       this.documentService.getDefaultImage(this.practician.accountId).subscribe(
