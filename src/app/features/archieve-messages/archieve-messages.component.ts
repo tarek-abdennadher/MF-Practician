@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ArchieveMessagesService } from "./archieve-messages.service";
 import { MessageArchived } from "./message-archived";
@@ -10,13 +10,16 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { DomSanitizer } from "@angular/platform-browser";
 import { PaginationService } from "../services/pagination.service";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-archieve-messages",
   templateUrl: "./archieve-messages.component.html",
   styleUrls: ["./archieve-messages.component.scss"],
 })
-export class ArchieveMessagesComponent implements OnInit {
+export class ArchieveMessagesComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   imageSource: string;
   page = "INBOX";
   number = 0;
@@ -60,6 +63,11 @@ export class ArchieveMessagesComponent implements OnInit {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
+  // destory any subscribe to avoid memory leak
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.featureService.setActiveChild("archived");
@@ -71,16 +79,20 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   countAllMyArchivedMessages() {
-    this.archivedService.countAllMyArchivedMessages().subscribe((messages) => {
-      this.pagination.init(messages);
-      this.loadPage();
-    });
+    this.archivedService
+      .countAllMyArchivedMessages()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((messages) => {
+        this.pagination.init(messages);
+        this.loadPage();
+      });
   }
 
   getMyMessagesArchived() {
     this.loading = true;
     this.archivedService
       .getMyArchivedMessages(this.pagination.pageNo, this.pagination.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((messages) => {
         this.loading = false;
         this.number = this.featureService.numberOfArchieve;
@@ -154,20 +166,23 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   loadPhoto(user) {
-    this.documentService.getDefaultImage(user.id).subscribe(
-      (response) => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          user.img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      (error) => {
-        user.img = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(user.id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            user.img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        (error) => {
+          user.img = this.avatars.user;
+        }
+      );
   }
 
   cardClicked(item) {
@@ -186,12 +201,15 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   markMessageAsSeen(messageId) {
-    this.archivedService.markMessageAsSeen(messageId).subscribe((result) => {
-      this.featureService.numberOfArchieve--;
-      this.featureService.markAsSeen(this.featureService.searchArchive, [
-        messageId,
-      ]);
-    });
+    this.archivedService
+      .markMessageAsSeen(messageId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((result) => {
+        this.featureService.numberOfArchieve--;
+        this.featureService.markAsSeen(this.featureService.searchArchive, [
+          messageId,
+        ]);
+      });
   }
 
   getPhotoId(senderDetail): string {
@@ -212,18 +230,21 @@ export class ArchieveMessagesComponent implements OnInit {
   }
 
   searchArchive() {
-    this.featureService.getFilteredArchiveSearch().subscribe((res) => {
-      if (res == null) {
-        this.filtredItemList = [];
-        this.searchContext = true;
-      } else if (res?.length > 0) {
-        this.filtredItemList = res;
-        this.searchContext = true;
-      } else {
-        this.filtredItemList = this.itemsList;
-        this.searchContext = false;
-      }
-    });
+    this.featureService
+      .getFilteredArchiveSearch()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {
+        if (res == null) {
+          this.filtredItemList = [];
+          this.searchContext = true;
+        } else if (res?.length > 0) {
+          this.filtredItemList = res;
+          this.searchContext = true;
+        } else {
+          this.filtredItemList = this.itemsList;
+          this.searchContext = false;
+        }
+      });
   }
 
   mapAllMessages(messages) {

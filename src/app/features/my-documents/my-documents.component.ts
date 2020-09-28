@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MyDocumentsService } from "./my-documents.service";
 import { Location } from "@angular/common";
 import { GlobalService } from "@app/core/services/global.service";
@@ -16,12 +16,15 @@ import { AccountService } from "../services/account.service";
 import { FeaturesService } from "../features.service";
 import { PatientSerch } from "@app/shared/models/my-patients";
 import { DomSanitizer } from "@angular/platform-browser";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
   styleUrls: ["./my-documents.component.scss"],
 })
-export class MyDocumentsComponent implements OnInit {
+export class MyDocumentsComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   attachements = [];
   page = this.globalService.messagesDisplayScreen.documents;
   topText = this.globalService.messagesDisplayScreen.documents;
@@ -74,6 +77,11 @@ export class MyDocumentsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.featureService.setActiveChild("document");
     this.getMySendersAndReceivers();
@@ -87,6 +95,7 @@ export class MyDocumentsComponent implements OnInit {
   getMySendersAndReceivers() {
     this.mydocumentsService
       .getMySendersAndeceiversDetails()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((sendersAndReceivers) => {
         sendersAndReceivers.forEach((element) => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
@@ -95,28 +104,31 @@ export class MyDocumentsComponent implements OnInit {
         this.number = this.itemsList.length;
         this.itemsList.forEach((item) => {
           item.users.forEach((user) => {
-            this.documentService.getDefaultImage(item.id).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                  const patient = new PatientSerch();
-                  patient.fullName = user.fullName;
-                  patient.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                  patient.id = item.id;
-                  patient.photoId = item.photoId;
-                  this.myPatients.push(patient);
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                user.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(item.id)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                    const patient = new PatientSerch();
+                    patient.fullName = user.fullName;
+                    patient.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                    patient.id = item.id;
+                    patient.photoId = item.photoId;
+                    this.myPatients.push(patient);
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  user.img = this.avatars.user;
+                }
+              );
           });
         });
         this.searchAutoComplete(this.myPatients);
@@ -225,6 +237,7 @@ export class MyDocumentsComponent implements OnInit {
   getMySendersAndReceiversBySenderForAndObject(senderFor, object) {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsBySenderForIdAndObject(senderFor, object)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((sendersAndReceivers) => {
         sendersAndReceivers.forEach((element) => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
@@ -232,20 +245,23 @@ export class MyDocumentsComponent implements OnInit {
         });
         this.itemsList.forEach((item) => {
           item.users.forEach((user) => {
-            this.documentService.getDefaultImage(item.id).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                user.img = "assets/imgs/user.png";
-              }
-            );
+            this.documentService
+              .getDefaultImage(item.id)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
           });
         });
       });
@@ -253,6 +269,7 @@ export class MyDocumentsComponent implements OnInit {
   getMySendersAndReceiversBySenderFor(senderFor) {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsBySenderForId(senderFor)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((sendersAndReceivers) => {
         sendersAndReceivers.forEach((element) => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
@@ -260,20 +277,23 @@ export class MyDocumentsComponent implements OnInit {
         });
         this.itemsList.forEach((item) => {
           item.users.forEach((user) => {
-            this.documentService.getDefaultImage(item.id).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                user.img = "assets/imgs/user.png";
-              }
-            );
+            this.documentService
+              .getDefaultImage(item.id)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
           });
         });
       });
@@ -281,6 +301,7 @@ export class MyDocumentsComponent implements OnInit {
   getMySendersAndReceiversByObject(object) {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsByObject(object)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((sendersAndReceivers) => {
         sendersAndReceivers.forEach((element) => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
@@ -288,40 +309,49 @@ export class MyDocumentsComponent implements OnInit {
         });
         this.itemsList.forEach((item) => {
           item.users.forEach((user) => {
-            this.documentService.getDefaultImage(item.id).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                user.img = "assets/imgs/user.png";
-              }
-            );
+            this.documentService
+              .getDefaultImage(item.id)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
           });
         });
       });
   }
   getAllObjects() {
-    this.documentService.getAllObjects().subscribe((objects) => {
-      this.documentTypes.add("Tout");
-      objects.forEach(this.documentTypes.add, this.documentTypes);
-    });
+    this.documentService
+      .getAllObjects()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((objects) => {
+        this.documentTypes.add("Tout");
+        objects.forEach(this.documentTypes.add, this.documentTypes);
+      });
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
-      if (account && account.patient) {
-        this.account = account.patient;
-        this.linkedPatients = this.account.linkedPatients;
-        this.linkedPatients.forEach((patient) => {
-          this.destinations.add(patient);
-        });
-      }
-    });
+    this.accountService
+      .getCurrentAccount()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((account) => {
+        if (account && account.patient) {
+          this.account = account.patient;
+          this.linkedPatients = this.account.linkedPatients;
+          this.linkedPatients.forEach((patient) => {
+            this.destinations.add(patient);
+          });
+        }
+      });
   }
   filter(value) {
     this.itemsList = [];

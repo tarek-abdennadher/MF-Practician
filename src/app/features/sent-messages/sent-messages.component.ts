@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 import { MessageService } from "../services/message.service";
@@ -17,7 +17,7 @@ import { DialogService } from "../services/dialog.service";
   templateUrl: "./sent-messages.component.html",
   styleUrls: ["./sent-messages.component.scss"],
 })
-export class SentMessagesComponent implements OnInit {
+export class SentMessagesComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   imageSource: string;
@@ -67,15 +67,17 @@ export class SentMessagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.featureService.setActiveChild("sent");
-    this.route.queryParams.subscribe((params) => {
-      if (params["status"] == "archiveSuccess") {
-        this.notifier.show({
-          message: this.globalService.toastrMessages.archived_message_success,
-          type: "info",
-          template: this.customNotificationTmpl,
-        });
-      }
-    });
+    this.route.queryParams
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((params) => {
+        if (params["status"] == "archiveSuccess") {
+          this.notifier.show({
+            message: this.globalService.toastrMessages.archived_message_success,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+        }
+      });
     this.countSentMessage();
     this.searchSent();
     setTimeout(() => {
@@ -84,10 +86,13 @@ export class SentMessagesComponent implements OnInit {
   }
 
   countSentMessage() {
-    this.messageService.countSentMessage().subscribe((messages) => {
-      this.pagination.init(messages);
-      this.loadPage();
-    });
+    this.messageService
+      .countSentMessage()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((messages) => {
+        this.pagination.init(messages);
+        this.loadPage();
+      });
   }
 
   sentMessage() {
@@ -101,20 +106,23 @@ export class SentMessagesComponent implements OnInit {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
           messageSent.users.forEach((user) => {
-            this.documentService.getDefaultImage(user.id).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  user.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                user.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(user.id)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  user.img = this.avatars.user;
+                }
+              );
           });
           this.itemsList.push(messageSent);
           this.filtredItemList = this.itemsList;
@@ -173,20 +181,23 @@ export class SentMessagesComponent implements OnInit {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
       messageSent.users.forEach((user) => {
-        this.documentService.getDefaultImage(user.id).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              user.img = this.sanitizer.bypassSecurityTrustUrl(
-                myReader.result as string
-              );
-            };
-            let ok = myReader.readAsDataURL(response);
-          },
-          (error) => {
-            user.img = "assets/imgs/user.png";
-          }
-        );
+        this.documentService
+          .getDefaultImage(user.id)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe(
+            (response) => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = (e) => {
+                user.img = this.sanitizer.bypassSecurityTrustUrl(
+                  myReader.result as string
+                );
+              };
+              let ok = myReader.readAsDataURL(response);
+            },
+            (error) => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
       });
       parsedMessages.push(messageSent);
     });
@@ -234,25 +245,29 @@ export class SentMessagesComponent implements OnInit {
           "Suppression"
         )
         .afterClosed()
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {
           if (res) {
-            this.messageService.markMessageAsArchived(messagesId).subscribe(
-              (resp) => {
-                this.itemsList = this.itemsList.filter(
-                  (elm) => !messagesId.includes(elm.id)
-                );
-                this.filtredItemList = this.filtredItemList.filter(
-                  (elm) => !messagesId.includes(elm.id)
-                );
-                this.deleteElementsFromInbox(messagesId.slice(0));
-                this.featureService.archiveState.next(true);
-              },
-              (error) => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
-              }
-            );
+            this.messageService
+              .markMessageAsArchived(messagesId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (resp) => {
+                  this.itemsList = this.itemsList.filter(
+                    (elm) => !messagesId.includes(elm.id)
+                  );
+                  this.filtredItemList = this.filtredItemList.filter(
+                    (elm) => !messagesId.includes(elm.id)
+                  );
+                  this.deleteElementsFromInbox(messagesId.slice(0));
+                  this.featureService.archiveState.next(true);
+                },
+                (error) => {
+                  console.log(
+                    "We have to find a way to notify user by this error"
+                  );
+                }
+              );
           }
         });
     }
@@ -264,24 +279,30 @@ export class SentMessagesComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let messageId = event.id;
-          this.messageService.markMessageAsArchived([messageId]).subscribe(
-            (resp) => {
-              this.itemsList = this.itemsList.filter(
-                (elm) => messageId != elm.id
-              );
-              this.filtredItemList = this.filtredItemList.filter(
-                (elm) => messageId != elm.id
-              );
-              this.deleteElementsFromInbox([messageId]);
-              this.featureService.archiveState.next(true);
-            },
-            (error) => {
-              console.log("We have to find a way to notify user by this error");
-            }
-          );
+          this.messageService
+            .markMessageAsArchived([messageId])
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe(
+              (resp) => {
+                this.itemsList = this.itemsList.filter(
+                  (elm) => messageId != elm.id
+                );
+                this.filtredItemList = this.filtredItemList.filter(
+                  (elm) => messageId != elm.id
+                );
+                this.deleteElementsFromInbox([messageId]);
+                this.featureService.archiveState.next(true);
+              },
+              (error) => {
+                console.log(
+                  "We have to find a way to notify user by this error"
+                );
+              }
+            );
         }
       });
   }
@@ -310,21 +331,24 @@ export class SentMessagesComponent implements OnInit {
   }
 
   searchSent() {
-    this.featureService.getFilteredSentSearch().subscribe((res) => {
-      if (res == null) {
-        this.filtredItemList = [];
-      } else if (res?.length > 0) {
-        this.filtredItemList = res;
-      } else {
-        this.filtredItemList = this.itemsList;
-      }
-    });
+    this.featureService
+      .getFilteredSentSearch()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {
+        if (res == null) {
+          this.filtredItemList = [];
+        } else if (res?.length > 0) {
+          this.filtredItemList = res;
+        } else {
+          this.filtredItemList = this.itemsList;
+        }
+      });
   }
 
-  // destory any subscribe to avoid memory leak
+  // destory any pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   refreshMessagingList() {

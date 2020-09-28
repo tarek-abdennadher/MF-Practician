@@ -1,18 +1,20 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { CategoryService } from "@app/features/services/category.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "@app/features/features.service";
-import { filter } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
 import { DialogService } from "../services/dialog.service";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "app-category",
   templateUrl: "./category.component.html",
   styleUrls: ["./category.component.scss"],
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   public messages: any;
   itemsList = [];
   imageSource: string;
@@ -39,11 +41,17 @@ export class CategoryComponent implements OnInit {
     this.imageSource = this.avatars.user;
   }
 
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.getMyCategories();
     // update categories after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-categories?loading=true") {
           let currentRoute = this.route;
@@ -74,10 +82,12 @@ export class CategoryComponent implements OnInit {
         "Confirmation de supression"
       )
       .afterClosed()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.categoryService
             .deleteCategory(category.id)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe((result) => {
               if (result) {
                 this.itemsList = this.itemsList.filter(
@@ -101,25 +111,28 @@ export class CategoryComponent implements OnInit {
 
   getMyCategories() {
     this.itemsList = [];
-    this.categoryService.getMyCategories().subscribe((categories) => {
-      categories.forEach((category) => {
-        this.itemsList.push({
-          id: category.id,
-          isSeen: true,
-          users: [
-            {
-              id: category.id,
-              fullName: category.name,
-            },
-          ],
-          isArchieve: true,
-          isImportant: false,
-          hasFiles: false,
-          isViewDetail: false,
-          isMarkAsSeen: false,
-          isChecked: false,
+    this.categoryService
+      .getMyCategories()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((categories) => {
+        categories.forEach((category) => {
+          this.itemsList.push({
+            id: category.id,
+            isSeen: true,
+            users: [
+              {
+                id: category.id,
+                fullName: category.name,
+              },
+            ],
+            isArchieve: true,
+            isImportant: false,
+            hasFiles: false,
+            isViewDetail: false,
+            isMarkAsSeen: false,
+            isChecked: false,
+          });
         });
       });
-    });
   }
 }

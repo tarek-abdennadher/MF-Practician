@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  Inject,
+  LOCALE_ID,
+  OnDestroy,
+} from "@angular/core";
 import { Subject, forkJoin } from "rxjs";
 import { PatientFile } from "@app/shared/models/patient-file";
 import { NotifierService } from "angular-notifier";
@@ -18,7 +25,7 @@ declare var $: any;
   templateUrl: "./add-patient.component.html",
   styleUrls: ["./add-patient.component.scss"],
 })
-export class AddPatientComponent implements OnInit {
+export class AddPatientComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   noteimageSource: string;
@@ -77,7 +84,9 @@ export class AddPatientComponent implements OnInit {
       this.userRole = "SECRETARY";
       this.practicianId = this.featureService.selectedPracticianId;
     }
-    forkJoin(this.getCategories()).subscribe((res) => {});
+    forkJoin(this.getCategories())
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {});
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
@@ -99,6 +108,7 @@ export class AddPatientComponent implements OnInit {
     model.practicianId = this.practicianId;
     this.patientService
       .createPatientFile(model)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponse, this.handleError);
   }
   handleResponse = (res) => {
@@ -151,7 +161,7 @@ export class AddPatientComponent implements OnInit {
     });
   }
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }
