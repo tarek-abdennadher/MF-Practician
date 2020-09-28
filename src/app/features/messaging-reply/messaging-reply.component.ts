@@ -139,14 +139,6 @@ export class MessagingReplyComponent implements OnInit {
         message.hasFiles = false;
         message.body = "";
         this.messagingDetail = message;
-        this.messagingDetail.toReceivers.forEach(receiver => {
-          this.loadPhoto(receiver);
-        });
-        this.messagingDetail.ccReceivers.forEach(receiver => {
-          this.loadPhoto(receiver);
-        });
-        this.loadPhoto(this.messagingDetail.sender);
-        this.loadSenderForPhoto(this.messagingDetail);
         this.loadingReply = false;
       });
   }
