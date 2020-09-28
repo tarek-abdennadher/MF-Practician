@@ -369,6 +369,15 @@ export class MessagingListService {
     );
   }
 
+  public getFirstInboxMessageByAccountId(id, size, filter: SenderRole = SenderRole.ALL, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "inbox-by-account/" + id + "/listSize/" + size, {
+      params: { 'pageNo': pageNo, 'order': order, 'senderRole': filter }
+    }
+    );
+  }
+
   public countInboxByAccountId(id, filter: SenderRole = SenderRole.ALL,): Observable<any> {
     return this.globalService.call(
       RequestType.GET,

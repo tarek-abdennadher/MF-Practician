@@ -18,7 +18,6 @@
   (seenAllAction)="seenAllActionClicked()"
   (archieveAction)="archieveActionClicked()"
   (importantAction) = "importantAction()"
-  (filterAction)="filterActionClicked($event)"
   (refreshMessagingListAction)="refreshMessagingList()"
   (notSeenAction) = "notSeenActionClicked()"
   (checkSeenMessagesAction) = "checkSeenMessagingList()"
@@ -34,7 +33,7 @@
       <mat-tab label="TousMessages" >
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
-          <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
+          <span >Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
@@ -53,7 +52,7 @@
       <mat-tab label="Secrétaire">
         <ng-template mat-tab-label>
           <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
-          <span (click)="filterActionClicked('secretary')">Secrétaire</span>
+          <span >Secrétaire</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
@@ -69,7 +68,7 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Patients" (click)="filterActionClicked('patient')">
+      <mat-tab label="Patients" >
         <ng-template mat-tab-label>
           <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
           Patients
