@@ -502,7 +502,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   public removeAttachment() {
     this.sendMessageForm.patchValue({
-      file: undefined,
+      file: "",
     });
   }
 

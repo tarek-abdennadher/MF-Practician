@@ -11,7 +11,7 @@ import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, tap } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
@@ -208,11 +208,17 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 .send_message_success;
               break;
             }
-            case "archiveSuccess": {
-              notifMessage = this.globalService.toastrMessages
-                .archived_message_success;
-              break;
-            }
+            case "archiveSuccess":
+              {
+                notifMessage = this.globalService.toastrMessages
+                  .archived_message_success;
+                break;
+              }
+              this.notifier.show({
+                message: notifMessage,
+                type: "info",
+                template: this.customNotificationTmpl,
+              });
           }
           this.notifier.show({
             message: notifMessage,
@@ -221,9 +227,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           });
         }
       });
-    setTimeout(() => {
-      this.featureService.setIsMessaging(true);
-    });
+    this.featureService.setIsMessaging(true);
     this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
@@ -309,21 +313,26 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
 
   archieveActionClicked() {
-    let checkedMessages = this.filtredItemList.filter(
-      (e) => e.isChecked == true
-    );
-    const messagesId = checkedMessages.map((e) => e.id);
-
-    if (messagesId && messagesId.length > 0) {
-      this.dialogService
-        .openConfirmDialog(
-          this.globalService.messagesDisplayScreen.archive_confirmation_message,
-          "Suppression"
-        )
-        .afterClosed()
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {
-          if (res) {
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.archive_confirmation_message,
+        "Suppression"
+      )
+      .afterClosed()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {
+        if (res) {
+          let checkedMessages = this.filtredItemList.filter(
+            (e) => e.isChecked == true
+          );
+          const messagesId = checkedMessages.map((e) => e.id);
+          if (messagesId.length > 0) {
+            this.getFirstMessageInNextPage(
+              this.featureService.getUserId(),
+              messagesId.length
+            )
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe();
             this.messagesServ
               .markMessageAsArchived(messagesId)
               .pipe(takeUntil(this._destroyed$))
@@ -364,8 +373,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 }
               );
           }
-        });
-    }
+        }
+      });
   }
   filterActionClicked(event) {
     this.filtredItemList =
@@ -440,6 +449,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               this.itemsList.push(
                 ...retrievedMess.map((item) => this.parseMessage(item))
               );
+              this.filtredItemList = this.itemsList;
             }
           });
       });
@@ -548,6 +558,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 this.filtredItemList[filtredIndex].isSeen = true;
               }
             }
+            (error) => {
+              console.log("We have to find a way to notify user by this error");
+            };
           },
           (error) => {
             console.log("We have to find a way to notify user by this error");
@@ -653,6 +666,27 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     this.selectedObjects = event.filter((a) => a.isChecked == true);
   }
 
+  getFirstMessageInNextPage(accountId, size) {
+    return this.messagesServ
+      .getFirstInboxMessageByAccountId(
+        accountId,
+        size,
+        this.userTypeTabsFilter,
+        this.pagination.pageNo + 1,
+        this.pagination.direction
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((messages) => {
+          const parsedMessages = messages.map((message) =>
+            this.parseMessage(message)
+          );
+          this.filtredItemList.push(...parsedMessages);
+          this.itemsList.push(...parsedMessages);
+        })
+      );
+  }
+
   getRealTimeMessage() {
     this.messagesServ
       .getNotificationObs()
@@ -711,8 +745,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           );
           this.messagesServ.practicianNotifPreviousValue = notif.id;
           if (
-            !this.isMyInbox &&
-            this.featureService.selectedPracticianId == notif.receiverId
+            notif != "" &&
+            this.messagesServ.practicianNotifPreviousValue != notif.id
           ) {
             let message = this.parseMessage(notif.message);
             this.documentService

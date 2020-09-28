@@ -18,9 +18,9 @@ import { MyDocumentsService } from "@app/features/my-documents/my-documents.serv
 import { MessagingListService } from "@app/features/services/messaging-list.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { GlobalService } from "@app/core/services/global.service";
-import { DialogService } from '@app/features/services/dialog.service';
-import { PaginationService } from '@app/features/services/pagination.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DialogService } from "@app/features/services/dialog.service";
+import { PaginationService } from "@app/features/services/pagination.service";
+import { DomSanitizer } from "@angular/platform-browser";
 declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -68,6 +68,7 @@ export class PatientFileComponent implements OnInit {
   direction: OrderDirection = OrderDirection.DESC;
   filtredItemList: Array<any> = new Array();
   scroll = false;
+  isCheckbox = false;
   /** Inputs */
   @Input("imageSource") imageSource: string;
   @Input("practicianImage") practicianImage: string;
@@ -141,6 +142,7 @@ export class PatientFileComponent implements OnInit {
     });
     this.patient.subscribe(val => {
       if (val) {
+        this.selectedTabIndex = 0;
         this.info = val;
         this.getPersonalInformation(val);
         this.filtredItemList = [];
@@ -152,7 +154,7 @@ export class PatientFileComponent implements OnInit {
         this.attachedPatients = res;
       }
     });
-    this.notes.subscribe((res) => {
+    this.notes.subscribe(res => {
       if (res) {
         this.noteList = res;
       }
@@ -365,13 +367,11 @@ export class PatientFileComponent implements OnInit {
   }
   noteCardClicked(item) {
     this.isnoteList = false;
-    let note = this.noteList.find(
-      (element) => element.id == item.id
-    );
+    let note = this.noteList.find(element => element.id == item.id);
     this.noteForm.patchValue({
       id: note.id ? note.id : null,
       value: note.users[0].fullName ? note.users[0].fullName : null,
-      date: note.time ? new Date(note.time) : null,
+      date: note.time ? new Date(note.time) : null
     });
   }
   archieveNote(item) {
@@ -426,10 +426,15 @@ export class PatientFileComponent implements OnInit {
 
   getPatientInbox(pageNo) {
     this.messagesServ
-      .getMessagesByPatientFile(this.patientFileId, this.personalInfoForm.value.practicianId, pageNo, this.direction)
+      .getMessagesByPatientFile(
+        this.patientFileId,
+        this.personalInfoForm.value.practicianId,
+        pageNo,
+        this.direction
+      )
       .subscribe(res => {
         this.messages = res;
-        this.messages.sort(function (m1, m2) {
+        this.messages.sort(function(m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
@@ -440,10 +445,15 @@ export class PatientFileComponent implements OnInit {
   }
   getPatientNextInbox(pageNo) {
     this.messagesServ
-      .getMessagesByPatientFile(this.patientFileId, this.personalInfoForm.value.practicianId, pageNo, this.direction)
+      .getMessagesByPatientFile(
+        this.patientFileId,
+        this.personalInfoForm.value.practicianId,
+        pageNo,
+        this.direction
+      )
       .subscribe(res => {
         this.messages = res;
-        this.messages.sort(function (m1, m2) {
+        this.messages.sort(function(m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
@@ -482,20 +492,22 @@ export class PatientFileComponent implements OnInit {
       isMarkAsSeen: true,
       photoId: message.sender.photoId
     };
-    this.documentService.getDefaultImageEntity(message.sender.senderId, "ACCOUNT").subscribe(
-      response => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
-          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      error => {
-        parsedMessage.users[0].img = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImageEntity(message.sender.senderId, "ACCOUNT")
+      .subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
     return parsedMessage;
   }
 

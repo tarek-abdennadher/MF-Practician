@@ -145,14 +145,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         message.hasFiles = false;
         message.body = "";
         this.messagingDetail = message;
-        this.messagingDetail.toReceivers.forEach((receiver) => {
-          this.loadPhoto(receiver);
-        });
-        this.messagingDetail.ccReceivers.forEach((receiver) => {
-          this.loadPhoto(receiver);
-        });
-        this.loadPhoto(this.messagingDetail.sender);
-        this.loadSenderForPhoto(this.messagingDetail);
         this.loadingReply = false;
       });
   }
@@ -258,7 +250,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       }
     }
   }
-
   replyMessage(message) {
     this.spinner.show();
     this.uuid = uuid();

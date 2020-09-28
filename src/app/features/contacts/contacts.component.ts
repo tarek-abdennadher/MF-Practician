@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ContactsService } from "../services/contacts.service";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { Speciality } from "@app/shared/models/speciality";
 import { Location } from "@angular/common";
 import { AccountService } from "../services/account.service";
@@ -66,12 +66,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
-
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
   }
-
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
     this.initComponent();
