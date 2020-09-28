@@ -46,7 +46,7 @@ export class ContactsComponent implements OnInit {
   };
   constructor(
     public accountService: AccountService,
-    private _location: Location,
+    private location: Location,
     private route: ActivatedRoute,
     notifierService: NotifierService,
     private router: Router,
@@ -65,6 +65,15 @@ export class ContactsComponent implements OnInit {
   }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.initComponent();
+    this.route.queryParams.subscribe(params => {
+      if (params["refresh"]) {
+        this.initComponent();
+        this.location.replaceState("mes-contacts-pro");
+      }
+    });
+  }
+  initComponent() {
     this.featureService.setActiveChild("practician");
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
@@ -76,13 +85,8 @@ export class ContactsComponent implements OnInit {
       this.getAllContactsForSecretary();
     }
 
-    this.featureService.setIsMessaging(false);
-    this.realTime();
-  }
-  realTime() {
-    this.contactsService.getIdObs().subscribe(resp => {
-      let ids = [resp];
-      this.deleteItemFromList(ids);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
     });
   }
   getAllContactsForSecretary() {
@@ -307,7 +311,7 @@ export class ContactsComponent implements OnInit {
     this.selectedObjects = event.filter(a => a.isChecked == true);
   }
   BackButton() {
-    this._location.back();
+    this.location.back();
   }
   deleteItemFromList(ids) {
     if (ids && ids.length > 0) {

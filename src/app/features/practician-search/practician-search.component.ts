@@ -65,7 +65,9 @@ export class PracticianSearchComponent implements OnInit {
       this.getPractians(list);
     });
     this.getAllSpeciality();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   getPractians(list) {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
@@ -141,7 +143,11 @@ export class PracticianSearchComponent implements OnInit {
     return practician;
   }
   cardClicked(item) {
-    this.router.navigate(["/praticien-recherche/praticien-detail/" + item.id]);
+    this.router.navigate(["/praticien-recherche/praticien-detail/" + item.id], {
+      queryParams: {
+        search: true,
+      },
+    });
   }
   selectItem(event) {
     this.itemsList.forEach((a) => {

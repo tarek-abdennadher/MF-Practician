@@ -9,12 +9,14 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "@app/features/new-message-widget/new-message-widget.service";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { DialogService } from "@app/features/services/dialog.service";
+import { Location } from "@angular/common";
 @Component({
   selector: "app-practician-detail",
   templateUrl: "./practician-detail.component.html",
   styleUrls: ["./practician-detail.component.scss"]
 })
 export class PracticianDetailComponent implements OnInit {
+  fromSearch: boolean = false;
   practician: any;
   imageSource: string;
   public isFavorite: boolean = false;
@@ -31,6 +33,7 @@ export class PracticianDetailComponent implements OnInit {
   };
   constructor(
     private route: ActivatedRoute,
+    private location: Location,
     private router: Router,
     private practicianDetailService: PracticianDetailService,
     private localSt: LocalStorageService,
@@ -47,11 +50,16 @@ export class PracticianDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(
+      params => (this.fromSearch = params["search"] || false)
+    );
     this.route.params.subscribe(params => {
       this.isMyFAvorite(params["id"]);
       this.getPractician(params["id"]);
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   getPractician(id) {
     this.practicianDetailService.getPracticiansById(id).subscribe(response => {
@@ -104,21 +112,27 @@ export class PracticianDetailComponent implements OnInit {
     this.messageWidgetService.toggleObs.next(item.accountId);
   }
   archieveClicked(item) {
+    let array = [];
+    array.push(item.accountId);
     this.dialogService
       .openConfirmDialog(
-        this.globalService.messagesDisplayScreen.delete_confirmation_contact,
-        "Suppression"
+        this.practicianDetailService.messages.delete_favorite_confirm,
+        this.practicianDetailService.messages.delete_favorite
       )
       .afterClosed()
       .subscribe(res => {
         if (res) {
-          let array = [];
-          array.push(item.accountId);
           this.contactService
             .deleteMultiplePracticianContactPro(array)
             .subscribe(res => {
-              this.contactService.setId(item.accountId);
-              this.router.navigate(["/mes-contacts-pro"]);
+              this.isFavorite = false;
+              if (!this.fromSearch) {
+                this.router.navigate(["/mes-contacts-pro"], {
+                  queryParams: {
+                    refresh: true
+                  }
+                });
+              }
             });
         }
       });

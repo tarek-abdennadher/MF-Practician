@@ -12,7 +12,7 @@ declare var $: any;
 @Component({
   selector: "app-my-secretaries",
   templateUrl: "./my-secretaries.component.html",
-  styleUrls: ["./my-secretaries.component.scss"]
+  styleUrls: ["./my-secretaries.component.scss"],
 })
 export class MySecretariesComponent implements OnInit {
   isList = true;
@@ -58,16 +58,18 @@ export class MySecretariesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMySecretaries();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   getMySecretaries() {
     this.accountService.getMySecretaries().subscribe(
-      contacts => {
+      (contacts) => {
         this.users = contacts;
-        this.itemsList = this.users.map(elm => this.parseSec(elm));
+        this.itemsList = this.users.map((elm) => this.parseSec(elm));
       },
-      error => {
+      (error) => {
         console.log("error");
       }
     );
@@ -81,8 +83,8 @@ export class MySecretariesComponent implements OnInit {
           id: sec.id,
           fullName: sec.fullName,
           img: null,
-          type: "SECRETARY"
-        }
+          type: "SECRETARY",
+        },
       ],
       isArchieve: false,
       isImportant: false,
@@ -90,20 +92,20 @@ export class MySecretariesComponent implements OnInit {
       isViewDetail: false,
       isMarkAsSeen: false,
       isChecked: false,
-      photoId: sec.photoId
+      photoId: sec.photoId,
     };
-    parsedSec.users.forEach(user => {
+    parsedSec.users.forEach((user) => {
       this.documentService.getDefaultImage(parsedSec.id).subscribe(
-        response => {
+        (response) => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
+          myReader.onloadend = (e) => {
             user.img = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
           };
           let ok = myReader.readAsDataURL(response);
         },
-        error => {
+        (error) => {
           user.img = this.avatars.secretary;
         }
       );
@@ -113,14 +115,14 @@ export class MySecretariesComponent implements OnInit {
   // initialise profile picture
   getPictureProfile(nodeId) {
     this.documentService.downloadFile(nodeId).subscribe(
-      response => {
+      (response) => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
+        myReader.onloadend = (e) => {
           this.image = myReader.result;
         };
         let ok = myReader.readAsDataURL(response.body);
       },
-      error => {
+      (error) => {
         this.image = this.avatars.secretary;
       }
     );
@@ -128,12 +130,12 @@ export class MySecretariesComponent implements OnInit {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#secretaires").offset().top - 100
+        scrollTop: $("#secretaires").offset().top - 100,
       },
       1000
     );
     this.router.navigate([
-      "compte/mes-secretaires/secretaire-detail/" + item.id
+      "compte/mes-secretaires/secretaire-detail/" + item.id,
     ]);
   }
 }

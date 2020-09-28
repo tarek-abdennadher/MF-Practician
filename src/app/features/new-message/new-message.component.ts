@@ -262,7 +262,9 @@ export class NewMessageComponent implements OnInit {
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {});
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
 
     $(document).ready(function () {
       $(window).keydown(function (event) {
@@ -1016,7 +1018,7 @@ export class NewMessageComponent implements OnInit {
 
   objectSelection(item) {
     let selectedObj = item.object[0];
-    if (selectedObj && selectedObj.title != "autre") {
+    if (selectedObj && selectedObj.title != "autre" && !this.isInstruction) {
       const objectDto = {
         senderId: this.featureService.getUserId(),
         sendedForId: item.for && item.for[0] && item.for[0].id,

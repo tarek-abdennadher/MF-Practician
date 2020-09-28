@@ -11,7 +11,7 @@ declare var $: any;
 @Component({
   selector: "app-my-contact-detail",
   templateUrl: "./my-contact-detail.component.html",
-  styleUrls: ["./my-contact-detail.component.scss"]
+  styleUrls: ["./my-contact-detail.component.scss"],
 })
 export class MyContactDetailComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -47,7 +47,7 @@ export class MyContactDetailComponent implements OnInit {
     this.messages = this.service.messages;
     this.initInfoForm();
     this.practicianId = this.featureService.getUserId();
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       if (params["id"] != "add") {
         this.action = "edit";
         this.contactId = params["id"];
@@ -56,10 +56,12 @@ export class MyContactDetailComponent implements OnInit {
         this.action = "add";
       }
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   getContactById(id) {
-    this.service.getContactBookBy(id).subscribe(contact => {
+    this.service.getContactBookBy(id).subscribe((contact) => {
       this.otherPhones.next(contact.phones);
       this.infoForm.patchValue({
         id: contact.id ? contact.id : null,
@@ -68,7 +70,7 @@ export class MyContactDetailComponent implements OnInit {
         last_name: contact.lastName ? contact.lastName : "",
         first_name: contact.firstName ? contact.firstName : "",
         fonction: contact.fonction ? contact.fonction : "",
-        otherPhones: contact.phones ? contact.phones : []
+        otherPhones: contact.phones ? contact.phones : [],
       });
       if (contact?.phones && contact.phones.length > 0) {
         this.isLabelShow = true;
@@ -83,7 +85,7 @@ export class MyContactDetailComponent implements OnInit {
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, emailValidator]),
       fonction: new FormControl(null, Validators.required),
-      phone: new FormControl(null, Validators.required)
+      phone: new FormControl(null, Validators.required),
     });
   }
   get ctr() {
@@ -110,18 +112,18 @@ export class MyContactDetailComponent implements OnInit {
       phones: this.phones,
       firstName: this.infoForm.value.first_name,
       lastName: this.infoForm.value.last_name,
-      fonction: this.infoForm.value.fonction
+      fonction: this.infoForm.value.fonction,
     };
     if (this.action == "add") {
       this.service
         .addContactBookToPractician(this.practicianId, model)
-        .subscribe(result => {
+        .subscribe((result) => {
           if (result) {
             this.submitted = false;
             this.notifier.show({
               message: this.service.messages.add_success,
               type: "info",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             this.router.navigate(["/compte/mes-contacts"]);
           } else {
@@ -129,19 +131,19 @@ export class MyContactDetailComponent implements OnInit {
             this.notifier.show({
               message: this.notifMessage,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             return;
           }
         });
     } else {
-      this.service.updateContactBook(model).subscribe(result => {
+      this.service.updateContactBook(model).subscribe((result) => {
         if (result) {
           this.submitted = false;
           this.notifier.show({
             message: this.service.messages.edit_info_success,
             type: "info",
-            template: this.customNotificationTmpl
+            template: this.customNotificationTmpl,
           });
           this.router.navigate(["/compte/mes-contacts"]);
         } else {
@@ -149,7 +151,7 @@ export class MyContactDetailComponent implements OnInit {
           this.notifier.show({
             message: this.notifMessage,
             type: "error",
-            template: this.customNotificationTmpl
+            template: this.customNotificationTmpl,
           });
           return;
         }
