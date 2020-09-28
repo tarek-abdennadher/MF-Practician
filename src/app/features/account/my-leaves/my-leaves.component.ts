@@ -7,7 +7,7 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
-import { FormGroup, FormControl } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 import { defineLocale, frLocale, isBefore } from "ngx-bootstrap/chronos";
@@ -108,6 +108,9 @@ export class MyLeavesComponent
           leaveEndDate: op.leaveEndDate ? new Date(op.leaveEndDate) : null,
           leaveAutoMessage: op.leaveAutoMessage ? op.leaveAutoMessage : null,
         });
+        if (op.activateLeaveAutoMessage === true) {
+          this.setRequiredValidator();
+        }
       });
   }
 
@@ -145,6 +148,23 @@ export class MyLeavesComponent
 
     if (test == "Invalid date") {
       event.target.value = this.errors.invalid_date;
+    }
+  }
+  setRequiredValidator() {
+    if (this.f.activateLeaveAutoMessage.value) {
+      this.f.leaveStartDate.setValidators(Validators.required);
+      this.f.leaveEndDate.setValidators(Validators.required);
+      this.f.leaveAutoMessage.setValidators(Validators.required);
+      this.f.leaveStartDate.updateValueAndValidity();
+      this.f.leaveEndDate.updateValueAndValidity();
+      this.f.leaveAutoMessage.updateValueAndValidity();
+    } else {
+      this.f.leaveStartDate.clearValidators();
+      this.f.leaveEndDate.clearValidators();
+      this.f.leaveAutoMessage.clearValidators();
+      this.f.leaveStartDate.updateValueAndValidity();
+      this.f.leaveEndDate.updateValueAndValidity();
+      this.f.leaveAutoMessage.updateValueAndValidity();
     }
   }
 }

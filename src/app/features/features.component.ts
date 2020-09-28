@@ -726,11 +726,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .subscribe((resp) => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/mes-patients"], {
-            queryParams: {
-              section: "pending",
-            },
-          });
+          this.router.navigate(["/mes-invitations"]);
         });
     } else if (notification.type == "INSTRUCTION_TREATED") {
       this.featuresService
