@@ -46,7 +46,7 @@ export class ContactsComponent implements OnInit {
   };
   constructor(
     public accountService: AccountService,
-    private _location: Location,
+    private location: Location,
     private route: ActivatedRoute,
     notifierService: NotifierService,
     private router: Router,
@@ -65,6 +65,15 @@ export class ContactsComponent implements OnInit {
   }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.initComponent();
+    this.route.queryParams.subscribe((params) => {
+      if (params["refresh"]) {
+        this.initComponent();
+        this.location.replaceState("mes-contacts-pro");
+      }
+    });
+  }
+  initComponent() {
     this.featureService.setActiveChild("practician");
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
@@ -76,9 +85,10 @@ export class ContactsComponent implements OnInit {
       this.getAllContactsForSecretary();
     }
 
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
-
   getAllContactsForSecretary() {
     this.contactsService.getContactsProForSecretary().subscribe(
       (contacts) => {
@@ -107,7 +117,10 @@ export class ContactsComponent implements OnInit {
             photoId: elm.photoId,
           };
         });
-        this.types = this.types.filter(s => -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s));
+        this.types = this.types.filter(
+          (s) =>
+            -1 !== this.itemsList.map((e) => e.users[0].speciality).indexOf(s)
+        );
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {
@@ -165,7 +178,10 @@ export class ContactsComponent implements OnInit {
             photoId: elm.photoId,
           };
         });
-        this.types = this.types.filter(s => -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s));
+        this.types = this.types.filter(
+          (s) =>
+            -1 !== this.itemsList.map((e) => e.users[0].speciality).indexOf(s)
+        );
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {
@@ -297,7 +313,7 @@ export class ContactsComponent implements OnInit {
     this.selectedObjects = event.filter((a) => a.isChecked == true);
   }
   BackButton() {
-    this._location.back();
+    this.location.back();
   }
   deleteItemFromList(ids) {
     if (ids && ids.length > 0) {

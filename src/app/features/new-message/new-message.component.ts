@@ -262,7 +262,9 @@ export class NewMessageComponent implements OnInit {
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {});
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
 
     $(document).ready(function () {
       $(window).keydown(function (event) {

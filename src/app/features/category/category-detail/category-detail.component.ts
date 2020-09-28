@@ -40,7 +40,9 @@ export class CategoryDetailComponent implements OnInit, ComponentCanDeactivate {
       this.selectedCategoryId = params["id"];
       this.initInfoForm();
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   close() {
@@ -84,18 +86,24 @@ export class CategoryDetailComponent implements OnInit, ComponentCanDeactivate {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate(["mes-categories"], { queryParams: { loading: true }});
+        this.router.navigate(["mes-categories"], {
+          queryParams: { loading: true },
+        });
       });
     } else {
       this.categoryService.updateCategory(model).subscribe((res) => {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
-        this.router.navigate(["mes-categories"], { queryParams: { loading: true }});
+        this.router.navigate(["mes-categories"], {
+          queryParams: { loading: true },
+        });
       });
     }
   }
   cancel() {
-    this.router.navigate(["mes-categories"], { queryParams: { loading: false }});
+    this.router.navigate(["mes-categories"], {
+      queryParams: { loading: false },
+    });
   }
 }

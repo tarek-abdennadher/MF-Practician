@@ -1,29 +1,28 @@
-import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from '@angular/core';
-import { Subject, forkJoin, BehaviorSubject } from 'rxjs';
-import { PatientFile } from '@app/shared/models/patient-file';
-import { NotifierService } from 'angular-notifier';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FeaturesService } from '@app/features/features.service';
-import { AccountService } from '@app/features/services/account.service';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { MyPatientsService } from '@app/features/services/my-patients.service';
-import { CategoryService } from '@app/features/services/category.service';
-import { MyDocumentsService } from '@app/features/my-documents/my-documents.service';
-import { NoteService } from '@app/features/services/note.service';
-import { LocalStorageService } from 'ngx-webstorage';
-import { MessagingListService } from '@app/features/services/messaging-list.service';
-import { GlobalService } from '@app/core/services/global.service';
-import { defineLocale, frLocale } from 'ngx-bootstrap/chronos';
-import { takeUntil, tap } from 'rxjs/operators';
-import { MyPatients } from '@app/shared/models/my-patients';
+import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from "@angular/core";
+import { Subject, forkJoin, BehaviorSubject } from "rxjs";
+import { PatientFile } from "@app/shared/models/patient-file";
+import { NotifierService } from "angular-notifier";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FeaturesService } from "@app/features/features.service";
+import { AccountService } from "@app/features/services/account.service";
+import { BsLocaleService } from "ngx-bootstrap/datepicker";
+import { MyPatientsService } from "@app/features/services/my-patients.service";
+import { CategoryService } from "@app/features/services/category.service";
+import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
+import { NoteService } from "@app/features/services/note.service";
+import { LocalStorageService } from "ngx-webstorage";
+import { MessagingListService } from "@app/features/services/messaging-list.service";
+import { GlobalService } from "@app/core/services/global.service";
+import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
+import { takeUntil, tap } from "rxjs/operators";
+import { MyPatients } from "@app/shared/models/my-patients";
 
 @Component({
-  selector: 'app-patient-detail',
-  templateUrl: './patient-detail.component.html',
-  styleUrls: ['./patient-detail.component.scss']
+  selector: "app-patient-detail",
+  templateUrl: "./patient-detail.component.html",
+  styleUrls: ["./patient-detail.component.scss"],
 })
 export class PatientDetailComponent implements OnInit {
-
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   noteimageSource: string;
@@ -78,15 +77,15 @@ export class PatientDetailComponent implements OnInit {
     this.imageSource = this.avatars.man;
     this.noteimageSource = this.avatars.user;
     this.linkedPatientList = [];
-    this.notesList = []
+    this.notesList = [];
   }
 
   ngOnInit(): void {
     if (this.localStorage.retrieve("role") == "PRACTICIAN") {
-      this.userRole = "PRACTICIAN"
+      this.userRole = "PRACTICIAN";
       this.practicianId = this.featureService.getUserId();
     } else {
-      this.userRole = "SECRETARY"
+      this.userRole = "SECRETARY";
       this.practicianId = this.featureService.selectedPracticianId;
     }
     this.route.queryParams.subscribe((params) => {
@@ -94,10 +93,11 @@ export class PatientDetailComponent implements OnInit {
       forkJoin(
         this.getPatientFile(),
         this.getCategories()
-      ).subscribe((res) => { });
-      this.featureService.setIsMessaging(false);
+      ).subscribe((res) => {});
+      setTimeout(() => {
+        this.featureService.setIsMessaging(false);
+      });
     });
-
   }
 
   getPatientFile() {
@@ -126,8 +126,7 @@ export class PatientDetailComponent implements OnInit {
                   this.linkedPatientList.push(this.mappingLinkedPatients(elm));
                 });
                 this.linkedPatients.next(this.linkedPatientList);
-              }
-              );
+              });
           }
         })
       );
@@ -147,7 +146,7 @@ export class PatientDetailComponent implements OnInit {
       isViewDetail: false,
       isArchieve: true,
       isSeen: true,
-    }
+    };
   }
   mappingLinkedPatients(patient) {
     const linkedPatients = new MyPatients();
@@ -221,7 +220,10 @@ export class PatientDetailComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
-      this.router.navigate(["."], { relativeTo: this.route.parent  ,  queryParams: { loading: true }});
+      this.router.navigate(["."], {
+        relativeTo: this.route.parent,
+        queryParams: { loading: true },
+      });
     } else {
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
@@ -283,10 +285,10 @@ export class PatientDetailComponent implements OnInit {
             type: "info",
             template: this.customNotificationTmpl,
           });
-          let noteToUpdate = this.notesList.findIndex(x => x.id == res.id);
+          let noteToUpdate = this.notesList.findIndex((x) => x.id == res.id);
           if (noteToUpdate !== -1) {
             this.notesList[noteToUpdate] = this.mappingNote(res);
-            this.notes.next(this.notesList)
+            this.notes.next(this.notesList);
           }
         } else {
           this.notifMessage = this.noteService.errors.failed_edit;
@@ -309,18 +311,18 @@ export class PatientDetailComponent implements OnInit {
           type: "info",
           template: this.customNotificationTmpl,
         });
-        this.notesList = this.notesList.filter(
-          note => note.id != noteId
-        );
-        this.notes.next(this.notesList)
+        this.notesList = this.notesList.filter((note) => note.id != noteId);
+        this.notes.next(this.notesList);
       }
     });
   }
 
   cancelAction() {
-    this.router.navigate(["."], { relativeTo: this.route.parent ,  queryParams: { loading: false } });
+    this.router.navigate(["."], {
+      relativeTo: this.route.parent,
+      queryParams: { loading: false },
+    });
   }
-
 
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
@@ -337,5 +339,4 @@ export class PatientDetailComponent implements OnInit {
     this._destroyed$.next();
     this._destroyed$.complete();
   }
-
 }

@@ -105,7 +105,9 @@ export class PersonalInformationsComponent
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
     this.passwordSubmitted = false;
     this.getAllSpeciality();
     this.getjobTitles();

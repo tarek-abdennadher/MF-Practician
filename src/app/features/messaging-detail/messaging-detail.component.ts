@@ -169,7 +169,9 @@ export class MessagingDetailComponent implements OnInit {
           this.getMessageDetailById(this.idMessage);
         }
       });
-      this.featureService.setIsMessaging(true);
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
     });
   }
   checkContect(context) {}
