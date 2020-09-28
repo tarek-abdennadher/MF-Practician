@@ -19,6 +19,7 @@
   [refuseResponse]="refuseResponse"
   [forwardedResponse]="forwardedResponse"
   (sendAction)="replyMessage($event)"
+  (backButtonAction)="goToBack()"
 ></lib-hls-new-message-detail>
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
   <div class="card" id="card-gif">
