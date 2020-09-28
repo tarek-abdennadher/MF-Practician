@@ -5,7 +5,7 @@ import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, tap } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
@@ -301,8 +301,8 @@ export class MessagingListComponent implements OnInit {
             e => e.isChecked == true
           );
           const messagesId = checkedMessages.map(e => e.id);
-
           if (messagesId.length > 0) {
+            this.getFirstMessageInNextPage(this.featureService.getUserId(), messagesId.length).subscribe();
             this.messagesServ.markMessageAsArchived(messagesId).subscribe(
               resp => {
                 let listToArchive = this.itemsList
@@ -413,6 +413,7 @@ export class MessagingListComponent implements OnInit {
               this.itemsList.push(
                 ...retrievedMess.map(item => this.parseMessage(item))
               );
+              this.filtredItemList = this.itemsList;
             }
           });
       });
@@ -609,6 +610,15 @@ export class MessagingListComponent implements OnInit {
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
+  }
+
+  getFirstMessageInNextPage(accountId, size) {
+    return this.messagesServ.getFirstInboxMessageByAccountId(accountId, size,this.userTypeTabsFilter,
+      this.pagination.pageNo +1,this.pagination.direction).pipe(takeUntil(this._destroyed$)).pipe(tap(messages => {
+        const parsedMessages = messages.map(message => this.parseMessage(message));
+        this.filtredItemList.push(...parsedMessages);
+        this.itemsList.push(...parsedMessages);
+      }))
   }
 
   getRealTimeMessage() {
