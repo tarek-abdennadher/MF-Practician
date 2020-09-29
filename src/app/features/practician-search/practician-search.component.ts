@@ -123,9 +123,9 @@ export class PracticianSearchComponent implements OnInit {
         fullName: message.fullName,
         img: this.avatars.user,
         title: message.title,
-        type: "MEDICAL",
-        civility: null,
-        fonction: null
+        type: "CONTACT-BOOK",
+        fonction: message.title,
+        civility: null
       }
     ];
     practician.photoId = message.photoId;
