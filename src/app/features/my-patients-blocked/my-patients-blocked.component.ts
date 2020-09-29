@@ -60,7 +60,6 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     // update list after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-patients-bloques?loading=true") {
           let currentRoute = this.route;

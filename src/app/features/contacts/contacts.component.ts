@@ -75,7 +75,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initComponent();
     this.route.queryParams
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(params => {
         if (params["refresh"]) {
           this.initComponent();
@@ -131,7 +130,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
               photoId: elm.photoId
             };
           });
-          this.types = this.itemsList.map(e => e.users[0].speciality);
+          this.types = [... new Set(this.itemsList.map(e => e.users[0].speciality))];
           this.types.unshift(this.ALL_TYPES);
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
@@ -196,7 +195,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
               photoId: elm.photoId
             };
           });
-          this.types = this.itemsList.map(e => e.users[0].speciality);
+          this.types = [... new Set(this.itemsList.map(e => e.users[0].speciality))];
           this.types.unshift(this.ALL_TYPES);
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
@@ -255,7 +254,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(res => {
         if (res) {
           const practicianIds = [];
@@ -295,7 +293,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(res => {
         if (res) {
           const practicianIds = [];

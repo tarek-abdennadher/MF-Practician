@@ -69,18 +69,16 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   realTime() {
     this.documentsService
       .getIdObs()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((resp) => {
         this.idSenderReceiver = resp;
         this.filter();
       });
   }
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
+    this.route.params.subscribe((params) => {
       this.idSenderReceiver = params["id"];
     });
     this.route.queryParams
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((params) => {
         this.filterDocumentsForm.patchValue({
           documentType: params["type"],

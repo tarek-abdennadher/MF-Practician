@@ -46,7 +46,7 @@ export class CategoryDetailComponent
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
+    this.route.params.subscribe((params) => {
       this.selectedCategoryId = params["id"];
       this.initInfoForm();
     });

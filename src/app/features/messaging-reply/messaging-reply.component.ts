@@ -80,10 +80,8 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   realTime() {
     this.messagingDetailService
       .getIdObs()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((resp) => {
         this.route.queryParams
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((params) => {
             this.forwardedResponse = false;
             this.acceptResponse = false;
@@ -98,7 +96,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
             }
           });
         this.route.params
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((params) => {
             this.idMessage = params["id"];
             this.messagingDetail = this.route.snapshot.data.messagingdetail;
@@ -121,7 +118,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   getForwardToList() {
     this.messagingDetailService
       .getTlsSecretaryList()
-      .pipe(takeUntil(this._destroyed$))
       .pipe(takeUntil(this._destroyed$))
       .subscribe((list) => {
         list.forEach((receiver) => {

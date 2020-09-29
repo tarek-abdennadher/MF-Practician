@@ -51,7 +51,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
     // update categories after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-categories?loading=true") {
           let currentRoute = this.route;
@@ -82,7 +81,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
         "Confirmation de supression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.categoryService
