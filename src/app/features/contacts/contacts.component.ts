@@ -47,6 +47,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     secretary: string;
     user: string;
   };
+  ALL_TYPES: string = "Tout";
   constructor(
     public accountService: AccountService,
     private location: Location,
@@ -87,7 +88,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
     this.types = new Array();
-    this.getAllSpeciality();
     if (this.userRole == "PRACTICIAN") {
       this.getAllContacts();
     } else if (this.userRole == "SECRETARY") {
@@ -117,7 +117,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
                   img: this.avatars.user,
                   title: elm.speciality ? elm.speciality : elm.title,
                   type: "MEDICAL",
-                  speciality: elm.speciality ? elm.speciality : "Tout",
+                  speciality: elm.speciality ? elm.speciality : this.ALL_TYPES,
                 },
               ],
               isArchieve: false,
@@ -129,10 +129,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
               photoId: elm.photoId,
             };
           });
-          this.types = this.types.filter(
-            (s) =>
-              -1 !== this.itemsList.map((e) => e.users[0].speciality).indexOf(s)
-          );
+          this.types = this.itemsList.map(e => e.users[0].speciality);
+          this.types.unshift(this.ALL_TYPES);
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
           this.itemsList.forEach((item) => {
@@ -181,7 +179,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
                   img: this.avatars.user,
                   title: elm.speciality ? elm.speciality : elm.title,
                   type: "MEDICAL",
-                  speciality: elm.speciality ? elm.speciality : "Tout",
+                  speciality: elm.speciality ? elm.speciality : this.ALL_TYPES,
                 },
               ],
               isArchieve: true,
@@ -194,10 +192,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
               photoId: elm.photoId,
             };
           });
-          this.types = this.types.filter(
-            (s) =>
-              -1 !== this.itemsList.map((e) => e.users[0].speciality).indexOf(s)
-          );
+          this.types = this.itemsList.map(e => e.users[0].speciality);
+          this.types.unshift(this.ALL_TYPES);
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
           this.itemsList.forEach((item) => {
@@ -229,7 +225,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
   listFilter(value: string) {
     this.filtredItemsList =
-      value != "Tout" ? this.performFilter(value) : this.itemsList;
+      value != this.ALL_TYPES ? this.performFilter(value) : this.itemsList;
   }
 
   performFilter(filterBy: string) {
@@ -311,21 +307,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
         }
       });
   }
-  getAllSpeciality() {
-    this.contactsService
-      .getAllSpecialities()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (specialitiesList) => {
-          this.specialities = specialitiesList;
-          this.types = this.specialities.map((s) => s.name);
-          this.types.unshift("Tout");
-        },
-        (error) => {
-          console.log("en attendant un model de popup à afficher");
-        }
-      );
-  }
+
   addContact() {
     jQuery([document.documentElement, document.body]).animate(
       { scrollTop: $("#contactPro").offset().top },
