@@ -61,7 +61,6 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     // update list after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-invitations?loading=true") {
           let currentRoute = this.route;

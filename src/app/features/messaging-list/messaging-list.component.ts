@@ -104,7 +104,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.featureService.setActiveChild("inbox");
     this.itemsList = new Array();
-    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
+    this.route .params.subscribe((params) => {
       this.listLength = 10;
       this.itemsList = new Array();
       this.filtredItemList = new Array();
@@ -168,7 +168,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         this.featureService.selectedPracticianId = 0;
         this.featureService
           .getNumberOfInbox()
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((val) => {
             this.number = val;
             this.bottomText =
@@ -198,7 +197,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     });
 
     this.route.queryParams
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((params) => {
         if (params["status"]) {
           let notifMessage = "";
@@ -321,7 +319,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let checkedMessages = this.filtredItemList.filter(
@@ -437,7 +434,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             if (!this.isMyInbox) {
               this.featureService.myPracticians
                 .asObservable()
-                .pipe(takeUntil(this._destroyed$))
                 .subscribe((list) => {
                   this.number = list.find(
                     (p) => p.id == this.featureService.selectedPracticianId
@@ -623,7 +619,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let messageId = event.id;
@@ -692,7 +687,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   getRealTimeMessage() {
     this.messagesServ
       .getNotificationObs()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((notif) => {
         if (notif != "") {
           if (this.isMyInbox) {
@@ -732,7 +726,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   getPracticianRealTimeMessage() {
     this.messagesServ
       .getPracticianNotifObs()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((notif) => {
         if (
           notif != "" &&
@@ -793,7 +786,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   searchInbox() {
     this.featureService
       .getFilteredInboxSearch()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res == null) {
           this.filtredItemList = [];
@@ -816,7 +808,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     ) {
       this.featureService.searchPracticianInboxFiltered
         .get(numb)
-        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {
           if (res == null) {
             this.filtredItemList = [];

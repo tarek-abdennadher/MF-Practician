@@ -75,7 +75,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initComponent();
     this.route.queryParams
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(params => {
         if (params["refresh"]) {
           this.initComponent();
@@ -255,7 +254,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(res => {
         if (res) {
           const practicianIds = [];
@@ -295,7 +293,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(res => {
         if (res) {
           const practicianIds = [];

@@ -77,7 +77,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     // update list after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-patients?loading=true") {
           let currentRoute = this.route;
@@ -133,7 +132,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   searchPatients() {
     this.featureService
       .getFilteredPatientsSearch()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res == null) {
           this.filtredPatients = [];
@@ -267,7 +265,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.myPatientsService
@@ -290,7 +287,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         "Confirmation d'archivage"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.myPatientsService

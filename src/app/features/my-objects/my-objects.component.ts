@@ -55,7 +55,6 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     // update categories after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
         console.log(event.url);
         if (event.url === "/mes-objets?loading=true") {
@@ -96,7 +95,6 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
         "Confirmation de supression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.accountService

@@ -76,7 +76,7 @@ export class ApxPieComponent implements OnInit, OnDestroy {
         },
       },
     };
-    this.stats.pipe(takeUntil(this._destroyed$)).subscribe((myMap) => {
+    this.stats.subscribe((myMap) => {
       this.loading = true;
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {

@@ -364,7 +364,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   ccListSubscription() {
     let selectedElements;
     if (this.ccList) {
-      this.ccList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
+      this.ccList.subscribe((elm) => {
         this.ccParsedList = elm;
         selectedElements = elm.filter(
           (e) => e.isSelected && e.isSelected == true
@@ -377,7 +377,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   private toListSubscription() {
     let selectedElements;
-    this.toList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
+    this.toList.subscribe((elm) => {
       this.toListParsed = elm;
       this.toFilteredList = elm;
       if (!this.isInstruction) {
@@ -402,7 +402,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   private forListSubscription() {
     let selectedElements;
-    this.forList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
+    this.forList.subscribe((elm) => {
       this.forListParsed = elm;
       this.forFilteredList = elm;
 
@@ -427,14 +427,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     });
   }
   private concernListSubscription() {
-    this.concernList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
+    this.concernList.subscribe((elm) => {
       this.concernFilteredList = elm;
     });
   }
 
   selectedObjectSubscription() {
     let selectedElements;
-    this.selectedObject.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
+    this.selectedObject.subscribe((res) => {
       if (res) {
         if (res.update) {
           this.sendMessageForm.patchValue({
@@ -587,13 +587,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   search(query: string) {
     let result = this.select(query);
-    this.toList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
+    this.toList.subscribe((elm) => {
       elm = result;
     });
   }
   select(query: string): string[] {
     let result: string[] = [];
-    this.toList.pipe(takeUntil(this._destroyed$)).subscribe((areas) => {
+    this.toList.subscribe((areas) => {
       for (let a of areas) {
         if (a.toLowerCase().indexOf(query) > -1) {
           result.push(a);

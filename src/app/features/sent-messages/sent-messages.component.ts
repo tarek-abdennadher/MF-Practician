@@ -68,7 +68,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.featureService.setActiveChild("sent");
     this.route.queryParams
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((params) => {
         if (params["status"] == "archiveSuccess") {
           this.notifier.show({
@@ -245,7 +244,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           "Suppression"
         )
         .afterClosed()
-        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {
           if (res) {
             this.messageService
@@ -279,7 +277,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let messageId = event.id;
@@ -333,7 +330,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   searchSent() {
     this.featureService
       .getFilteredSentSearch()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res == null) {
           this.filtredItemList = [];

@@ -3,8 +3,7 @@ import {
   OnInit,
   AfterViewInit,
   ChangeDetectorRef,
-  ViewChild,
-  OnDestroy
+  ViewChild
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
@@ -28,14 +27,12 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
-import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
   styleUrls: ["./features.component.scss"]
 })
-export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$ = new Subject();
+export class FeaturesComponent implements OnInit, AfterViewInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   collapedSideBar: boolean;
   account: any;
@@ -106,23 +103,19 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
       lastNameRefactored;
     this.fullname = this.featuresService.fullName;
     this.featuresService
-      .getNumberOfInbox()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(val => {
+      .getNumberOfInbox().subscribe(val => {
         this.inboxNumber = val;
       });
     if (this.userRole && this.userRole == "SECRETARY") {
       this.featuresService
         .getSecretaryPracticians()
-        .pipe(takeUntil(this._destroyed$))
+
         .subscribe(value => {
           this.featuresService.myPracticians.next(value);
           this.myPracticians = this.featuresService.myPracticians.getValue();
         });
     }
-    this.featuresService.currentSearch
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((data: search) => {
+    this.featuresService.currentSearch.subscribe((data: search) => {
         this.text = data.text;
         this.city = data.city;
       });
@@ -157,25 +150,19 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   observeState() {
-    this.featuresService.inboxState
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(state => {
+    this.featuresService.inboxState.subscribe(state => {
         if (state) {
           this.getAllInbox();
           this.featuresService.inboxState.next(false);
         }
       });
-    this.featuresService.sentState
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(state => {
+    this.featuresService.sentState.subscribe(state => {
         if (state) {
           this.sentMessage();
           this.featuresService.sentState.next(false);
         }
       });
-    this.featuresService.archiveState
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(state => {
+    this.featuresService.archiveState.subscribe(state => {
         if (state) {
           this.getAllArchive();
           this.featuresService.archiveState.next(false);
@@ -185,18 +172,14 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscribeIsMessaging() {
     this.featuresService
-      .getIsMessaging()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(isMessaging => {
+      .getIsMessaging().subscribe(isMessaging => {
         this.messaging = isMessaging;
       });
   }
 
   getAllInbox() {
     this.messageListService
-      .getAllInboxMessages(1000000)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {
+      .getAllInboxMessages(1000000).subscribe(res => {
         let result = res.map(elm => this.parseMessage(elm));
         this.featuresService.setSearchInbox(result);
       });
@@ -204,9 +187,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getAllInboxByAccountId(id) {
     this.messageListService
-      .getAllInboxByAccountId(id, 1000000)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {
+      .getAllInboxByAccountId(id, 1000000).subscribe(res => {
         let result = res.map(elm => this.parseMessage(elm));
         let inboxObs = new BehaviorSubject(result);
         this.featuresService.searchPracticianInbox.set(id, inboxObs);
@@ -219,9 +200,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getAllArchive() {
     this.messageArchiveService
-      .getAllMyArchivedMessages()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {
+      .getAllMyArchivedMessages().subscribe(res => {
         let list = res.map(item => this.mapArchiveMessages(item));
         this.featuresService.setSearchArchive(list);
       });
@@ -229,26 +208,20 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sentMessage() {
     this.messageService
-      .sentMessage()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {
+      .sentMessage().subscribe(res => {
         this.featuresService.setSearchSent(this.parseMessages(res));
       });
   }
   forwardedMessage() {
     this.messageService
-      .forwardedMessage()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(res => {
+      .forwardedMessage().subscribe(res => {
         this.featuresService.setSearchForwarded(this.parseMessages(res));
       });
   }
 
   getPracticians() {
     this.practicianSearchService
-      .getSearchListPractician()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(list => {
+      .getSearchListPractician().subscribe(list => {
         if (this.localSt.retrieve("role") == "PRACTICIAN") {
           list = list.filter(
             a => a.accountId != this.featuresService.getUserId()
@@ -262,7 +235,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.patientService
         .getAllPatientFilesByPracticianId(this.featuresService.getUserId())
-        .pipe(takeUntil(this._destroyed$))
+
         .subscribe(list => {
           this.featuresService.setFilteredPatientsSearch(list);
           this.patients = list;
@@ -309,7 +282,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
   getPracticiansRealTimeMessage() {
     this.featuresService
       .getSecretaryPracticiansId()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(ids => {
         this.secretaryIds = ids;
         this.secretaryIds.forEach(id => {
@@ -322,7 +294,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
           this.stompClientList[i].debug = () => {};
           const that = this;
           this.stompClientList[i].connect({}, function(frame) {
-            this.pipe(takeUntil(this._destroyed$)).subscribe(
+            this .subscribe(
               "/topic/notification/" + id,
               message => {
                 if (message.body) {
@@ -346,7 +318,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .pipe(takeUntil(this._destroyed$))
       .subscribe(notifications => {
         notifications.forEach(notif => {
           notificationsFormated.push({
@@ -375,9 +346,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
         photoIds.forEach(id => {
           arrayOfObservables.push(this.documentService.getDefaultImage(id));
         });
-        forkJoin(arrayOfObservables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe((result: any[]) => {
+        forkJoin(arrayOfObservables).subscribe((result: any[]) => {
             for (let i = 0; i < photoIds.size; i++) {
               let myReader: FileReader = new FileReader();
               myReader.onloadend = e => {
@@ -403,45 +372,35 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   countMyInboxNotSeen() {
     this.messageListService
-      .countMyInboxNotSeen()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(num => {
+      .countMyInboxNotSeen().subscribe(num => {
         this.featuresService.setNumberOfInbox(num);
       });
   }
 
   countForwarded() {
     this.featuresService
-      .getCountOfForwarded()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(resp => {
+      .getCountOfForwarded().subscribe(resp => {
         this.featuresService.numberOfForwarded = resp;
       });
   }
 
   countMyArchive() {
     this.featuresService
-      .getCountOfMyArchieve()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(resp => {
+      .getCountOfMyArchieve().subscribe(resp => {
         this.featuresService.numberOfArchieve = resp;
       });
   }
 
   countMyPatientPending() {
     this.featuresService
-      .countPendingInvitations()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(num => {
+      .countPendingInvitations().subscribe(num => {
         this.featuresService.setNumberOfPending(num);
       });
   }
 
   setNumberOfPending() {
     this.featuresService
-      .getNumberOfPendingObs()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(num => {
+      .getNumberOfPendingObs().subscribe(num => {
         this.numberOfPending = num;
       });
   }
@@ -667,27 +626,19 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     notifications.forEach(notification => {
       if (notification.type == "MESSAGE") {
         this.featuresService
-          .markMessageAsSeenByNotification(notification.messageId)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(() => {});
+          .markMessageAsSeenByNotification(notification.messageId).subscribe(() => {});
       } else if (
         notification.type == "MESSAGE_IN_PROGRESS" ||
         notification.type == "MESSAGE_TREATED"
       ) {
         this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(resp => {});
+          .markNotificationAsSeen(notification.id).subscribe(resp => {});
       } else if (notification.type == "INVITATION") {
         this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(resp => {});
+          .markNotificationAsSeen(notification.id).subscribe(resp => {});
       } else if (notification.type == "INSTRUCTION_TREATED") {
         this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(resp => {});
+          .markNotificationAsSeen(notification.id).subscribe(resp => {});
       }
     });
   }
@@ -695,7 +646,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     if (notification.type == "MESSAGE") {
       this.featuresService
         .markMessageAsSeenByNotification(notification.messageId)
-        .pipe(takeUntil(this._destroyed$))
+
         .subscribe(() => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/messagerie-lire/" + notification.messageId], {
@@ -713,7 +664,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-        .pipe(takeUntil(this._destroyed$))
+
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/messagerie-lire/" + notification.messageId], {
@@ -725,7 +676,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (notification.type == "INVITATION") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-        .pipe(takeUntil(this._destroyed$))
+
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/mes-invitations"]);
@@ -733,7 +684,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (notification.type == "INSTRUCTION_TREATED") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-        .pipe(takeUntil(this._destroyed$))
+
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/messagerie-lire/" + notification.messageId], {
@@ -752,9 +703,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getPersonalInfo() {
     this.accountService
-      .getCurrentAccount()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(account => {
+      .getCurrentAccount().subscribe(account => {
         if (account && account.practician) {
           this.account = account.practician;
           this.hasImage = true;
@@ -769,9 +718,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
   // initialise profile picture
   getPictureProfile(id) {
     this.documentService
-      .getDefaultImage(id)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
+      .getDefaultImage(id).subscribe(
         response => {
           let myReader: FileReader = new FileReader();
           myReader.onloadend = e => {
@@ -821,9 +768,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
       photoId: message.sender.photoId
     };
     this.documentService
-      .getDefaultImage(message?.sender?.senderId)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
+      .getDefaultImage(message?.sender?.senderId).subscribe(
         response => {
           let myReader: FileReader = new FileReader();
           myReader.onloadend = e => {
@@ -894,9 +839,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
       messageSent.id = message.id;
       messageSent.users.forEach(user => {
         this.documentService
-          .getDefaultImage(user.id)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(
+          .getDefaultImage(user.id).subscribe(
             response => {
               let myReader: FileReader = new FileReader();
               myReader.onloadend = e => {
@@ -961,9 +904,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadPhoto(user) {
     this.documentService
-      .getDefaultImage(user.id)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
+      .getDefaultImage(user.id).subscribe(
         response => {
           let myReader: FileReader = new FileReader();
           myReader.onloadend = e => {
@@ -1011,10 +952,5 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
   myCategories() {
     jQuery("#sidebar").addClass("hidden-side-bar");
     this.router.navigate(["mes-categories"]);
-  }
-
-  ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.unsubscribe();
   }
 }

@@ -230,7 +230,6 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
           "Suppression"
         )
         .afterClosed()
-        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {
           if (res) {
             this.messageService
@@ -266,7 +265,6 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let messageId = event.id;
@@ -322,7 +320,6 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
   searchForwarded() {
     this.featureService
       .getFilteredForwardedSearch()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res == null) {
           this.filtredItemList = [];
