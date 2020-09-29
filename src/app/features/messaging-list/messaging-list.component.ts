@@ -227,7 +227,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           });
         }
       });
-    this.featureService.setIsMessaging(true);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(true);
+    });
     this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
