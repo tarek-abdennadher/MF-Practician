@@ -169,7 +169,6 @@ export class MatContactDetailDialogComponent implements OnInit, OnDestroy {
           });
         }
       });
-    this.closeDialog();
   }
   ngOnDestroy(): void {
     this._destroyed$.next(true);

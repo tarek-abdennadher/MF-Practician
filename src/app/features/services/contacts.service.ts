@@ -50,6 +50,7 @@ export class ContactsService {
     email_exist: "Email déja utilisé",
     edit_failed: "Erreur survenue lors de la modification du contact",
     contact_edit: "Contact modifié avec succès",
+    info: "Informations",
   };
 
   public id = new BehaviorSubject(null);
