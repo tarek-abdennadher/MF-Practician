@@ -131,8 +131,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
               photoId: elm.photoId
             };
           });
-          this.types = [... new Set(this.itemsList.map(e => e.users[0].speciality))];
-          this.types.unshift(this.ALL_TYPES);
+          this.getSpecialities();
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
           this.itemsList.forEach(item => {
@@ -196,8 +195,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
               photoId: elm.photoId
             };
           });
-          this.types = [... new Set(this.itemsList.map(e => e.users[0].speciality))];
-          this.types.unshift(this.ALL_TYPES);
+          this.getSpecialities();
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
           this.itemsList.forEach(item => {
@@ -227,6 +225,11 @@ export class ContactsComponent implements OnInit, OnDestroy {
         }
       );
   }
+  private getSpecialities() {
+    this.types = [...new Set(this.itemsList.map(e => e.users[0].speciality))];
+    this.types.unshift(this.ALL_TYPES);
+  }
+
   listFilter(value: string) {
     this.filtredItemsList =
       value != this.ALL_TYPES ? this.performFilter(value) : this.itemsList;
@@ -330,6 +333,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       this.filtredItemsList = this.filtredItemsList.filter(
         item => !ids.includes(item.id)
       );
+      this.getSpecialities();
     }
   }
 }
