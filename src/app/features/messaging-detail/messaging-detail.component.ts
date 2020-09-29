@@ -98,83 +98,81 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.loading = false;
-    this.route.queryParams
-      .subscribe((params) => {
-        if (params["context"]) {
-          this.context = params["context"];
-          switch (params["context"]) {
-            case "sent": {
-              this.isFromInbox = false;
-              this.showAcceptRefuse = false;
-              this.hidefrom = true;
-              this.isFromArchive = false;
-              this.sentContext = true;
-              this.previousURL = "/messagerie-envoyes";
-              break;
-            }
-            case "forwarded": {
-              this.isFromInbox = false;
-              this.showAcceptRefuse = false;
-              this.hidefrom = true;
-              this.isFromArchive = false;
-              this.sentContext = true;
-              this.previousURL = "/messagerie-transferes";
-              break;
-            }
-            case "inbox": {
-              this.isFromInbox = true;
-              this.IsinboxContext = true;
-              this.showAcceptRefuse = this.userRole == "PRACTICIAN";
-              this.hideTo = true;
-              this.isFromArchive = false;
-              this.previousURL = "/messagerie";
-              break;
-            }
-            case "inboxPraticien": {
-              this.isFromInbox = false;
-              this.showAcceptRefuse = true;
-              this.IsinboxContext = true;
-              this.hideTo = false;
-              this.isFromArchive = true;
-              break;
-            }
-            case "archive": {
-              this.isFromInbox = false;
-              this.showAcceptRefuse = false;
-              this.hideTo = false;
-              this.hidefrom = false;
-              this.isFromArchive = true;
-              break;
-            }
+    this.route.queryParams.subscribe((params) => {
+      if (params["context"]) {
+        this.context = params["context"];
+        switch (params["context"]) {
+          case "sent": {
+            this.isFromInbox = false;
+            this.showAcceptRefuse = false;
+            this.hidefrom = true;
+            this.isFromArchive = false;
+            this.sentContext = true;
+            this.previousURL = "/messagerie-envoyes";
+            break;
+          }
+          case "forwarded": {
+            this.isFromInbox = false;
+            this.showAcceptRefuse = false;
+            this.hidefrom = true;
+            this.isFromArchive = false;
+            this.sentContext = true;
+            this.previousURL = "/messagerie-transferes";
+            break;
+          }
+          case "inbox": {
+            this.isFromInbox = true;
+            this.IsinboxContext = true;
+            this.showAcceptRefuse = this.userRole == "PRACTICIAN";
+            this.hideTo = true;
+            this.isFromArchive = false;
+            this.previousURL = "/messagerie";
+            break;
+          }
+          case "inboxPraticien": {
+            this.isFromInbox = false;
+            this.showAcceptRefuse = true;
+            this.IsinboxContext = true;
+            this.hideTo = false;
+            this.isFromArchive = true;
+            break;
+          }
+          case "archive": {
+            this.isFromInbox = false;
+            this.showAcceptRefuse = false;
+            this.hideTo = false;
+            this.hidefrom = false;
+            this.isFromArchive = true;
+            break;
           }
         }
-        this.route.params
-          .subscribe((params) => {
-            if (this.message && this.message != null) {
-              this.showRefuseForTls =
-                (this.message.sender.role == "TELESECRETARYGROUP" ||
-                  this.message.sender.role == "TELESECRETARYGROUP") &&
-                this.message.requestTypeId != null &&
-                this.message.requestTitleId != null;
-              this.showAcceptRefuse =
-                this.message.sender.role == "PATIENT" &&
-                this.message.requestTypeId != null &&
-                this.message.requestTitleId != null;
-              if (this.isFromArchive && this.showAcceptRefuse == false) {
-                this.isFromInbox = true;
-              } else {
-                this.isFromInbox = this.IsinboxContext;
-              }
-            }
-            if (this.idMessage !== params["id"]) {
-              this.idMessage = params["id"];
-              this.getMessageDetailById(this.idMessage);
-            }
-          });
-        setTimeout(() => {
-          this.featureService.setIsMessaging(true);
-        });
+      }
+      this.route.params.subscribe((params) => {
+        if (this.message && this.message != null) {
+          this.showRefuseForTls =
+            (this.message.sender.role == "TELESECRETARYGROUP" ||
+              this.message.sender.role == "TELESECRETARYGROUP") &&
+            this.message.requestTypeId != null &&
+            this.message.requestTitleId != null;
+          this.showAcceptRefuse =
+            this.message.sender.role == "PATIENT" &&
+            this.message.requestTypeId != null &&
+            this.message.requestTitleId != null;
+          if (this.isFromArchive && this.showAcceptRefuse == false) {
+            this.isFromInbox = true;
+          } else {
+            this.isFromInbox = this.IsinboxContext;
+          }
+        }
+        if (this.idMessage !== params["id"]) {
+          this.idMessage = params["id"];
+          this.getMessageDetailById(this.idMessage);
+        }
       });
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
+    });
   }
   checkContect(context) {}
   getMessageDetailById(id) {
@@ -638,5 +636,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
   getPatientFile(info) {
     this.dialogService.openPatientFile("Fiche Patient", info);
+  }
+  displayContact(contactId) {
+    this.dialogService.openContactDetail("Détails Contact", contactId);
   }
 }
