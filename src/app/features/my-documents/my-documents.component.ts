@@ -21,7 +21,7 @@ import { Subject } from "rxjs";
 @Component({
   selector: "app-my-documents",
   templateUrl: "./my-documents.component.html",
-  styleUrls: ["./my-documents.component.scss"],
+  styleUrls: ["./my-documents.component.scss"]
 })
 export class MyDocumentsComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -32,7 +32,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   backButton = true;
   links = {
     isTypeFilter: true,
-    isSearch: true,
+    isSearch: true
   };
   isCheckbox: boolean = false;
   itemsList = [];
@@ -73,7 +73,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.imageSource = this.avatars.user;
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
-      destination: [""],
+      destination: [""]
     });
   }
 
@@ -96,21 +96,21 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.mydocumentsService
       .getMySendersAndeceiversDetails()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((sendersAndReceivers) => {
-        sendersAndReceivers.forEach((element) => {
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
         this.number = this.itemsList.length;
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
             this.documentService
               .getDefaultImage(item.id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
@@ -125,7 +125,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = this.avatars.user;
                 }
               );
@@ -168,15 +168,19 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
         title: detail.title,
         type:
           senderAndReceiver.role == "PRACTICIAN"
-            ? "MEDICAL"
+            ? "CONTACT-BOOK"
             : senderAndReceiver.role,
         civility: senderAndReceiver.role ? detail.civility : null,
-      },
+        fonction:
+          senderAndReceiver.role == "PRACTICIAN"
+            ? senderAndReceiver.practician.title
+            : null
+      }
     ];
     practician.object = {
       name: detail.address ? detail.address : "",
       isImportant: false,
-      isLocalisation: detail.address ? true : false,
+      isLocalisation: detail.address ? true : false
     };
     practician.time = null;
     practician.isImportant = false;
@@ -195,15 +199,15 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#documentRecu").offset().top - 100,
+        scrollTop: $("#documentRecu").offset().top - 100
       },
       1000
     );
     this.documentService.setId(item.id);
     this.router.navigate(["/mes-documents/list/" + item.id], {
       queryParams: {
-        type: this.filterDocumentsForm.value.documentType,
-      },
+        type: this.filterDocumentsForm.value.documentType
+      }
     });
   }
 
@@ -212,7 +216,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
       this.filtredItemsList = this.itemsList;
     }
     this.itemsList = this.filtredItemsList;
-    this.itemsList = this.itemsList.filter((item) =>
+    this.itemsList = this.itemsList.filter(item =>
       item.users[0].fullName.toLowerCase().includes(value)
     );
   }
@@ -229,7 +233,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
       highlight: true,
       suggestionCount: 5,
       noRecordsTemplate: "Aucune données trouvé",
-      sortOrder: "Ascending",
+      sortOrder: "Ascending"
     });
     atcObj.appendTo("#patients");
     atcObj.showSpinner();
@@ -238,27 +242,27 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsBySenderForIdAndObject(senderFor, object)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((sendersAndReceivers) => {
-        sendersAndReceivers.forEach((element) => {
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
             this.documentService
               .getDefaultImage(item.id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = "assets/imgs/user.png";
                 }
               );
@@ -270,27 +274,27 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsBySenderForId(senderFor)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((sendersAndReceivers) => {
-        sendersAndReceivers.forEach((element) => {
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
             this.documentService
               .getDefaultImage(item.id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = "assets/imgs/user.png";
                 }
               );
@@ -302,27 +306,27 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsByObject(object)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((sendersAndReceivers) => {
-        sendersAndReceivers.forEach((element) => {
+      .subscribe(sendersAndReceivers => {
+        sendersAndReceivers.forEach(element => {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
-        this.itemsList.forEach((item) => {
-          item.users.forEach((user) => {
+        this.itemsList.forEach(item => {
+          item.users.forEach(user => {
             this.documentService
               .getDefaultImage(item.id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = "assets/imgs/user.png";
                 }
               );
@@ -334,7 +338,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.documentService
       .getAllObjects()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((objects) => {
+      .subscribe(objects => {
         this.documentTypes.add("Tout");
         objects.forEach(this.documentTypes.add, this.documentTypes);
       });
@@ -343,11 +347,11 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     this.accountService
       .getCurrentAccount()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((account) => {
+      .subscribe(account => {
         if (account && account.patient) {
           this.account = account.patient;
           this.linkedPatients = this.account.linkedPatients;
-          this.linkedPatients.forEach((patient) => {
+          this.linkedPatients.forEach(patient => {
             this.destinations.add(patient);
           });
         }
