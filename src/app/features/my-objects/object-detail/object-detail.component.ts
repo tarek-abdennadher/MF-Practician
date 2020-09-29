@@ -47,7 +47,7 @@ export class ObjectDetailComponent
   }
   ngOnInit(): void {
     this.getAllDocumentModel();
-    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
+    this.route.params.subscribe((params) => {
       this.selectedCategoryId = params["id"];
       this.initInfoForm();
     });

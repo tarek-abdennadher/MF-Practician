@@ -99,7 +99,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = false;
     this.route.queryParams
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((params) => {
         if (params["context"]) {
           this.context = params["context"];
@@ -150,7 +149,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           }
         }
         this.route.params
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((params) => {
             if (this.message && this.message != null) {
               this.showRefuseForTls =
@@ -486,7 +484,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let ids = [];

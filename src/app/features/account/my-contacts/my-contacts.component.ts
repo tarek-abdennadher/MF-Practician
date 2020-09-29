@@ -106,7 +106,6 @@ export class MyContactsComponent implements OnInit, OnDestroy {
         this.contactBookService.messages.delete_contact
       )
       .afterClosed()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.contactBookService

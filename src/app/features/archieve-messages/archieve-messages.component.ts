@@ -232,7 +232,6 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   searchArchive() {
     this.featureService
       .getFilteredArchiveSearch()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res == null) {
           this.filtredItemList = [];

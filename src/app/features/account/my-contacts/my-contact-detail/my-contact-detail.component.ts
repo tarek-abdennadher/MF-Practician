@@ -53,7 +53,7 @@ export class MyContactDetailComponent implements OnInit, OnDestroy {
     this.messages = this.service.messages;
     this.initInfoForm();
     this.practicianId = this.featureService.getUserId();
-    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
+    this.route.params.subscribe((params) => {
       if (params["id"] != "add") {
         this.action = "edit";
         this.contactId = params["id"];
