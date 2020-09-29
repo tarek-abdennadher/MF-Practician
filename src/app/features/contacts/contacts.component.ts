@@ -12,12 +12,14 @@ import { FeaturesService } from "../features.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { DialogService } from "../services/dialog.service";
+
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
   styleUrls: ["./contacts.component.scss"],
 })
 export class ContactsComponent implements OnInit {
+  ALL_TYPES = "Tout";
   specialities: Array<Speciality>;
   users: Array<any> = new Array<any>();
   itemsList: Array<any> = new Array<any>();
@@ -95,7 +97,7 @@ export class ContactsComponent implements OnInit {
                 img: this.avatars.user,
                 title: elm.speciality ? elm.speciality : elm.title,
                 type: "MEDICAL",
-                speciality: elm.speciality ? elm.speciality : "Tout",
+                speciality: elm.speciality ? elm.speciality : ALL_TYPES,
               },
             ],
             isArchieve: false,
@@ -107,7 +109,8 @@ export class ContactsComponent implements OnInit {
             photoId: elm.photoId,
           };
         });
-        this.types = this.types.filter(s => -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s));
+        this.types = this.itemsList.map(e => e.users[0].speciality);
+        this.types.unshift(this.ALL_TYPES);
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {
@@ -152,7 +155,7 @@ export class ContactsComponent implements OnInit {
                 img: this.avatars.user,
                 title: elm.speciality ? elm.speciality : elm.title,
                 type: "MEDICAL",
-                speciality: elm.speciality ? elm.speciality : "Tout",
+                speciality: elm.speciality ? elm.speciality : this.ALL_TYPES,
               },
             ],
             isArchieve: true,
@@ -165,7 +168,8 @@ export class ContactsComponent implements OnInit {
             photoId: elm.photoId,
           };
         });
-        this.types = this.types.filter(s => -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s));
+        this.types = this.itemsList.map(e => e.users[0].speciality);
+        this.types.unshift(this.ALL_TYPES);
         this.number = this.itemsList.length;
         this.filtredItemsList = this.itemsList;
         this.itemsList.forEach((item) => {
@@ -196,7 +200,7 @@ export class ContactsComponent implements OnInit {
   }
   listFilter(value: string) {
     this.filtredItemsList =
-      value != "Tout" ? this.performFilter(value) : this.itemsList;
+      value != this.ALL_TYPES ? this.performFilter(value) : this.itemsList;
   }
 
   performFilter(filterBy: string) {
@@ -279,7 +283,7 @@ export class ContactsComponent implements OnInit {
       (specialitiesList) => {
         this.specialities = specialitiesList;
         this.types = this.specialities.map((s) => s.name);
-        this.types.unshift("Tout");
+        this.types.unshift(this.ALL_TYPES);
       },
       (error) => {
         console.log("en attendant un model de popup à afficher");
