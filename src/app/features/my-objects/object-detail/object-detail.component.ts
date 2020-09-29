@@ -1,17 +1,21 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { FeaturesService } from "@app/features/features.service";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 declare var $: any;
 @Component({
   selector: "app-object-detail",
   templateUrl: "./object-detail.component.html",
   styleUrls: ["./object-detail.component.scss"],
 })
-export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
+export class ObjectDetailComponent
+  implements OnInit, ComponentCanDeactivate, OnDestroy {
+  private _destroyed$ = new Subject();
   public messages: any;
   itemsList = [];
   showAlert = false;
@@ -32,16 +36,24 @@ export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   canDeactivate(): boolean {
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
     this.getAllDocumentModel();
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
       this.selectedCategoryId = params["id"];
       this.initInfoForm();
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   close() {
@@ -63,6 +75,7 @@ export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
     if (this.selectedCategoryId != "add") {
       this.accountService
         .getPracticianObjectById(this.selectedCategoryId)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((object) => {
           this.infoForm.patchValue({
             id: object.id,
@@ -83,9 +96,12 @@ export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
   }
 
   getAllDocumentModel() {
-    this.accountService.getAllDocumentModel().subscribe((res) => {
-      this.documentModelList = res;
-    });
+    this.accountService
+      .getAllDocumentModel()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {
+        this.documentModelList = res;
+      });
   }
 
   setRequiredValidatorDocument() {
@@ -112,22 +128,32 @@ export class ObjectDetailComponent implements OnInit, ComponentCanDeactivate {
     let model = this.infoForm.value;
     model.accountId = this.featureService.getUserId();
     if (this.selectedCategoryId == "add") {
-      this.accountService.createPracticianObject(model).subscribe((res) => {
-        this.showAlert = true;
-        $(".alert").alert();
-        this.submitted = false;
-        this.router.navigate(["mes-objets"], { queryParams: { loading: true }});
-      });
+      this.accountService
+        .createPracticianObject(model)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((res) => {
+          this.showAlert = true;
+          $(".alert").alert();
+          this.submitted = false;
+          this.router.navigate(["mes-objets"], {
+            queryParams: { loading: true },
+          });
+        });
     } else {
-      this.accountService.updatePracticianObject(model).subscribe((res) => {
-        this.showAlert = true;
-        $(".alert").alert();
-        this.submitted = false;
-        this.router.navigate(["mes-objets"],  {queryParams: { loading: true }});
-      });
+      this.accountService
+        .updatePracticianObject(model)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((res) => {
+          this.showAlert = true;
+          $(".alert").alert();
+          this.submitted = false;
+          this.router.navigate(["mes-objets"], {
+            queryParams: { loading: true },
+          });
+        });
     }
   }
   cancel() {
-    this.router.navigate(["mes-objets"] ,{ queryParams: { loading: false }});
+    this.router.navigate(["mes-objets"], { queryParams: { loading: false } });
   }
 }

@@ -1,20 +1,21 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { emailValidator } from "@app/core/Validators/email.validator";
 import { ContactBookService } from "@app/features/services/contact-book.service";
-import { AccountService } from "@app/features/services/account.service";
 import { FeaturesService } from "@app/features/features.service";
 import { NotifierService } from "angular-notifier";
+import { takeUntil } from "rxjs/operators";
 declare var $: any;
 @Component({
   selector: "app-my-contact-detail",
   templateUrl: "./my-contact-detail.component.html",
-  styleUrls: ["./my-contact-detail.component.scss"]
+  styleUrls: ["./my-contact-detail.component.scss"],
 })
-export class MyContactDetailComponent implements OnInit {
+export class MyContactDetailComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private _destroyed$ = new Subject();
   action: string = "add";
   practicianId: number;
   contactId: number;
@@ -43,11 +44,16 @@ export class MyContactDetailComponent implements OnInit {
     this.isLabelShow = false;
   }
 
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.messages = this.service.messages;
     this.initInfoForm();
     this.practicianId = this.featureService.getUserId();
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntil(this._destroyed$)).subscribe((params) => {
       if (params["id"] != "add") {
         this.action = "edit";
         this.contactId = params["id"];
@@ -56,24 +62,29 @@ export class MyContactDetailComponent implements OnInit {
         this.action = "add";
       }
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   getContactById(id) {
-    this.service.getContactBookBy(id).subscribe(contact => {
-      this.otherPhones.next(contact.phones);
-      this.infoForm.patchValue({
-        id: contact.id ? contact.id : null,
-        email: contact.email ? contact.email : "",
-        phone: contact.phoneNumber ? contact.phoneNumber : "+33",
-        last_name: contact.lastName ? contact.lastName : "",
-        first_name: contact.firstName ? contact.firstName : "",
-        fonction: contact.fonction ? contact.fonction : "",
-        otherPhones: contact.phones ? contact.phones : []
+    this.service
+      .getContactBookBy(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((contact) => {
+        this.otherPhones.next(contact.phones);
+        this.infoForm.patchValue({
+          id: contact.id ? contact.id : null,
+          email: contact.email ? contact.email : "",
+          phone: contact.phoneNumber ? contact.phoneNumber : "+33",
+          last_name: contact.lastName ? contact.lastName : "",
+          first_name: contact.firstName ? contact.firstName : "",
+          fonction: contact.fonction ? contact.fonction : "",
+          otherPhones: contact.phones ? contact.phones : [],
+        });
+        if (contact?.phones && contact.phones.length > 0) {
+          this.isLabelShow = true;
+        }
       });
-      if (contact?.phones && contact.phones.length > 0) {
-        this.isLabelShow = true;
-      }
-    });
   }
   initInfoForm() {
     this.infoForm = new FormGroup({
@@ -83,7 +94,7 @@ export class MyContactDetailComponent implements OnInit {
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, emailValidator]),
       fonction: new FormControl(null, Validators.required),
-      phone: new FormControl(null, Validators.required)
+      phone: new FormControl(null, Validators.required),
     });
   }
   get ctr() {
@@ -110,18 +121,19 @@ export class MyContactDetailComponent implements OnInit {
       phones: this.phones,
       firstName: this.infoForm.value.first_name,
       lastName: this.infoForm.value.last_name,
-      fonction: this.infoForm.value.fonction
+      fonction: this.infoForm.value.fonction,
     };
     if (this.action == "add") {
       this.service
         .addContactBookToPractician(this.practicianId, model)
-        .subscribe(result => {
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((result) => {
           if (result) {
             this.submitted = false;
             this.notifier.show({
               message: this.service.messages.add_success,
               type: "info",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             this.router.navigate(["/compte/mes-contacts"]);
           } else {
@@ -129,31 +141,34 @@ export class MyContactDetailComponent implements OnInit {
             this.notifier.show({
               message: this.notifMessage,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             return;
           }
         });
     } else {
-      this.service.updateContactBook(model).subscribe(result => {
-        if (result) {
-          this.submitted = false;
-          this.notifier.show({
-            message: this.service.messages.edit_info_success,
-            type: "info",
-            template: this.customNotificationTmpl
-          });
-          this.router.navigate(["/compte/mes-contacts"]);
-        } else {
-          this.notifMessage = this.service.messages.failed_update;
-          this.notifier.show({
-            message: this.notifMessage,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
-          return;
-        }
-      });
+      this.service
+        .updateContactBook(model)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((result) => {
+          if (result) {
+            this.submitted = false;
+            this.notifier.show({
+              message: this.service.messages.edit_info_success,
+              type: "info",
+              template: this.customNotificationTmpl,
+            });
+            this.router.navigate(["/compte/mes-contacts"]);
+          } else {
+            this.notifMessage = this.service.messages.failed_update;
+            this.notifier.show({
+              message: this.notifMessage,
+              type: "error",
+              template: this.customNotificationTmpl,
+            });
+            return;
+          }
+        });
     }
   }
   getPhoneList(event) {

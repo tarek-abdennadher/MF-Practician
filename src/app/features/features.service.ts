@@ -82,7 +82,9 @@ export class FeaturesService {
   getIsMessaging() {
     return this.isMessaging.asObservable();
   }
-
+  getIsMessagingValue() {
+    return this.isMessaging.getValue();
+  }
   getNumberOfInboxValue() {
     return this._numberOfInbox.getValue();
   }

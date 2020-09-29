@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input } from "@angular/core";
+import { Component, ViewChild, OnInit, Input, OnDestroy } from "@angular/core";
 import { ChartComponent, ApexLegend } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
@@ -8,6 +8,7 @@ import {
 import { Subject } from "rxjs";
 import { AccountService } from "@app/features/services/account.service";
 import { FeaturesService } from "@app/features/features.service";
+import { takeUntil } from "rxjs/operators";
 const { detect } = require("detect-browser");
 const browser = detect();
 
@@ -25,7 +26,8 @@ export type ChartOptions = {
   templateUrl: "./apx-pie.component.html",
   styleUrls: ["./apx-pie.component.scss"],
 })
-export class ApxPieComponent implements OnInit {
+export class ApxPieComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   @ViewChild("chart", { static: false }) chart: ChartComponent;
   @Input() stats: Subject<any>;
   @Input() position: string;
@@ -41,6 +43,12 @@ export class ApxPieComponent implements OnInit {
   ) {
     this.messages = this.accountService.stats;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   ngOnInit() {
     this.loading = true;
     this.chartOptions = {
@@ -68,7 +76,7 @@ export class ApxPieComponent implements OnInit {
         },
       },
     };
-    this.stats.subscribe((myMap) => {
+    this.stats.pipe(takeUntil(this._destroyed$)).subscribe((myMap) => {
       this.loading = true;
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
@@ -318,6 +326,8 @@ export class ApxPieComponent implements OnInit {
       });
       this.loading = false;
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 }

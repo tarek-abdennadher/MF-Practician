@@ -1,18 +1,20 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AccountService } from "../services/account.service";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { CategoryService } from "../services/category.service";
 import { FeaturesService } from "../features.service";
 import { GlobalService } from "@app/core/services/global.service";
-import { filter } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
 import { DialogService } from "../services/dialog.service";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "app-my-objects",
   templateUrl: "./my-objects.component.html",
-  styleUrls: ["./my-objects.component.scss"]
+  styleUrls: ["./my-objects.component.scss"],
 })
-export class MyObjectsComponent implements OnInit {
+export class MyObjectsComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   public messages: any;
   itemsList = [];
   imageSource: string;
@@ -41,33 +43,46 @@ export class MyObjectsComponent implements OnInit {
     this.imageSource = this.avatars.user;
     this.selectedObject = this.messages.select_object;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.getMyObject();
     this.getSearchList();
     // update categories after detail view
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((event: NavigationEnd) => {
-        console.log(event.url)
+        console.log(event.url);
         if (event.url === "/mes-objets?loading=true") {
           let currentRoute = this.route;
-          while (currentRoute.firstChild) currentRoute = currentRoute.firstChild;
+          while (currentRoute.firstChild)
+            currentRoute = currentRoute.firstChild;
           this.getMyObject();
         }
       });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   getSearchList() {
-    this.accountService.getObjectSearchList().subscribe(list => {
-      this.searchList = list;
-    });
+    this.accountService
+      .getObjectSearchList()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((list) => {
+        this.searchList = list;
+      });
   }
 
   cardClicked(object) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top - 100
+        scrollTop: $("#addObject").offset().top - 100,
       },
       1000
     );
@@ -81,13 +96,15 @@ export class MyObjectsComponent implements OnInit {
         "Confirmation de supression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {
         if (res) {
           this.accountService
             .deletePracticianObject(object.id)
-            .subscribe(result => {
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((result) => {
               this.itemsList = this.itemsList.filter(
-                cat => cat.id != object.id
+                (cat) => cat.id != object.id
               );
               this.getSearchList();
             });
@@ -98,7 +115,7 @@ export class MyObjectsComponent implements OnInit {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top - 100
+        scrollTop: $("#addObject").offset().top - 100,
       },
       1000
     );
@@ -107,34 +124,40 @@ export class MyObjectsComponent implements OnInit {
 
   onChange(item) {
     const id = item.target.value;
-    this.accountService.clonePracticianObject(id).subscribe(requestClone => {
-      this.itemsList.push(this.parseObject(requestClone));
-      this.searchList = this.searchList.filter(elm => elm.id != id);
-    });
+    this.accountService
+      .clonePracticianObject(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((requestClone) => {
+        this.itemsList.push(this.parseObject(requestClone));
+        this.searchList = this.searchList.filter((elm) => elm.id != id);
+      });
   }
 
   getMyObject() {
     this.itemsList = [];
-    this.accountService.getPracticianObjectList().subscribe(categories => {
-      categories.forEach(res => {
-        this.itemsList.push({
-          id: res.id,
-          isSeen: true,
-          users: [
-            {
-              id: res.id,
-              fullName: res.object
-            }
-          ],
-          isArchieve: true,
-          isImportant: false,
-          hasFiles: false,
-          isViewDetail: false,
-          isMarkAsSeen: false,
-          isChecked: false
+    this.accountService
+      .getPracticianObjectList()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((categories) => {
+        categories.forEach((res) => {
+          this.itemsList.push({
+            id: res.id,
+            isSeen: true,
+            users: [
+              {
+                id: res.id,
+                fullName: res.object,
+              },
+            ],
+            isArchieve: true,
+            isImportant: false,
+            hasFiles: false,
+            isViewDetail: false,
+            isMarkAsSeen: false,
+            isChecked: false,
+          });
         });
       });
-    });
   }
 
   parseObject(res) {
@@ -144,15 +167,15 @@ export class MyObjectsComponent implements OnInit {
       users: [
         {
           id: res.id,
-          fullName: res.object
-        }
+          fullName: res.object,
+        },
       ],
       isArchieve: true,
       isImportant: false,
       hasFiles: false,
       isViewDetail: false,
       isMarkAsSeen: false,
-      isChecked: false
+      isChecked: false,
     };
     return parsed;
   }

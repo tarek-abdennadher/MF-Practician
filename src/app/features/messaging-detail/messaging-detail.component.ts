@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -19,7 +19,7 @@ import { FeaturesComponent } from "../features.component";
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"],
 })
-export class MessagingDetailComponent implements OnInit {
+export class MessagingDetailComponent implements OnInit, OnDestroy {
   message: any;
   loading: boolean = false;
   private _destroyed$ = new Subject();
@@ -98,79 +98,85 @@ export class MessagingDetailComponent implements OnInit {
   }
   ngOnInit(): void {
     this.loading = false;
-    this.route.queryParams.subscribe((params) => {
-      if (params["context"]) {
-        this.context = params["context"];
-        switch (params["context"]) {
-          case "sent": {
-            this.isFromInbox = false;
-            this.showAcceptRefuse = false;
-            this.hidefrom = true;
-            this.isFromArchive = false;
-            this.sentContext = true;
-            this.previousURL = "/messagerie-envoyes";
-            break;
-          }
-          case "forwarded": {
-            this.isFromInbox = false;
-            this.showAcceptRefuse = false;
-            this.hidefrom = true;
-            this.isFromArchive = false;
-            this.sentContext = true;
-            this.previousURL = "/messagerie-transferes";
-            break;
-          }
-          case "inbox": {
-            this.isFromInbox = true;
-            this.IsinboxContext = true;
-            this.showAcceptRefuse = this.userRole == "PRACTICIAN";
-            this.hideTo = true;
-            this.isFromArchive = false;
-            this.previousURL = "/messagerie";
-            break;
-          }
-          case "inboxPraticien": {
-            this.isFromInbox = false;
-            this.showAcceptRefuse = true;
-            this.IsinboxContext = true;
-            this.hideTo = false;
-            this.isFromArchive = true;
-            break;
-          }
-          case "archive": {
-            this.isFromInbox = false;
-            this.showAcceptRefuse = false;
-            this.hideTo = false;
-            this.hidefrom = false;
-            this.isFromArchive = true;
-            break;
-          }
-        }
-      }
-      this.route.params.subscribe((params) => {
-        if (this.message && this.message != null) {
-          this.showRefuseForTls =
-            (this.message.sender.role == "TELESECRETARYGROUP" ||
-              this.message.sender.role == "TELESECRETARYGROUP") &&
-            this.message.requestTypeId != null &&
-            this.message.requestTitleId != null;
-          this.showAcceptRefuse =
-            this.message.sender.role == "PATIENT" &&
-            this.message.requestTypeId != null &&
-            this.message.requestTitleId != null;
-          if (this.isFromArchive && this.showAcceptRefuse == false) {
-            this.isFromInbox = true;
-          } else {
-            this.isFromInbox = this.IsinboxContext;
+    this.route.queryParams
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((params) => {
+        if (params["context"]) {
+          this.context = params["context"];
+          switch (params["context"]) {
+            case "sent": {
+              this.isFromInbox = false;
+              this.showAcceptRefuse = false;
+              this.hidefrom = true;
+              this.isFromArchive = false;
+              this.sentContext = true;
+              this.previousURL = "/messagerie-envoyes";
+              break;
+            }
+            case "forwarded": {
+              this.isFromInbox = false;
+              this.showAcceptRefuse = false;
+              this.hidefrom = true;
+              this.isFromArchive = false;
+              this.sentContext = true;
+              this.previousURL = "/messagerie-transferes";
+              break;
+            }
+            case "inbox": {
+              this.isFromInbox = true;
+              this.IsinboxContext = true;
+              this.showAcceptRefuse = this.userRole == "PRACTICIAN";
+              this.hideTo = true;
+              this.isFromArchive = false;
+              this.previousURL = "/messagerie";
+              break;
+            }
+            case "inboxPraticien": {
+              this.isFromInbox = false;
+              this.showAcceptRefuse = true;
+              this.IsinboxContext = true;
+              this.hideTo = false;
+              this.isFromArchive = true;
+              break;
+            }
+            case "archive": {
+              this.isFromInbox = false;
+              this.showAcceptRefuse = false;
+              this.hideTo = false;
+              this.hidefrom = false;
+              this.isFromArchive = true;
+              break;
+            }
           }
         }
-        if (this.idMessage !== params["id"]) {
-          this.idMessage = params["id"];
-          this.getMessageDetailById(this.idMessage);
-        }
+        this.route.params
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((params) => {
+            if (this.message && this.message != null) {
+              this.showRefuseForTls =
+                (this.message.sender.role == "TELESECRETARYGROUP" ||
+                  this.message.sender.role == "TELESECRETARYGROUP") &&
+                this.message.requestTypeId != null &&
+                this.message.requestTitleId != null;
+              this.showAcceptRefuse =
+                this.message.sender.role == "PATIENT" &&
+                this.message.requestTypeId != null &&
+                this.message.requestTitleId != null;
+              if (this.isFromArchive && this.showAcceptRefuse == false) {
+                this.isFromInbox = true;
+              } else {
+                this.isFromInbox = this.IsinboxContext;
+              }
+            }
+            if (this.idMessage !== params["id"]) {
+              this.idMessage = params["id"];
+              this.getMessageDetailById(this.idMessage);
+            }
+          });
+        setTimeout(() => {
+          this.featureService.setIsMessaging(true);
+        });
       });
-      this.featureService.setIsMessaging(true);
-    });
   }
   checkContect(context) {}
   getMessageDetailById(id) {
@@ -201,39 +207,46 @@ export class MessagingDetailComponent implements OnInit {
             this.isFromInbox = false;
           }
           this.messagingDetail.toReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.messagingDetail.ccReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.documentService
             .getDefaultImage(this.messagingDetail.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
               (response) => {
                 let myReader: FileReader = new FileReader();
@@ -253,6 +266,7 @@ export class MessagingDetailComponent implements OnInit {
     } else {
       this.messagingDetailService
         .getMessagingDetailById(id)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
           this.message = message;
           this.showRefuseForTls =
@@ -286,39 +300,46 @@ export class MessagingDetailComponent implements OnInit {
           }
           this.setParentImg(this.messagingDetail.parent);
           this.messagingDetail.toReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.messagingDetail.ccReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.documentService
             .getDefaultImage(this.messagingDetail.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
               (response) => {
                 let myReader: FileReader = new FileReader();
@@ -339,20 +360,23 @@ export class MessagingDetailComponent implements OnInit {
   }
   setParentImg(parent) {
     if (parent != null) {
-      this.documentService.getDefaultImage(parent.sender.senderId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            parent.sender.img = this.sanitizer.bypassSecurityTrustUrl(
-              myReader.result as string
-            );
-          };
-          let ok = myReader.readAsDataURL(response);
-        },
-        (error) => {
-          parent.sender.img = this.avatars.user;
-        }
-      );
+      this.documentService
+        .getDefaultImage(parent.sender.senderId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              parent.sender.img = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
+            };
+            let ok = myReader.readAsDataURL(response);
+          },
+          (error) => {
+            parent.sender.img = this.avatars.user;
+          }
+        );
       if (parent.hasFiles) {
         if (parent.nodesId) {
           parent.attachements = [];
@@ -372,6 +396,7 @@ export class MessagingDetailComponent implements OnInit {
   hideShowReplyBtn(message) {
     this.messagingDetailService
       .patientsProhibitedByCurrentPractician()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((resp) => {
         this.patientsId = resp;
         this.collectedIds = message.toReceivers.map((r) => r.receiverId);
@@ -461,27 +486,31 @@ export class MessagingDetailComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           let ids = [];
           ids.push(this.idMessage);
-          this.messagingDetailService.markMessageAsArchived(ids).subscribe(
-            (resp) => {
-              this.router.navigate([this.previousURL]);
-              this.featureComp.setNotif(
-                this.globalService.toastrMessages.archived_message_success
-              );
-              if (this.previousURL == "/messagerie-transferes") {
-                this.featureService.numberOfForwarded =
-                  this.featureService.numberOfForwarded - 1;
+          this.messagingDetailService
+            .markMessageAsArchived(ids)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe(
+              (resp) => {
+                this.router.navigate([this.previousURL]);
+                this.featureComp.setNotif(
+                  this.globalService.toastrMessages.archived_message_success
+                );
+                if (this.previousURL == "/messagerie-transferes") {
+                  this.featureService.numberOfForwarded =
+                    this.featureService.numberOfForwarded - 1;
+                }
+              },
+              (error) => {
+                this.featureComp.setNotif(
+                  this.globalService.toastrMessages.archived_message_error
+                );
               }
-            },
-            (error) => {
-              this.featureComp.setNotif(
-                this.globalService.toastrMessages.archived_message_error
-              );
-            }
-          );
+            );
         }
       });
   }
@@ -495,32 +524,36 @@ export class MessagingDetailComponent implements OnInit {
       var nodeDetails;
       this.documentService
         .getNodeDetailsFromAlfresco(nodeId)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((node) => {
           nodeDetails = node;
         });
 
-      this.documentService.downloadFile(nodeId).subscribe((response) => {
-        const blob = new Blob([response.body]);
-        const filename = nodeDetails.entry.name;
-        const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
-        const extension = filename.substring(dotIndex + 1, filename.length);
-        let resultname: string;
-        if (filenameDisplay !== "") {
-          resultname = filenameDisplay.includes(extension)
-            ? filenameDisplay
-            : filenameDisplay + "." + extension;
-        } else {
-          resultname = filename;
-        }
-        FileSaver.saveAs(blob, resultname);
-      });
+      this.documentService
+        .downloadFile(nodeId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((response) => {
+          const blob = new Blob([response.body]);
+          const filename = nodeDetails.entry.name;
+          const filenameDisplay = filename;
+          const dotIndex = filename.lastIndexOf(".");
+          const extension = filename.substring(dotIndex + 1, filename.length);
+          let resultname: string;
+          if (filenameDisplay !== "") {
+            resultname = filenameDisplay.includes(extension)
+              ? filenameDisplay
+              : filenameDisplay + "." + extension;
+          } else {
+            resultname = filename;
+          }
+          FileSaver.saveAs(blob, resultname);
+        });
     });
   }
-  // destory any subscribe to avoid memory leak
+
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   getAttachements(nodesId: string[]) {
@@ -550,6 +583,7 @@ export class MessagingDetailComponent implements OnInit {
           idAccount,
           this.featureService.getUserId()
         )
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {});
       this.getPatientFile(info);
     } else {
@@ -568,6 +602,7 @@ export class MessagingDetailComponent implements OnInit {
 
       this.patientService
         .getAccountIdByPatientId(idAccount)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {
           let info = {
             patientId: res ? res : idAccount,

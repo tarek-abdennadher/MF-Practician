@@ -181,7 +181,7 @@ $sapphire: #1a56a7;
 @media (min-width: 580px) {
   .fab-container {
     position: fixed;
-    bottom: 160px;
+    bottom: 75px;
     right: 15px;
     display: flex;
     flex-direction: column-reverse;
@@ -202,6 +202,29 @@ $sapphire: #1a56a7;
 }
 
 @media (max-width: 579px) {
+  .fab-container {
+    position: fixed;
+    bottom: 75px;
+    right: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    z-index: 999999;
+    width: 98%;
+    > div {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      margin-bottom: 5px;
+
+      button {
+        margin-bottom: 557px;
+      }
+    }
+  }
+}
+
+@media (max-width: 399px) {
   .fab-container {
     position: fixed;
     bottom: 0px;

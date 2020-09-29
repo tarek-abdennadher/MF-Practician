@@ -1,18 +1,18 @@
-import { Component, OnInit, Input, HostListener } from "@angular/core";
-import { Subject } from "rxjs";
 import {
-  FormGroup,
-  Validators,
-  FormControl,
-  FormBuilder,
-} from "@angular/forms";
+  Component,
+  OnInit,
+  Input,
+  HostListener,
+  OnDestroy,
+} from "@angular/core";
+import { Subject } from "rxjs";
+import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 import { GlobalService } from "@app/core/services/global.service";
 import { ViewChild } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { NotifierService } from "angular-notifier";
-import { MatDialog } from "@angular/material/dialog";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { takeUntil, tap } from "rxjs/operators";
 import { forkJoin } from "rxjs";
@@ -40,7 +40,7 @@ declare var $: any;
   templateUrl: "./new-message.component.html",
   styleUrls: ["./new-message.component.scss"],
 })
-export class NewMessageComponent implements OnInit {
+export class NewMessageComponent implements OnInit, OnDestroy {
   @Input() id: number;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
@@ -249,20 +249,25 @@ export class NewMessageComponent implements OnInit {
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
-      this.featureService.getSecretaryPracticians().subscribe((value) => {
-        value.forEach((item) => {
-          item.type = "CONTACT_PRO";
+      this.featureService
+        .getSecretaryPracticians()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((value) => {
+          value.forEach((item) => {
+            item.type = "CONTACT_PRO";
 
-          this.forFieldList.push(item);
+            this.forFieldList.push(item);
+          });
+          this.forList.next(this.forFieldList);
         });
-        this.forList.next(this.forFieldList);
-      });
     }
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {});
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
 
     $(document).ready(function () {
       $(window).keydown(function (event) {
@@ -359,7 +364,7 @@ export class NewMessageComponent implements OnInit {
   ccListSubscription() {
     let selectedElements;
     if (this.ccList) {
-      this.ccList.subscribe((elm) => {
+      this.ccList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
         this.ccParsedList = elm;
         selectedElements = elm.filter(
           (e) => e.isSelected && e.isSelected == true
@@ -372,7 +377,7 @@ export class NewMessageComponent implements OnInit {
   }
   private toListSubscription() {
     let selectedElements;
-    this.toList.subscribe((elm) => {
+    this.toList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
       this.toListParsed = elm;
       this.toFilteredList = elm;
       if (!this.isInstruction) {
@@ -397,7 +402,7 @@ export class NewMessageComponent implements OnInit {
 
   private forListSubscription() {
     let selectedElements;
-    this.forList.subscribe((elm) => {
+    this.forList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
       this.forListParsed = elm;
       this.forFilteredList = elm;
 
@@ -422,14 +427,14 @@ export class NewMessageComponent implements OnInit {
     });
   }
   private concernListSubscription() {
-    this.concernList.subscribe((elm) => {
+    this.concernList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
       this.concernFilteredList = elm;
     });
   }
 
   selectedObjectSubscription() {
     let selectedElements;
-    this.selectedObject.subscribe((res) => {
+    this.selectedObject.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
       if (res) {
         if (res.update) {
           this.sendMessageForm.patchValue({
@@ -497,7 +502,7 @@ export class NewMessageComponent implements OnInit {
 
   public removeAttachment() {
     this.sendMessageForm.patchValue({
-      file: undefined,
+      file: "",
     });
   }
 
@@ -582,13 +587,13 @@ export class NewMessageComponent implements OnInit {
 
   search(query: string) {
     let result = this.select(query);
-    this.toList.subscribe((elm) => {
+    this.toList.pipe(takeUntil(this._destroyed$)).subscribe((elm) => {
       elm = result;
     });
   }
   select(query: string): string[] {
     let result: string[] = [];
-    this.toList.subscribe((areas) => {
+    this.toList.pipe(takeUntil(this._destroyed$)).subscribe((areas) => {
       for (let a of areas) {
         if (a.toLowerCase().indexOf(query) > -1) {
           result.push(a);
@@ -930,14 +935,17 @@ export class NewMessageComponent implements OnInit {
 
   sendMessage(message) {
     if (message.type[0].id == SendType.SEND_POSTAL) {
-      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
-        this.sendPostal = result;
-        if (this.sendPostal) {
-          this.sendMessage2(message);
-        } else {
-          $("#firstModal").modal("toggle");
-        }
-      });
+      this.featureService
+        .checkIfSendPostalEnabled()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((result) => {
+          this.sendPostal = result;
+          if (this.sendPostal) {
+            this.sendMessage2(message);
+          } else {
+            $("#firstModal").modal("toggle");
+          }
+        });
     } else {
       this.sendMessage2(message);
     }
@@ -1083,10 +1091,11 @@ export class NewMessageComponent implements OnInit {
   goToBack() {
     this._location.back();
   }
-  // destory any subscribe to avoid memory leak
+
+  // destory any pipe(takeUntil(this._destroyed$)).pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   getTLSGroupByPracticianId() {
@@ -1116,11 +1125,14 @@ export class NewMessageComponent implements OnInit {
       });
   }
   getInstructionObjectListByTLSGroupId(id: any) {
-    this.objectsService.getAllByTLS(id).subscribe((objects) => {
-      this.instructionObjectsList = objects.map((e) => {
-        return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+    this.objectsService
+      .getAllByTLS(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((objects) => {
+        this.instructionObjectsList = objects.map((e) => {
+          return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+        });
       });
-    });
   }
 
   typeSelection(item) {
@@ -1267,11 +1279,14 @@ export class NewMessageComponent implements OnInit {
   }
   activateSenPostalOption() {
     if (this.addOptionConfirmed) {
-      this.featureService.activateSendPostal().subscribe((res) => {
-        this.sendPostal = true;
-        $("#confirmModal").modal("hide");
-        $("#successModal").modal("toggle");
-      });
+      this.featureService
+        .activateSendPostal()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((res) => {
+          this.sendPostal = true;
+          $("#confirmModal").modal("hide");
+          $("#successModal").modal("toggle");
+        });
     }
   }
   checkboxChange(event) {

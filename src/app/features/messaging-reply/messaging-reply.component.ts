@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, AfterViewChecked } from "@angular/core";
-import { ActivatedRoute, Router, Params } from "@angular/router";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { MessageService } from "../services/message.service";
 import { FeaturesService } from "../features.service";
@@ -10,7 +10,6 @@ import { Location } from "@angular/common";
 import { takeUntil } from "rxjs/operators";
 import { Subject, BehaviorSubject } from "rxjs";
 import { RefuseTypeService } from "../services/refuse-type.service";
-import { LocalStorageService } from "ngx-webstorage";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DomSanitizer } from "@angular/platform-browser";
@@ -23,7 +22,7 @@ import { FeaturesComponent } from "../features.component";
   templateUrl: "./messaging-reply.component.html",
   styleUrls: ["./messaging-reply.component.scss"],
 })
-export class MessagingReplyComponent implements OnInit {
+export class MessagingReplyComponent implements OnInit, OnDestroy {
   loadingReply: boolean = true;
   isMyMessage = false;
   private _destroyed$ = new Subject();
@@ -69,7 +68,6 @@ export class MessagingReplyComponent implements OnInit {
     private router: Router,
     private globalService: GlobalService,
     private refuseTypeService: RefuseTypeService,
-    private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private spinner: NgxSpinnerService,
     private sanitizer: DomSanitizer,
@@ -80,27 +78,36 @@ export class MessagingReplyComponent implements OnInit {
     this.imageSource = this.avatars.user;
   }
   realTime() {
-    this.messagingDetailService.getIdObs().subscribe((resp) => {
-      this.route.queryParams.subscribe((params) => {
-        this.forwardedResponse = false;
-        this.acceptResponse = false;
-        this.refuseResponse = false;
-        if (params["status"] && params["status"] == "refus") {
-          this.refuseResponse = true;
-        } else if (params["status"] && params["status"] == "accept") {
-          this.acceptResponse = true;
-        } else if (params["context"] && params["context"] == "forward") {
-          this.forwardedResponse = true;
-          this.getForwardToList();
-        }
+    this.messagingDetailService
+      .getIdObs()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
+        this.route.queryParams
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((params) => {
+            this.forwardedResponse = false;
+            this.acceptResponse = false;
+            this.refuseResponse = false;
+            if (params["status"] && params["status"] == "refus") {
+              this.refuseResponse = true;
+            } else if (params["status"] && params["status"] == "accept") {
+              this.acceptResponse = true;
+            } else if (params["context"] && params["context"] == "forward") {
+              this.forwardedResponse = true;
+              this.getForwardToList();
+            }
+          });
+        this.route.params
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((params) => {
+            this.idMessage = params["id"];
+            this.messagingDetail = this.route.snapshot.data.messagingdetail;
+            this.getMessageDetailById(this.idMessage);
+          });
+        setTimeout(() => {
+          this.featureService.setIsMessaging(true);
+        });
       });
-      this.route.params.subscribe((params) => {
-        this.idMessage = params["id"];
-        this.messagingDetail = this.route.snapshot.data.messagingdetail;
-        this.getMessageDetailById(this.idMessage);
-      });
-      this.featureService.setIsMessaging(true);
-    });
   }
   ngOnInit(): void {
     this.realTime();
@@ -114,6 +121,7 @@ export class MessagingReplyComponent implements OnInit {
   getForwardToList() {
     this.messagingDetailService
       .getTlsSecretaryList()
+      .pipe(takeUntil(this._destroyed$))
       .pipe(takeUntil(this._destroyed$))
       .subscribe((list) => {
         list.forEach((receiver) => {
@@ -137,50 +145,48 @@ export class MessagingReplyComponent implements OnInit {
         message.hasFiles = false;
         message.body = "";
         this.messagingDetail = message;
-        this.messagingDetail.toReceivers.forEach((receiver) => {
-          this.loadPhoto(receiver);
-        });
-        this.messagingDetail.ccReceivers.forEach((receiver) => {
-          this.loadPhoto(receiver);
-        });
-        this.loadPhoto(this.messagingDetail.sender);
-        this.loadSenderForPhoto(this.messagingDetail);
         this.loadingReply = false;
       });
   }
 
   loadPhoto(user) {
-    this.documentService.getDefaultImage(user.id).subscribe(
-      (response) => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          user.img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      (error) => {
-        user.img = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(user.id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            user.img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        (error) => {
+          user.img = this.avatars.user;
+        }
+      );
   }
 
   loadSenderForPhoto(message) {
-    this.documentService.getDefaultImage(message.sender.senderForId).subscribe(
-      (response) => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          message.sender.forImg = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      (error) => {
-        message.sender.forImg = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(message.sender.senderForId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            message.sender.forImg = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        (error) => {
+          message.sender.forImg = this.avatars.user;
+        }
+      );
   }
 
   getAllRefuseTypes() {
@@ -220,6 +226,7 @@ export class MessagingReplyComponent implements OnInit {
       if (this.refuseResponse) {
         this.messagingDetailService
           .getRefuseRequest(requestDto)
+          .pipe(takeUntil(this._destroyed$))
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
@@ -227,6 +234,7 @@ export class MessagingReplyComponent implements OnInit {
       if (this.acceptResponse) {
         this.messagingDetailService
           .getAcceptRequest(requestDto)
+          .pipe(takeUntil(this._destroyed$))
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
@@ -235,13 +243,13 @@ export class MessagingReplyComponent implements OnInit {
         requestDto.websiteOrigin = "TLS";
         this.messagingDetailService
           .getAcceptRequest(requestDto)
+          .pipe(takeUntil(this._destroyed$))
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
       }
     }
   }
-
   replyMessage(message) {
     this.spinner.show();
     this.uuid = uuid();
@@ -254,9 +262,15 @@ export class MessagingReplyComponent implements OnInit {
     replyMessage.parent = parent;
     replyMessage.body = message.body;
     replyMessage.showFileToPatient = true;
-    replyMessage.documentHeader = message.documentHeader ? message.documentHeader : null;
-    replyMessage.documentBody = message.documentBody ? message.documentBody : null;
-    replyMessage.documentFooter = message.documentFooter ? message.documentFooter : null;
+    replyMessage.documentHeader = message.documentHeader
+      ? message.documentHeader
+      : null;
+    replyMessage.documentBody = message.documentBody
+      ? message.documentBody
+      : null;
+    replyMessage.documentFooter = message.documentFooter
+      ? message.documentFooter
+      : null;
     replyMessage.object = message.object;
     if (message.requestTypeId && message.requestTitleId) {
       replyMessage.requestTypeId = message.requestTypeId;
@@ -351,9 +365,9 @@ export class MessagingReplyComponent implements OnInit {
     this._location.back();
   }
 
-  // destory any subscribe to avoid memory leak
+  // destory any pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }

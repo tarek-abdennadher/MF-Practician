@@ -1,24 +1,31 @@
-import { Component, OnInit, ViewChild, Inject, LOCALE_ID } from '@angular/core';
-import { Subject, forkJoin } from 'rxjs';
-import { PatientFile } from '@app/shared/models/patient-file';
-import { NotifierService } from 'angular-notifier';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FeaturesService } from '@app/features/features.service';
-import { AccountService } from '@app/features/services/account.service';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { MyPatientsService } from '@app/features/services/my-patients.service';
-import { CategoryService } from '@app/features/services/category.service';
-import { LocalStorageService } from 'ngx-webstorage';
-import { GlobalService } from '@app/core/services/global.service';
-import { defineLocale, frLocale } from 'ngx-bootstrap/chronos';
-import { takeUntil, tap } from 'rxjs/operators';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  Inject,
+  LOCALE_ID,
+  OnDestroy,
+} from "@angular/core";
+import { Subject, forkJoin } from "rxjs";
+import { PatientFile } from "@app/shared/models/patient-file";
+import { NotifierService } from "angular-notifier";
+import { Router, ActivatedRoute } from "@angular/router";
+import { FeaturesService } from "@app/features/features.service";
+import { AccountService } from "@app/features/services/account.service";
+import { BsLocaleService } from "ngx-bootstrap/datepicker";
+import { MyPatientsService } from "@app/features/services/my-patients.service";
+import { CategoryService } from "@app/features/services/category.service";
+import { LocalStorageService } from "ngx-webstorage";
+import { GlobalService } from "@app/core/services/global.service";
+import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
+import { takeUntil, tap } from "rxjs/operators";
 declare var $: any;
 @Component({
-  selector: 'app-add-patient',
-  templateUrl: './add-patient.component.html',
-  styleUrls: ['./add-patient.component.scss']
+  selector: "app-add-patient",
+  templateUrl: "./add-patient.component.html",
+  styleUrls: ["./add-patient.component.scss"],
 })
-export class AddPatientComponent implements OnInit {
+export class AddPatientComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   noteimageSource: string;
@@ -71,14 +78,18 @@ export class AddPatientComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.localStorage.retrieve("role") == "PRACTICIAN") {
-      this.userRole = "PRACTICIAN"
+      this.userRole = "PRACTICIAN";
       this.practicianId = this.featureService.getUserId();
     } else {
-      this.userRole = "SECRETARY"
+      this.userRole = "SECRETARY";
       this.practicianId = this.featureService.selectedPracticianId;
     }
-    forkJoin(this.getCategories()).subscribe((res) => { });
-    this.featureService.setIsMessaging(false);
+    forkJoin(this.getCategories())
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res) => {});
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
     setTimeout(() => {
       $(".selectpicker").selectpicker("refresh");
     }, 500);
@@ -97,6 +108,7 @@ export class AddPatientComponent implements OnInit {
     model.practicianId = this.practicianId;
     this.patientService
       .createPatientFile(model)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponse, this.handleError);
   }
   handleResponse = (res) => {
@@ -108,7 +120,9 @@ export class AddPatientComponent implements OnInit {
         template: this.customNotificationTmpl,
       });
       this.submitted = false;
-      this.router.navigate(["/mes-patients"], { queryParams: { loading: true } });
+      this.router.navigate(["/mes-patients"], {
+        queryParams: { loading: true },
+      });
     } else {
       this.notifMessage = this.patientService.errors.failed_add;
       this.notifier.show({
@@ -137,15 +151,17 @@ export class AddPatientComponent implements OnInit {
       });
     }
   };
-  submitNote(model) { }
-  archieveNote(noteId) { }
+  submitNote(model) {}
+  archieveNote(noteId) {}
 
   cancelAction() {
-    this.router.navigate(["."], { relativeTo: this.route.parent, queryParams: { loading: false } });
+    this.router.navigate(["."], {
+      relativeTo: this.route.parent,
+      queryParams: { loading: false },
+    });
   }
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
-
 }
