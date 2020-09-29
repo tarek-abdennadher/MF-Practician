@@ -17,7 +17,7 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "app-contacts",
   templateUrl: "./contacts.component.html",
-  styleUrls: ["./contacts.component.scss"],
+  styleUrls: ["./contacts.component.scss"]
 })
 export class ContactsComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -29,7 +29,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   imageSource: string;
   links = {
     isTypeFilter: true,
-    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
+    isAdd: this.localSt.retrieve("role") == "PRACTICIAN"
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts Pros";
@@ -75,7 +75,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.initComponent();
     this.route.queryParams
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((params) => {
+      .subscribe(params => {
         if (params["refresh"]) {
           this.initComponent();
           this.location.replaceState("mes-contacts-pro");
@@ -103,9 +103,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
       .getContactsProForSecretary()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (contacts) => {
+        contacts => {
           this.users = contacts;
-          this.itemsList = this.users.map((elm) => {
+          this.itemsList = this.users.map(elm => {
             return {
               id: elm.id,
               practicianId: elm.entityId,
@@ -116,9 +116,11 @@ export class ContactsComponent implements OnInit, OnDestroy {
                   fullName: elm.fullName,
                   img: this.avatars.user,
                   title: elm.speciality ? elm.speciality : elm.title,
-                  type: "MEDICAL",
-                  speciality: elm.speciality ? elm.speciality : "Tout",
-                },
+                  type: "CONTACT-BOOK",
+                  civility: null,
+                  fonction: elm.speciality ? elm.speciality : elm.title,
+                  speciality: elm.speciality ? elm.speciality : "Tout"
+                }
               ],
               isArchieve: false,
               isImportant: false,
@@ -126,38 +128,38 @@ export class ContactsComponent implements OnInit, OnDestroy {
               isViewDetail: false,
               isMarkAsSeen: false,
               isChecked: false,
-              photoId: elm.photoId,
+              photoId: elm.photoId
             };
           });
           this.types = this.types.filter(
-            (s) =>
-              -1 !== this.itemsList.map((e) => e.users[0].speciality).indexOf(s)
+            s =>
+              -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s)
           );
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
-          this.itemsList.forEach((item) => {
-            item.users.forEach((user) => {
+          this.itemsList.forEach(item => {
+            item.users.forEach(user => {
               this.documentService
                 .getDefaultImageEntity(user.id, "ACCOUNT")
                 .pipe(takeUntil(this._destroyed$))
                 .subscribe(
-                  (response) => {
+                  response => {
                     let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
+                    myReader.onloadend = e => {
                       user.img = this.sanitizer.bypassSecurityTrustUrl(
                         myReader.result as string
                       );
                     };
                     let ok = myReader.readAsDataURL(response);
                   },
-                  (error) => {
+                  error => {
                     user.img = this.avatars.user;
                   }
                 );
             });
           });
         },
-        (error) => {
+        error => {
           console.log("en attendant un model de popup à afficher");
         }
       );
@@ -167,9 +169,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
       .getContactsPro()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (contacts) => {
+        contacts => {
           this.users = contacts;
-          this.itemsList = this.users.map((elm) => {
+          this.itemsList = this.users.map(elm => {
             return {
               id: elm.id,
               practicianId: elm.entityId,
@@ -180,9 +182,11 @@ export class ContactsComponent implements OnInit, OnDestroy {
                   fullName: elm.fullName,
                   img: this.avatars.user,
                   title: elm.speciality ? elm.speciality : elm.title,
-                  type: "MEDICAL",
-                  speciality: elm.speciality ? elm.speciality : "Tout",
-                },
+                  type: "CONTACT-BOOK",
+                  civility: null,
+                  fonction: elm.speciality ? elm.speciality : elm.title,
+                  speciality: elm.speciality ? elm.speciality : "Tout"
+                }
               ],
               isArchieve: true,
               isImportant: false,
@@ -191,38 +195,38 @@ export class ContactsComponent implements OnInit, OnDestroy {
               isMarkAsSeen: false,
               isContact: true,
               isChecked: false,
-              photoId: elm.photoId,
+              photoId: elm.photoId
             };
           });
           this.types = this.types.filter(
-            (s) =>
-              -1 !== this.itemsList.map((e) => e.users[0].speciality).indexOf(s)
+            s =>
+              -1 !== this.itemsList.map(e => e.users[0].speciality).indexOf(s)
           );
           this.number = this.itemsList.length;
           this.filtredItemsList = this.itemsList;
-          this.itemsList.forEach((item) => {
-            item.users.forEach((user) => {
+          this.itemsList.forEach(item => {
+            item.users.forEach(user => {
               this.documentService
                 .getDefaultImageEntity(user.id, "ACCOUNT")
                 .pipe(takeUntil(this._destroyed$))
                 .subscribe(
-                  (response) => {
+                  response => {
                     let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
+                    myReader.onloadend = e => {
                       user.img = this.sanitizer.bypassSecurityTrustUrl(
                         myReader.result as string
                       );
                     };
                     let ok = myReader.readAsDataURL(response);
                   },
-                  (error) => {
+                  error => {
                     user.img = this.avatars.user;
                   }
                 );
             });
           });
         },
-        (error) => {
+        error => {
           console.log("en attendant un model de popup à afficher");
         }
       );
@@ -233,18 +237,18 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
 
   performFilter(filterBy: string) {
-    return this.itemsList.filter((item) =>
+    return this.itemsList.filter(item =>
       item.users[0].speciality.includes(filterBy)
     );
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = true;
     });
   }
   deselectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = false;
     });
   }
@@ -256,10 +260,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
       )
       .afterClosed()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           const practicianIds = [];
-          this.itemsList.forEach((a) => {
+          this.itemsList.forEach(a => {
             if (a.isChecked) {
               practicianIds.push(a.id);
             }
@@ -268,7 +272,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
             this.contactsService
               .deleteMultiplePracticianContactPro(practicianIds)
               .pipe(takeUntil(this._destroyed$))
-              .subscribe((res) => {
+              .subscribe(res => {
                 this.deleteItemFromList(practicianIds);
               });
           }
@@ -282,7 +286,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       1000
     );
     this.router.navigate([
-      "mes-contacts-pro/praticien-detail/" + item.practicianId,
+      "mes-contacts-pro/praticien-detail/" + item.practicianId
     ]);
   }
   markAsSeenClicked(item) {
@@ -296,7 +300,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       )
       .afterClosed()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           const practicianIds = [];
           practicianIds.push(event.id);
@@ -304,7 +308,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
             this.contactsService
               .deleteMultiplePracticianContactPro(practicianIds)
               .pipe(takeUntil(this._destroyed$))
-              .subscribe((res) => {
+              .subscribe(res => {
                 this.deleteItemFromList(practicianIds);
               });
           }
@@ -316,12 +320,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
       .getAllSpecialities()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (specialitiesList) => {
+        specialitiesList => {
           this.specialities = specialitiesList;
-          this.types = this.specialities.map((s) => s.name);
+          this.types = this.specialities.map(s => s.name);
           this.types.unshift("Tout");
         },
-        (error) => {
+        error => {
           console.log("en attendant un model de popup à afficher");
         }
       );
@@ -334,16 +338,16 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.router.navigate(["mes-contacts-pro/invitation"]);
   }
   selectItem(event) {
-    this.selectedObjects = event.filter((a) => a.isChecked == true);
+    this.selectedObjects = event.filter(a => a.isChecked == true);
   }
   BackButton() {
     this.location.back();
   }
   deleteItemFromList(ids) {
     if (ids && ids.length > 0) {
-      this.itemsList = this.itemsList.filter((item) => ids.includes(item.id));
+      this.itemsList = this.itemsList.filter(item => ids.includes(item.id));
       this.filtredItemsList = this.filtredItemsList.filter(
-        (item) => !ids.includes(item.id)
+        item => !ids.includes(item.id)
       );
     }
   }
