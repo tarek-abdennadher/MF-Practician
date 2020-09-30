@@ -9,6 +9,7 @@ export class PracticianSearch {
       title: string;
       type: string;
       civility: string;
+      fonction: string;
     }
   ];
   object: {

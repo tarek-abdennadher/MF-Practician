@@ -1,11 +1,17 @@
-import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  HostListener,
+  OnDestroy,
+} from "@angular/core";
 import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, tap } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
@@ -13,13 +19,14 @@ import { MyPatientsService } from "../services/my-patients.service";
 import { PaginationService } from "../services/pagination.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
+import { SenderRole } from "@app/shared/enmus/sender-role";
 
 @Component({
   selector: "app-messaging-list",
   templateUrl: "./messaging-list.component.html",
-  styleUrls: ["./messaging-list.component.scss"]
+  styleUrls: ["./messaging-list.component.scss"],
 })
-export class MessagingListComponent implements OnInit {
+export class MessagingListComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   public selectedTabIndex = 0;
   person;
@@ -43,7 +50,7 @@ export class MessagingListComponent implements OnInit {
     isMenuDisplay: true,
     isAllSelectCarret: true,
     isRefresh: true,
-    isPagination: true
+    isPagination: true,
   };
   page = "INBOX";
   number: number;
@@ -72,7 +79,7 @@ export class MessagingListComponent implements OnInit {
   };
   searchContext = false;
   listLength = 10;
-  userTypeTabsFilter: string = "all";
+  userTypeTabsFilter: SenderRole = SenderRole.ALL;
   isSecretary = this.localSt.retrieve("role") == "SECRETARY";
   constructor(
     private messagesServ: MessagingListService,
@@ -97,7 +104,7 @@ export class MessagingListComponent implements OnInit {
   ngOnInit(): void {
     this.featureService.setActiveChild("inbox");
     this.itemsList = new Array();
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.listLength = 10;
       this.itemsList = new Array();
       this.filtredItemList = new Array();
@@ -114,28 +121,29 @@ export class MessagingListComponent implements OnInit {
         if (this.myPracticians && this.myPracticians.length > 0) {
           this.person = {
             fullName: this.myPracticians.find(
-              p => p.id == this.featureService.selectedPracticianId
+              (p) => p.id == this.featureService.selectedPracticianId
             ).fullName,
-            picture: this.practicianImage
+            picture: this.practicianImage,
           };
 
           this.documentService
             .getDefaultImage(
               this.myPracticians.find(
-                p => p.id == this.featureService.selectedPracticianId
+                (p) => p.id == this.featureService.selectedPracticianId
               ).id
             )
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
-              response => {
+              (response) => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
+                myReader.onloadend = (e) => {
                   this.person.picture = this.sanitizer.bypassSecurityTrustUrl(
                     myReader.result as string
                   );
                 };
                 let ok = myReader.readAsDataURL(response);
               },
-              error => {
+              (error) => {
                 this.person.picture = this.practicianImage;
               }
             );
@@ -151,14 +159,14 @@ export class MessagingListComponent implements OnInit {
           isMenuDisplay: true,
           isAllSelectCarret: true,
           isRefresh: true,
-          isPagination: true
+          isPagination: true,
         };
         this.paramsId = this.featureService.selectedPracticianId;
         this.getMyInbox(this.featureService.selectedPracticianId);
         this.searchInboxPractician(this.featureService.selectedPracticianId);
       } else {
         this.featureService.selectedPracticianId = 0;
-        this.featureService.getNumberOfInbox().subscribe(val => {
+        this.featureService.getNumberOfInbox().subscribe((val) => {
           this.number = val;
           this.bottomText =
             this.number > 1
@@ -175,7 +183,7 @@ export class MessagingListComponent implements OnInit {
           isMenuDisplay: true,
           isAllSelectCarret: true,
           isRefresh: true,
-          isPagination: true
+          isPagination: true,
         };
         this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;
@@ -186,7 +194,7 @@ export class MessagingListComponent implements OnInit {
       this.inboxNumber = this.featureService.getNumberOfInboxValue();
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params["status"]) {
         let notifMessage = "";
         switch (params["status"]) {
@@ -195,20 +203,28 @@ export class MessagingListComponent implements OnInit {
               .send_message_success;
             break;
           }
-          case "archiveSuccess": {
-            notifMessage = this.globalService.toastrMessages
-              .archived_message_success;
-            break;
-          }
+          case "archiveSuccess":
+            {
+              notifMessage = this.globalService.toastrMessages
+                .archived_message_success;
+              break;
+            }
+            this.notifier.show({
+              message: notifMessage,
+              type: "info",
+              template: this.customNotificationTmpl,
+            });
         }
         this.notifier.show({
           message: notifMessage,
           type: "info",
-          template: this.customNotificationTmpl
+          template: this.customNotificationTmpl,
         });
       }
     });
-    this.featureService.setIsMessaging(true);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(true);
+    });
     this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
@@ -217,29 +233,31 @@ export class MessagingListComponent implements OnInit {
     this.markMessageAsSeen(item);
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: this.isMyInbox ? "inbox" : "inboxPraticien"
-      }
+        context: this.isMyInbox ? "inbox" : "inboxPraticien",
+      },
     });
   }
 
   selectAllActionClicked() {
-    this.filtredItemList.forEach(a => {
+    this.filtredItemList.forEach((a) => {
       a.isChecked = true;
     });
   }
 
   deSelectAllActionClicked() {
-    this.filtredItemList.forEach(a => {
+    this.filtredItemList.forEach((a) => {
       a.isChecked = false;
     });
   }
   seenAllActionClicked() {
-    let checkedMessages = this.filtredItemList.filter(e => e.isChecked == true);
-    const messagesId = checkedMessages.map(e => e.id);
+    let checkedMessages = this.filtredItemList.filter(
+      (e) => e.isChecked == true
+    );
+    const messagesId = checkedMessages.map((e) => e.id);
     if (messagesId.length > 0) {
       if (this.isMyInbox) {
         this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
-          resp => {
+          (resp) => {
             if (resp == true) {
               this.featureService.markAsSeenById(
                 this.filtredItemList,
@@ -249,7 +267,7 @@ export class MessagingListComponent implements OnInit {
               this.messagesServ.uncheckMessages(checkedMessages);
             }
           },
-          error => {
+          (error) => {
             console.log("We have to find a way to notify user by this error");
           }
         );
@@ -260,7 +278,7 @@ export class MessagingListComponent implements OnInit {
             this.featureService.selectedPracticianId
           )
           .subscribe(
-            resp => {
+            (resp) => {
               if (resp == true) {
                 let list: any[] = this.featureService.myPracticians.getValue();
                 if (list && list.length > 0) {
@@ -271,11 +289,11 @@ export class MessagingListComponent implements OnInit {
                 }
                 this.bottomText = this.globalService.messagesDisplayScreen.newMessage;
 
-                this.itemsList.forEach(item => (item.isSeen = true));
-                this.filtredItemList.forEach(item => (item.isSeen = true));
+                this.itemsList.forEach((item) => (item.isSeen = true));
+                this.filtredItemList.forEach((item) => (item.isSeen = true));
               }
             },
-            error => {
+            (error) => {
               console.log("We have to find a way to notify user by this error");
             }
           );
@@ -294,45 +312,50 @@ export class MessagingListComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           let checkedMessages = this.filtredItemList.filter(
-            e => e.isChecked == true
+            (e) => e.isChecked == true
           );
-          const messagesId = checkedMessages.map(e => e.id);
-
+          const messagesId = checkedMessages.map((e) => e.id);
           if (messagesId.length > 0) {
+            this.getFirstMessageInNextPage(
+              this.featureService.getUserId(),
+              messagesId.length
+            )
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe();
             this.messagesServ.markMessageAsArchived(messagesId).subscribe(
-              resp => {
+              (resp) => {
                 let listToArchive = this.itemsList
                   .slice(0)
-                  .filter(function(elm, ind) {
+                  .filter(function (elm, ind) {
                     return messagesId.indexOf(elm.id) != -1;
                   });
-                listToArchive.forEach(message => {
+                listToArchive.forEach((message) => {
                   if (!message.isSeen) {
                     this.featureService.numberOfArchieve++;
                     this.featureService.setNumberOfInbox(this.number - 1);
                     this.inboxNumber--;
                   }
                   this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                    notification =>
+                    (notification) =>
                       !listToArchive
-                        .map(message => message.id)
+                        .map((message) => message.id)
                         .includes(notification.messageId)
                   );
                 });
                 this.itemsList = this.itemsList.filter(
-                  elm => !messagesId.includes(elm.id)
+                  (elm) => !messagesId.includes(elm.id)
                 );
                 this.filtredItemList = this.filtredItemList.filter(
-                  elm => !messagesId.includes(elm.id)
+                  (elm) => !messagesId.includes(elm.id)
                 );
                 this.deleteElementsFromInbox(messagesId.slice(0));
                 this.featureService.archiveState.next(true);
                 this.messagesServ.uncheckMessages(checkedMessages);
               },
-              error => {
+              (error) => {
                 console.log(
                   "We have to find a way to notify user by this error"
                 );
@@ -346,7 +369,7 @@ export class MessagingListComponent implements OnInit {
     this.filtredItemList =
       event == "all"
         ? this.itemsList
-        : this.itemsList.filter(item => {
+        : this.itemsList.filter((item) => {
             switch (event) {
               case "doctor":
                 return item.users[0].type.toLowerCase() == "medical";
@@ -359,14 +382,34 @@ export class MessagingListComponent implements OnInit {
                 return item.users[0].type.toLowerCase() == event;
             }
           });
-    this.userTypeTabsFilter = event;
+    switch (event) {
+      case "all":
+        this.userTypeTabsFilter = SenderRole.ALL;
+        break;
+      case "doctor":
+        this.userTypeTabsFilter = SenderRole.PRACTICIAN;
+        break;
+      case "secretary":
+        this.userTypeTabsFilter = SenderRole.SECRETARY;
+        break;
+      default:
+        this.userTypeTabsFilter = SenderRole.PATIENT;
+        break;
+    }
+    this.refreshCurrentPage();
+  }
+
+  private refreshCurrentPage() {
+    this.resetData();
+    this.getMyInbox(this.paramsId);
   }
 
   getMyInbox(accountId) {
     this.loading = true;
     this.messagesServ
       .countInboxByAccountId(accountId, this.userTypeTabsFilter)
-      .subscribe(num => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((num) => {
         this.pagination.init(num);
         this.messagesServ
           .getInboxByAccountId(
@@ -375,33 +418,26 @@ export class MessagingListComponent implements OnInit {
             this.pagination.pageNo,
             this.pagination.direction
           )
-          .subscribe(retrievedMess => {
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((retrievedMess) => {
             this.loading = false;
             if (!this.isMyInbox) {
               this.featureService.myPracticians
                 .asObservable()
-                .subscribe(list => {
+                .subscribe((list) => {
                   this.number = list.find(
-                    p => p.id == this.featureService.selectedPracticianId
+                    (p) => p.id == this.featureService.selectedPracticianId
                   ).number;
                   this.bottomText =
                     this.number > 1
                       ? this.globalService.messagesDisplayScreen.newMessages
                       : this.globalService.messagesDisplayScreen.newMessage;
                 });
-            } else {
-              this.messages = retrievedMess;
-              this.messages.sort(function(m1, m2) {
-                return (
-                  new Date(m2.updatedAt).getTime() -
-                  new Date(m1.updatedAt).getTime()
-                );
-              });
-              this.itemsList.push(
-                ...this.messages.map(item => this.parseMessage(item))
-              );
-              this.filtredItemList = this.itemsList;
             }
+            this.itemsList.push(
+              ...retrievedMess.map((item) => this.parseMessage(item))
+            );
+            this.filtredItemList = this.itemsList;
           });
       });
   }
@@ -415,29 +451,12 @@ export class MessagingListComponent implements OnInit {
         this.pagination.pageNo,
         this.pagination.direction
       )
-      .subscribe(retrievedMess => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((retrievedMess) => {
         this.loading = false;
-        this.listLength = retrievedMess.length;
-        if (retrievedMess.length > 0) {
-          this.messages = retrievedMess;
-          this.messages.sort(function(m1, m2) {
-            return (
-              new Date(m2.updatedAt).getTime() -
-              new Date(m1.updatedAt).getTime()
-            );
-          });
-          this.itemsList.push(
-            ...this.messages.map(item => this.parseMessage(item))
-          );
-
-          if (this.filtredItemList.length != this.itemsList.length) {
-            this.filtredItemList = this.itemsList.filter(item =>
-              [item.users[0].type.toLowerCase(), "all"].includes(
-                this.userTypeTabsFilter
-              )
-            );
-          }
-        }
+        this.itemsList.push(
+          ...retrievedMess.map((item) => this.parseMessage(item))
+        );
       });
   }
 
@@ -455,12 +474,12 @@ export class MessagingListComponent implements OnInit {
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
-              : message.sender.role
-        }
+              : message.sender.role,
+        },
       ],
       object: {
         name: message.object,
-        isImportant: message.importantObject
+        isImportant: message.importantObject,
       },
       time: message.updatedAt,
       isImportant: message.important,
@@ -468,22 +487,25 @@ export class MessagingListComponent implements OnInit {
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
       isArchieve: this.isMyInbox,
-      photoId: message.sender.photoId
+      photoId: message.sender.photoId,
     };
-    this.documentService.getDefaultImage(message.sender.senderId).subscribe(
-      response => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
-          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      error => {
-        parsedMessage.users[0].img = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(message.sender.senderId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (response) => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = (e) => {
+            parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        (error) => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
     return parsedMessage;
   }
 
@@ -491,7 +513,7 @@ export class MessagingListComponent implements OnInit {
     let messageId = event.id;
     if (this.isMyInbox) {
       this.messagesServ.markMessageAsSeen(messageId).subscribe(
-        resp => {
+        (resp) => {
           if (resp == true) {
             if (!event.isSeen) {
               this.bottomText =
@@ -500,7 +522,7 @@ export class MessagingListComponent implements OnInit {
                   : this.globalService.messagesDisplayScreen.newMessage;
               let notifLength = this.featureService.listNotifications.length;
               this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                notif => notif.messageId != event.id
+                (notif) => notif.messageId != event.id
               );
               this.featureService.setNumberOfInbox(
                 this.featureService.getNumberOfInboxValue() - 1
@@ -508,19 +530,22 @@ export class MessagingListComponent implements OnInit {
               this.inboxNumber -= 1;
 
               this.featureService.markAsSeen(this.featureService.searchInbox, [
-                messageId
+                messageId,
               ]);
             }
 
             let filtredIndex = this.filtredItemList.findIndex(
-              item => item.id == messageId
+              (item) => item.id == messageId
             );
             if (filtredIndex != -1) {
               this.filtredItemList[filtredIndex].isSeen = true;
             }
           }
+          (error) => {
+            console.log("We have to find a way to notify user by this error");
+          };
         },
-        error => {
+        (error) => {
           console.log("We have to find a way to notify user by this error");
         }
       );
@@ -531,13 +556,13 @@ export class MessagingListComponent implements OnInit {
           this.featureService.selectedPracticianId
         )
         .subscribe(
-          resp => {
+          (resp) => {
             if (!event.isSeen) {
               let list: any[] = this.featureService.myPracticians.getValue();
               let selectedInboxNumber;
               if (list && list.length > 0) {
                 selectedInboxNumber = list.find(
-                  p => p.id == this.featureService.selectedPracticianId
+                  (p) => p.id == this.featureService.selectedPracticianId
                 ).number;
                 this.featureService.updateNumberOfInboxForPractician(
                   this.featureService.selectedPracticianId,
@@ -551,20 +576,20 @@ export class MessagingListComponent implements OnInit {
             }
             if (resp == true) {
               let index = this.itemsList.findIndex(
-                item => item.id == messageId
+                (item) => item.id == messageId
               );
               if (index != -1) {
                 this.itemsList[index].isSeen = true;
               }
               let filtredIndex = this.filtredItemList.findIndex(
-                item => item.id == messageId
+                (item) => item.id == messageId
               );
               if (index != -1) {
                 this.filtredItemList[filtredIndex].isSeen = true;
               }
             }
           },
-          error => {
+          (error) => {
             console.log("We have to find a way to notify user by this error");
           }
         );
@@ -578,15 +603,15 @@ export class MessagingListComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           let messageId = event.id;
           this.messagesServ.markMessageAsArchived([messageId]).subscribe(
-            resp => {
-              this.itemsList = this.itemsList.filter(function(elm, ind) {
+            (resp) => {
+              this.itemsList = this.itemsList.filter(function (elm, ind) {
                 return elm.id != event.id;
               });
-              this.filtredItemList = this.filtredItemList.filter(function(
+              this.filtredItemList = this.filtredItemList.filter(function (
                 elm,
                 ind
               ) {
@@ -601,11 +626,12 @@ export class MessagingListComponent implements OnInit {
                 );
                 this.inboxNumber--;
                 this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                  notification => notification.messageId != event.id
+                  (notification) => notification.messageId != event.id
                 );
               }
+              this.refreshCurrentPage();
             },
-            error => {
+            (error) => {
               console.log("We have to find a way to notify user by this error");
             }
           );
@@ -613,21 +639,43 @@ export class MessagingListComponent implements OnInit {
       });
   }
   selectItem(event) {
-    this.selectedObjects = event.filter(a => a.isChecked == true);
+    this.selectedObjects = event.filter((a) => a.isChecked == true);
+  }
+
+  getFirstMessageInNextPage(accountId, size) {
+    return this.messagesServ
+      .getFirstInboxMessageByAccountId(
+        accountId,
+        size,
+        this.userTypeTabsFilter,
+        this.pagination.pageNo + 1,
+        this.pagination.direction
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((messages) => {
+          const parsedMessages = messages.map((message) =>
+            this.parseMessage(message)
+          );
+          this.filtredItemList.push(...parsedMessages);
+          this.itemsList.push(...parsedMessages);
+        })
+      );
   }
 
   getRealTimeMessage() {
-    this.messagesServ.getNotificationObs().subscribe(notif => {
+    this.messagesServ.getNotificationObs().subscribe((notif) => {
       if (notif != "") {
         if (this.isMyInbox) {
           let message = this.parseMessage(notif.message);
           this.documentService
             .getDefaultImage(notif.message.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
-              response => {
+              (response) => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
-                  message.users.forEach(user => {
+                myReader.onloadend = (e) => {
+                  message.users.forEach((user) => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
@@ -635,8 +683,8 @@ export class MessagingListComponent implements OnInit {
                 };
                 let ok = myReader.readAsDataURL(response);
               },
-              error => {
-                message.users.forEach(user => {
+              (error) => {
+                message.users.forEach((user) => {
                   user.img = this.avatars.user;
                 });
               }
@@ -653,31 +701,32 @@ export class MessagingListComponent implements OnInit {
   }
 
   getPracticianRealTimeMessage() {
-    this.messagesServ.getPracticianNotifObs().subscribe(notif => {
+    this.messagesServ.getPracticianNotifObs().subscribe((notif) => {
       if (
         notif != "" &&
         this.messagesServ.practicianNotifPreviousValue != notif.id
       ) {
         let num = this.featureService.myPracticians
           .getValue()
-          .find(elm => elm.id == notif.receiverId).number;
+          .find((elm) => elm.id == notif.receiverId).number;
         this.featureService.updateNumberOfInboxForPractician(
           notif.receiverId,
           num + 1
         );
         this.messagesServ.practicianNotifPreviousValue = notif.id;
         if (
-          !this.isMyInbox &&
-          this.featureService.selectedPracticianId == notif.receiverId
+          notif != "" &&
+          this.messagesServ.practicianNotifPreviousValue != notif.id
         ) {
           let message = this.parseMessage(notif.message);
           this.documentService
             .getDefaultImage(notif.message.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
-              response => {
+              (response) => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
-                  message.users.forEach(user => {
+                myReader.onloadend = (e) => {
+                  message.users.forEach((user) => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
@@ -685,8 +734,8 @@ export class MessagingListComponent implements OnInit {
                 };
                 let ok = myReader.readAsDataURL(response);
               },
-              error => {
-                message.users.forEach(user => {
+              (error) => {
+                message.users.forEach((user) => {
                   user.img = this.avatars.user;
                 });
               }
@@ -705,12 +754,12 @@ export class MessagingListComponent implements OnInit {
 
   deleteElementsFromInbox(ids) {
     let searchList = this.featureService.getSearchInboxValue();
-    searchList = searchList.filter(x => !ids.includes(x.id));
+    searchList = searchList.filter((x) => !ids.includes(x.id));
     this.featureService.setSearchInbox(searchList);
   }
 
   searchInbox() {
-    this.featureService.getFilteredInboxSearch().subscribe(res => {
+    this.featureService.getFilteredInboxSearch().subscribe((res) => {
       if (res == null) {
         this.filtredItemList = [];
         this.searchContext = true;
@@ -732,7 +781,7 @@ export class MessagingListComponent implements OnInit {
     ) {
       this.featureService.searchPracticianInboxFiltered
         .get(numb)
-        .subscribe(res => {
+        .subscribe((res) => {
           if (res == null) {
             this.filtredItemList = [];
             this.searchContext = true;
@@ -769,48 +818,45 @@ export class MessagingListComponent implements OnInit {
 
   importantAction() {
     const checkedMessages = this.filtredItemList.filter(
-      e => e.isChecked == true
+      (e) => e.isChecked == true
     );
     let ids = [];
     for (let message of checkedMessages) {
       ids.push(message.id);
     }
-    this.messagesServ
-      .markMessageAsImportant(ids)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        message => {
-          this.links.isImportant = false;
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_success,
-            type: "info",
-            template: this.customNotificationTmpl
-          });
-          this.messagesServ.uncheckMessages(checkedMessages);
-        },
-        error => {
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_error,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
-        }
-      );
+    this.messagesServ.markMessageAsImportant(ids).subscribe(
+      (message) => {
+        this.links.isImportant = false;
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_important_message_success,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+        this.messagesServ.uncheckMessages(checkedMessages);
+      },
+      (error) => {
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_important_message_error,
+          type: "error",
+          template: this.customNotificationTmpl,
+        });
+      }
+    );
 
     this.messagesServ.changeFlagImportant(this.filtredItemList, ids);
   }
 
   notSeenActionClicked() {
     const checkedMessages = this.filtredItemList.filter(
-      e => e.isChecked == true
+      (e) => e.isChecked == true
     );
-    const messagesId = checkedMessages.map(e => e.id);
+    const messagesId = checkedMessages.map((e) => e.id);
     if (messagesId.length > 0) {
       if (this.isMyInbox) {
         this.messagesServ.markMessagesListAsNotSeen(messagesId).subscribe(
-          resp => {
+          (resp) => {
             if (resp == true) {
               this.featureService.markAsNotSeenById(
                 this.filtredItemList,
@@ -823,7 +869,7 @@ export class MessagingListComponent implements OnInit {
               this.messagesServ.uncheckMessages(checkedMessages);
             }
           },
-          error => {
+          (error) => {
             console.log("We have to find a way to notify user by this error");
           }
         );
@@ -883,9 +929,18 @@ export class MessagingListComponent implements OnInit {
     }
   }
 
-  loadPage() {
+  private resetData() {
     this.itemsList = [];
     this.filtredItemList = [];
+  }
+
+  loadPage() {
+    this.resetData();
     this.getMyInboxNextPage(this.paramsId);
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }

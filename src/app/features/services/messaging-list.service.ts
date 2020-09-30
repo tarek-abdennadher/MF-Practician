@@ -7,6 +7,7 @@ import * as _ from "lodash";
 import { MyDocumentsService } from '../my-documents/my-documents.service';
 import { JobtitlePipe } from '@app/shared/pipes/jobTitle.pipe';
 import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { SenderRole } from '@app/shared/enmus/sender-role';
 
 @Injectable({
   providedIn: "root",
@@ -359,21 +360,30 @@ export class MessagingListService {
     );
   }
 
-  public getInboxByAccountId(id, filter, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+  public getInboxByAccountId(id, filter: SenderRole = SenderRole.ALL, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id, {
-      params: { 'pageNo': pageNo, 'order': order, 'senderType': filter }
+      params: { 'pageNo': pageNo, 'order': order, 'senderRole': filter }
     }
     );
   }
 
-  public countInboxByAccountId(id, filter): Observable<any> {
+  public getFirstInboxMessageByAccountId(id, size, filter: SenderRole = SenderRole.ALL, pageNo, order: OrderDirection = OrderDirection.DESC): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "inbox-by-account/" + id + "/listSize/" + size, {
+      params: { 'pageNo': pageNo, 'order': order, 'senderRole': filter }
+    }
+    );
+  }
+
+  public countInboxByAccountId(id, filter: SenderRole = SenderRole.ALL,): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id + "/count", {
       params: {
-        'senderType': filter
+        'senderRole': filter
       }
     });
   }

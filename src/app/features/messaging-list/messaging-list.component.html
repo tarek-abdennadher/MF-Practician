@@ -8,9 +8,9 @@
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
-  [paginationText]="this.searchContext ? '-' : pagination.text"
-  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !this.searchContext"
-  [isNextPageAllowed]="pagination.hasNext && !loading && !this.searchContext"
+  [paginationText]="searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
   (nextPageAction) = "nextPageActionClicked()"
   (previousPageAction) = "previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
@@ -18,7 +18,6 @@
   (seenAllAction)="seenAllActionClicked()"
   (archieveAction)="archieveActionClicked()"
   (importantAction) = "importantAction()"
-  (filterAction)="filterActionClicked($event)"
   (refreshMessagingListAction)="refreshMessagingList()"
   (notSeenAction) = "notSeenActionClicked()"
   (checkSeenMessagesAction) = "checkSeenMessagingList()"
@@ -34,11 +33,11 @@
       <mat-tab label="TousMessages" >
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
-          <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
+          <span >Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -53,11 +52,11 @@
       <mat-tab label="Secrétaire">
         <ng-template mat-tab-label>
           <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
-          <span (click)="filterActionClicked('secretary')">Secrétaire</span>
+          <span >Secrétaire</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -69,14 +68,14 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Patients" (click)="filterActionClicked('patient')">
+      <mat-tab label="Patients" >
         <ng-template mat-tab-label>
           <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
           Patients
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -95,7 +94,7 @@
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
-          [list]="filtredItemList"
+          [list]="itemsList"
           [hasPaging]="true"
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
@@ -111,7 +110,7 @@
 
     <lib-hlsMessagingList class="mobile-links"
       *ngIf="!loading"
-      [list]="filtredItemList"
+      [list]="itemsList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
@@ -126,7 +125,7 @@
     <lib-hlsMessagingList
       class="links"
       *ngIf="!loading && isSecretary"
-      [list]="filtredItemList"
+      [list]="itemsList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"

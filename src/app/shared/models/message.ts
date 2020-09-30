@@ -4,7 +4,9 @@ export class Message {
   public id?: number;
   public sendType?: SendType | string;
   public body?: string;
-  public document?: string;
+  public documentHeader?: string;
+  public documentBody?: string;
+  public documentFooter?: string;
   public object?: any;
   public toReceivers?: any;
   public ccReceivers?: any;
@@ -22,7 +24,9 @@ export class Message {
     this.id = (message && message.id) || "";
     this.sendType = (message && message.sendType) || SendType.MESSAGING;
     this.body = (message && message.body) || "";
-    this.document = (message && message.document) || null;
+    this.documentHeader = (message && message.documentHeader) || null;
+    this.documentBody = (message && message.documentBody) || null;
+    this.documentFooter = (message && message.documentFooter) || null;
     this.toReceivers = (message && message.toReceivers) || [];
     this.ccReceivers = (message && message.ccReceivers) || [];
     this.sender = (message && message.sender) || "";

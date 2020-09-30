@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { RequestType } from "@app/shared/enmus/requestType";
 import { GlobalService } from "@app/core/services/global.service";
-import { Observable } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { Speciality } from "@app/shared/models/speciality";
 
 @Injectable({
@@ -48,9 +48,22 @@ export class ContactsService {
     city: "Ville",
     send: "Envoyer",
     email_exist: "Email déja utilisé",
+    edit_failed: "Erreur survenue lors de la modification du contact",
+    contact_edit: "Contact modifié avec succès",
+    info: "Informations",
   };
-  constructor(private globalService: GlobalService) {}
 
+  public id = new BehaviorSubject(null);
+  constructor(private globalService: GlobalService) {}
+  getIdValue() {
+    return this.id.getValue();
+  }
+  getIdObs() {
+    return this.id.asObservable();
+  }
+  setId(id) {
+    this.id.next(id);
+  }
   getContactsPro() {
     return this.globalService.call(
       RequestType.GET,

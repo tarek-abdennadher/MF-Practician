@@ -1,20 +1,31 @@
-import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Inject,
+  LOCALE_ID,
+  ViewChild,
+  OnDestroy,
+} from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
-import { FormGroup, FormControl } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 import { defineLocale, frLocale, isBefore } from "ngx-bootstrap/chronos";
 import { FeaturesService } from "@app/features/features.service";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 import { FeaturesComponent } from "@app/features/features.component";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 declare var $: any;
 
 @Component({
   selector: "app-my-leaves",
   templateUrl: "./my-leaves.component.html",
-  styleUrls: ["./my-leaves.component.scss"]
+  styleUrls: ["./my-leaves.component.scss"],
 })
-export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
+export class MyLeavesComponent
+  implements OnInit, ComponentCanDeactivate, OnDestroy {
+  private _destroyed$ = new Subject();
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   public messages: any;
   public errors: any;
@@ -40,6 +51,12 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
     this.submitted = false;
     this.isInvalidDates = false;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   get f() {
     return this.leavesForm.controls;
   }
@@ -49,7 +66,9 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
   ngOnInit(): void {
     this.initLeaveForm();
     this.getOptionById();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   initLeaveForm() {
@@ -57,7 +76,7 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
       activateLeaveAutoMessage: new FormControl(false),
       leaveStartDate: new FormControl(null),
       leaveEndDate: new FormControl(null),
-      leaveAutoMessage: new FormControl(null)
+      leaveAutoMessage: new FormControl(null),
     });
   }
 
@@ -77,14 +96,22 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
     }
   }
   getOptionById() {
-    this.service.getOptionById(this.practicianId).subscribe(op => {
-      this.leavesForm.patchValue({
-        activateLeaveAutoMessage: op.activateLeaveAutoMessage,
-        leaveStartDate: op.leaveStartDate ? new Date(op.leaveStartDate) : null,
-        leaveEndDate: op.leaveEndDate ? new Date(op.leaveEndDate) : null,
-        leaveAutoMessage: op.leaveAutoMessage ? op.leaveAutoMessage : null
+    this.service
+      .getOptionById(this.practicianId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((op) => {
+        this.leavesForm.patchValue({
+          activateLeaveAutoMessage: op.activateLeaveAutoMessage,
+          leaveStartDate: op.leaveStartDate
+            ? new Date(op.leaveStartDate)
+            : null,
+          leaveEndDate: op.leaveEndDate ? new Date(op.leaveEndDate) : null,
+          leaveAutoMessage: op.leaveAutoMessage ? op.leaveAutoMessage : null,
+        });
+        if (op.activateLeaveAutoMessage === true) {
+          this.setRequiredValidator();
+        }
       });
-    });
   }
 
   submit() {
@@ -97,16 +124,21 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
       activateLeaveAutoMessage: this.leavesForm.value.activateLeaveAutoMessage,
       leaveStartDate: this.leavesForm.value.leaveStartDate,
       leaveEndDate: this.leavesForm.value.leaveEndDate,
-      leaveAutoMessage: this.leavesForm.value.leaveAutoMessage
+      leaveAutoMessage: this.leavesForm.value.leaveAutoMessage,
     };
-    this.service.updateLeavesInOptionByPractician(model).subscribe(elm => {
-      if (elm) {
-        this.featureComp.setNotif(this.service.messages.update_leaves_success);
-      } else {
-        this.featureComp.setNotif(this.service.messages.update_leaves_fail);
-        return;
-      }
-    });
+    this.service
+      .updateLeavesInOptionByPractician(model)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((elm) => {
+        if (elm) {
+          this.featureComp.setNotif(
+            this.service.messages.update_leaves_success
+          );
+        } else {
+          this.featureComp.setNotif(this.service.messages.update_leaves_fail);
+          return;
+        }
+      });
   }
   close() {
     this.isInvalidDates = false;
@@ -116,6 +148,23 @@ export class MyLeavesComponent implements OnInit, ComponentCanDeactivate {
 
     if (test == "Invalid date") {
       event.target.value = this.errors.invalid_date;
+    }
+  }
+  setRequiredValidator() {
+    if (this.f.activateLeaveAutoMessage.value) {
+      this.f.leaveStartDate.setValidators(Validators.required);
+      this.f.leaveEndDate.setValidators(Validators.required);
+      this.f.leaveAutoMessage.setValidators(Validators.required);
+      this.f.leaveStartDate.updateValueAndValidity();
+      this.f.leaveEndDate.updateValueAndValidity();
+      this.f.leaveAutoMessage.updateValueAndValidity();
+    } else {
+      this.f.leaveStartDate.clearValidators();
+      this.f.leaveEndDate.clearValidators();
+      this.f.leaveAutoMessage.clearValidators();
+      this.f.leaveStartDate.updateValueAndValidity();
+      this.f.leaveEndDate.updateValueAndValidity();
+      this.f.leaveAutoMessage.updateValueAndValidity();
     }
   }
 }

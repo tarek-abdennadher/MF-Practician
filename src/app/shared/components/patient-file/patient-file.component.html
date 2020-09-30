@@ -405,7 +405,7 @@
                                         <br>
                                     </div>
                                     <div class="row justify-content-center">
-                                        <button (click)="cancel()" class="btn btn-cancel" id="cancel-add-button">
+                                        <button (click)="cancel()" class="btn btn-cancel col-md-4" id="cancel-add-button">
                                             {{ labels.cancel }}
                                         </button>
                                     </div>
@@ -474,10 +474,10 @@
                             </div>
                             <br>
                             <div class="row justify-content-center actions">
-                                <button (click)="NoteSubmit()" class="btn btn-primary mr-3">
+                                <button (click)="NoteSubmit()" class="btn btn-primary col-md-4 mr-3">
                                     {{ labels.save }}
                                 </button>
-                                <button (click)="cancelNoteAdd()" class="btn btn-cancel">
+                                <button (click)="cancelNoteAdd()" class="btn btn-cancel col-md-4">
                                     {{ labels.cancel }}
                                 </button>
                             </div>
@@ -499,7 +499,7 @@
                 </ng-template>
                 <div class="card-body justify-content-center">
                     <lib-hlsMessagingList [list]=" filtredItemList" [hasPaging]="true"
-                        (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true">
+                        (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true" [isCheckbox]="isCheckbox">
                     </lib-hlsMessagingList>
                 </div>
 

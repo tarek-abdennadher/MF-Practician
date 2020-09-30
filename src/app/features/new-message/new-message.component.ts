@@ -1,18 +1,18 @@
-import { Component, OnInit, Input, HostListener } from "@angular/core";
-import { Subject } from "rxjs";
 import {
-  FormGroup,
-  Validators,
-  FormControl,
-  FormBuilder,
-} from "@angular/forms";
+  Component,
+  OnInit,
+  Input,
+  HostListener,
+  OnDestroy,
+} from "@angular/core";
+import { Subject } from "rxjs";
+import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 import { GlobalService } from "@app/core/services/global.service";
 import { ViewChild } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { NotifierService } from "angular-notifier";
-import { MatDialog } from "@angular/material/dialog";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { takeUntil, tap } from "rxjs/operators";
 import { forkJoin } from "rxjs";
@@ -40,7 +40,7 @@ declare var $: any;
   templateUrl: "./new-message.component.html",
   styleUrls: ["./new-message.component.scss"],
 })
-export class NewMessageComponent implements OnInit {
+export class NewMessageComponent implements OnInit, OnDestroy {
   @Input() id: number;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
@@ -207,7 +207,9 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
-      document: null,
+      documentHeader: null,
+      documentBody: null,
+      documentFooter: null,
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -247,20 +249,25 @@ export class NewMessageComponent implements OnInit {
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
-      this.featureService.getSecretaryPracticians().subscribe((value) => {
-        value.forEach((item) => {
-          item.type = "CONTACT_PRO";
+      this.featureService
+        .getSecretaryPracticians()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((value) => {
+          value.forEach((item) => {
+            item.type = "CONTACT_PRO";
 
-          this.forFieldList.push(item);
+            this.forFieldList.push(item);
+          });
+          this.forList.next(this.forFieldList);
         });
-        this.forList.next(this.forFieldList);
-      });
     }
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {});
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
 
     $(document).ready(function () {
       $(window).keydown(function (event) {
@@ -433,9 +440,12 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.document) {
+          if (res.documentBody) {
             this.sendMessageForm.patchValue({
               document: res.document,
+              documentHeader: res.documentHeader,
+              documentBody: res.documentBody,
+              documentFooter: res.documentFooter,
             });
           }
         } else {
@@ -450,9 +460,11 @@ export class NewMessageComponent implements OnInit {
           this.sendMessageForm.patchValue({
             body: res.body,
           });
-          if (res.document) {
+          if (res.documentBody) {
             this.sendMessageForm.patchValue({
-              document: res.document,
+              documentHeader: res.documentHeader,
+              documentBody: res.documentBody,
+              documentFooter: res.documentFooter,
             });
           }
         }
@@ -490,7 +502,7 @@ export class NewMessageComponent implements OnInit {
 
   public removeAttachment() {
     this.sendMessageForm.patchValue({
-      file: undefined,
+      file: "",
     });
   }
 
@@ -669,7 +681,9 @@ export class NewMessageComponent implements OnInit {
         file: null,
       });
       this.sendMessageForm.patchValue({
-        document: null,
+        documentHeader: null,
+        documentBody: null,
+        documentFooter: null,
       });
 
       this.selectContext = false;
@@ -921,14 +935,17 @@ export class NewMessageComponent implements OnInit {
 
   sendMessage(message) {
     if (message.type[0].id == SendType.SEND_POSTAL) {
-      this.featureService.checkIfSendPostalEnabled().subscribe((result) => {
-        this.sendPostal = result;
-        if (this.sendPostal) {
-          this.sendMessage2(message);
-        } else {
-          $("#firstModal").modal("toggle");
-        }
-      });
+      this.featureService
+        .checkIfSendPostalEnabled()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((result) => {
+          this.sendPostal = result;
+          if (this.sendPostal) {
+            this.sendMessage2(message);
+          } else {
+            $("#firstModal").modal("toggle");
+          }
+        });
     } else {
       this.sendMessage2(message);
     }
@@ -1007,7 +1024,7 @@ export class NewMessageComponent implements OnInit {
 
   objectSelection(item) {
     let selectedObj = item.object[0];
-    if (selectedObj && selectedObj.title != "autre") {
+    if (selectedObj && selectedObj.title != "autre" && !this.isInstruction) {
       const objectDto = {
         senderId: this.featureService.getUserId(),
         sendedForId: item.for && item.for[0] && item.for[0].id,
@@ -1020,7 +1037,9 @@ export class NewMessageComponent implements OnInit {
         name: selectedObj.title,
         body: null,
         file: null,
-        document: null,
+        documentHeader: null,
+        documentBody: null,
+        documentFooter: null,
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1058,11 +1077,13 @@ export class NewMessageComponent implements OnInit {
 
   getPdfAsHtml(request, newData) {
     return this.requestTypeService
-      .getDocumentAsHtml(request)
+      .getDocumentField(request)
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((response) => {
-          newData.document = response.document;
+          newData.documentHeader = response.header;
+          newData.documentBody = response.body;
+          newData.documentFooter = response.footer;
         })
       );
   }
@@ -1070,10 +1091,11 @@ export class NewMessageComponent implements OnInit {
   goToBack() {
     this._location.back();
   }
-  // destory any subscribe to avoid memory leak
+
+  // destory any pipe(takeUntil(this._destroyed$)).pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   getTLSGroupByPracticianId() {
@@ -1103,11 +1125,14 @@ export class NewMessageComponent implements OnInit {
       });
   }
   getInstructionObjectListByTLSGroupId(id: any) {
-    this.objectsService.getAllByTLS(id).subscribe((objects) => {
-      this.instructionObjectsList = objects.map((e) => {
-        return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+    this.objectsService
+      .getAllByTLS(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((objects) => {
+        this.instructionObjectsList = objects.map((e) => {
+          return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+        });
       });
-    });
   }
 
   typeSelection(item) {
@@ -1254,11 +1279,14 @@ export class NewMessageComponent implements OnInit {
   }
   activateSenPostalOption() {
     if (this.addOptionConfirmed) {
-      this.featureService.activateSendPostal().subscribe((res) => {
-        this.sendPostal = true;
-        $("#confirmModal").modal("hide");
-        $("#successModal").modal("toggle");
-      });
+      this.featureService
+        .activateSendPostal()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((res) => {
+          this.sendPostal = true;
+          $("#confirmModal").modal("hide");
+          $("#successModal").modal("toggle");
+        });
     }
   }
   checkboxChange(event) {
@@ -1326,7 +1354,9 @@ export class NewMessageComponent implements OnInit {
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
     newMessage.showFileToPatient = true;
-    newMessage.document = message.document;
+    newMessage.documentHeader = message.documentHeader;
+    newMessage.documentBody = message.documentBody;
+    newMessage.documentFooter = message.documentFooter;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;

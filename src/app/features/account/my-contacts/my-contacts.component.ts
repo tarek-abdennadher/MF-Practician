@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { AccountService } from "@app/features/services/account.service";
 import { LocalStorageService } from "ngx-webstorage";
@@ -7,13 +7,16 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { ContactBookService } from "@app/features/services/contact-book.service";
 import { DialogService } from "@app/features/services/dialog.service";
 import { NotifierService } from "angular-notifier";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "app-my-contacts",
   templateUrl: "./my-contacts.component.html",
-  styleUrls: ["./my-contacts.component.scss"]
+  styleUrls: ["./my-contacts.component.scss"],
 })
-export class MyContactsComponent implements OnInit {
+export class MyContactsComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   public labels: any;
   errorMessage = "";
@@ -40,17 +43,25 @@ export class MyContactsComponent implements OnInit {
     this.practicianId = this.featureService.getUserId();
   }
 
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.getMyContacts();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
 
   getMyContacts() {
     this.contactBookService
       .getAllContactBookByPracticianId(this.practicianId)
-      .subscribe(contacts => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((contacts) => {
         this.users = contacts;
-        this.itemsList = this.users.map(elm => this.parseContact(elm));
+        this.itemsList = this.users.map((elm) => this.parseContact(elm));
       });
   }
   parseContact(contact): any {
@@ -63,11 +74,11 @@ export class MyContactsComponent implements OnInit {
           fullName: contact.firstName + " " + contact.lastName,
           type: "CONTACT-BOOK",
           fonction: contact?.fonction,
-          img: this.globalService.avatars.user
-        }
+          img: this.globalService.avatars.user,
+        },
       ],
       object: {
-        name: contact.email
+        name: contact.email,
       },
       isArchieve: true,
       isImportant: false,
@@ -75,7 +86,7 @@ export class MyContactsComponent implements OnInit {
       isViewDetail: true,
       isMarkAsSeen: false,
       isChecked: false,
-      photoId: null
+      photoId: null,
     };
     return parsedContact;
   }
@@ -95,11 +106,16 @@ export class MyContactsComponent implements OnInit {
         this.contactBookService.messages.delete_contact
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
-          this.contactBookService.deleteContactBook(event.id).subscribe(() => {
-            this.itemsList = this.itemsList.filter(elm => elm.id != event.id);
-          });
+          this.contactBookService
+            .deleteContactBook(event.id)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe(() => {
+              this.itemsList = this.itemsList.filter(
+                (elm) => elm.id != event.id
+              );
+            });
         }
       });
   }

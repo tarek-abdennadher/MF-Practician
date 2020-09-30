@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessagingDetailService } from "../services/messaging-detail.service";
 import { GlobalService } from "@app/core/services/global.service";
@@ -19,7 +19,7 @@ import { FeaturesComponent } from "../features.component";
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"],
 })
-export class MessagingDetailComponent implements OnInit {
+export class MessagingDetailComponent implements OnInit, OnDestroy {
   message: any;
   loading: boolean = false;
   private _destroyed$ = new Subject();
@@ -169,7 +169,9 @@ export class MessagingDetailComponent implements OnInit {
           this.getMessageDetailById(this.idMessage);
         }
       });
-      this.featureService.setIsMessaging(true);
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
     });
   }
   checkContect(context) {}
@@ -201,39 +203,46 @@ export class MessagingDetailComponent implements OnInit {
             this.isFromInbox = false;
           }
           this.messagingDetail.toReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.messagingDetail.ccReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.documentService
             .getDefaultImage(this.messagingDetail.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
               (response) => {
                 let myReader: FileReader = new FileReader();
@@ -253,6 +262,7 @@ export class MessagingDetailComponent implements OnInit {
     } else {
       this.messagingDetailService
         .getMessagingDetailById(id)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
           this.message = message;
           this.showRefuseForTls =
@@ -286,39 +296,46 @@ export class MessagingDetailComponent implements OnInit {
           }
           this.setParentImg(this.messagingDetail.parent);
           this.messagingDetail.toReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.messagingDetail.ccReceivers.forEach((receiver) => {
-            this.documentService.getDefaultImage(receiver.receiverId).subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                receiver.img = this.avatars.user;
-              }
-            );
+            this.documentService
+              .getDefaultImage(receiver.receiverId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
           });
           this.documentService
             .getDefaultImage(this.messagingDetail.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
               (response) => {
                 let myReader: FileReader = new FileReader();
@@ -339,20 +356,23 @@ export class MessagingDetailComponent implements OnInit {
   }
   setParentImg(parent) {
     if (parent != null) {
-      this.documentService.getDefaultImage(parent.sender.senderId).subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            parent.sender.img = this.sanitizer.bypassSecurityTrustUrl(
-              myReader.result as string
-            );
-          };
-          let ok = myReader.readAsDataURL(response);
-        },
-        (error) => {
-          parent.sender.img = this.avatars.user;
-        }
-      );
+      this.documentService
+        .getDefaultImage(parent.sender.senderId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          (response) => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = (e) => {
+              parent.sender.img = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
+            };
+            let ok = myReader.readAsDataURL(response);
+          },
+          (error) => {
+            parent.sender.img = this.avatars.user;
+          }
+        );
       if (parent.hasFiles) {
         if (parent.nodesId) {
           parent.attachements = [];
@@ -372,6 +392,7 @@ export class MessagingDetailComponent implements OnInit {
   hideShowReplyBtn(message) {
     this.messagingDetailService
       .patientsProhibitedByCurrentPractician()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((resp) => {
         this.patientsId = resp;
         this.collectedIds = message.toReceivers.map((r) => r.receiverId);
@@ -435,23 +456,20 @@ export class MessagingDetailComponent implements OnInit {
   importantAction() {
     let ids = [];
     ids.push(this.idMessage);
-    this.messagingDetailService
-      .markMessageAsImportant(ids)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (message) => {
-          this.links.isImportant = false;
+    this.messagingDetailService.markMessageAsImportant(ids).subscribe(
+      (message) => {
+        this.links.isImportant = false;
 
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.mark_important_message_success
-          );
-        },
-        (error) => {
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.mark_important_message_error
-          );
-        }
-      );
+        this.featureComp.setNotif(
+          this.globalService.toastrMessages.mark_important_message_success
+        );
+      },
+      (error) => {
+        this.featureComp.setNotif(
+          this.globalService.toastrMessages.mark_important_message_error
+        );
+      }
+    );
   }
 
   archieveActionClicked() {
@@ -495,32 +513,36 @@ export class MessagingDetailComponent implements OnInit {
       var nodeDetails;
       this.documentService
         .getNodeDetailsFromAlfresco(nodeId)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((node) => {
           nodeDetails = node;
         });
 
-      this.documentService.downloadFile(nodeId).subscribe((response) => {
-        const blob = new Blob([response.body]);
-        const filename = nodeDetails.entry.name;
-        const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
-        const extension = filename.substring(dotIndex + 1, filename.length);
-        let resultname: string;
-        if (filenameDisplay !== "") {
-          resultname = filenameDisplay.includes(extension)
-            ? filenameDisplay
-            : filenameDisplay + "." + extension;
-        } else {
-          resultname = filename;
-        }
-        FileSaver.saveAs(blob, resultname);
-      });
+      this.documentService
+        .downloadFile(nodeId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((response) => {
+          const blob = new Blob([response.body]);
+          const filename = nodeDetails.entry.name;
+          const filenameDisplay = filename;
+          const dotIndex = filename.lastIndexOf(".");
+          const extension = filename.substring(dotIndex + 1, filename.length);
+          let resultname: string;
+          if (filenameDisplay !== "") {
+            resultname = filenameDisplay.includes(extension)
+              ? filenameDisplay
+              : filenameDisplay + "." + extension;
+          } else {
+            resultname = filename;
+          }
+          FileSaver.saveAs(blob, resultname);
+        });
     });
   }
-  // destory any subscribe to avoid memory leak
+
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   getAttachements(nodesId: string[]) {
@@ -550,6 +572,7 @@ export class MessagingDetailComponent implements OnInit {
           idAccount,
           this.featureService.getUserId()
         )
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {});
       this.getPatientFile(info);
     } else {
@@ -568,6 +591,7 @@ export class MessagingDetailComponent implements OnInit {
 
       this.patientService
         .getAccountIdByPatientId(idAccount)
+        .pipe(takeUntil(this._destroyed$))
         .subscribe((res) => {
           let info = {
             patientId: res ? res : idAccount,
@@ -606,5 +630,8 @@ export class MessagingDetailComponent implements OnInit {
   }
   getPatientFile(info) {
     this.dialogService.openPatientFile("Fiche Patient", info);
+  }
+  displayContact(contactId) {
+    this.dialogService.openContactDetail("Détails Contact", contactId);
   }
 }

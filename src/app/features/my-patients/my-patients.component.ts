@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { GlobalService } from "@app/core/services/global.service";
@@ -9,16 +9,18 @@ import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { CategoryService } from "../services/category.service";
 import { MyPatients } from "@app/shared/models/my-patients";
-import { filter } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
+import { Subject } from "rxjs";
 declare var $: any;
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
-  styleUrls: ["./my-patients.component.scss"]
+  styleUrls: ["./my-patients.component.scss"],
 })
-export class MyPatientsComponent implements OnInit {
+export class MyPatientsComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -59,17 +61,22 @@ export class MyPatientsComponent implements OnInit {
     private messageWidgetService: NewMessageWidgetService
   ) {
     this.filterPatientsForm = this.formBuilder.group({
-      category: [""]
+      category: [""],
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   ngOnInit(): void {
     this.initPatients();
     // update list after detail view
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-patients?loading=true") {
           let currentRoute = this.route;
@@ -93,11 +100,14 @@ export class MyPatientsComponent implements OnInit {
   }
 
   markNotificationsAsSeen() {
-    this.featureService.markReceivedNotifAsSeen().subscribe(resp => {
-      this.featureService.listNotifications = this.featureService.listNotifications.filter(
-        notif => notif.messageId != null
-      );
-    });
+    this.featureService
+      .markReceivedNotifAsSeen()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
+        this.featureService.listNotifications = this.featureService.listNotifications.filter(
+          (notif) => notif.messageId != null
+        );
+      });
   }
   getPatientsOfCurrentParactician(pageNo) {
     this.myPatients = [];
@@ -108,9 +118,10 @@ export class MyPatientsComponent implements OnInit {
         pageNo,
         this.direction
       )
-      .subscribe(myPatients => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((myPatients) => {
         this.number = myPatients.length;
-        myPatients.forEach(elm => {
+        myPatients.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -119,24 +130,26 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   searchPatients() {
-    this.featureService.getFilteredPatientsSearch().subscribe(res => {
-      if (res == null) {
-        this.filtredPatients = [];
-        this.number = this.filtredPatients.length;
-      } else if (res?.length > 0) {
-        let patients = [];
-        res.forEach(elm => {
-          patients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
-        });
-        this.filtredPatients = patients;
-        this.number = this.filtredPatients.length;
-      } else {
-        this.filtredPatients = this.myPatients;
-        this.number = this.filtredPatients.length;
-      }
-    });
+    this.featureService
+      .getFilteredPatientsSearch()
+      .subscribe((res) => {
+        if (res == null) {
+          this.filtredPatients = [];
+          this.number = this.filtredPatients.length;
+        } else if (res?.length > 0) {
+          let patients = [];
+          res.forEach((elm) => {
+            patients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+          this.filtredPatients = patients;
+          this.number = this.filtredPatients.length;
+        } else {
+          this.filtredPatients = this.myPatients;
+          this.number = this.filtredPatients.length;
+        }
+      });
   }
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
@@ -145,10 +158,11 @@ export class MyPatientsComponent implements OnInit {
         pageNo,
         this.direction
       )
-      .subscribe(myPatients => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((myPatients) => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
+          myPatients.forEach((elm) => {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
@@ -161,12 +175,13 @@ export class MyPatientsComponent implements OnInit {
     this.myPatientsService
       .getPatientsOfCurrentParacticianByCategory(
         pageNo,
-        this.categs.find(e => e.name == categoryId).id,
+        this.categs.find((e) => e.name == categoryId).id,
         this.direction
       )
-      .subscribe(myPatients => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((myPatients) => {
         this.number = myPatients.length;
-        myPatients.forEach(elm => {
+        myPatients.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -184,7 +199,7 @@ export class MyPatientsComponent implements OnInit {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      civility: patient.civility
+      civility: patient.civility,
     });
     myPatients.id = patient.id;
     myPatients.photoId = patient.photoId;
@@ -193,20 +208,21 @@ export class MyPatientsComponent implements OnInit {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
-    myPatients.users.forEach(user => {
+    myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
+        .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          response => {
+          (response) => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
+            myReader.onloadend = (e) => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          error => {
+          (error) => {
             user.img = this.avatars.user;
           }
         );
@@ -218,7 +234,7 @@ export class MyPatientsComponent implements OnInit {
   performFilter(filterBy) {
     filterBy = filterBy.toLowerCase();
     return this.myPatients.filter(
-      patient =>
+      (patient) =>
         patient.users[0].fullName.toLowerCase().indexOf(filterBy) !== -1
     );
   }
@@ -229,17 +245,18 @@ export class MyPatientsComponent implements OnInit {
   prohibitAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
-      .subscribe(resp => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            elm => elm.users[0].id != item.users[0].id
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
       });
   }
   editAction(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
+    this.cardClicked(item);
   }
   deleteAction(item) {
     this.dialogService
@@ -248,13 +265,14 @@ export class MyPatientsComponent implements OnInit {
         "Suppression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.myPatientsService
             .deletePatientFromMyPatients(item.users[0].id)
-            .subscribe(resp => {
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((resp) => {
               this.filtredPatients = this.filtredPatients.filter(
-                elm => elm.users[0].id != item.users[0].id
+                (elm) => elm.users[0].id != item.users[0].id
               );
               this.number--;
             });
@@ -269,14 +287,15 @@ export class MyPatientsComponent implements OnInit {
         "Confirmation d'archivage"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.myPatientsService
             .deletePatientFile(item.users[0].id)
-            .subscribe(resp => {
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((resp) => {
               if (resp == true) {
                 this.filtredPatients = this.filtredPatients.filter(
-                  elm => elm.users[0].id != item.users[0].id
+                  (elm) => elm.users[0].id != item.users[0].id
                 );
                 this.number--;
               }
@@ -288,15 +307,15 @@ export class MyPatientsComponent implements OnInit {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100
+        scrollTop: $("#appPatientFile").offset().top - 100,
       },
       1000
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: item.users[0].id,
       },
-      relativeTo: this.route
+      relativeTo: this.route,
     });
   }
 
@@ -308,12 +327,15 @@ export class MyPatientsComponent implements OnInit {
     }
   }
   getMyCategories() {
-    this.categoryService.getMyCategories().subscribe(categories => {
-      this.categs = categories;
-      this.mesCategories = categories;
-      this.mesCategories = this.mesCategories.map(s => s.name);
-      this.mesCategories.unshift("Tout");
-    });
+    this.categoryService
+      .getMyCategories()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((categories) => {
+        this.categs = categories;
+        this.mesCategories = categories;
+        this.mesCategories = this.mesCategories.map((s) => s.name);
+        this.mesCategories.unshift("Tout");
+      });
   }
   listFilter(value: string) {
     this.pageNo = 0;
@@ -343,7 +365,7 @@ export class MyPatientsComponent implements OnInit {
   addPatient() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100
+        scrollTop: $("#appPatientFile").offset().top - 100,
       },
       1000
     );
