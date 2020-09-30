@@ -67,16 +67,15 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.featureService.setActiveChild("sent");
-    this.route.queryParams
-      .subscribe((params) => {
-        if (params["status"] == "archiveSuccess") {
-          this.notifier.show({
-            message: this.globalService.toastrMessages.archived_message_success,
-            type: "info",
-            template: this.customNotificationTmpl,
-          });
-        }
-      });
+    this.route.queryParams.subscribe((params) => {
+      if (params["status"] == "archiveSuccess") {
+        this.notifier.show({
+          message: this.globalService.toastrMessages.archived_message_success,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+      }
+    });
     this.countSentMessage();
     this.searchSent();
     setTimeout(() => {
@@ -246,26 +245,23 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
         .afterClosed()
         .subscribe((res) => {
           if (res) {
-            this.messageService
-              .markMessageAsArchived(messagesId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(
-                (resp) => {
-                  this.itemsList = this.itemsList.filter(
-                    (elm) => !messagesId.includes(elm.id)
-                  );
-                  this.filtredItemList = this.filtredItemList.filter(
-                    (elm) => !messagesId.includes(elm.id)
-                  );
-                  this.deleteElementsFromInbox(messagesId.slice(0));
-                  this.featureService.archiveState.next(true);
-                },
-                (error) => {
-                  console.log(
-                    "We have to find a way to notify user by this error"
-                  );
-                }
-              );
+            this.messageService.markMessageAsArchived(messagesId).subscribe(
+              (resp) => {
+                this.itemsList = this.itemsList.filter(
+                  (elm) => !messagesId.includes(elm.id)
+                );
+                this.filtredItemList = this.filtredItemList.filter(
+                  (elm) => !messagesId.includes(elm.id)
+                );
+                this.deleteElementsFromInbox(messagesId.slice(0));
+                this.featureService.archiveState.next(true);
+              },
+              (error) => {
+                console.log(
+                  "We have to find a way to notify user by this error"
+                );
+              }
+            );
           }
         });
     }
@@ -280,26 +276,21 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res) {
           let messageId = event.id;
-          this.messageService
-            .markMessageAsArchived([messageId])
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              (resp) => {
-                this.itemsList = this.itemsList.filter(
-                  (elm) => messageId != elm.id
-                );
-                this.filtredItemList = this.filtredItemList.filter(
-                  (elm) => messageId != elm.id
-                );
-                this.deleteElementsFromInbox([messageId]);
-                this.featureService.archiveState.next(true);
-              },
-              (error) => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
-              }
-            );
+          this.messageService.markMessageAsArchived([messageId]).subscribe(
+            (resp) => {
+              this.itemsList = this.itemsList.filter(
+                (elm) => messageId != elm.id
+              );
+              this.filtredItemList = this.filtredItemList.filter(
+                (elm) => messageId != elm.id
+              );
+              this.deleteElementsFromInbox([messageId]);
+              this.featureService.archiveState.next(true);
+            },
+            (error) => {
+              console.log("We have to find a way to notify user by this error");
+            }
+          );
         }
       });
   }
@@ -328,17 +319,15 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   }
 
   searchSent() {
-    this.featureService
-      .getFilteredSentSearch()
-      .subscribe((res) => {
-        if (res == null) {
-          this.filtredItemList = [];
-        } else if (res?.length > 0) {
-          this.filtredItemList = res;
-        } else {
-          this.filtredItemList = this.itemsList;
-        }
-      });
+    this.featureService.getFilteredSentSearch().subscribe((res) => {
+      if (res == null) {
+        this.filtredItemList = [];
+      } else if (res?.length > 0) {
+        this.filtredItemList = res;
+      } else {
+        this.filtredItemList = this.itemsList;
+      }
+    });
   }
 
   // destory any pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
