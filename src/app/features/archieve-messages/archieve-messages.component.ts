@@ -201,15 +201,12 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   markMessageAsSeen(messageId) {
-    this.archivedService
-      .markMessageAsSeen(messageId)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((result) => {
-        this.featureService.numberOfArchieve--;
-        this.featureService.markAsSeen(this.featureService.searchArchive, [
-          messageId,
-        ]);
-      });
+    this.archivedService.markMessageAsSeen(messageId).subscribe((result) => {
+      this.featureService.numberOfArchieve--;
+      this.featureService.markAsSeen(this.featureService.searchArchive, [
+        messageId,
+      ]);
+    });
   }
 
   getPhotoId(senderDetail): string {
@@ -230,20 +227,18 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   searchArchive() {
-    this.featureService
-      .getFilteredArchiveSearch()
-      .subscribe((res) => {
-        if (res == null) {
-          this.filtredItemList = [];
-          this.searchContext = true;
-        } else if (res?.length > 0) {
-          this.filtredItemList = res;
-          this.searchContext = true;
-        } else {
-          this.filtredItemList = this.itemsList;
-          this.searchContext = false;
-        }
-      });
+    this.featureService.getFilteredArchiveSearch().subscribe((res) => {
+      if (res == null) {
+        this.filtredItemList = [];
+        this.searchContext = true;
+      } else if (res?.length > 0) {
+        this.filtredItemList = res;
+        this.searchContext = true;
+      } else {
+        this.filtredItemList = this.itemsList;
+        this.searchContext = false;
+      }
+    });
   }
 
   mapAllMessages(messages) {
