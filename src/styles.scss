@@ -85,18 +85,7 @@ body {
     zoom: 100%;
   }
   background-color: #fbfbfb;
-  -moz-transform: scale(0.9);
-  -moz-transform-origin: top left;
 }
-
-@-moz-document url-prefix() {
-  html,
-  body {
-    width: 110.6%;
-    height: 111%;
-  }
-}
-
 input,
 select,
 textarea {
