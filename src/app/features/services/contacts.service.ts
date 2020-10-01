@@ -5,7 +5,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { Speciality } from "@app/shared/models/speciality";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ContactsService {
   public messages = {
@@ -47,7 +47,10 @@ export class ContactsService {
     zip_code: "Code postal",
     city: "Ville",
     send: "Envoyer",
-    email_exist: "Email déja utilisé"
+    email_exist: "Email déja utilisé",
+    edit_failed: "Erreur survenue lors de la modification du contact",
+    contact_edit: "Contact modifié avec succès",
+    info: "Informations",
   };
 
   public id = new BehaviorSubject(null);

@@ -456,23 +456,20 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   importantAction() {
     let ids = [];
     ids.push(this.idMessage);
-    this.messagingDetailService
-      .markMessageAsImportant(ids)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        message => {
-          this.links.isImportant = false;
+    this.messagingDetailService.markMessageAsImportant(ids).subscribe(
+      message => {
+        this.links.isImportant = false;
 
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.mark_important_message_success
-          );
-        },
-        error => {
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.mark_important_message_error
-          );
-        }
-      );
+        this.featureComp.setNotif(
+          this.globalService.toastrMessages.mark_important_message_success
+        );
+      },
+      error => {
+        this.featureComp.setNotif(
+          this.globalService.toastrMessages.mark_important_message_error
+        );
+      }
+    );
   }
 
   archieveActionClicked() {
@@ -486,26 +483,23 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         if (res) {
           let ids = [];
           ids.push(this.idMessage);
-          this.messagingDetailService
-            .markMessageAsArchived(ids)
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              resp => {
-                this.router.navigate([this.previousURL]);
-                this.featureComp.setNotif(
-                  this.globalService.toastrMessages.archived_message_success
-                );
-                if (this.previousURL == "/messagerie-transferes") {
-                  this.featureService.numberOfForwarded =
-                    this.featureService.numberOfForwarded - 1;
-                }
-              },
-              error => {
-                this.featureComp.setNotif(
-                  this.globalService.toastrMessages.archived_message_error
-                );
+          this.messagingDetailService.markMessageAsArchived(ids).subscribe(
+            resp => {
+              this.router.navigate([this.previousURL]);
+              this.featureComp.setNotif(
+                this.globalService.toastrMessages.archived_message_success
+              );
+              if (this.previousURL == "/messagerie-transferes") {
+                this.featureService.numberOfForwarded =
+                  this.featureService.numberOfForwarded - 1;
               }
-            );
+            },
+            error => {
+              this.featureComp.setNotif(
+                this.globalService.toastrMessages.archived_message_error
+              );
+            }
+          );
         }
       });
   }
@@ -636,5 +630,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
   getPatientFile(info) {
     this.dialogService.openPatientFile("Fiche Patient", info);
+  }
+  displayContact(contactId) {
+    this.dialogService.openContactDetail("Détails Contact", contactId);
   }
 }

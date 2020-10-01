@@ -78,33 +78,29 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     this.imageSource = this.avatars.user;
   }
   realTime() {
-    this.messagingDetailService
-      .getIdObs()
-      .subscribe((resp) => {
-        this.route.queryParams
-          .subscribe((params) => {
-            this.forwardedResponse = false;
-            this.acceptResponse = false;
-            this.refuseResponse = false;
-            if (params["status"] && params["status"] == "refus") {
-              this.refuseResponse = true;
-            } else if (params["status"] && params["status"] == "accept") {
-              this.acceptResponse = true;
-            } else if (params["context"] && params["context"] == "forward") {
-              this.forwardedResponse = true;
-              this.getForwardToList();
-            }
-          });
-        this.route.params
-          .subscribe((params) => {
-            this.idMessage = params["id"];
-            this.messagingDetail = this.route.snapshot.data.messagingdetail;
-            this.getMessageDetailById(this.idMessage);
-          });
-        setTimeout(() => {
-          this.featureService.setIsMessaging(true);
-        });
+    this.messagingDetailService.getIdObs().subscribe((resp) => {
+      this.route.queryParams.subscribe((params) => {
+        this.forwardedResponse = false;
+        this.acceptResponse = false;
+        this.refuseResponse = false;
+        if (params["status"] && params["status"] == "refus") {
+          this.refuseResponse = true;
+        } else if (params["status"] && params["status"] == "accept") {
+          this.acceptResponse = true;
+        } else if (params["context"] && params["context"] == "forward") {
+          this.forwardedResponse = true;
+          this.getForwardToList();
+        }
       });
+      this.route.params.subscribe((params) => {
+        this.idMessage = params["id"];
+        this.messagingDetail = this.route.snapshot.data.messagingdetail;
+        this.getMessageDetailById(this.idMessage);
+      });
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
+    });
   }
   ngOnInit(): void {
     this.realTime();
@@ -116,21 +112,17 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     );
   }
   getForwardToList() {
-    this.messagingDetailService
-      .getTlsSecretaryList()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((list) => {
-        list.forEach((receiver) => {
-          this.loadPhoto(receiver);
-        });
-        this.toList.next(list);
+    this.messagingDetailService.getTlsSecretaryList().subscribe((list) => {
+      list.forEach((receiver) => {
+        this.loadPhoto(receiver);
       });
+      this.toList.next(list);
+    });
   }
 
   getMessageDetailById(id) {
     this.messagingDetailService
       .getMessagingDetailById(id)
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((message) => {
         message.toReceivers.forEach((element) => {
           if (element.receiverId == this.featureService.getUserId()) {
@@ -146,49 +138,42 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   }
 
   loadPhoto(user) {
-    this.documentService
-      .getDefaultImage(user.id)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            user.img = this.sanitizer.bypassSecurityTrustUrl(
-              myReader.result as string
-            );
-          };
-          let ok = myReader.readAsDataURL(response);
-        },
-        (error) => {
-          user.img = this.avatars.user;
-        }
-      );
+    this.documentService.getDefaultImage(user.id).subscribe(
+      (response) => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = (e) => {
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      (error) => {
+        user.img = this.avatars.user;
+      }
+    );
   }
 
   loadSenderForPhoto(message) {
-    this.documentService
-      .getDefaultImage(message.sender.senderForId)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (response) => {
-          let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
-            message.sender.forImg = this.sanitizer.bypassSecurityTrustUrl(
-              myReader.result as string
-            );
-          };
-          let ok = myReader.readAsDataURL(response);
-        },
-        (error) => {
-          message.sender.forImg = this.avatars.user;
-        }
-      );
+    this.documentService.getDefaultImage(message.sender.senderForId).subscribe(
+      (response) => {
+        let myReader: FileReader = new FileReader();
+        myReader.onloadend = (e) => {
+          message.sender.forImg = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
+        };
+        let ok = myReader.readAsDataURL(response);
+      },
+      (error) => {
+        message.sender.forImg = this.avatars.user;
+      }
+    );
   }
 
   getAllRefuseTypes() {
     return this.refuseTypeService
       .getAllRefuseTypes()
-      .pipe(takeUntil(this._destroyed$))
       .subscribe((refuseTypes) => {
         this.objectsList = refuseTypes;
       });
@@ -222,7 +207,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       if (this.refuseResponse) {
         this.messagingDetailService
           .getRefuseRequest(requestDto)
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
@@ -230,7 +214,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       if (this.acceptResponse) {
         this.messagingDetailService
           .getAcceptRequest(requestDto)
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
@@ -239,7 +222,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         requestDto.websiteOrigin = "TLS";
         this.messagingDetailService
           .getAcceptRequest(requestDto)
-          .pipe(takeUntil(this._destroyed$))
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
           });
@@ -310,51 +292,45 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
           this.selectedFiles.item(0).name
         );
       }
-      this.nodeService
-        .saveFileInMemory(this.uuid, formData)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          (message) => {
-            if (this.forwardedResponse) {
-              this.featureService.numberOfForwarded =
-                this.featureService.numberOfForwarded + 1;
-            }
-            this.spinner.hide();
-            this.featureComp.setNotif(
-              this.globalService.toastrMessages.send_message_success
-            );
-            this.router.navigate(["/messagerie"]);
-          },
-          (error) => {
-            this.spinner.hide();
-            this.featureComp.setNotif(
-              this.globalService.toastrMessages.send_message_error
-            );
+      this.nodeService.saveFileInMemory(this.uuid, formData).subscribe(
+        (message) => {
+          if (this.forwardedResponse) {
+            this.featureService.numberOfForwarded =
+              this.featureService.numberOfForwarded + 1;
           }
-        );
+          this.spinner.hide();
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_success
+          );
+          this.router.navigate(["/messagerie"]);
+        },
+        (error) => {
+          this.spinner.hide();
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_error
+          );
+        }
+      );
     } else {
-      this.messageService
-        .replyMessage(replyMessage)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          (message) => {
-            if (this.forwardedResponse) {
-              this.featureService.numberOfForwarded =
-                this.featureService.numberOfForwarded + 1;
-            }
-            this.spinner.hide();
-            this.featureComp.setNotif(
-              this.globalService.toastrMessages.send_message_success
-            );
-            this.router.navigate(["/messagerie"]);
-          },
-          (error) => {
-            this.spinner.hide();
-            this.featureComp.setNotif(
-              this.globalService.toastrMessages.send_message_error
-            );
+      this.messageService.replyMessage(replyMessage).subscribe(
+        (message) => {
+          if (this.forwardedResponse) {
+            this.featureService.numberOfForwarded =
+              this.featureService.numberOfForwarded + 1;
           }
-        );
+          this.spinner.hide();
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_success
+          );
+          this.router.navigate(["/messagerie"]);
+        },
+        (error) => {
+          this.spinner.hide();
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_error
+          );
+        }
+      );
     }
   }
   goToBack() {
