@@ -20,6 +20,9 @@ $color-helssy-grey: #6e819bd4;
   color: $hlessy-blue;
   padding: 21px 18px 21px 18px;
 }
+.without-click {
+  pointer-events: none;
+}
 .fa-icon {
   font-size: 15px;
   font-stretch: normal;

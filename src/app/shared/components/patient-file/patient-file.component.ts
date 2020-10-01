@@ -74,6 +74,7 @@ export class PatientFileComponent implements OnInit {
   @Input("practicianImage") practicianImage: string;
   @Input("noteimageSource") noteimageSource: string;
   @Input("userRole") userRole: string;
+  @Input("popup") popup: boolean = false;
   @Input() isAdd: boolean = false;
   /* Patient file information */
   @Input("patient") patient = new Subject();
