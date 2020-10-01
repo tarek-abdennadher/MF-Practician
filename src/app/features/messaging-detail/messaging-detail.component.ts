@@ -567,7 +567,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
 
   // Display patient file using patientid and practician id
   displayPatientFile(idAccount) {
-    console.log("here");
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       let info = {
         patientId: idAccount,
@@ -611,7 +610,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
   // Display patient file using patient file id
   displayForPatientFile(patientFileId) {
-    console.log("there");
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       let info = {
         patientFileId: patientFileId,
