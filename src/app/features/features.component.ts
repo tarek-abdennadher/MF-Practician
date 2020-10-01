@@ -650,7 +650,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     } else if (notification.type == "INSTRUCTION_TREATED") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-
         .subscribe((resp) => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/messagerie-lire/" + notification.messageId], {
@@ -658,6 +657,13 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
               section: "sent",
             },
           });
+        });
+    } else if (notification.type == "MESSAGE_FAILED") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+
+        .subscribe((resp) => {
+          this.getMyNotificationsNotSeen();
         });
     }
   }
