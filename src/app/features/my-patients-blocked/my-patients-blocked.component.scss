@@ -1,6 +1,13 @@
 .objects {
   padding-top: 130px;
 }
+#block {
+  ::ng-deep {
+    #buttons {
+      display: flex !important;
+    }
+  }
+}
 
 @media only screen and (max-width: 767px) {
   .objects {
