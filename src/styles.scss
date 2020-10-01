@@ -41,7 +41,7 @@
 $custom-typography: mat-typography-config(
   $font-family: "Montserrat",
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500)
+  $body-1: mat-typography-level(16px, 24px, 500),
 );
 @include mat-base-typography($custom-typography);
 @include mat-checkbox-typography($custom-typography);
@@ -85,7 +85,18 @@ body {
     zoom: 100%;
   }
   background-color: #fbfbfb;
+  -moz-transform: scale(0.9);
+  -moz-transform-origin: top left;
 }
+
+@-moz-document url-prefix() {
+  html,
+  body {
+    width: 110.6%;
+    height: 111%;
+  }
+}
+
 input,
 select,
 textarea {
