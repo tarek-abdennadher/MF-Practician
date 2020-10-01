@@ -1,7 +1,16 @@
 .objects {
   padding-top: 130px;
 }
-
+.readOnly {
+  pointer-events: none;
+}
+#invit {
+  ::ng-deep {
+    #buttons {
+      display: none !important;
+    }
+  }
+}
 @media only screen and (max-width: 767px) {
   .objects {
     padding-top: 10px;

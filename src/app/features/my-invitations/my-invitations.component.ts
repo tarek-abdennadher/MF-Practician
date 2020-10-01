@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
   selector: "app-my-invitations",
   templateUrl: "./my-invitations.component.html",
-  styleUrls: ["./my-invitations.component.scss"],
+  styleUrls: ["./my-invitations.component.scss"]
 })
 export class MyInvitationsComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -60,7 +60,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     this.initPendingPatients();
     // update list after detail view
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-invitations?loading=true") {
           let currentRoute = this.route;
@@ -85,9 +85,9 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     this.featureService
       .markReceivedNotifAsSeen()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.featureService.listNotifications = this.featureService.listNotifications.filter(
-          (notif) => notif.messageId != null
+          notif => notif.messageId != null
         );
       });
   }
@@ -102,10 +102,10 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
         this.myPatients = [];
-        myPatients.forEach((elm) => {
+        myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -118,10 +118,10 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach((elm) => {
+          myPatients.forEach(elm => {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
@@ -145,7 +145,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      civility: patient.civility,
+      civility: patient.civility
     });
     myPatients.id = patient.id;
     myPatients.photoId = patient.photoId;
@@ -154,21 +154,21 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
-    myPatients.users.forEach((user) => {
+    myPatients.users.forEach(user => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          (error) => {
+          error => {
             user.img = this.avatars.user;
           }
         );
@@ -179,37 +179,37 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100,
+        scrollTop: $("#appPatientFile").offset().top - 100
       },
       1000
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id,
+        id: item.users[0].id
       },
-      relativeTo: this.route,
+      relativeTo: this.route
     });
   }
   acceptedAction(item) {
     this.myPatientsService
       .acceptPatientInvitation(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => notif.senderId != item.users[0].accountId
+            notif => notif.senderId != item.users[0].accountId
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
             .pipe(takeUntil(this._destroyed$))
-            .subscribe((resp) => {});
+            .subscribe(resp => {});
         }
       });
   }
@@ -217,17 +217,17 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
           this.featureService.setNumberOfPending(
             this.featureService.getNumberOfPendingValue() - 1
           );
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
-            (notif) => notif.senderId != item.users[0].accountId
+            notif => notif.senderId != item.users[0].accountId
           );
         }
       });
