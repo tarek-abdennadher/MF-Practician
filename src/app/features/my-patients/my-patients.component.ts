@@ -100,14 +100,11 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   markNotificationsAsSeen() {
-    this.featureService
-      .markReceivedNotifAsSeen()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
-        this.featureService.listNotifications = this.featureService.listNotifications.filter(
-          (notif) => notif.messageId != null
-        );
-      });
+    this.featureService.markReceivedNotifAsSeen().subscribe((resp) => {
+      this.featureService.listNotifications = this.featureService.listNotifications.filter(
+        (notif) => notif.messageId != null
+      );
+    });
   }
   getPatientsOfCurrentParactician(pageNo) {
     this.myPatients = [];
@@ -130,26 +127,24 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       });
   }
   searchPatients() {
-    this.featureService
-      .getFilteredPatientsSearch()
-      .subscribe((res) => {
-        if (res == null) {
-          this.filtredPatients = [];
-          this.number = this.filtredPatients.length;
-        } else if (res?.length > 0) {
-          let patients = [];
-          res.forEach((elm) => {
-            patients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
-          });
-          this.filtredPatients = patients;
-          this.number = this.filtredPatients.length;
-        } else {
-          this.filtredPatients = this.myPatients;
-          this.number = this.filtredPatients.length;
-        }
-      });
+    this.featureService.getFilteredPatientsSearch().subscribe((res) => {
+      if (res == null) {
+        this.filtredPatients = [];
+        this.number = this.filtredPatients.length;
+      } else if (res?.length > 0) {
+        let patients = [];
+        res.forEach((elm) => {
+          patients.push(
+            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+          );
+        });
+        this.filtredPatients = patients;
+        this.number = this.filtredPatients.length;
+      } else {
+        this.filtredPatients = this.myPatients;
+        this.number = this.filtredPatients.length;
+      }
+    });
   }
   getNextPagePatientsOfCurrentParactician(pageNo) {
     this.myPatientsService
@@ -211,7 +206,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
-        .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (response) => {
             let myReader: FileReader = new FileReader();
@@ -327,15 +321,12 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     }
   }
   getMyCategories() {
-    this.categoryService
-      .getMyCategories()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((categories) => {
-        this.categs = categories;
-        this.mesCategories = categories;
-        this.mesCategories = this.mesCategories.map((s) => s.name);
-        this.mesCategories.unshift("Tout");
-      });
+    this.categoryService.getMyCategories().subscribe((categories) => {
+      this.categs = categories;
+      this.mesCategories = categories;
+      this.mesCategories = this.mesCategories.map((s) => s.name);
+      this.mesCategories.unshift("Tout");
+    });
   }
   listFilter(value: string) {
     this.pageNo = 0;
