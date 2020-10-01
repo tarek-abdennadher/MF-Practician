@@ -56,7 +56,6 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        console.log(event.url);
         if (event.url === "/mes-objets?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild)

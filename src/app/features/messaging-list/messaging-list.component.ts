@@ -268,7 +268,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             }
           },
           (error) => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
       } else {
@@ -294,7 +294,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               }
             },
             (error) => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
       }
@@ -356,9 +356,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 this.messagesServ.uncheckMessages(checkedMessages);
               },
               (error) => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
+                //We have to find a way to notify user by this error
               }
             );
           }
@@ -542,11 +540,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             }
           }
           (error) => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           };
         },
         (error) => {
-          console.log("We have to find a way to notify user by this error");
+          //We have to find a way to notify user by this error
         }
       );
     } else {
@@ -590,7 +588,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             }
           },
           (error) => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
     }
@@ -632,7 +630,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               this.refreshCurrentPage();
             },
             (error) => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
         }
@@ -870,7 +868,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             }
           },
           (error) => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
       }

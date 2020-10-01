@@ -17,7 +17,7 @@ import { FeaturesComponent } from "../features.component";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
-  styleUrls: ["./messaging-detail.component.scss"],
+  styleUrls: ["./messaging-detail.component.scss"]
 })
 export class MessagingDetailComponent implements OnInit, OnDestroy {
   message: any;
@@ -91,14 +91,14 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   scrollToBottom(): void {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#reply").offset().top - 100,
+        scrollTop: $("#reply").offset().top - 100
       },
       1000
     );
   }
   ngOnInit(): void {
     this.loading = false;
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       if (params["context"]) {
         this.context = params["context"];
         switch (params["context"]) {
@@ -147,7 +147,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.route.params.subscribe((params) => {
+      this.route.params.subscribe(params => {
         if (this.message && this.message != null) {
           this.showRefuseForTls =
             (this.message.sender.role == "TELESECRETARYGROUP" ||
@@ -181,7 +181,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       this.messagingDetailService
         .getMessageArchivedById(id)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((message) => {
+        .subscribe(message => {
           this.message = message;
           this.getAttachements(message.nodesId);
           message.sender = message.senderArchived;
@@ -194,7 +194,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           this.links = {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
-            isAddNote: true,
+            isAddNote: true
           };
           if (
             this.messagingDetail.sender.senderId ==
@@ -202,40 +202,40 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           ) {
             this.isFromInbox = false;
           }
-          this.messagingDetail.toReceivers.forEach((receiver) => {
+          this.messagingDetail.toReceivers.forEach(receiver => {
             this.documentService
               .getDefaultImage(receiver.receiverId)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
           });
-          this.messagingDetail.ccReceivers.forEach((receiver) => {
+          this.messagingDetail.ccReceivers.forEach(receiver => {
             this.documentService
               .getDefaultImage(receiver.receiverId)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
@@ -244,16 +244,16 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             .getDefaultImage(this.messagingDetail.sender.senderId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(
-              (response) => {
+              response => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
+                myReader.onloadend = e => {
                   this.messagingDetail.sender.img = this.sanitizer.bypassSecurityTrustUrl(
                     myReader.result as string
                   );
                 };
                 let ok = myReader.readAsDataURL(response);
               },
-              (error) => {
+              error => {
                 this.messagingDetail.sender.img = this.avatars.user;
               }
             );
@@ -263,7 +263,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       this.messagingDetailService
         .getMessagingDetailById(id)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((message) => {
+        .subscribe(message => {
           this.message = message;
           this.showRefuseForTls =
             (message.sender.role == "TELESECRETARYGROUP" ||
@@ -285,50 +285,50 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           this.links = {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
-            isAddNote: true,
+            isAddNote: true
           };
           const filtredReceivers = this.messagingDetail.toReceivers.filter(
-            (to) => to.receiverId != this.featureService.getUserId()
+            to => to.receiverId != this.featureService.getUserId()
           );
           if (filtredReceivers.length > 0) {
             this.hideTo = false;
             this.messagingDetail.toReceivers = filtredReceivers;
           }
           this.setParentImg(this.messagingDetail.parent);
-          this.messagingDetail.toReceivers.forEach((receiver) => {
+          this.messagingDetail.toReceivers.forEach(receiver => {
             this.documentService
               .getDefaultImage(receiver.receiverId)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
           });
-          this.messagingDetail.ccReceivers.forEach((receiver) => {
+          this.messagingDetail.ccReceivers.forEach(receiver => {
             this.documentService
               .getDefaultImage(receiver.receiverId)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     receiver.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   receiver.img = this.avatars.user;
                 }
               );
@@ -337,16 +337,16 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             .getDefaultImage(this.messagingDetail.sender.senderId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(
-              (response) => {
+              response => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
+                myReader.onloadend = e => {
                   this.messagingDetail.sender.img = this.sanitizer.bypassSecurityTrustUrl(
                     myReader.result as string
                   );
                 };
                 let ok = myReader.readAsDataURL(response);
               },
-              (error) => {
+              error => {
                 this.messagingDetail.sender.img = this.avatars.user;
               }
             );
@@ -360,27 +360,27 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .getDefaultImage(parent.sender.senderId)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               parent.sender.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          (error) => {
+          error => {
             parent.sender.img = this.avatars.user;
           }
         );
       if (parent.hasFiles) {
         if (parent.nodesId) {
           parent.attachements = [];
-          parent.nodesId.forEach((id) => {
+          parent.nodesId.forEach(id => {
             this.documentService
               .getNodeDetailsFromAlfresco(id)
               .pipe(takeUntil(this._destroyed$))
-              .subscribe((node) => {
+              .subscribe(node => {
                 parent.attachements.push(node.entry.name);
               });
           });
@@ -393,16 +393,16 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.messagingDetailService
       .patientsProhibitedByCurrentPractician()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.patientsId = resp;
-        this.collectedIds = message.toReceivers.map((r) => r.receiverId);
+        this.collectedIds = message.toReceivers.map(r => r.receiverId);
         if (message.ccReceivers.length > 0) {
-          this.collectedIds.push(message.ccReceivers.map((r) => r.receiverId));
+          this.collectedIds.push(message.ccReceivers.map(r => r.receiverId));
         }
         this.collectedIds.push(message.sender.senderId);
         if (this.patientsId.length > 0) {
           this.prohibited =
-            typeof this.collectedIds.find((elm) =>
+            typeof this.collectedIds.find(elm =>
               this.patientsId.includes(elm)
             ) != "undefined";
         }
@@ -414,7 +414,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
     this.router.navigate(["messagerie-repondre/", this.idMessage], {
-      relativeTo: this.route.parent,
+      relativeTo: this.route.parent
     });
   }
 
@@ -424,9 +424,9 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.scrollToBottom();
     this.router.navigate(["messagerie-repondre/", this.idMessage], {
       queryParams: {
-        context: "forward",
+        context: "forward"
       },
-      relativeTo: this.route.parent,
+      relativeTo: this.route.parent
     });
   }
 
@@ -435,9 +435,9 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.messagingDetailService.setId(this.idMessage);
     this.router.navigate(["messagerie-repondre/", this.idMessage], {
       queryParams: {
-        status: "accept",
+        status: "accept"
       },
-      relativeTo: this.route.parent,
+      relativeTo: this.route.parent
     });
     this.scrollToBottom();
   }
@@ -446,9 +446,9 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.messagingDetailService.setId(this.idMessage);
     this.router.navigate(["messagerie-repondre/", this.idMessage], {
       queryParams: {
-        status: "refus",
+        status: "refus"
       },
-      relativeTo: this.route.parent,
+      relativeTo: this.route.parent
     });
     this.scrollToBottom();
   }
@@ -457,14 +457,14 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     let ids = [];
     ids.push(this.idMessage);
     this.messagingDetailService.markMessageAsImportant(ids).subscribe(
-      (message) => {
+      message => {
         this.links.isImportant = false;
 
         this.featureComp.setNotif(
           this.globalService.toastrMessages.mark_important_message_success
         );
       },
-      (error) => {
+      error => {
         this.featureComp.setNotif(
           this.globalService.toastrMessages.mark_important_message_error
         );
@@ -479,12 +479,12 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           let ids = [];
           ids.push(this.idMessage);
           this.messagingDetailService.markMessageAsArchived(ids).subscribe(
-            (resp) => {
+            resp => {
               this.router.navigate([this.previousURL]);
               this.featureComp.setNotif(
                 this.globalService.toastrMessages.archived_message_success
@@ -494,7 +494,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
                   this.featureService.numberOfForwarded - 1;
               }
             },
-            (error) => {
+            error => {
               this.featureComp.setNotif(
                 this.globalService.toastrMessages.archived_message_error
               );
@@ -509,19 +509,19 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
 
   download(nodesId: Array<string>) {
-    nodesId.forEach((nodeId) => {
+    nodesId.forEach(nodeId => {
       var nodeDetails;
       this.documentService
         .getNodeDetailsFromAlfresco(nodeId)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((node) => {
+        .subscribe(node => {
           nodeDetails = node;
         });
 
       this.documentService
         .downloadFile(nodeId)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((response) => {
+        .subscribe(response => {
           const blob = new Blob([response.body]);
           const filename = nodeDetails.entry.name;
           const filenameDisplay = filename;
@@ -548,11 +548,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   getAttachements(nodesId: string[]) {
     if (nodesId) {
       this.attachements = [];
-      nodesId.forEach((id) => {
+      nodesId.forEach(id => {
         this.documentService
           .getNodeDetailsFromAlfresco(id)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((node) => {
+          .subscribe(node => {
             this.attachements.push(node.entry.name);
           });
       });
@@ -565,7 +565,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       let info = {
         patientId: idAccount,
         practicianId: this.featureService.getUserId(),
-        userRole: "PRACTICIAN",
+        userRole: "PRACTICIAN"
       };
       this.patientService
         .getPatientFileByPracticianId(
@@ -573,7 +573,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           this.featureService.getUserId()
         )
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {});
+        .subscribe(res => {});
       this.getPatientFile(info);
     } else {
       if (
@@ -592,11 +592,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       this.patientService
         .getAccountIdByPatientId(idAccount)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {
+        .subscribe(res => {
           let info = {
             patientId: res ? res : idAccount,
             practicianId: this.practicianId,
-            userRole: "SECRETARY",
+            userRole: "SECRETARY"
           };
           this.getPatientFile(info);
         });
@@ -608,7 +608,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       let info = {
         patientFileId: patientFileId,
         practicianId: this.featureService.getUserId(),
-        userRole: "PRACTICIAN",
+        userRole: "PRACTICIAN"
       };
       this.getPatientFile(info);
     } else {
@@ -623,7 +623,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       let info = {
         patientFileId: patientFileId,
         practicianId: this.practicianId,
-        userRole: "SECRETARY",
+        userRole: "SECRETARY"
       };
       this.getPatientFile(info);
     }

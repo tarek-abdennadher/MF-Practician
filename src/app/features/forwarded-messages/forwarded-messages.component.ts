@@ -207,18 +207,10 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
       a.isChecked = false;
     });
   }
-  seenActionClicked() {
-    console.log("seenAction");
-  }
-  seenAllActionClicked() {
-    console.log("seenAllAction");
-  }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
+  seenActionClicked() {}
+  seenAllActionClicked() {}
+  importantActionClicked() {}
+  deleteActionClicked() {}
   archieveActionClicked() {
     const messagesId = this.filtredItemList
       .filter((e) => e.isChecked == true)
@@ -246,9 +238,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
                   this.featureService.numberOfForwarded - messagesId.length;
               },
               (error) => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
+                //We have to find a way to notify user by this error
               }
             );
           }
@@ -279,7 +269,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
                 this.featureService.numberOfForwarded - 1;
             },
             (error) => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
         }

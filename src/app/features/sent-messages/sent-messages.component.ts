@@ -220,18 +220,10 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       a.isChecked = false;
     });
   }
-  seenActionClicked() {
-    console.log("seenAction");
-  }
-  seenAllActionClicked() {
-    console.log("seenAllAction");
-  }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
+  seenActionClicked() {}
+  seenAllActionClicked() {}
+  importantActionClicked() {}
+  deleteActionClicked() {}
   archieveActionClicked() {
     const messagesId = this.filtredItemList
       .filter((e) => e.isChecked == true)
@@ -257,9 +249,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
                 this.featureService.archiveState.next(true);
               },
               (error) => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
+                //We have to find a way to notify user by this error
               }
             );
           }
@@ -288,7 +278,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
               this.featureService.archiveState.next(true);
             },
             (error) => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
         }
