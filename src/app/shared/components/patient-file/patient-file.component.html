@@ -492,12 +492,12 @@
                 </div>
             </mat-tab>
             <!-- History -->
-            <mat-tab label="Historique" *ngIf="!isAdd">
+            <mat-tab label="Historique" *ngIf="!isAdd" >
                 <ng-template mat-tab-label>
                     <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
                     {{labels.history}}
                 </ng-template>
-                <div class="card-body justify-content-center">
+                <div class="card-body justify-content-center" [ngClass]="popup ? 'without-click' : ''">
                     <lib-hlsMessagingList [list]=" filtredItemList" [hasPaging]="true"
                         (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true" [isCheckbox]="isCheckbox">
                     </lib-hlsMessagingList>
