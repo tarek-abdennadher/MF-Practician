@@ -133,7 +133,7 @@
 
     <lib-hlsMessagingList
       class="links"
-      *ngIf="!loading && isSecretary"
+      *ngIf="!loading && isSecretary && isMyInbox"
       [list]="filtredItemList"
       [hasPaging]="true"
       (cardAction)="cardClicked($event)"

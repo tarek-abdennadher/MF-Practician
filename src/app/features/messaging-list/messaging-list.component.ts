@@ -430,6 +430,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                       : this.globalService.messagesDisplayScreen.newMessage;
                 });
             }
+            retrievedMess.sort(
+              (m1, m2) =>
+                new Date(m2.updatedAt).getTime() -
+                new Date(m1.updatedAt).getTime()
+            );
             this.itemsList.push(
               ...retrievedMess.map(item => this.parseMessage(item))
             );
@@ -450,6 +455,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(retrievedMess => {
         this.loading = false;
+        retrievedMess.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
         this.itemsList.push(
           ...retrievedMess.map(item => this.parseMessage(item))
         );
@@ -651,6 +660,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap(messages => {
+          messages.sort(
+            (m1, m2) =>
+              new Date(m2.updatedAt).getTime() -
+              new Date(m1.updatedAt).getTime()
+          );
           const parsedMessages = messages.map(message =>
             this.parseMessage(message)
           );

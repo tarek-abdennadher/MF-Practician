@@ -592,16 +592,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           .subscribe(() => {});
       } else if (
         notification.type == "MESSAGE_IN_PROGRESS" ||
-        notification.type == "MESSAGE_TREATED"
+        notification.type == "MESSAGE_TREATED" ||
+        notification.type == "MESSAGE_FAILED" ||
+        notification.type == "INVITATION" ||
+        notification.type == "INSTRUCTION_TREATED" ||
+        notification.type == "ACCEPTED_REQUEST"
       ) {
-        this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .subscribe(resp => {});
-      } else if (notification.type == "INVITATION") {
-        this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .subscribe(resp => {});
-      } else if (notification.type == "INSTRUCTION_TREATED") {
         this.featuresService
           .markNotificationAsSeen(notification.id)
           .subscribe(resp => {});
