@@ -100,6 +100,10 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
         this.loading = false;
+        messages.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
         messages.forEach((message) => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
@@ -136,18 +140,18 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
         message.messageStatus == "IN_PROGRESS"
           ? "En cours"
           : message.messageStatus == "TREATED"
-          ? "répondu"
-          : message.toReceivers[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "répondu"
+            : message.toReceivers[0].seen
+              ? "Lu"
+              : "Envoyé",
       value:
         message.messageStatus == "IN_PROGRESS"
           ? 80
           : message.messageStatus == "TREATED"
-          ? 100
-          : message.toReceivers[0].seen
-          ? 50
-          : 20,
+            ? 100
+            : message.toReceivers[0].seen
+              ? 50
+              : 20,
     };
     messageSent.users = [];
     message.toReceivers.forEach((r) => {
@@ -220,10 +224,10 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       a.isChecked = false;
     });
   }
-  seenActionClicked() {}
-  seenAllActionClicked() {}
-  importantActionClicked() {}
-  deleteActionClicked() {}
+  seenActionClicked() { }
+  seenAllActionClicked() { }
+  importantActionClicked() { }
+  deleteActionClicked() { }
   archieveActionClicked() {
     const messagesId = this.filtredItemList
       .filter((e) => e.isChecked == true)
@@ -289,14 +293,14 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(
-            (item) =>
-              item.users[0].type.toLowerCase() ==
-              (event == "doctor"
-                ? "medical"
-                : event == "secretary"
+          (item) =>
+            item.users[0].type.toLowerCase() ==
+            (event == "doctor"
+              ? "medical"
+              : event == "secretary"
                 ? "telesecretarygroup" || "secretary"
                 : event)
-          );
+        );
   }
   selectItem(event) {
     this.selectedObjects = event.filter((a) => a.isChecked == true);
