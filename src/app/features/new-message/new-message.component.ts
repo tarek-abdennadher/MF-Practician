@@ -241,6 +241,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     return this.sendMessageForm.controls;
   }
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
@@ -294,7 +295,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.selectedObjectSubscription();
     this.dropdownSettings = {
       singleSelection: false,
-      text: "Sélectionner un ou plusieurs correspondants",
+      text: this.innerWidth > 420 ?"Sélectionner un ou plusieurs correspondants" : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
       enableFilterSelectAll: true,
@@ -327,14 +328,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.dropdownSettingsForList,
       this.dropdownSettingsPatientToList
     );
-    this.dropdownSettingsForList.text = this.isPatient
+    this.dropdownSettingsForList.text =this.innerWidth > 420 ? (this.isPatient
       ? "Sélectionner une personne attachée à votre compte"
       : this.isSecretary()
       ? "Sélectionner un contact"
-      : "Sélectionner un patient concerné si nécessaire";
+      : "Sélectionner un patient concerné si nécessaire") : "Sélectionner";
     this.dropdownSettingsListObject = {
       singleSelection: true,
-      text: "Sélectionner un objet parmi votre liste",
+      text: this.innerWidth > 420 ? "Sélectionner un objet parmi votre liste" : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
       enableFilterSelectAll: true,
@@ -355,10 +356,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
     this.dropdownSettingsConcernList = {
       ...this.dropdownSettingsListObject,
-      text: "Sélectionner un patient concerné si nécessaire",
+      text: this.innerWidth > 420 ? "Sélectionner un patient concerné si nécessaire" : "Sélectionner",
     };
 
-    this.innerWidth = window.innerWidth;
   }
 
   ccListSubscription() {
@@ -1272,6 +1272,27 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     this.innerWidth = window.innerWidth;
+    this.dropdownSettings = {
+      ...this.dropdownSettings,
+      text: this.innerWidth > 420 ?"Sélectionner un ou plusieurs correspondants" : "Sélectionner",
+    };
+    this.dropdownSettingsForList = {
+      ...this.dropdownSettingsForList,
+      text: this.innerWidth > 420 ? (this.isPatient
+        ? "Sélectionner une personne attachée à votre compte"
+        : this.isSecretary()
+        ? "Sélectionner un contact"
+        : "Sélectionner un patient concerné si nécessaire") : "Sélectionner",
+    };
+    this.dropdownSettingsListObject.text = this.innerWidth > 420 ? "Sélectionner un objet parmi votre liste" : "Sélectionner";
+    this.dropdownSettingsListObject = {
+      ...this.dropdownSettingsListObject,
+      text: this.innerWidth > 420 ? "Sélectionner un objet parmi votre liste" : "Sélectionner",
+    };
+    this.dropdownSettingsConcernList = {
+      ...this.dropdownSettingsListObject,
+      text: this.innerWidth > 420 ? "Sélectionner un patient concerné si nécessaire" : "Sélectionner",
+    };
   }
   openConfirmModel() {
     $("#firstModal").modal("hide");
