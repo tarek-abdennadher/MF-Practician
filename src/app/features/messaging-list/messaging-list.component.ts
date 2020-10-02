@@ -254,31 +254,27 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     const messagesId = checkedMessages.map(e => e.id);
     if (messagesId.length > 0) {
       if (this.isMyInbox) {
-        this.messagesServ
-          .markMessageListAsSeen(messagesId)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(
-            resp => {
-              if (resp == true) {
-                this.featureService.markAsSeenById(
-                  this.filtredItemList,
-                  messagesId
-                );
-                this.featureService.removeNotificationByIdMessage(messagesId);
-                this.messagesServ.uncheckMessages(checkedMessages);
-              }
-            },
-            error => {
-              console.log("We have to find a way to notify user by this error");
+        this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
+          resp => {
+            if (resp == true) {
+              this.featureService.markAsSeenById(
+                this.filtredItemList,
+                messagesId
+              );
+              this.featureService.removeNotificationByIdMessage(messagesId);
+              this.messagesServ.uncheckMessages(checkedMessages);
             }
-          );
+          },
+          error => {
+            //We have to find a way to notify user by this error
+          }
+        );
       } else {
         this.messagesServ
           .markMessageListAsSeenByReceiverId(
             messagesId,
             this.featureService.selectedPracticianId
           )
-          .pipe(takeUntil(this._destroyed$))
           .subscribe(
             resp => {
               if (resp == true) {
@@ -296,7 +292,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               }
             },
             error => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
       }
@@ -327,45 +323,40 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             )
               .pipe(takeUntil(this._destroyed$))
               .subscribe();
-            this.messagesServ
-              .markMessageAsArchived(messagesId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(
-                resp => {
-                  let listToArchive = this.itemsList
-                    .slice(0)
-                    .filter(function(elm, ind) {
-                      return messagesId.indexOf(elm.id) != -1;
-                    });
-                  listToArchive.forEach(message => {
-                    if (!message.isSeen) {
-                      this.featureService.numberOfArchieve++;
-                      this.featureService.setNumberOfInbox(this.number - 1);
-                      this.inboxNumber--;
-                    }
-                    this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                      notification =>
-                        !listToArchive
-                          .map(message => message.id)
-                          .includes(notification.messageId)
-                    );
+            this.messagesServ.markMessageAsArchived(messagesId).subscribe(
+              resp => {
+                let listToArchive = this.itemsList
+                  .slice(0)
+                  .filter(function(elm, ind) {
+                    return messagesId.indexOf(elm.id) != -1;
                   });
-                  this.itemsList = this.itemsList.filter(
-                    elm => !messagesId.includes(elm.id)
+                listToArchive.forEach(message => {
+                  if (!message.isSeen) {
+                    this.featureService.numberOfArchieve++;
+                    this.featureService.setNumberOfInbox(this.number - 1);
+                    this.inboxNumber--;
+                  }
+                  this.featureService.listNotifications = this.featureService.listNotifications.filter(
+                    notification =>
+                      !listToArchive
+                        .map(message => message.id)
+                        .includes(notification.messageId)
                   );
-                  this.filtredItemList = this.filtredItemList.filter(
-                    elm => !messagesId.includes(elm.id)
-                  );
-                  this.deleteElementsFromInbox(messagesId.slice(0));
-                  this.featureService.archiveState.next(true);
-                  this.messagesServ.uncheckMessages(checkedMessages);
-                },
-                error => {
-                  console.log(
-                    "We have to find a way to notify user by this error"
-                  );
-                }
-              );
+                });
+                this.itemsList = this.itemsList.filter(
+                  elm => !messagesId.includes(elm.id)
+                );
+                this.filtredItemList = this.filtredItemList.filter(
+                  elm => !messagesId.includes(elm.id)
+                );
+                this.deleteElementsFromInbox(messagesId.slice(0));
+                this.featureService.archiveState.next(true);
+                this.messagesServ.uncheckMessages(checkedMessages);
+              },
+              error => {
+                //We have to find a way to notify user by this error
+              }
+            );
           }
         }
       });
@@ -439,6 +430,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                       : this.globalService.messagesDisplayScreen.newMessage;
                 });
             }
+            retrievedMess.sort(
+              (m1, m2) =>
+                new Date(m2.updatedAt).getTime() -
+                new Date(m1.updatedAt).getTime()
+            );
             this.itemsList.push(
               ...retrievedMess.map(item => this.parseMessage(item))
             );
@@ -459,9 +455,14 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(retrievedMess => {
         this.loading = false;
+        retrievedMess.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
         this.itemsList.push(
           ...retrievedMess.map(item => this.parseMessage(item))
         );
+        this.filtredItemList = this.itemsList;
       });
   }
 
@@ -517,54 +518,49 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   markMessageAsSeen(event) {
     let messageId = event.id;
     if (this.isMyInbox) {
-      this.messagesServ
-        .markMessageAsSeen(messageId)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe(
-          resp => {
-            if (resp == true) {
-              if (!event.isSeen) {
-                this.bottomText =
-                  this.number > 1
-                    ? this.globalService.messagesDisplayScreen.newMessages
-                    : this.globalService.messagesDisplayScreen.newMessage;
-                let notifLength = this.featureService.listNotifications.length;
-                this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                  notif => notif.messageId != event.id
-                );
-                this.featureService.setNumberOfInbox(
-                  this.featureService.getNumberOfInboxValue() - 1
-                );
-                this.inboxNumber -= 1;
-
-                this.featureService.markAsSeen(
-                  this.featureService.searchInbox,
-                  [messageId]
-                );
-              }
-
-              let filtredIndex = this.filtredItemList.findIndex(
-                item => item.id == messageId
+      this.messagesServ.markMessageAsSeen(messageId).subscribe(
+        resp => {
+          if (resp == true) {
+            if (!event.isSeen) {
+              this.bottomText =
+                this.number > 1
+                  ? this.globalService.messagesDisplayScreen.newMessages
+                  : this.globalService.messagesDisplayScreen.newMessage;
+              let notifLength = this.featureService.listNotifications.length;
+              this.featureService.listNotifications = this.featureService.listNotifications.filter(
+                notif => notif.messageId != event.id
               );
-              if (filtredIndex != -1) {
-                this.filtredItemList[filtredIndex].isSeen = true;
-              }
+              this.featureService.setNumberOfInbox(
+                this.featureService.getNumberOfInboxValue() - 1
+              );
+              this.inboxNumber -= 1;
+
+              this.featureService.markAsSeen(this.featureService.searchInbox, [
+                messageId
+              ]);
             }
-            error => {
-              console.log("We have to find a way to notify user by this error");
-            };
-          },
-          error => {
-            console.log("We have to find a way to notify user by this error");
+
+            let filtredIndex = this.filtredItemList.findIndex(
+              item => item.id == messageId
+            );
+            if (filtredIndex != -1) {
+              this.filtredItemList[filtredIndex].isSeen = true;
+            }
           }
-        );
+          error => {
+            //We have to find a way to notify user by this error
+          };
+        },
+        error => {
+          //We have to find a way to notify user by this error
+        }
+      );
     } else {
       this.messagesServ
         .markMessageAsSeenByReveiverId(
           messageId,
           this.featureService.selectedPracticianId
         )
-        .pipe(takeUntil(this._destroyed$))
         .subscribe(
           resp => {
             if (!event.isSeen) {
@@ -600,7 +596,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             }
           },
           error => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
     }
@@ -616,40 +612,35 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res) {
           let messageId = event.id;
-          this.messagesServ
-            .markMessageAsArchived([messageId])
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              resp => {
-                this.itemsList = this.itemsList.filter(function(elm, ind) {
-                  return elm.id != event.id;
-                });
-                this.filtredItemList = this.filtredItemList.filter(function(
-                  elm,
-                  ind
-                ) {
-                  return elm.id != event.id;
-                });
-                this.deleteElementsFromInbox([messageId]);
-                this.featureService.archiveState.next(true);
-                if (!event.isSeen) {
-                  this.featureService.numberOfArchieve++;
-                  this.featureService.setNumberOfInbox(
-                    this.featureService.getNumberOfInboxValue() - 1
-                  );
-                  this.inboxNumber--;
-                  this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                    notification => notification.messageId != event.id
-                  );
-                }
-                this.refreshCurrentPage();
-              },
-              error => {
-                console.log(
-                  "We have to find a way to notify user by this error"
+          this.messagesServ.markMessageAsArchived([messageId]).subscribe(
+            resp => {
+              this.itemsList = this.itemsList.filter(function(elm, ind) {
+                return elm.id != event.id;
+              });
+              this.filtredItemList = this.filtredItemList.filter(function(
+                elm,
+                ind
+              ) {
+                return elm.id != event.id;
+              });
+              this.deleteElementsFromInbox([messageId]);
+              this.featureService.archiveState.next(true);
+              if (!event.isSeen) {
+                this.featureService.numberOfArchieve++;
+                this.featureService.setNumberOfInbox(
+                  this.featureService.getNumberOfInboxValue() - 1
+                );
+                this.inboxNumber--;
+                this.featureService.listNotifications = this.featureService.listNotifications.filter(
+                  notification => notification.messageId != event.id
                 );
               }
-            );
+              this.refreshCurrentPage();
+            },
+            error => {
+              //We have to find a way to notify user by this error
+            }
+          );
         }
       });
   }
@@ -669,6 +660,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap(messages => {
+          messages.sort(
+            (m1, m2) =>
+              new Date(m2.updatedAt).getTime() -
+              new Date(m1.updatedAt).getTime()
+          );
           const parsedMessages = messages.map(message =>
             this.parseMessage(message)
           );
@@ -839,29 +835,26 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     for (let message of checkedMessages) {
       ids.push(message.id);
     }
-    this.messagesServ
-      .markMessageAsImportant(ids)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        message => {
-          this.links.isImportant = false;
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_success,
-            type: "info",
-            template: this.customNotificationTmpl
-          });
-          this.messagesServ.uncheckMessages(checkedMessages);
-        },
-        error => {
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_error,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
-        }
-      );
+    this.messagesServ.markMessageAsImportant(ids).subscribe(
+      message => {
+        this.links.isImportant = false;
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_important_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+        this.messagesServ.uncheckMessages(checkedMessages);
+      },
+      error => {
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_important_message_error,
+          type: "error",
+          template: this.customNotificationTmpl
+        });
+      }
+    );
 
     this.messagesServ.changeFlagImportant(this.filtredItemList, ids);
   }
@@ -873,27 +866,24 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     const messagesId = checkedMessages.map(e => e.id);
     if (messagesId.length > 0) {
       if (this.isMyInbox) {
-        this.messagesServ
-          .markMessagesListAsNotSeen(messagesId)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(
-            resp => {
-              if (resp == true) {
-                this.featureService.markAsNotSeenById(
-                  this.filtredItemList,
-                  messagesId
-                );
-                this.featureService.addNotificationByIdMessage(
-                  this.filtredItemList,
-                  messagesId
-                );
-                this.messagesServ.uncheckMessages(checkedMessages);
-              }
-            },
-            error => {
-              console.log("We have to find a way to notify user by this error");
+        this.messagesServ.markMessagesListAsNotSeen(messagesId).subscribe(
+          resp => {
+            if (resp == true) {
+              this.featureService.markAsNotSeenById(
+                this.filtredItemList,
+                messagesId
+              );
+              this.featureService.addNotificationByIdMessage(
+                this.filtredItemList,
+                messagesId
+              );
+              this.messagesServ.uncheckMessages(checkedMessages);
             }
-          );
+          },
+          error => {
+            //We have to find a way to notify user by this error
+          }
+        );
       }
     }
   }

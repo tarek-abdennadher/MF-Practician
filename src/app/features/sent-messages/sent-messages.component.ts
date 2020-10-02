@@ -15,7 +15,7 @@ import { DialogService } from "../services/dialog.service";
 @Component({
   selector: "app-sent-messages",
   templateUrl: "./sent-messages.component.html",
-  styleUrls: ["./sent-messages.component.scss"],
+  styleUrls: ["./sent-messages.component.scss"]
 })
 export class SentMessagesComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -26,7 +26,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     isFilter: true,
     isRefresh: true,
     isArchieve: true,
-    isPagination: true,
+    isPagination: true
   };
   page = "INBOX";
   number = 0;
@@ -67,16 +67,15 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.featureService.setActiveChild("sent");
-    this.route.queryParams
-      .subscribe((params) => {
-        if (params["status"] == "archiveSuccess") {
-          this.notifier.show({
-            message: this.globalService.toastrMessages.archived_message_success,
-            type: "info",
-            template: this.customNotificationTmpl,
-          });
-        }
-      });
+    this.route.queryParams.subscribe(params => {
+      if (params["status"] == "archiveSuccess") {
+        this.notifier.show({
+          message: this.globalService.toastrMessages.archived_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+      }
+    });
     this.countSentMessage();
     this.searchSent();
     setTimeout(() => {
@@ -88,7 +87,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     this.messageService
       .countSentMessage()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((messages) => {
+      .subscribe(messages => {
         this.pagination.init(messages);
         this.loadPage();
       });
@@ -101,24 +100,28 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
         this.loading = false;
-        messages.forEach((message) => {
+        messages.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+        messages.forEach(message => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
-          messageSent.users.forEach((user) => {
+          messageSent.users.forEach(user => {
             this.documentService
               .getDefaultImage(user.id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
-                (response) => {
+                response => {
                   let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
+                  myReader.onloadend = e => {
                     user.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
-                (error) => {
+                error => {
                   user.img = this.avatars.user;
                 }
               );
@@ -148,10 +151,10 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           ? 100
           : message.toReceivers[0].seen
           ? 50
-          : 20,
+          : 20
     };
     messageSent.users = [];
-    message.toReceivers.forEach((r) => {
+    message.toReceivers.forEach(r => {
       messageSent.users.push({
         fullName: r.fullName,
         img: this.imageSource,
@@ -159,12 +162,12 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
         type: r.role,
         photoId: r.photoId,
         civility: r.civility,
-        id: r.receiverId,
+        id: r.receiverId
       });
     });
     messageSent.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageSent.time = message.createdAt;
     messageSent.isImportant = message.important;
@@ -176,24 +179,24 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
 
   parseMessages(messages) {
     let parsedMessages = [];
-    messages.forEach((message) => {
+    messages.forEach(message => {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
-      messageSent.users.forEach((user) => {
+      messageSent.users.forEach(user => {
         this.documentService
           .getDefaultImage(user.id)
           .pipe(takeUntil(this._destroyed$))
           .subscribe(
-            (response) => {
+            response => {
               let myReader: FileReader = new FileReader();
-              myReader.onloadend = (e) => {
+              myReader.onloadend = e => {
                 user.img = this.sanitizer.bypassSecurityTrustUrl(
                   myReader.result as string
                 );
               };
               let ok = myReader.readAsDataURL(response);
             },
-            (error) => {
+            error => {
               user.img = "assets/imgs/user.png";
             }
           );
@@ -206,37 +209,29 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "sent",
-      },
+        context: "sent"
+      }
     });
   }
 
   selectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = true;
     });
   }
   deSelectAllActionClicked() {
-    this.itemsList.forEach((a) => {
+    this.itemsList.forEach(a => {
       a.isChecked = false;
     });
   }
-  seenActionClicked() {
-    console.log("seenAction");
-  }
-  seenAllActionClicked() {
-    console.log("seenAllAction");
-  }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
+  seenActionClicked() {}
+  seenAllActionClicked() {}
+  importantActionClicked() {}
+  deleteActionClicked() {}
   archieveActionClicked() {
     const messagesId = this.filtredItemList
-      .filter((e) => e.isChecked == true)
-      .map((e) => e.id);
+      .filter(e => e.isChecked == true)
+      .map(e => e.id);
     if (messagesId && messagesId.length > 0) {
       this.dialogService
         .openConfirmDialog(
@@ -244,28 +239,23 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           "Suppression"
         )
         .afterClosed()
-        .subscribe((res) => {
+        .subscribe(res => {
           if (res) {
-            this.messageService
-              .markMessageAsArchived(messagesId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(
-                (resp) => {
-                  this.itemsList = this.itemsList.filter(
-                    (elm) => !messagesId.includes(elm.id)
-                  );
-                  this.filtredItemList = this.filtredItemList.filter(
-                    (elm) => !messagesId.includes(elm.id)
-                  );
-                  this.deleteElementsFromInbox(messagesId.slice(0));
-                  this.featureService.archiveState.next(true);
-                },
-                (error) => {
-                  console.log(
-                    "We have to find a way to notify user by this error"
-                  );
-                }
-              );
+            this.messageService.markMessageAsArchived(messagesId).subscribe(
+              resp => {
+                this.itemsList = this.itemsList.filter(
+                  elm => !messagesId.includes(elm.id)
+                );
+                this.filtredItemList = this.filtredItemList.filter(
+                  elm => !messagesId.includes(elm.id)
+                );
+                this.deleteElementsFromInbox(messagesId.slice(0));
+                this.featureService.archiveState.next(true);
+              },
+              error => {
+                //We have to find a way to notify user by this error
+              }
+            );
           }
         });
     }
@@ -277,29 +267,24 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           let messageId = event.id;
-          this.messageService
-            .markMessageAsArchived([messageId])
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              (resp) => {
-                this.itemsList = this.itemsList.filter(
-                  (elm) => messageId != elm.id
-                );
-                this.filtredItemList = this.filtredItemList.filter(
-                  (elm) => messageId != elm.id
-                );
-                this.deleteElementsFromInbox([messageId]);
-                this.featureService.archiveState.next(true);
-              },
-              (error) => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
-              }
-            );
+          this.messageService.markMessageAsArchived([messageId]).subscribe(
+            resp => {
+              this.itemsList = this.itemsList.filter(
+                elm => messageId != elm.id
+              );
+              this.filtredItemList = this.filtredItemList.filter(
+                elm => messageId != elm.id
+              );
+              this.deleteElementsFromInbox([messageId]);
+              this.featureService.archiveState.next(true);
+            },
+            error => {
+              //We have to find a way to notify user by this error
+            }
+          );
         }
       });
   }
@@ -308,7 +293,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       event == "all"
         ? this.itemsList
         : this.itemsList.filter(
-            (item) =>
+            item =>
               item.users[0].type.toLowerCase() ==
               (event == "doctor"
                 ? "medical"
@@ -318,27 +303,25 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           );
   }
   selectItem(event) {
-    this.selectedObjects = event.filter((a) => a.isChecked == true);
+    this.selectedObjects = event.filter(a => a.isChecked == true);
   }
 
   deleteElementsFromInbox(ids) {
     let searchList = this.featureService.getSearchSentValue();
-    searchList = searchList.filter((x) => !ids.includes(x.id));
+    searchList = searchList.filter(x => !ids.includes(x.id));
     this.featureService.setSearchSent(searchList);
   }
 
   searchSent() {
-    this.featureService
-      .getFilteredSentSearch()
-      .subscribe((res) => {
-        if (res == null) {
-          this.filtredItemList = [];
-        } else if (res?.length > 0) {
-          this.filtredItemList = res;
-        } else {
-          this.filtredItemList = this.itemsList;
-        }
-      });
+    this.featureService.getFilteredSentSearch().subscribe(res => {
+      if (res == null) {
+        this.filtredItemList = [];
+      } else if (res?.length > 0) {
+        this.filtredItemList = res;
+      } else {
+        this.filtredItemList = this.itemsList;
+      }
+    });
   }
 
   // destory any pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak

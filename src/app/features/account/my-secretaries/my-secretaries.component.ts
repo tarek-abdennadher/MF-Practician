@@ -75,15 +75,10 @@ export class MySecretariesComponent implements OnInit, OnDestroy {
     this.accountService
       .getMySecretaries()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (contacts) => {
-          this.users = contacts;
-          this.itemsList = this.users.map((elm) => this.parseSec(elm));
-        },
-        (error) => {
-          console.log("error");
-        }
-      );
+      .subscribe((contacts) => {
+        this.users = contacts;
+        this.itemsList = this.users.map((elm) => this.parseSec(elm));
+      });
   }
   parseSec(sec): any {
     let parsedSec = {

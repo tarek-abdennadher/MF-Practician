@@ -14,7 +14,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-practician-search",
   templateUrl: "./practician-search.component.html",
-  styleUrls: ["./practician-search.component.scss"]
+  styleUrls: ["./practician-search.component.scss"],
 })
 export class PracticianSearchComponent implements OnInit {
   specialities: Array<Speciality>;
@@ -27,7 +27,7 @@ export class PracticianSearchComponent implements OnInit {
   imageSource: string;
   links = {
     isTypeFilter: false,
-    isAdd: this.localSt.retrieve("role") == "PRACTICIAN"
+    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
   };
   avatars: {
     doctor: string;
@@ -61,7 +61,7 @@ export class PracticianSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.featureService.setActiveChild("practician-search");
-    this.featureService.getSearchFiltredPractician().subscribe(list => {
+    this.featureService.getSearchFiltredPractician().subscribe((list) => {
       this.getPractians(list);
     });
     this.getAllSpeciality();
@@ -73,28 +73,28 @@ export class PracticianSearchComponent implements OnInit {
     this.itemsList = [];
     this.filtredItemsList = [];
     if (list && list.length > 0) {
-      list = list.filter(a => a.accountId != this.featureService.getUserId());
+      list = list.filter((a) => a.accountId != this.featureService.getUserId());
       this.number = list.length;
-      list.forEach(message => {
+      list.forEach((message) => {
         let practician = this.mappingPracticians(message);
         this.itemsList.push(practician);
       });
       this.filtredItemsList = this.itemsList;
-      this.itemsList.forEach(item => {
-        item.users.forEach(user => {
+      this.itemsList.forEach((item) => {
+        item.users.forEach((user) => {
           this.documentService
             .getDefaultImageEntity(user.id, "ACCOUNT")
             .subscribe(
-              response => {
+              (response) => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
+                myReader.onloadend = (e) => {
                   user.img = this.sanitizer.bypassSecurityTrustUrl(
                     myReader.result as string
                   );
                 };
                 let ok = myReader.readAsDataURL(response);
               },
-              error => {
+              (error) => {
                 user.img = this.avatars.user;
               }
             );
@@ -106,10 +106,8 @@ export class PracticianSearchComponent implements OnInit {
   }
   edit() {
     this.featureService.changeSearch(new search(this.text, this.city));
-    jQuery(document).ready(function(e) {
-      jQuery(this)
-        .find("#dropdownMenuLinkSearch")
-        .trigger("click");
+    jQuery(document).ready(function (e) {
+      jQuery(this).find("#dropdownMenuLinkSearch").trigger("click");
     });
   }
 
@@ -125,14 +123,14 @@ export class PracticianSearchComponent implements OnInit {
         title: message.title,
         type: "CONTACT-BOOK",
         fonction: message.title,
-        civility: null
-      }
+        civility: null,
+      },
     ];
     practician.photoId = message.photoId;
     practician.object = {
       name: message.address,
       isImportant: false,
-      isLocalisation: true
+      isLocalisation: true,
     };
     practician.time = null;
     practician.isImportant = false;
@@ -144,13 +142,13 @@ export class PracticianSearchComponent implements OnInit {
   cardClicked(item) {
     this.router.navigate(["/praticien-recherche/praticien-detail/" + item.id], {
       queryParams: {
-        search: true
-      }
+        search: true,
+      },
     });
   }
   selectItem(event) {
-    this.itemsList.forEach(a => {
-      if (event.filter(b => b.id == a.id).length >= 1) {
+    this.itemsList.forEach((a) => {
+      if (event.filter((b) => b.id == a.id).length >= 1) {
         a.isChecked = true;
       } else {
         a.isChecked = false;
@@ -165,19 +163,19 @@ export class PracticianSearchComponent implements OnInit {
       value != "Tout" ? this.performFilter(value) : this.itemsList;
   }
   performFilter(filterBy: string) {
-    return this.itemsList.filter(item =>
+    return this.itemsList.filter((item) =>
       item.users[0].speciality.includes(filterBy)
     );
   }
   getAllSpeciality() {
     this.contactsService.getAllSpecialities().subscribe(
-      specialitiesList => {
+      (specialitiesList) => {
         this.specialities = specialitiesList;
-        this.types = this.specialities.map(s => s.name);
+        this.types = this.specialities.map((s) => s.name);
         this.types.unshift("Tout");
       },
-      error => {
-        console.log("en attendant un model de popup à afficher");
+      (error) => {
+        //en attendant un model de popup à afficher
       }
     );
   }

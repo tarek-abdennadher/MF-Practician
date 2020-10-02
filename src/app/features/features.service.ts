@@ -8,7 +8,7 @@ import { search } from "./practician-search/search.model";
 import { SafeUrl } from "@angular/platform-browser";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class FeaturesService {
   public listNotifications = [];
@@ -126,7 +126,7 @@ export class FeaturesService {
   }
 
   setFilteredSentSearch(list) {
-    this.searchFilteredForwarded.next(list);
+    this.searchFilteredSent.next(list);
   }
   getSearchForwardedValue() {
     return this.searchForwarded.getValue();
@@ -190,7 +190,7 @@ export class FeaturesService {
 
   markAsSeen(obsList, ids) {
     let val = obsList.getValue();
-    val.forEach((elm) => {
+    val.forEach(elm => {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
       }
@@ -199,7 +199,7 @@ export class FeaturesService {
   }
 
   markAsSeenById(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id) && !elm.isSeen) {
         elm.isSeen = true;
         this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
@@ -208,7 +208,7 @@ export class FeaturesService {
   }
 
   markAsNotSeenById(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id) && elm.isSeen) {
         elm.isSeen = false;
         this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
@@ -230,7 +230,7 @@ export class FeaturesService {
   }
 
   addNotificationByIdMessage(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id)) {
         let notif = {
           civility: elm.users[0].civility,
@@ -240,7 +240,7 @@ export class FeaturesService {
           picture: elm.users[0].img,
           role: elm.users[0].type,
           sender: elm.users[0].fullName,
-          type: "MESSAGE",
+          type: "MESSAGE"
         };
         this.listNotifications.push(notif);
       }
@@ -250,7 +250,7 @@ export class FeaturesService {
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
-      list.find((p) => p.id == accountId).number = inboxNumber;
+      list.find(p => p.id == accountId).number = inboxNumber;
     }
     this.myPracticians.next(list);
   }
