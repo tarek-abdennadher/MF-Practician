@@ -1,53 +1,78 @@
 <div class="bg-image">
-<div class="container-fluid my-container">
+  <div class="container-fluid my-container">
     <div class="row">
       <div class="col">
         <br /><br />
         <div class="card-body">
-          <img id="helssy-logo" src="assets/imgs/helssy_bleu_long.svg" alt="Helssy" />
+          <img
+            id="helssy-logo"
+            src="assets/imgs/helssy_bleu_long.svg"
+            alt="Helssy"
+          />
           <div class="hls-connexion">
-            <lib-hls-connexion [errorMessage]="errorMessage" [successMessage]="successMessage" [page]="'login-practician'"
-              [title]="messages.card_title" (submitAction)="submit($event)"
-                               (redirectPatientConnexion)="redirectToLoginPatient()" (forgotPasswordAction)="forgotPassword()">
+            <lib-hls-connexion
+              [errorMessage]="errorMessage"
+              [successMessage]="successMessage"
+              [page]="'login-practician'"
+              [title]="messages.card_title"
+              (submitAction)="submit($event)"
+              (redirectPatientConnexion)="redirectToLoginPatient()"
+              (forgotPasswordAction)="forgotPassword()"
+            >
             </lib-hls-connexion>
             <div class="container d-none d-lg-flex">
               <div class="row">
                 <div class="col-3 custom-dimensions">
                   <div class="card custom-height-card">
-                      <div class="card-body custom_card">
-                        <img class="center-img" src="assets/imgs/hebergement_image1.png">
-                      </div>
-                  </div>
-                </div>
-                <div class="col-3 custom-dimensions">
-                  <div class="card custom-height-card">
-                      <div class="card-body custom_card">
-                        <img class="center-img" src="assets/imgs/hebergement_image2.png">
-                      </div>
-                  </div>
-                </div>
-                <div class="col-3 custom-dimensions">
-                  <div class="card custom-height-card">
                     <div class="card-body custom_card">
-                      <img class="center-img" src="assets/imgs/hebergement_image3.png">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image1.png"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="col-3 custom-dimensions">
                   <div class="card custom-height-card">
                     <div class="card-body custom_card">
-                      <img class="center-img" src="assets/imgs/hebergement_image4.png">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image2.jpg"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3 custom-dimensions">
+                  <div class="card custom-height-card">
+                    <div class="card-body custom_card">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image3.png"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3 custom-dimensions">
+                  <div class="card custom-height-card">
+                    <div class="card-body custom_card">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image4.png"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="copyrights mt-3">
-              Copyright 2020 Helssy - Tous droits réservés - <a href="https://helssy-test.aymax.fr/cgu/" target="_blank"> Mentions légales </a>
+              Copyright 2020 Helssy - Tous droits réservés -
+              <a href="https://helssy-test.aymax.fr/cgu/" target="_blank">
+                Mentions légales
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-</div>
+  </div>
 </div>
