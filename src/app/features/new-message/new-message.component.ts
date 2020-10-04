@@ -295,7 +295,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.selectedObjectSubscription();
     this.dropdownSettings = {
       singleSelection: false,
-      text: this.innerWidth > 420 ?"Sélectionner un ou plusieurs correspondants" : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un ou plusieurs correspondants"
+          : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
       enableFilterSelectAll: true,
@@ -328,14 +331,20 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.dropdownSettingsForList,
       this.dropdownSettingsPatientToList
     );
-    this.dropdownSettingsForList.text =this.innerWidth > 420 ? (this.isPatient
-      ? "Sélectionner une personne attachée à votre compte"
-      : this.isSecretary()
-      ? "Sélectionner un contact"
-      : "Sélectionner un patient concerné si nécessaire") : "Sélectionner";
+    this.dropdownSettingsForList.text =
+      this.innerWidth > 420
+        ? this.isPatient
+          ? "Sélectionner une personne attachée à votre compte"
+          : this.isSecretary()
+          ? "Sélectionner un contact"
+          : "Sélectionner un patient concerné si nécessaire"
+        : "Sélectionner";
     this.dropdownSettingsListObject = {
       singleSelection: true,
-      text: this.innerWidth > 420 ? "Sélectionner un objet parmi votre liste" : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un objet parmi votre liste"
+          : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
       enableFilterSelectAll: true,
@@ -356,9 +365,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
     this.dropdownSettingsConcernList = {
       ...this.dropdownSettingsListObject,
-      text: this.innerWidth > 420 ? "Sélectionner un patient concerné si nécessaire" : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un patient concerné si nécessaire"
+          : "Sélectionner",
     };
-
   }
 
   ccListSubscription() {
@@ -1176,7 +1187,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.toList.next([this.practicianTLSGroup]);
             this.ccList.next(
               this.practicianFullToList.filter(
-                (e) => e.id !== this.practicianTLSGroup.id
+                (e) =>
+                  e.id !== this.practicianTLSGroup.id && e.type !== "PATIENT"
               )
             );
             break;
@@ -1274,24 +1286,39 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.innerWidth = window.innerWidth;
     this.dropdownSettings = {
       ...this.dropdownSettings,
-      text: this.innerWidth > 420 ?"Sélectionner un ou plusieurs correspondants" : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un ou plusieurs correspondants"
+          : "Sélectionner",
     };
     this.dropdownSettingsForList = {
       ...this.dropdownSettingsForList,
-      text: this.innerWidth > 420 ? (this.isPatient
-        ? "Sélectionner une personne attachée à votre compte"
-        : this.isSecretary()
-        ? "Sélectionner un contact"
-        : "Sélectionner un patient concerné si nécessaire") : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? this.isPatient
+            ? "Sélectionner une personne attachée à votre compte"
+            : this.isSecretary()
+            ? "Sélectionner un contact"
+            : "Sélectionner un patient concerné si nécessaire"
+          : "Sélectionner",
     };
-    this.dropdownSettingsListObject.text = this.innerWidth > 420 ? "Sélectionner un objet parmi votre liste" : "Sélectionner";
+    this.dropdownSettingsListObject.text =
+      this.innerWidth > 420
+        ? "Sélectionner un objet parmi votre liste"
+        : "Sélectionner";
     this.dropdownSettingsListObject = {
       ...this.dropdownSettingsListObject,
-      text: this.innerWidth > 420 ? "Sélectionner un objet parmi votre liste" : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un objet parmi votre liste"
+          : "Sélectionner",
     };
     this.dropdownSettingsConcernList = {
       ...this.dropdownSettingsListObject,
-      text: this.innerWidth > 420 ? "Sélectionner un patient concerné si nécessaire" : "Sélectionner",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un patient concerné si nécessaire"
+          : "Sélectionner",
     };
   }
   openConfirmModel() {
