@@ -29,7 +29,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   imageSource: string;
   links = {
     isTypeFilter: true,
-    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
+    isAdd: true,
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts Pros";
