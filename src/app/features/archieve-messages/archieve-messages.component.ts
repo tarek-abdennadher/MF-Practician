@@ -143,14 +143,14 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
         message.messageStatus == "TREATED"
           ? "répondu"
           : message.toReceiversArchived[0].seen
-          ? "Lu"
-          : "Envoyé",
+            ? "Lu"
+            : "Envoyé",
       value:
         message.messageStatus == "TREATED"
           ? 100
           : message.toReceiversArchived[0].seen
-          ? 50
-          : 20,
+            ? 50
+            : 20,
     };
     messageArchived.object = {
       name: message.object,

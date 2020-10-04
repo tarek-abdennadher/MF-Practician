@@ -27,7 +27,7 @@ export class PracticianSearchComponent implements OnInit {
   imageSource: string;
   links = {
     isTypeFilter: false,
-    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
+    isAdd: true,
   };
   avatars: {
     doctor: string;
