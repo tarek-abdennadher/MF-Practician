@@ -463,7 +463,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           selectedElements = this.objectFilteredList.filter(
             (e) => e.id == res.id
           );
-          selectedElements[0].name = res.name;
+          if (selectedElements && selectedElements[0]) {
+            selectedElements[0].name = res.name;
+          }
+
           this.sendMessageForm.patchValue({
             object: selectedElements,
           });
