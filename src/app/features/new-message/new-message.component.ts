@@ -463,9 +463,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           selectedElements = this.objectFilteredList.filter(
             (e) => e.id == res.id
           );
-          if (selectedElements && selectedElements[0]) {
-            selectedElements[0].name = res.name;
-          }
 
           this.sendMessageForm.patchValue({
             object: selectedElements,
@@ -481,6 +478,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               documentFooter: res.documentFooter,
             });
           }
+          selectedElements[0].name = res.name;
         }
       } else {
         this.sendMessageForm.patchValue({
