@@ -33,7 +33,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts Pros";
-  addText = "Parrainer un confrère";
+  practicianText =
+    this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
+  addText = "Parrainer un " + this.practicianText;
   page = "MY_PRACTICIANS";
   backButton = true;
   number = 0;
