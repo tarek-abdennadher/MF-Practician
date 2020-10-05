@@ -444,7 +444,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   selectedObjectSubscription() {
-    let selectedElements;
+    let selectedElements = [];
     this.selectedObject.subscribe((res) => {
       if (res) {
         if (res.update) {
@@ -463,11 +463,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           selectedElements = this.objectFilteredList.filter(
             (e) => e.id == res.id
           );
-
-          this.sendMessageForm.patchValue({
-            object: selectedElements,
-          });
-
+          if (selectedElements.length > 0) {
+            selectedElements[0].name = res.name;
+            this.sendMessageForm.patchValue({
+              object: selectedElements,
+            });
+          }
           this.sendMessageForm.patchValue({
             body: res.body,
           });
@@ -478,7 +479,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               documentFooter: res.documentFooter,
             });
           }
-          selectedElements[0].name = res.name;
         }
       } else {
         this.sendMessageForm.patchValue({
