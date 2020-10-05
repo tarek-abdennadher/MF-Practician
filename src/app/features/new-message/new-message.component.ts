@@ -6,7 +6,12 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { Subject } from "rxjs";
-import { FormGroup, Validators, FormBuilder } from "@angular/forms";
+import {
+  FormGroup,
+  Validators,
+  FormBuilder,
+  FormControl,
+} from "@angular/forms";
 import { GlobalService } from "@app/core/services/global.service";
 import { ViewChild } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
@@ -41,6 +46,7 @@ declare var $: any;
   styleUrls: ["./new-message.component.scss"],
 })
 export class NewMessageComponent implements OnInit, OnDestroy {
+  ctrl: FormControl = new FormControl();
   @Input() id: number;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
@@ -208,7 +214,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       body: ["", Validators.required],
       file: [""],
       documentHeader: null,
-      documentBody: null,
+      documentBody: "",
       documentFooter: null,
     });
     this.isPatient = false;
@@ -449,13 +455,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       if (res) {
         if (res.update) {
           this.sendMessageForm.patchValue({
-            body: res.body,
+            body: res.body ? res.body : "",
           });
           if (res.documentBody) {
             this.sendMessageForm.patchValue({
               document: res.document,
               documentHeader: res.documentHeader,
-              documentBody: res.documentBody,
+              documentBody: res.documentBody ? res.documentBody : "",
               documentFooter: res.documentFooter,
             });
           }
@@ -470,12 +476,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             });
           }
           this.sendMessageForm.patchValue({
-            body: res.body,
+            body: res.body ? res.body : "",
           });
           if (res.documentBody) {
             this.sendMessageForm.patchValue({
               documentHeader: res.documentHeader,
-              documentBody: res.documentBody,
+              documentBody: res.documentBody ? res.documentBody : "",
               documentFooter: res.documentFooter,
             });
           }
@@ -694,7 +700,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       });
       this.sendMessageForm.patchValue({
         documentHeader: null,
-        documentBody: null,
+        documentBody: "",
         documentFooter: null,
       });
 
@@ -709,7 +715,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           : "information"
         : "";
     if (this.isInfoDisplay == false) {
-      this.sendMessageForm.patchValue({ body: null });
+      this.sendMessageForm.patchValue({ body: "" });
       this.otherObject = false;
     }
     if (!this.isPatient && !this.isTls) {
@@ -720,7 +726,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         this.otherObject = true;
         this.sendMessageForm.patchValue({
           freeObject: "",
-          body: null,
+          body: "",
         });
       }
     }
@@ -747,7 +753,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.hasError = false;
       this.sendMessageForm.controls["body"].enable();
       this.sendMessageForm.patchValue({
-        body: this.sendMessageForm.value.object[0].body,
+        body:
+          this.sendMessageForm.value.object[0] &&
+          this.sendMessageForm.value.object[0].body
+            ? this.sendMessageForm.value.object[0].body
+            : "",
       });
     } else {
       this.otherObject = false;
@@ -1047,10 +1057,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       let newData = {
         id: selectedObj.id,
         name: selectedObj.title,
-        body: null,
+        body: "",
         file: null,
         documentHeader: null,
-        documentBody: null,
+        documentBody: "",
         documentFooter: null,
       };
       const body = this.requestTypeService
@@ -1094,7 +1104,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       .pipe(
         tap((response) => {
           newData.documentHeader = response.header;
-          newData.documentBody = response.body;
+          newData.documentBody = response.body ? response.body : "";
           newData.documentFooter = response.footer;
         })
       );
@@ -1404,7 +1414,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     newMessage.body = message.body;
     newMessage.showFileToPatient = true;
     newMessage.documentHeader = message.documentHeader;
-    newMessage.documentBody = message.documentBody;
+    newMessage.documentBody = message.documentBody ? message.documentBody : "";
     newMessage.documentFooter = message.documentFooter;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
