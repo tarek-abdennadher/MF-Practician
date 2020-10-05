@@ -34,6 +34,7 @@ export class ContactDetailComponent
   page = "MY_PRACTICIANS";
   practicianText =
     this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
+  infoText = "";
   bottomText = "";
   backButton = true;
   param;
@@ -62,6 +63,10 @@ export class ContactDetailComponent
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
+    this.infoText =
+      this.localSt.retrieve("role") == "PRACTICIAN"
+        ? this.labels.parrainer_practician
+        : this.labels.parrainer_secretary;
     this.getjobTitles();
     this.getAllSpeciality();
     this.initForm();

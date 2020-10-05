@@ -41,8 +41,10 @@ export class ContactsService {
     note: " Note",
     additionalEmail: "Email secondaire",
     category: "Nom de la catégorie ",
-    contact_pro:
+    parrainer_practician:
       "Parrainer un confrère et bénéficiez d'un mois d'abonnement offert",
+    parrainer_secretary:
+      "Parrainer un praticien et bénéficiez d'un mois d'abonnement offert",
     category_name: "Nom de la catégorie (*)",
     zip_code: "Code postal",
     city: "Ville",
