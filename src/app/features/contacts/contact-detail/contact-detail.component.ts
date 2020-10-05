@@ -12,6 +12,7 @@ import { EmailUniqueValidatorService } from "@app/core/Validators/email-unique-v
 import { PracticianInvitationService } from "../practician-invitation.service";
 import { FeaturesComponent } from "@app/features/features.component";
 import { takeUntil } from "rxjs/operators";
+import { LocalStorageService } from "ngx-webstorage";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
@@ -31,6 +32,8 @@ export class ContactDetailComponent
   submitted = false;
   topText = "";
   page = "MY_PRACTICIANS";
+  practicianText =
+    this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
   bottomText = "";
   backButton = true;
   param;
@@ -44,7 +47,8 @@ export class ContactDetailComponent
     private featureService: FeaturesService,
     public accountService: AccountService,
     private emailUnique: EmailUniqueValidatorService,
-    private featureComp: FeaturesComponent
+    private featureComp: FeaturesComponent,
+    private localSt: LocalStorageService
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
