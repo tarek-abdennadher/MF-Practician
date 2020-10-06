@@ -25,6 +25,17 @@ export class MessageService {
     );
   }
 
+  sentFirstMessage(listSize: number, pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo && order) {
+      params = { params: { 'pageNo': pageNo, 'order': order } }
+    }
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.sentMessage+"/listSize/" + listSize, params
+    );
+  }
+
   forwardedMessage(
     pageNo?,
     order?: OrderDirection
@@ -37,6 +48,17 @@ export class MessageService {
       RequestType.GET,
       this.globalService.url.forwardedMessage,
       params
+    );
+  }
+
+  forwardedFirstMessage(listSize: number, pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo && order) {
+      params = { params: { 'pageNo': pageNo, 'order': order } }
+    }
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.forwardedMessage+"/listSize/" + listSize, params
     );
   }
 

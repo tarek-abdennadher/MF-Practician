@@ -29,11 +29,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
   imageSource: string;
   links = {
     isTypeFilter: true,
-    isAdd: this.localSt.retrieve("role") == "PRACTICIAN",
+    isAdd: true,
   };
   selectedObjects: Array<any>;
   topText = "Mes contacts Pros";
-  addText = "Parrainer un confrère";
+  practicianText =
+    this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
+  addText = "Parrainer un " + this.practicianText;
   page = "MY_PRACTICIANS";
   backButton = true;
   number = 0;
