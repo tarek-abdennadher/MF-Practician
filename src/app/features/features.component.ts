@@ -826,36 +826,44 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   // parse archive message
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
+    const senderRole = message?.senderDetail?.role;
+    const senderRolePascalCase = this.roleObjectPipe.transform(senderRole);
+
     messageArchived.id = message.id;
     messageArchived.isSeen = message.seen;
-    const senderRolePascalCase = this.roleObjectPipe.transform(
-      message.senderDetail.role
-    );
     messageArchived.users = [
       {
-        fullName:
-          (message.senderDetail[senderRolePascalCase] &&
-            message.senderDetail[senderRolePascalCase].fullName) ||
-          "",
+        fullName: message.senderDetail[senderRolePascalCase].fullName,
         img: this.avatars.user,
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
           : "",
-        type:
-          message.senderDetail.role == "PRACTICIAN"
-            ? "MEDICAL"
-            : message.senderDetail.role,
+        type: senderRole == "PRACTICIAN" ? "MEDICAL" : senderRole,
         photoId: this.getPhotoId(message.senderDetail),
         civility:
-          message.senderDetail.role == "PATIENT"
+          senderRole == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
-        id: message.senderDetail.id
-      }
+        id: message.senderDetail.id,
+      },
     ];
+    messageArchived.progress = {
+      name:
+        message.messageStatus == "TREATED"
+          ? "répondu"
+          : message.toReceiversArchived[0].seen
+            ? "Lu"
+            : "Envoyé",
+      value:
+        message.messageStatus == "TREATED"
+          ? 100
+          : message.toReceiversArchived[0].seen
+            ? 50
+            : 20,
+    };
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject
+      isImportant: message.importantObject,
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
