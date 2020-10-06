@@ -71,7 +71,7 @@ export class ChangePasswordComponent implements OnInit {
   // Handle api errors
   handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.errorMessage = err.error.apierror.message;
+      this.errorMessage = this.loginService.messages.error_message;
     } else {
       throw err;
     }

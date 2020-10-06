@@ -16,7 +16,7 @@ declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
-  styleUrls: ["./contact-detail.component.scss"],
+  styleUrls: ["./contact-detail.component.scss"]
 })
 export class ContactDetailComponent
   implements OnInit, ComponentCanDeactivate, OnDestroy {
@@ -74,10 +74,10 @@ export class ContactDetailComponent
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, emailValidator],
+        validators: [Validators.required, emailValidator]
       }),
       title: new FormControl(null, Validators.required),
-      speciality: new FormControl(null),
+      speciality: new FormControl(null)
     });
     this.ctr.email.setAsyncValidators([this.emailUnique.emailExist()]);
   }
@@ -89,7 +89,7 @@ export class ContactDetailComponent
     this.contactsService
       .getAllSpecialities()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((specialitiesList) => {
+      .subscribe(specialitiesList => {
         this.specialities.next(specialitiesList);
         this.mySpecialities = specialitiesList;
         $(".selectpicker").selectpicker("refresh");
@@ -99,7 +99,7 @@ export class ContactDetailComponent
     this.accountService
       .getJobTiles()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.jobTitlesList = resp;
       });
   }
@@ -119,27 +119,27 @@ export class ContactDetailComponent
         speciality:
           this.infoForm.value.speciality != null
             ? this.mySpecialities.find(
-                (s) => s.id == this.infoForm.value.speciality
+                s => s.id == this.infoForm.value.speciality
               )
             : null,
-        address: this.infoForm.value.address,
-      },
+        address: this.infoForm.value.address
+      }
     };
     this.service
       .invitePractician(model)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponseInvitation, this.handleError);
   }
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.errorMessage = err.error.apierror.message;
+      this.errorMessage = this.service.texts.error_message;
       this.alertMessage = this.errorMessage;
       this.failureAlert = true;
     } else {
       throw err;
     }
   };
-  handleResponseInvitation = (response) => {
+  handleResponseInvitation = response => {
     if (response) {
       this.submitted = false;
       this.featureComp.setNotif(this.service.texts.invite_success);

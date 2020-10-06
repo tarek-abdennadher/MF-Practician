@@ -108,7 +108,8 @@ export class AccountService {
     received: "Messages reçus",
     sent: "Messages envoyés",
     others: "Autres",
-    leave_message: "Message automatique en cas de congés"
+    leave_message: "Message automatique en cas de congés",
+    error_message: "Une erreur est survenue, veuillez réessayer plus tard"
   };
   public errors = {
     required: "Le champ est obligatoire",

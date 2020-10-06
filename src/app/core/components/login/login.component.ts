@@ -1,14 +1,14 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from "@angular/core";
 import { LoginService } from "@app/core/services/login.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { GlobalService } from "@app/core/services/global.service";
-import { trimFunction } from '@app/shared/functions/trim';
-import {DOCUMENT} from '@angular/common';
+import { trimFunction } from "@app/shared/functions/trim";
+import { DOCUMENT } from "@angular/common";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"],
+  styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent implements OnInit {
   previousURL = "";
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
     public localStorage: LocalStorageService,
     public router: Router,
     public globalService: GlobalService,
-    @Inject(DOCUMENT)private document: Document
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.messages = loginService.messages;
     this.url = globalService.url;
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.errorMessage = "";
     this.successMessage = "";
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       this.previousURL = params["return"] || "";
       this.errorMessage = params["failure"] || "";
       this.successMessage = params["success"] || "";
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
       .subscribe(this.handleResponseToken, this.handleError);
   }
 
-  handleResponseToken = (token) => {
+  handleResponseToken = token => {
     this.localStorage.clear("token");
     if (token && token.id_token) {
       this.localStorage.store("token", token.id_token);
@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
     }
   };
 
-  handleResponseUser = (account) => {
+  handleResponseUser = account => {
     const userData =
       account.practician != null ? account.practician : account.secretary;
     this.localStorage.store("user", userData);
@@ -70,9 +70,9 @@ export class LoginComponent implements OnInit {
     this.router.navigate([this.previousURL]);
   };
 
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.errorMessage = err.error.apierror.message;
+      this.errorMessage = this.loginService.messages.error_message;
     } else {
       throw err;
     }

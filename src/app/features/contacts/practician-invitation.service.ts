@@ -4,7 +4,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class PracticianInvitationService {
   public texts = {
@@ -25,6 +25,7 @@ export class PracticianInvitationService {
     required: "Le champ est obligatoire",
     invite_failure: "Erreur survenue lors de l'invitation' du praticien",
     invite_success: "Invitation envoyée avec succès",
+    error_message: "Une erreur est survenue, veuillez réessayer plus tard"
   };
   constructor(private globalService: GlobalService) {}
 
