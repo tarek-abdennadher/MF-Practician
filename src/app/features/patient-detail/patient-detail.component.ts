@@ -238,7 +238,7 @@ export class PatientDetailComponent implements OnInit {
 
   handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.notifMessage = err.error.apierror.message;
+      this.notifMessage = this.patientService.errors.error_message;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",

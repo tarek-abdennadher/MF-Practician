@@ -5,15 +5,17 @@ import { Observable } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class MyPatientsService {
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
   public errors = {
     failed_update:
       "Erreur survenue lors de la modification de la fiche patient",
     failed_add: "Erreur survenue lors de l'ajout de la fiche patient",
-    failed_invitation: "Erreur survenue lors de l'envoi de l'invitation au patient"
+    failed_invitation:
+      "Erreur survenue lors de l'envoi de l'invitation au patient",
+    error_message: "Une erreur est survenue, veuillez réessayer plus tard"
   };
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
@@ -29,7 +31,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.patientFile + "my",
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -42,7 +44,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.patientFile + "my/byCategory/" + categoryId,
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -55,7 +57,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.favorite + "myPatient/prohibited",
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -68,7 +70,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.favorite + "myPatient/pending",
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -81,7 +83,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.favorite + "invitations",
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -94,7 +96,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.favorite + "myPatient/archived",
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -173,10 +175,10 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patientFile +
-      "my/category/" +
-      patientId +
-      "/" +
-      practicianId
+        "my/category/" +
+        patientId +
+        "/" +
+        practicianId
     );
   }
   getPatientFileByPracticianId(patientId: number, practicianId: number) {
@@ -221,7 +223,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.patientFile + "my/v2/" + id,
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
@@ -266,7 +268,7 @@ export class MyPatientsService {
       RequestType.GET,
       this.globalService.url.patientFile + "archived",
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }

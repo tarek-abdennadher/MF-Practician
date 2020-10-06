@@ -5,7 +5,7 @@ import {
   FormBuilder,
   FormGroup,
   FormControl,
-  Validators,
+  Validators
 } from "@angular/forms";
 import { MustMatch } from "./must-match";
 import { Speciality } from "@app/shared/models/speciality";
@@ -26,7 +26,7 @@ declare var $: any;
   selector: "app-personal-informations",
   templateUrl: "./personal-informations.component.html",
   styleUrls: ["./personal-informations.component.scss"],
-  providers: [JobtitlePipe],
+  providers: [JobtitlePipe]
 })
 export class PersonalInformationsComponent
   implements OnInit, ComponentCanDeactivate, OnDestroy {
@@ -129,7 +129,7 @@ export class PersonalInformationsComponent
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, emailValidator],
+          validators: [Validators.required, emailValidator]
         }),
         title: new FormControl(null, Validators.required),
         speciality: new FormControl(null, Validators.required),
@@ -139,7 +139,7 @@ export class PersonalInformationsComponent
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null),
+        additionalEmail: new FormControl(null)
       });
     } else {
       this.infoForm = new FormGroup({
@@ -147,7 +147,7 @@ export class PersonalInformationsComponent
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, emailValidator],
+          validators: [Validators.required, emailValidator]
         }),
         civility: new FormControl(null, Validators.required),
         birthday: new FormControl(null),
@@ -155,7 +155,7 @@ export class PersonalInformationsComponent
         additional_address: new FormControl(null),
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
-        category: new FormControl(null),
+        category: new FormControl(null)
       });
     }
   }
@@ -163,10 +163,10 @@ export class PersonalInformationsComponent
     this.passwordForm = this.formBuilder.group(
       {
         new_password: ["", [Validators.required, Validators.minLength(8)]],
-        confirm_password: ["", Validators.required],
+        confirm_password: ["", Validators.required]
       },
       {
-        validator: MustMatch("new_password", "confirm_password"),
+        validator: MustMatch("new_password", "confirm_password")
       }
     );
   }
@@ -180,7 +180,7 @@ export class PersonalInformationsComponent
     this.contactsService
       .getAllSpecialities()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((specialitiesList) => {
+      .subscribe(specialitiesList => {
         $(".selectpicker").selectpicker();
         this.specialities.next(specialitiesList);
         $(".selectpicker").selectpicker("refresh");
@@ -203,7 +203,7 @@ export class PersonalInformationsComponent
     this.accountService
       .getCurrentAccount()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((account) => {
+      .subscribe(account => {
         if (account && account.practician) {
           this.accountId = account.id;
           this.account = account.practician;
@@ -245,7 +245,7 @@ export class PersonalInformationsComponent
               : null,
             additionalEmail: account.practician.additionalEmail
               ? account.practician.additionalEmail
-              : null,
+              : null
           });
         } else if (account && account.secretary) {
           this.account = account.secretary;
@@ -265,7 +265,7 @@ export class PersonalInformationsComponent
             civility: account.secretary.civility
               ? account.secretary.civility
               : null,
-            otherPhones: account.otherPhones ? account.otherPhones : [],
+            otherPhones: account.otherPhones ? account.otherPhones : []
           });
         }
       });
@@ -304,13 +304,13 @@ export class PersonalInformationsComponent
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialitiesContainingDeleted.find(
-                  (s) => s.id == this.infoForm.value.speciality
+                  s => s.id == this.infoForm.value.speciality
                 )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          photoId: this.account.photoId,
-        },
+          photoId: this.account.photoId
+        }
       };
     } else {
       model = {
@@ -322,14 +322,14 @@ export class PersonalInformationsComponent
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           civility: this.infoForm.value.civility,
-          photoId: this.account.photoId,
-        },
+          photoId: this.account.photoId
+        }
       };
     }
     this.accountService
       .updateAccount(model)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
@@ -379,16 +379,16 @@ export class PersonalInformationsComponent
       .getDefaultImage(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             this.image = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
           };
           let ok = myReader.readAsDataURL(response);
         },
-        (error) => {
+        error => {
           this.image = this.avatars.user;
         }
       );
@@ -404,7 +404,7 @@ export class PersonalInformationsComponent
       this.documentService
         .uploadFileSelected(this.nodeId, currentFileUpload)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((event) => {
+        .subscribe(event => {
           if (event.body) {
             const bodySplited = event.body.toString().split("/");
             this.account.photoId = bodySplited[bodySplited.length - 1];
@@ -413,7 +413,7 @@ export class PersonalInformationsComponent
           if (event instanceof HttpResponse) {
             const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               this.image = myReader.result;
             };
             myReader.readAsDataURL(file);
@@ -427,14 +427,14 @@ export class PersonalInformationsComponent
     this.documentService
       .getSiteById("helssycoreapplication")
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((directory) => {
+      .subscribe(directory => {
         const guid = directory.entry.guid;
         this.documentService
           .getAllChildFolders(guid)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((data) => {
+          .subscribe(data => {
             const profilAttachementFolder = data.list.entries.filter(
-              (directory) => directory.entry.name === "Profiles Pictures"
+              directory => directory.entry.name === "Profiles Pictures"
             )[0].entry;
             this.nodeId = profilAttachementFolder.id;
           });
@@ -446,9 +446,9 @@ export class PersonalInformationsComponent
       .getLettersImageEntity(this.accountId, "ACCOUNT")
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             this.image = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
@@ -457,27 +457,27 @@ export class PersonalInformationsComponent
           };
           let ok = myReader.readAsDataURL(response);
         },
-        (error) => {
+        error => {
           this.image = this.avatars.user;
         }
       );
   }
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.passwordErrorMessage = err.error.apierror.message;
+      this.passwordErrorMessage = this.accountService.messages.error_message;
       this.showPasswordFailure = true;
       $("#alertPasswordFailure").alert();
     } else {
       throw err;
     }
   };
-  handleResponsePasswordUpdate = (response) => {
+  handleResponsePasswordUpdate = response => {
     if (response) {
       this.showPasswordSuccess = true;
       $("#alertPasswordSuccess").alert();
       this.passwordForm.patchValue({
         new_password: "",
-        confirm_password: "",
+        confirm_password: ""
       });
       this.isPasswordValid = false;
       this.initPasswordForm();
@@ -497,7 +497,7 @@ export class PersonalInformationsComponent
     this.accountService
       .getJobTiles()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.jobTitlesList = resp;
       });
   }
