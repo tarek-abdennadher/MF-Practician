@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 import { MessageService } from "../services/message.service";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, tap } from "rxjs/operators";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
@@ -228,6 +228,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
         .afterClosed()
         .subscribe((res) => {
           if (res) {
+            this.getFirstMessageInNextPage(messagesId.length);
             this.messageService.markMessageAsArchived(messagesId).subscribe(
               (resp) => {
                 this.itemsList = this.itemsList.filter(
@@ -343,5 +344,43 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
     this.itemsList = [];
     this.filtredItemList = [];
     this.forwardedMessage();
+  }
+
+  getFirstMessageInNextPage(size) {
+    return this.messageService
+      .forwardedFirstMessage(
+        size,
+        this.pagination.pageNo + 1,
+        this.pagination.direction
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap((messages) => {
+          let parsedList =  new Array();
+          messages.forEach((message) => {
+            const messageSent = this.mappingMessage(message);
+            messageSent.id = message.id;
+            messageSent.users.forEach((user) => {
+              this.documentService.getDefaultImage(user.id).subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    user.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  user.img = "assets/imgs/user.png";
+                }
+              );
+            });
+            parsedList.push(messageSent);
+          });
+          this.filtredItemList.push(...parsedList);
+          this.itemsList.push(...parsedList);
+        })
+      );
   }
 }
