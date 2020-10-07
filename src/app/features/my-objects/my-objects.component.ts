@@ -11,7 +11,7 @@ import { Subject } from "rxjs";
 @Component({
   selector: "app-my-objects",
   templateUrl: "./my-objects.component.html",
-  styleUrls: ["./my-objects.component.scss"],
+  styleUrls: ["./my-objects.component.scss"]
 })
 export class MyObjectsComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -54,7 +54,7 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     this.getSearchList();
     // update categories after detail view
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-objets?loading=true") {
           let currentRoute = this.route;
@@ -72,7 +72,7 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     this.accountService
       .getObjectSearchList()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((list) => {
+      .subscribe(list => {
         this.searchList = list;
       });
   }
@@ -80,7 +80,7 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
   cardClicked(object) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top - 100,
+        scrollTop: $("#addObject").offset().top - 100
       },
       1000
     );
@@ -94,14 +94,14 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
         "Confirmation de supression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.accountService
             .deletePracticianObject(object.id)
             .pipe(takeUntil(this._destroyed$))
-            .subscribe((result) => {
+            .subscribe(result => {
               this.itemsList = this.itemsList.filter(
-                (cat) => cat.id != object.id
+                cat => cat.id != object.id
               );
               this.getSearchList();
             });
@@ -112,7 +112,7 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#addObject").offset().top - 100,
+        scrollTop: $("#addObject").offset().top - 100
       },
       1000
     );
@@ -124,9 +124,9 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     this.accountService
       .clonePracticianObject(id)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((requestClone) => {
+      .subscribe(requestClone => {
         this.itemsList.push(this.parseObject(requestClone));
-        this.searchList = this.searchList.filter((elm) => elm.id != id);
+        this.searchList = this.searchList.filter(elm => elm.id != id);
       });
   }
 
@@ -135,25 +135,30 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     this.accountService
       .getPracticianObjectList()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((categories) => {
-        categories.forEach((res) => {
+      .subscribe(categories => {
+        categories.forEach(res => {
           this.itemsList.push({
             id: res.id,
             isSeen: true,
             users: [
               {
                 id: res.id,
-                fullName: res.object,
-              },
+                fullName:
+                  res.object[0].toUpperCase() +
+                  res.object.substr(1).toLowerCase()
+              }
             ],
             isArchieve: true,
             isImportant: false,
             hasFiles: false,
             isViewDetail: false,
             isMarkAsSeen: false,
-            isChecked: false,
+            isChecked: false
           });
         });
+        this.itemsList.sort((a, b) =>
+          a.users[0].fullName > b.users[0].fullName ? 1 : -1
+        );
       });
   }
 
@@ -164,15 +169,15 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
       users: [
         {
           id: res.id,
-          fullName: res.object,
-        },
+          fullName: res.object
+        }
       ],
       isArchieve: true,
       isImportant: false,
       hasFiles: false,
       isViewDetail: false,
       isMarkAsSeen: false,
-      isChecked: false,
+      isChecked: false
     };
     return parsed;
   }
