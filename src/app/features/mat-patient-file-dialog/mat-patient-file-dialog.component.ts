@@ -301,7 +301,7 @@ export class MatPatientFileDialogComponent implements OnInit {
 
   handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.notifMessage = this.patientService.errors.error_message;
+      this.notifMessage = err.error.apierror.message;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",

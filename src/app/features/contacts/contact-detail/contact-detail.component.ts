@@ -141,7 +141,7 @@ export class ContactDetailComponent
   }
   handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.errorMessage = this.service.texts.error_message;
+      this.errorMessage = err.error.apierror.message;
       this.alertMessage = this.errorMessage;
       this.failureAlert = true;
     } else {
