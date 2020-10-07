@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { HlsMessagingListModule } from "hls-messaging-list";
 import { MatContactDetailDialogComponent } from "./components/mat-contact-detail-dialog/mat-contact-detail-dialog.component";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
+import { PipesModule } from "./pipes/pipes.module";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -78,6 +79,7 @@ const notifierOptions: NotifierOptions = {
     MatProgressSpinnerModule,
     HlsMessagingListModule,
     NotifierModule.withConfig(notifierOptions),
+    PipesModule,
   ],
   exports: [
     IntPhoneComponent,
