@@ -1,7 +1,7 @@
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
@@ -37,5 +37,7 @@
   (cancelAction)="cancelAction()"
   [userRole]="userRole"
   [popup]="popup"
+  (submitAttachedAction)="submitLinkedPatient($event)"
+  (updateAttachedAction)="updateLinkedPatient($event)"
 >
 </app-patient-file>
