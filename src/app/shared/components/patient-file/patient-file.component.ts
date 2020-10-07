@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from "@angular/core";
 import {
   FormGroup,
   FormBuilder,
@@ -21,6 +28,8 @@ import { GlobalService } from "@app/core/services/global.service";
 import { DialogService } from "@app/features/services/dialog.service";
 import { PaginationService } from "@app/features/services/pagination.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { takeUntil } from "rxjs/operators";
+import { DateValidator } from "./date-validator";
 declare var $: any;
 function requiredValidator(c: AbstractControl): { [key: string]: any } {
   const email = c.get("email");
@@ -34,22 +43,28 @@ function requiredValidator(c: AbstractControl): { [key: string]: any } {
   selector: "app-patient-file",
   templateUrl: "./patient-file.component.html",
   styleUrls: ["./patient-file.component.scss"],
+  providers: [CorrespondencePipe, CivilityPipe],
 })
-export class PatientFileComponent implements OnInit {
+export class PatientFileComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   public selectedTabIndex: number = 0;
   labels;
   placement = "bottom";
   errors;
   displayMaidenName: boolean = false;
+  displayMaidenName2: boolean = false;
   displayOtherCorrespondence: boolean = false;
   isList: boolean = true;
   isnoteList: boolean = true;
   public personalInfoForm: FormGroup;
+  public addAttachedInfoForm: FormGroup;
   public attachedInfoForm: FormGroup;
   public noteForm: FormGroup;
   public maxDate = new Date();
   submitted = false;
   noteSubmitted = false;
+  patientSubmitted = false;
+  patientUpdated = false;
   attachedImageSource: string;
   /** Messaging attributes */
   patientFileId: number;
@@ -85,6 +100,8 @@ export class PatientFileComponent implements OnInit {
   /* Outputs */
   @Output("submitAction") submitAction = new EventEmitter();
   @Output("submitNoteAction") submitNoteAction = new EventEmitter();
+  @Output("submitAttachedAction") submitAttachedAction = new EventEmitter();
+  @Output("updateAttachedAction") updateAttachedAction = new EventEmitter();
   @Output("archieveNoteAction") archieveNoteAction = new EventEmitter();
   @Output("cancelAction") cancelAction = new EventEmitter();
   @Input("notes") notes = new BehaviorSubject([]);
@@ -98,11 +115,12 @@ export class PatientFileComponent implements OnInit {
   isFutureDate: boolean;
   public isPhonesValid = false;
   public info: any;
+  isAddPatient: boolean = false;
+  correspondenceList = [];
+  civilityList = [];
   constructor(
     private formBuilder: FormBuilder,
     private patientFileService: PatientFileService,
-    private correspondencePipe: CorrespondencePipe,
-    private civilityPipe: CivilityPipe,
     private documentService: MyDocumentsService,
     private messagesServ: MessagingListService,
     private router: Router,
@@ -111,7 +129,6 @@ export class PatientFileComponent implements OnInit {
     public pagination: PaginationService,
     private sanitizer: DomSanitizer
   ) {
-    this.isList = true;
     this.isnoteList = true;
     this.isLabelShow = false;
     this.labels = this.patientFileService.labels;
@@ -125,6 +142,12 @@ export class PatientFileComponent implements OnInit {
   get f() {
     return this.noteForm.controls;
   }
+  get f1() {
+    return this.addAttachedInfoForm.controls;
+  }
+  get f2() {
+    return this.attachedInfoForm.controls;
+  }
   get phoneList() {
     return <FormArray>this.personalInfoForm.get("otherPhones");
   }
@@ -133,15 +156,21 @@ export class PatientFileComponent implements OnInit {
     this.filtredItemList = [];
     this.itemsList = [];
     this.noteList = [];
+    this.attachedPatients = [];
+    this.getCivility();
+    this.getCorrespondence();
     this.maxDate.setDate(new Date().getDate() - 1);
     this.initPersonalForm();
     this.initNoteForm();
-    this.categoryList.subscribe((res) => {
+    this.initAddAttachedInfoForm();
+    this.initAttachedInfoForm();
+    this.categoryList.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
       if (res) {
         this.categories = res;
       }
     });
-    this.patient.subscribe((val) => {
+    this.patient.pipe(takeUntil(this._destroyed$)).subscribe((val) => {
+      this.isList = true;
       if (val) {
         this.selectedTabIndex = 0;
         this.info = val;
@@ -150,12 +179,12 @@ export class PatientFileComponent implements OnInit {
         this.itemsList = [];
       }
     });
-    this.linkedPatients.subscribe((res) => {
+    this.linkedPatients.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
       if (res) {
         this.attachedPatients = res;
       }
     });
-    this.notes.subscribe((res) => {
+    this.notes.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
       if (res) {
         this.noteList = res;
       }
@@ -164,7 +193,22 @@ export class PatientFileComponent implements OnInit {
       $(".selectpicker").selectpicker("refresh");
     }, 500);
   }
-
+  getCorrespondence() {
+    this.patientFileService
+      .getCorrespondence()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
+        this.correspondenceList = resp;
+      });
+  }
+  getCivility() {
+    this.patientFileService
+      .getCivility()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((resp) => {
+        this.civilityList = resp;
+      });
+  }
   initPersonalForm() {
     this.personalInfoForm = this.formBuilder.group({
       id: new FormControl(null),
@@ -191,12 +235,15 @@ export class PatientFileComponent implements OnInit {
   initAttachedInfoForm() {
     this.attachedInfoForm = new FormGroup({
       id: new FormControl(null),
-      civility: new FormControl(null),
-      correspondence: new FormControl(null),
+      civility: new FormControl(null, Validators.required),
+      correspondence: new FormControl(null, Validators.required),
       otherCorrespondence: new FormControl(null),
-      birthday: new FormControl(null),
-      lastName: new FormControl(null),
-      firstName: new FormControl(null),
+      birthday: new FormControl(null, [
+        Validators.required,
+        DateValidator.dateVaidator,
+      ]),
+      lastName: new FormControl(null, Validators.required),
+      firstName: new FormControl(null, Validators.required),
       maidenName: new FormControl(null),
       phoneNumber: new FormControl(null),
       address: new FormControl(null),
@@ -205,7 +252,26 @@ export class PatientFileComponent implements OnInit {
       additionalAddress: new FormControl(null),
       photoId: new FormControl(null),
     });
-    this.attachedInfoForm.disable();
+  }
+  initAddAttachedInfoForm() {
+    this.addAttachedInfoForm = new FormGroup({
+      civility: new FormControl(null, Validators.required),
+      correspondence: new FormControl(null, Validators.required),
+      otherCorrespondence: new FormControl(null),
+      birthday: new FormControl(null, [
+        Validators.required,
+        DateValidator.dateVaidator,
+      ]),
+      lastName: new FormControl(null, Validators.required),
+      firstName: new FormControl(null, Validators.required),
+      maidenName: new FormControl(null),
+      phoneNumber: new FormControl(null),
+      address: new FormControl(null),
+      zipCode: new FormControl(null),
+      city: new FormControl(null),
+      additionalAddress: new FormControl(null),
+      photoId: new FormControl(null),
+    });
   }
   initNoteForm() {
     this.noteForm = this.formBuilder.group({
@@ -276,9 +342,7 @@ export class PatientFileComponent implements OnInit {
       this.attachedImageSource = patient.users[0].img;
       this.attachedInfoForm.patchValue({
         id: patient.fullInfo.id ? patient.fullInfo.id : null,
-        civility: patient.fullInfo.civility
-          ? this.civilityPipe.transform(patient.fullInfo.civility)
-          : null,
+        civility: patient.fullInfo.civility ? patient.fullInfo.civility : null,
         birthday: patient.fullInfo.birthday
           ? new Date(patient.fullInfo.birthday)
           : null,
@@ -299,7 +363,7 @@ export class PatientFileComponent implements OnInit {
           ? patient.fullInfo.phoneNumber
           : null,
         correspondence: patient.fullInfo.correspondence
-          ? this.correspondencePipe.transform(patient.fullInfo.correspondence)
+          ? patient.fullInfo.correspondence
           : null,
         otherCorrespondence: patient.fullInfo.otherCorrespondence
           ? patient.fullInfo.otherCorrespondence
@@ -382,6 +446,7 @@ export class PatientFileComponent implements OnInit {
         "Confirmation de supression"
       )
       .afterClosed()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         if (res) {
           this.archieveNoteAction.emit(item.id);
@@ -433,6 +498,7 @@ export class PatientFileComponent implements OnInit {
         pageNo,
         this.direction
       )
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         this.messages = res;
         this.messages.sort(function (m1, m2) {
@@ -452,6 +518,7 @@ export class PatientFileComponent implements OnInit {
         pageNo,
         this.direction
       )
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         this.messages = res;
         this.messages.sort(function (m1, m2) {
@@ -495,6 +562,7 @@ export class PatientFileComponent implements OnInit {
     };
     this.documentService
       .getDefaultImageEntity(message.sender.senderId, "ACCOUNT")
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (response) => {
           let myReader: FileReader = new FileReader();
@@ -530,21 +598,24 @@ export class PatientFileComponent implements OnInit {
 
   markMessageAsSeen(event) {
     let messageId = event.id;
-    this.messagesServ.markMessageAsSeen(messageId).subscribe(
-      (resp) => {
-        if (resp == true) {
-          let filtredIndex = this.filtredItemList.findIndex(
-            (item) => item.id == messageId
-          );
-          if (filtredIndex != -1) {
-            this.filtredItemList[filtredIndex].isSeen = true;
+    this.messagesServ
+      .markMessageAsSeen(messageId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (resp) => {
+          if (resp == true) {
+            let filtredIndex = this.filtredItemList.findIndex(
+              (item) => item.id == messageId
+            );
+            if (filtredIndex != -1) {
+              this.filtredItemList[filtredIndex].isSeen = true;
+            }
           }
+        },
+        (error) => {
+          //We have to find a way to notify user by this error
         }
-      },
-      (error) => {
-        //We have to find a way to notify user by this error
-      }
-    );
+      );
   }
 
   isInvalidDate(event) {
@@ -553,5 +624,88 @@ export class PatientFileComponent implements OnInit {
     if (test == "Invalid date") {
       event.target.value = this.errors.invalid_date;
     }
+  }
+  addPerson() {
+    this.isAddPatient = !this.isAddPatient;
+    this.initAddAttachedInfoForm();
+  }
+  changeMaidenName2(civility) {
+    if (civility == "MME") {
+      this.displayMaidenName2 = true;
+      this.attachedImageSource = "assets/imgs/avatar_femme.svg";
+    } else {
+      if (civility == "M") {
+        this.displayMaidenName2 = false;
+        this.attachedImageSource = "assets/imgs/avatar_homme.svg";
+      } else {
+        this.displayMaidenName2 = false;
+        this.attachedImageSource = "assets/imgs/avatar_enfant.svg";
+      }
+    }
+  }
+  changeCorrespondance(correspondance) {
+    if (correspondance == "OTHER" || correspondance == "PARENT") {
+      this.displayOtherCorrespondence = true;
+    } else {
+      this.displayOtherCorrespondence = false;
+    }
+  }
+  attachedPatientSubmit() {
+    this.patientSubmitted = true;
+    if (this.addAttachedInfoForm.invalid) {
+      return;
+    }
+    const model = {
+      civility: this.addAttachedInfoForm.value.civility,
+      birthday: this.addAttachedInfoForm.value.birthday,
+      lastName: this.addAttachedInfoForm.value.lastName,
+      firstName: this.addAttachedInfoForm.value.firstName,
+      maidenName: this.addAttachedInfoForm.value.maidenName,
+      phoneNumber: this.addAttachedInfoForm.value.phoneNumber,
+      address: this.addAttachedInfoForm.value.address,
+      zipCode: this.addAttachedInfoForm.value.zipCode,
+      city: this.addAttachedInfoForm.value.city,
+      additionalAddress: this.addAttachedInfoForm.value.additionalAddress,
+      correspondence: this.addAttachedInfoForm.value.correspondence,
+      otherCorrespondence: this.addAttachedInfoForm.value.otherCorrespondence,
+    };
+    this.submitAttachedAction.emit(model);
+    this.isAddPatient = false;
+  }
+  cancelAddPatient() {
+    this.isAddPatient = false;
+    this.initAddAttachedInfoForm();
+  }
+  cancelUpdatePatient() {
+    this.isList = true;
+    this.initAttachedInfoForm();
+  }
+  attachedPatientupdate() {
+    this.patientUpdated = true;
+    if (this.attachedInfoForm.invalid) {
+      return;
+    }
+    const model = {
+      id: this.attachedInfoForm.value.id,
+      civility: this.attachedInfoForm.value.civility,
+      birthday: this.attachedInfoForm.value.birthday,
+      lastName: this.attachedInfoForm.value.lastName,
+      firstName: this.attachedInfoForm.value.firstName,
+      maidenName: this.attachedInfoForm.value.maidenName,
+      phoneNumber: this.attachedInfoForm.value.phoneNumber,
+      address: this.attachedInfoForm.value.address,
+      zipCode: this.attachedInfoForm.value.zipCode,
+      city: this.attachedInfoForm.value.city,
+      additionalAddress: this.attachedInfoForm.value.additionalAddress,
+      correspondence: this.attachedInfoForm.value.correspondence,
+      otherCorrespondence: this.attachedInfoForm.value.otherCorrespondence,
+    };
+    this.updateAttachedAction.emit(model);
+    this.isList = true;
+  }
+  // destory any subscribe to avoid memory leak
+  ngOnDestroy(): void {
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 }

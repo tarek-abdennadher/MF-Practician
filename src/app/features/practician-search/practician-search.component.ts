@@ -38,7 +38,9 @@ export class PracticianSearchComponent implements OnInit {
     user: string;
   };
   topText = "Résultats de recherche";
-  addText = "Parrainer un confrère";
+  practicianText =
+    this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
+  addText = "Parrainer un " + this.practicianText;
   page = "MY_PRACTICIANS";
   backButton = true;
   number = 0;

@@ -12,11 +12,12 @@ import { EmailUniqueValidatorService } from "@app/core/Validators/email-unique-v
 import { PracticianInvitationService } from "../practician-invitation.service";
 import { FeaturesComponent } from "@app/features/features.component";
 import { takeUntil } from "rxjs/operators";
+import { LocalStorageService } from "ngx-webstorage";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
-  styleUrls: ["./contact-detail.component.scss"],
+  styleUrls: ["./contact-detail.component.scss"]
 })
 export class ContactDetailComponent
   implements OnInit, ComponentCanDeactivate, OnDestroy {
@@ -31,6 +32,9 @@ export class ContactDetailComponent
   submitted = false;
   topText = "";
   page = "MY_PRACTICIANS";
+  practicianText =
+    this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
+  infoText = "";
   bottomText = "";
   backButton = true;
   param;
@@ -44,7 +48,8 @@ export class ContactDetailComponent
     private featureService: FeaturesService,
     public accountService: AccountService,
     private emailUnique: EmailUniqueValidatorService,
-    private featureComp: FeaturesComponent
+    private featureComp: FeaturesComponent,
+    private localSt: LocalStorageService
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
@@ -58,6 +63,10 @@ export class ContactDetailComponent
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
+    this.infoText =
+      this.localSt.retrieve("role") == "PRACTICIAN"
+        ? this.labels.parrainer_practician
+        : this.labels.parrainer_secretary;
     this.getjobTitles();
     this.getAllSpeciality();
     this.initForm();
@@ -74,10 +83,10 @@ export class ContactDetailComponent
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, emailValidator],
+        validators: [Validators.required, emailValidator]
       }),
       title: new FormControl(null, Validators.required),
-      speciality: new FormControl(null),
+      speciality: new FormControl(null)
     });
     this.ctr.email.setAsyncValidators([this.emailUnique.emailExist()]);
   }
@@ -89,7 +98,7 @@ export class ContactDetailComponent
     this.contactsService
       .getAllSpecialities()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((specialitiesList) => {
+      .subscribe(specialitiesList => {
         this.specialities.next(specialitiesList);
         this.mySpecialities = specialitiesList;
         $(".selectpicker").selectpicker("refresh");
@@ -99,7 +108,7 @@ export class ContactDetailComponent
     this.accountService
       .getJobTiles()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.jobTitlesList = resp;
       });
   }
@@ -119,18 +128,18 @@ export class ContactDetailComponent
         speciality:
           this.infoForm.value.speciality != null
             ? this.mySpecialities.find(
-                (s) => s.id == this.infoForm.value.speciality
+                s => s.id == this.infoForm.value.speciality
               )
             : null,
-        address: this.infoForm.value.address,
-      },
+        address: this.infoForm.value.address
+      }
     };
     this.service
       .invitePractician(model)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponseInvitation, this.handleError);
   }
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
       this.errorMessage = err.error.apierror.message;
       this.alertMessage = this.errorMessage;
@@ -139,7 +148,7 @@ export class ContactDetailComponent
       throw err;
     }
   };
-  handleResponseInvitation = (response) => {
+  handleResponseInvitation = response => {
     if (response) {
       this.submitted = false;
       this.featureComp.setNotif(this.service.texts.invite_success);

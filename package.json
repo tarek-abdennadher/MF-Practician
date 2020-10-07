@@ -27,6 +27,7 @@
     "@types/googlemaps": "^3.39.3",
     "angular-notifier": "^6.0.1",
     "apexcharts": "^3.20.0",
+    "async-mutex": "^0.2.4",
     "bootstrap": "^4.4.1",
     "bootstrap-select": "^1.13.18",
     "date-fns": "^2.14.0",

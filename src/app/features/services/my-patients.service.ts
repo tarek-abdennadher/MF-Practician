@@ -8,17 +8,24 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
   providedIn: "root",
 })
 export class MyPatientsService {
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
   public errors = {
     failed_update:
       "Erreur survenue lors de la modification de la fiche patient",
     failed_add: "Erreur survenue lors de l'ajout de la fiche patient",
-    failed_invitation: "Erreur survenue lors de l'envoi de l'invitation au patient"
+    failed_invitation:
+      "Erreur survenue lors de l'envoi de l'invitation au patient",
+    error_message: "Une erreur est survenue, veuillez réessayer plus tard",
+    failed_add_patient: "Erreur survenue lors de l'ajout du patient attaché",
+    failed_edit_patient:
+      "Erreur survenue lors de la modification du patient attaché",
   };
   public messages = {
     edit_info_success: "Informations personnelles modifiées avec succès",
     add_info_success: "Fiche Patient créée avec succès",
-    invitation_success: "Invitation envoyée avec succès "
+    invitation_success: "Invitation envoyée avec succès ",
+    add_success: "Patient attaché ajouté avec succès ",
+    update_sucess: " Patient attaché modifié avec succès ",
   };
 
   getPatientsOfCurrentParactician(
@@ -173,10 +180,10 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patientFile +
-      "my/category/" +
-      patientId +
-      "/" +
-      practicianId
+        "my/category/" +
+        patientId +
+        "/" +
+        practicianId
     );
   }
   getPatientFileByPracticianId(patientId: number, practicianId: number) {
@@ -268,6 +275,22 @@ export class MyPatientsService {
       {
         params: { pageNo: pageNo, order: order },
       }
+    );
+  }
+  addLinkedPatient(patientFileId: number, patientFile) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.patientFile +
+        "add-linked-patient/" +
+        patientFileId,
+      patientFile
+    );
+  }
+  updateLinkedPatient(linkedPatient) {
+    return this.globalService.call(
+      RequestType.PUT,
+      this.globalService.url.patientFile + "update-linked-patient/",
+      linkedPatient
     );
   }
 }

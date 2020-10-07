@@ -4,7 +4,7 @@ import {
   ViewChild,
   Inject,
   LOCALE_ID,
-  OnDestroy,
+  OnDestroy
 } from "@angular/core";
 import { Subject, forkJoin } from "rxjs";
 import { PatientFile } from "@app/shared/models/patient-file";
@@ -23,7 +23,7 @@ declare var $: any;
 @Component({
   selector: "app-add-patient",
   templateUrl: "./add-patient.component.html",
-  styleUrls: ["./add-patient.component.scss"],
+  styleUrls: ["./add-patient.component.scss"]
 })
 export class AddPatientComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -86,7 +86,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     }
     forkJoin(this.getCategories())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {});
+      .subscribe(res => {});
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
@@ -99,7 +99,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       .getCategoriesByPractician(this.practicianId)
       .pipe(takeUntil(this._destroyed$))
       .pipe(
-        tap((res) => {
+        tap(res => {
           this.categoryList.next(res);
         })
       );
@@ -111,43 +111,43 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponse, this.handleError);
   }
-  handleResponse = (res) => {
+  handleResponse = res => {
     if (res) {
       this.notifMessage = this.patientService.messages.add_info_success;
       this.notifier.show({
         message: this.notifMessage,
         type: "info",
-        template: this.customNotificationTmpl,
+        template: this.customNotificationTmpl
       });
       this.submitted = false;
       this.router.navigate(["/mes-patients"], {
-        queryParams: { loading: true },
+        queryParams: { loading: true }
       });
     } else {
       this.notifMessage = this.patientService.errors.failed_add;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",
-        template: this.customNotificationTmpl,
+        template: this.customNotificationTmpl
       });
       return;
     }
   };
 
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
       this.notifMessage = err.error.apierror.message;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",
-        template: this.customNotificationTmpl,
+        template: this.customNotificationTmpl
       });
     } else {
       this.notifMessage = this.patientService.errors.failed_add;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",
-        template: this.customNotificationTmpl,
+        template: this.customNotificationTmpl
       });
     }
   };
@@ -157,7 +157,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
   cancelAction() {
     this.router.navigate(["."], {
       relativeTo: this.route.parent,
-      queryParams: { loading: false },
+      queryParams: { loading: false }
     });
   }
   ngOnDestroy(): void {
