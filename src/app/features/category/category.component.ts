@@ -11,7 +11,7 @@ import { Subject } from "rxjs";
 @Component({
   selector: "app-category",
   templateUrl: "./category.component.html",
-  styleUrls: ["./category.component.scss"],
+  styleUrls: ["./category.component.scss"]
 })
 export class CategoryComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -50,7 +50,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.getMyCategories();
     // update categories after detail view
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-categories?loading=true") {
           let currentRoute = this.route;
@@ -67,7 +67,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   cardClicked(category) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#categoty").offset().top - 100,
+        scrollTop: $("#categoty").offset().top - 100
       },
       1000
     );
@@ -81,15 +81,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
         "Confirmation de supression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.categoryService
             .deleteCategory(category.id)
             .pipe(takeUntil(this._destroyed$))
-            .subscribe((result) => {
+            .subscribe(result => {
               if (result) {
                 this.itemsList = this.itemsList.filter(
-                  (cat) => cat.id != category.id
+                  cat => cat.id != category.id
                 );
               }
             });
@@ -100,7 +100,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   addAction() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#categoty").offset().top - 100,
+        scrollTop: $("#categoty").offset().top - 100
       },
       1000
     );
@@ -112,25 +112,30 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.categoryService
       .getMyCategories()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((categories) => {
-        categories.forEach((category) => {
+      .subscribe(categories => {
+        categories.forEach(category => {
           this.itemsList.push({
             id: category.id,
             isSeen: true,
             users: [
               {
                 id: category.id,
-                fullName: category.name,
-              },
+                fullName:
+                  category.name[0].toUpperCase() +
+                  category.name.substr(1).toLowerCase()
+              }
             ],
             isArchieve: true,
             isImportant: false,
             hasFiles: false,
             isViewDetail: false,
             isMarkAsSeen: false,
-            isChecked: false,
+            isChecked: false
           });
         });
+        this.itemsList.sort((a, b) =>
+          a.users[0].fullName > b.users[0].fullName ? 1 : -1
+        );
       });
   }
 }
