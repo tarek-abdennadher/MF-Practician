@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
 
   handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.errorMessage = this.loginService.messages.error_message;
+      this.errorMessage = err.error.apierror.message;
     } else {
       throw err;
     }

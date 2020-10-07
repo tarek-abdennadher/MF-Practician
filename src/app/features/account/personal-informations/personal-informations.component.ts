@@ -464,7 +464,7 @@ export class PersonalInformationsComponent
   }
   handleError = err => {
     if (err && err.error && err.error.apierror) {
-      this.passwordErrorMessage = this.accountService.messages.error_message;
+      this.passwordErrorMessage = err.error.apierror.message;
       this.showPasswordFailure = true;
       $("#alertPasswordFailure").alert();
     } else {
