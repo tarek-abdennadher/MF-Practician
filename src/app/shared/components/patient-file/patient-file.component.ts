@@ -5,7 +5,7 @@ import {
   FormArray,
   FormControl,
   Validators,
-  AbstractControl,
+  AbstractControl
 } from "@angular/forms";
 import { Subject, BehaviorSubject } from "rxjs";
 import { emailValidator } from "@app/core/Validators/email.validator";
@@ -33,7 +33,7 @@ function requiredValidator(c: AbstractControl): { [key: string]: any } {
 @Component({
   selector: "app-patient-file",
   templateUrl: "./patient-file.component.html",
-  styleUrls: ["./patient-file.component.scss"],
+  styleUrls: ["./patient-file.component.scss"]
 })
 export class PatientFileComponent implements OnInit {
   public selectedTabIndex: number = 0;
@@ -136,26 +136,27 @@ export class PatientFileComponent implements OnInit {
     this.maxDate.setDate(new Date().getDate() - 1);
     this.initPersonalForm();
     this.initNoteForm();
-    this.categoryList.subscribe((res) => {
+    this.categoryList.subscribe(res => {
       if (res) {
         this.categories = res;
       }
     });
-    this.patient.subscribe((val) => {
+    this.patient.subscribe(val => {
       if (val) {
         this.selectedTabIndex = 0;
         this.info = val;
+        this.pageNo = 0;
         this.getPersonalInformation(val);
         this.filtredItemList = [];
         this.itemsList = [];
       }
     });
-    this.linkedPatients.subscribe((res) => {
+    this.linkedPatients.subscribe(res => {
       if (res) {
         this.attachedPatients = res;
       }
     });
-    this.notes.subscribe((res) => {
+    this.notes.subscribe(res => {
       if (res) {
         this.noteList = res;
       }
@@ -183,7 +184,7 @@ export class PatientFileComponent implements OnInit {
       additionalAddress: new FormControl(null),
       photoId: new FormControl(null),
       category: new FormControl(null),
-      invitationStatus: new FormControl(null),
+      invitationStatus: new FormControl(null)
     });
     this.personalInfoForm.setValidators(requiredValidator);
   }
@@ -203,7 +204,7 @@ export class PatientFileComponent implements OnInit {
       zipCode: new FormControl(null),
       city: new FormControl(null),
       additionalAddress: new FormControl(null),
-      photoId: new FormControl(null),
+      photoId: new FormControl(null)
     });
     this.attachedInfoForm.disable();
   }
@@ -211,7 +212,7 @@ export class PatientFileComponent implements OnInit {
     this.noteForm = this.formBuilder.group({
       id: new FormControl(null),
       value: new FormControl(null, Validators.required),
-      date: new FormControl(new Date(), Validators.required),
+      date: new FormControl(new Date(), Validators.required)
     });
   }
 
@@ -247,7 +248,7 @@ export class PatientFileComponent implements OnInit {
       category: patient.category ? patient.category.id : null,
       invitationStatus: patient.invitationStatus
         ? patient.invitationStatus
-        : null,
+        : null
     });
     this.getPatientInbox(this.pageNo);
   }
@@ -263,7 +264,7 @@ export class PatientFileComponent implements OnInit {
     this.initAttachedInfoForm();
     if (item) {
       let patient = this.attachedPatients.find(
-        (element) => element.fullInfo.id == item.fullInfo.id
+        element => element.fullInfo.id == item.fullInfo.id
       );
       if (
         patient.fullInfo.correspondence == "OTHER" ||
@@ -304,7 +305,7 @@ export class PatientFileComponent implements OnInit {
         otherCorrespondence: patient.fullInfo.otherCorrespondence
           ? patient.fullInfo.otherCorrespondence
           : null,
-        photoId: patient.fullInfo.photoId ? patient.fullInfo.photoId : null,
+        photoId: patient.fullInfo.photoId ? patient.fullInfo.photoId : null
       });
     }
   }
@@ -342,7 +343,7 @@ export class PatientFileComponent implements OnInit {
       photoId: this.personalInfoForm.value.photoId,
       categoryId: this.personalInfoForm.value.category,
       phones: this.phones,
-      invitationStatus: this.personalInfoForm.value.invitationStatus,
+      invitationStatus: this.personalInfoForm.value.invitationStatus
     };
     this.submitAction.emit(model);
   }
@@ -359,7 +360,7 @@ export class PatientFileComponent implements OnInit {
     const model = {
       id: this.noteForm.value.id,
       value: this.noteForm.value.value,
-      noteDate: this.noteForm.value.date,
+      noteDate: this.noteForm.value.date
     };
     this.submitNoteAction.emit(model);
     this.isnoteList = true;
@@ -368,11 +369,11 @@ export class PatientFileComponent implements OnInit {
   }
   noteCardClicked(item) {
     this.isnoteList = false;
-    let note = this.noteList.find((element) => element.id == item.id);
+    let note = this.noteList.find(element => element.id == item.id);
     this.noteForm.patchValue({
       id: note.id ? note.id : null,
       value: note.users[0].fullName ? note.users[0].fullName : null,
-      date: note.time ? new Date(note.time) : null,
+      date: note.time ? new Date(note.time) : null
     });
   }
   archieveNote(item) {
@@ -382,7 +383,7 @@ export class PatientFileComponent implements OnInit {
         "Confirmation de supression"
       )
       .afterClosed()
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.archieveNoteAction.emit(item.id);
         }
@@ -420,7 +421,7 @@ export class PatientFileComponent implements OnInit {
   onCheckboxChange($event) {
     if ($event.target.checked) {
       this.personalInfoForm.patchValue({
-        invitationStatus: "NOT_SENT",
+        invitationStatus: "NOT_SENT"
       });
     }
   }
@@ -433,14 +434,14 @@ export class PatientFileComponent implements OnInit {
         pageNo,
         this.direction
       )
-      .subscribe((res) => {
+      .subscribe(res => {
         this.messages = res;
-        this.messages.sort(function (m1, m2) {
+        this.messages.sort(function(m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
         });
-        this.itemsList = this.messages.map((item) => this.parseMessage(item));
+        this.itemsList = this.messages.map(item => this.parseMessage(item));
         this.filtredItemList = this.itemsList;
       });
   }
@@ -452,15 +453,15 @@ export class PatientFileComponent implements OnInit {
         pageNo,
         this.direction
       )
-      .subscribe((res) => {
+      .subscribe(res => {
         this.messages = res;
-        this.messages.sort(function (m1, m2) {
+        this.messages.sort(function(m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
         });
         this.itemsList.push(
-          ...this.messages.map((item) => this.parseMessage(item))
+          ...this.messages.map(item => this.parseMessage(item))
         );
         this.filtredItemList = this.itemsList;
       });
@@ -479,33 +480,33 @@ export class PatientFileComponent implements OnInit {
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
-              : message.sender.role,
-        },
+              : message.sender.role
+        }
       ],
       object: {
         name: message.object,
-        isImportant: message.importantObject,
+        isImportant: message.importantObject
       },
       time: message.updatedAt,
       isImportant: message.important,
       hasFiles: message.hasFiles,
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
-      photoId: message.sender.photoId,
+      photoId: message.sender.photoId
     };
     this.documentService
       .getDefaultImageEntity(message.sender.senderId, "ACCOUNT")
       .subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
           };
           let ok = myReader.readAsDataURL(response);
         },
-        (error) => {
+        error => {
           parsedMessage.users[0].img = this.avatars.user;
         }
       );
@@ -523,25 +524,25 @@ export class PatientFileComponent implements OnInit {
     this.markMessageAsSeen(item);
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "inbox",
-      },
+        context: "inbox"
+      }
     });
   }
 
   markMessageAsSeen(event) {
     let messageId = event.id;
     this.messagesServ.markMessageAsSeen(messageId).subscribe(
-      (resp) => {
+      resp => {
         if (resp == true) {
           let filtredIndex = this.filtredItemList.findIndex(
-            (item) => item.id == messageId
+            item => item.id == messageId
           );
           if (filtredIndex != -1) {
             this.filtredItemList[filtredIndex].isSeen = true;
           }
         }
       },
-      (error) => {
+      error => {
         //We have to find a way to notify user by this error
       }
     );
