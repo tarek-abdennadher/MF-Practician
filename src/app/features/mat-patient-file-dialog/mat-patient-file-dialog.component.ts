@@ -15,7 +15,7 @@ import { MyPatients } from "@app/shared/models/my-patients";
 @Component({
   selector: "app-mat-patient-file-dialog",
   templateUrl: "./mat-patient-file-dialog.component.html",
-  styleUrls: ["./mat-patient-file-dialog.component.scss"]
+  styleUrls: ["./mat-patient-file-dialog.component.scss"],
 })
 export class MatPatientFileDialogComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -77,28 +77,24 @@ export class MatPatientFileDialogComponent implements OnInit {
       this.patientService
         .getPatientFileById(data.info.patientFileId)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe(patientFile => {
+        .subscribe((patientFile) => {
           this.patientFile.next(patientFile);
           this.userRole = data.info.userRole;
           this.patientFileId = patientFile.id;
           this.notesList = [];
           if (patientFile.notes && patientFile.notes.length > 0) {
-            patientFile.notes.forEach(elm => {
+            patientFile.notes.forEach((elm) => {
               this.notesList.push(this.mappingNote(elm));
             });
           }
           this.notes.next(this.notesList);
-          if (patientFile.patientId) {
-            this.patientService
-              .getPatientsByParentId(patientFile.patientId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(res => {
-                this.linkedPatientList = [];
-                res.forEach(elm => {
-                  this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-                });
-                this.linkedPatients.next(this.linkedPatientList);
-              });
+          this.linkedPatientList = [];
+          this.linkedPatients.next(null);
+          if (patientFile.linkedPatientFiles) {
+            patientFile.linkedPatientFiles.forEach((elm) => {
+              this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+            });
+            this.linkedPatients.next(this.linkedPatientList);
           }
         });
     } else {
@@ -108,26 +104,22 @@ export class MatPatientFileDialogComponent implements OnInit {
           data.info.practicianId
         )
         .pipe(takeUntil(this._destroyed$))
-        .subscribe(patientFile => {
+        .subscribe((patientFile) => {
           this.patientFile.next(patientFile);
           this.notesList = [];
           if (patientFile.notes && patientFile.notes.length > 0) {
-            patientFile.notes.forEach(elm => {
+            patientFile.notes.forEach((elm) => {
               this.notesList.push(this.mappingNote(elm));
             });
           }
           this.notes.next(this.notesList);
-          if (patientFile.patientId) {
-            this.patientService
-              .getPatientsByParentId(patientFile.patientId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(res => {
-                this.linkedPatientList = [];
-                res.forEach(elm => {
-                  this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-                });
-                this.linkedPatients.next(this.linkedPatientList);
-              });
+          this.linkedPatientList = [];
+          this.linkedPatients.next(null);
+          if (patientFile.linkedPatientFiles) {
+            patientFile.linkedPatientFiles.forEach((elm) => {
+              this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+            });
+            this.linkedPatients.next(this.linkedPatientList);
           }
           this.userRole = data.info.userRole;
           this.patientFileId = patientFile.id;
@@ -135,7 +127,7 @@ export class MatPatientFileDialogComponent implements OnInit {
     }
     this.categoryService
       .getCategoriesByPractician(data.info.practicianId)
-      .subscribe(res => {
+      .subscribe((res) => {
         this.categoryList.next(res);
       });
   }
@@ -147,13 +139,13 @@ export class MatPatientFileDialogComponent implements OnInit {
           fullName:
             note.value.length < 60
               ? note.value
-              : note.value.substring(0, 60) + "..."
-        }
+              : note.value.substring(0, 60) + "...",
+        },
       ],
       time: note.noteDate,
       isViewDetail: false,
       isArchieve: true,
-      isSeen: true
+      isSeen: true,
     };
   }
   mappingLinkedPatients(patient) {
@@ -165,22 +157,22 @@ export class MatPatientFileDialogComponent implements OnInit {
       fullName: patient.firstName + " " + patient.lastName,
       img: this.avatars.man,
       type: "PATIENT",
-      civility: patient.civility
+      civility: patient.civility,
     });
     linkedPatients.photoId = patient.photoId;
     linkedPatients.isSeen = true;
     linkedPatients.isViewDetail = true;
     if (linkedPatients.photoId) {
-      linkedPatients.users.forEach(user => {
+      linkedPatients.users.forEach((user) => {
         this.documentService.downloadFile(linkedPatients.photoId).subscribe(
-          response => {
+          (response) => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
+            myReader.onloadend = (e) => {
               user.img = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           },
-          error => {
+          (error) => {
             if (user.civility == "M") {
               user.img = this.avatars.man;
             } else if (user.civility == "MME") {
@@ -192,7 +184,7 @@ export class MatPatientFileDialogComponent implements OnInit {
         );
       });
     } else {
-      linkedPatients.users.forEach(user => {
+      linkedPatients.users.forEach((user) => {
         if (user.civility == "M") {
           user.img = this.avatars.man;
         } else if (user.civility == "MME") {
@@ -208,13 +200,13 @@ export class MatPatientFileDialogComponent implements OnInit {
     if (model.id == null) {
       this.noteService
         .addNoteforPatientFile(model, this.patientFileId)
-        .subscribe(res => {
+        .subscribe((res) => {
           if (res) {
             this.notifMessage = this.noteService.messages.add_success;
             this.notifier.show({
               message: this.notifMessage,
               type: "info",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             this.notesList.push(this.mappingNote(res));
             this.notes.next(this.notesList);
@@ -223,21 +215,21 @@ export class MatPatientFileDialogComponent implements OnInit {
             this.notifier.show({
               message: this.notifMessage,
               type: "error",
-              template: this.customNotificationTmpl
+              template: this.customNotificationTmpl,
             });
             return;
           }
         });
     } else {
-      this.noteService.updateNote(model).subscribe(res => {
+      this.noteService.updateNote(model).subscribe((res) => {
         if (res) {
           this.notifMessage = this.noteService.messages.edit_success;
           this.notifier.show({
             message: this.notifMessage,
             type: "info",
-            template: this.customNotificationTmpl
+            template: this.customNotificationTmpl,
           });
-          let noteToUpdate = this.notesList.findIndex(x => x.id == res.id);
+          let noteToUpdate = this.notesList.findIndex((x) => x.id == res.id);
           if (noteToUpdate !== -1) {
             this.notesList[noteToUpdate] = this.mappingNote(res);
             this.notes.next(this.notesList);
@@ -247,7 +239,7 @@ export class MatPatientFileDialogComponent implements OnInit {
           this.notifier.show({
             message: this.notifMessage,
             type: "error",
-            template: this.customNotificationTmpl
+            template: this.customNotificationTmpl,
           });
           return;
         }
@@ -255,15 +247,15 @@ export class MatPatientFileDialogComponent implements OnInit {
     }
   }
   archieveNote(noteId) {
-    this.noteService.deleteNote(noteId).subscribe(result => {
+    this.noteService.deleteNote(noteId).subscribe((result) => {
       if (result) {
         this.notifMessage = this.noteService.messages.delete_success;
         this.notifier.show({
           message: this.notifMessage,
           type: "info",
-          template: this.customNotificationTmpl
+          template: this.customNotificationTmpl,
         });
-        this.notesList = this.notesList.filter(note => note.id != noteId);
+        this.notesList = this.notesList.filter((note) => note.id != noteId);
         this.notes.next(this.notesList);
       }
     });
@@ -280,40 +272,93 @@ export class MatPatientFileDialogComponent implements OnInit {
       .updatePatientFile(model)
       .subscribe(this.handleResponse, this.handleError);
   }
-  handleResponse = res => {
+  handleResponse = (res) => {
     if (res) {
       this.notifMessage = this.patientService.messages.edit_info_success;
       this.notifier.show({
         message: this.notifMessage,
         type: "info",
-        template: this.customNotificationTmpl
+        template: this.customNotificationTmpl,
       });
     } else {
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",
-        template: this.customNotificationTmpl
+        template: this.customNotificationTmpl,
       });
       return;
     }
   };
 
-  handleError = err => {
+  handleError = (err) => {
     if (err && err.error && err.error.apierror) {
       this.notifMessage = err.error.apierror.message;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",
-        template: this.customNotificationTmpl
+        template: this.customNotificationTmpl,
       });
     } else {
       this.notifMessage = this.patientService.errors.failed_update;
       this.notifier.show({
         message: this.notifMessage,
         type: "error",
-        template: this.customNotificationTmpl
+        template: this.customNotificationTmpl,
       });
     }
   };
+  submitLinkedPatient(model) {
+    this.patientService
+      .addLinkedPatient(this.patientFileId, model)
+      .subscribe((res) => {
+        if (res) {
+          this.notifMessage = this.patientService.messages.add_success;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+          this.linkedPatientList.push(this.mappingLinkedPatients(res));
+          this.linkedPatients.next(this.linkedPatientList);
+        } else {
+          this.notifMessage = this.patientService.errors.failed_add_patient;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+          return;
+        }
+      });
+  }
+  updateLinkedPatient(model) {
+    this.patientService.updateLinkedPatient(model).subscribe((res) => {
+      if (res) {
+        this.notifMessage = this.patientService.messages.update_sucess;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+        let patientToUpdate = this.linkedPatientList.findIndex(
+          (x) => x.fullInfo.id == res.id
+        );
+        if (patientToUpdate !== -1) {
+          this.linkedPatientList[patientToUpdate] = this.mappingLinkedPatients(
+            res
+          );
+          this.linkedPatients.next(this.linkedPatientList);
+        }
+      } else {
+        this.notifMessage = this.patientService.errors.failed_edit_patient;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "error",
+          template: this.customNotificationTmpl,
+        });
+        return;
+      }
+    });
+  }
 }
