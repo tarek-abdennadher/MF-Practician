@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Inject } from "@angular/core";
 import { LoginService } from "@app/core/services/login.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LocalStorageService } from "ngx-webstorage";
 import { GlobalService } from "@app/core/services/global.service";
-import { trimFunction } from '@app/shared/functions/trim';
+import { trimFunction } from "@app/shared/functions/trim";
+import { DOCUMENT } from "@angular/common";
 @Component({
   selector: "app-reset-password",
   templateUrl: "./reset-password.component.html",
@@ -20,7 +21,8 @@ export class ResetPasswordComponent implements OnInit {
     public route: ActivatedRoute,
     public localStorage: LocalStorageService,
     public router: Router,
-    public globalService: GlobalService
+    public globalService: GlobalService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.messages = loginService.messages;
     this.url = globalService.url;
@@ -43,8 +45,7 @@ export class ResetPasswordComponent implements OnInit {
             this.errorMessage = this.loginService.messages.reset_password_failure;
           }
         });
-      }
-      else {
+      } else {
         this.errorMessage = this.loginService.messages.acces_denied;
       }
     });
@@ -56,5 +57,17 @@ export class ResetPasswordComponent implements OnInit {
   }
   logoAction() {
     this.router.navigate(["/connexion"]);
+  }
+
+  redirectToLoginPatient() {
+    this.document.location.href = this.url.patient_connexion;
+  }
+  public redirectToPracticien() {
+    this.errorMessage = "";
+    this.successMessage = "";
+    this.router.navigate(["/connexion"]);
+  }
+  public redirectToPatient() {
+    this.document.location.href = this.url.patient_connexion;
   }
 }
