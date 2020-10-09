@@ -49,6 +49,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   forwardedResponse = false;
   objectsList = [];
   toList = new BehaviorSubject(null);
+  paramObs = new BehaviorSubject("");
   avatars: {
     doctor: string;
     child: string;
@@ -91,26 +92,38 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
           this.forwardedResponse = true;
           this.getForwardToList();
         }
-      });
-      this.route.params.subscribe((params) => {
-        this.idMessage = params["id"];
-        this.messagingDetail = this.route.snapshot.data.messagingdetail;
-        this.getMessageDetailById(this.idMessage);
-      });
-      setTimeout(() => {
-        this.featureService.setIsMessaging(true);
+        if (this.paramObs.getValue() != params["status"]) {
+          this.paramObs.next(params["status"]);
+        }
       });
     });
   }
   ngOnInit(): void {
     this.realTime();
+    this.messagingDetail = window.history.state.data;
+      if (!this.messagingDetail) {
+        this.goToBack();
+      } else {
+        this.updateMessageDetail();
+        setTimeout(() => {
+          this.featureService.setIsMessaging(true);
+        });
+      }
     jQuery([document.documentElement, document.body]).animate(
       {
         scrollTop: $("#reply").offset().top,
       },
       1000
     );
+    this.getParamObs();
   }
+
+getParamObs() {
+  this.paramObs.subscribe(val => {
+    this.getResponseBody(this.messagingDetail);
+  })
+}
+
   getForwardToList() {
     this.messagingDetailService.getTlsSecretaryList().subscribe((list) => {
       list.forEach((receiver) => {
@@ -135,6 +148,18 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         this.messagingDetail = message;
         this.loadingReply = false;
       });
+  }
+
+  updateMessageDetail() {
+    this.messagingDetail.toReceivers.forEach((element) => {
+      if (element.receiverId == this.featureService.getUserId()) {
+        this.isMyMessage = true;
+      }
+    });
+    this.messagingDetail.hasFiles = false;
+    this.messagingDetail.body = "";
+    this.messagingDetail = this.messagingDetail;
+    this.loadingReply = false;
   }
 
   loadPhoto(user) {
