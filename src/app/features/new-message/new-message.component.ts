@@ -444,7 +444,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     });
   }
   private concernListSubscription() {
-    console.log(this.concernList);
     this.concernList.subscribe((elm) => {
       this.concernFilteredList = elm;
     });
