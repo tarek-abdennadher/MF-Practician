@@ -413,8 +413,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
-    this.router.navigate(["messagerie-repondre/", this.idMessage], {
-      relativeTo: this.route.parent
+    this.router.navigate(["messagerie-repondre"], {
+      relativeTo: this.route.parent, state: {data: this.messagingDetail}
     });
   }
 
@@ -422,33 +422,33 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
-    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+    this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         context: "forward"
       },
-      relativeTo: this.route.parent
+      relativeTo: this.route.parent, state: {data: this.messagingDetail}
     });
   }
 
   acceptAction() {
     this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
-    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+    this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         status: "accept"
       },
-      relativeTo: this.route.parent
+      relativeTo: this.route.parent, state: {data: this.messagingDetail}
     });
     this.scrollToBottom();
   }
 
   refuseAction() {
     this.messagingDetailService.setId(this.idMessage);
-    this.router.navigate(["messagerie-repondre/", this.idMessage], {
+    this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         status: "refus"
       },
-      relativeTo: this.route.parent
+      relativeTo: this.route.parent, state: {data: this.messagingDetail}
     });
     this.scrollToBottom();
   }

@@ -15,6 +15,7 @@
     <lib-hls-generic-list
       [list]="itemsList"
       [isMyPatients]="false"
+      emptyList="Vous n'avez pas encore crée de catégorie pour le moment."
       (cardAction)="cardClicked($event)"
       (detailAction)="cardClicked($event)"
       (archieveAction)="deleteCategory($event)"

@@ -47,6 +47,7 @@
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -66,6 +67,7 @@
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -85,6 +87,7 @@
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -104,6 +107,7 @@
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -121,6 +125,7 @@
       *ngIf="!loading"
       [list]="filtredItemList"
       [hasPaging]="true"
+      emptyList="Vous n'avez aucun nouveau message actuellement."
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
       (archieveAction)="archieveMessage($event)"
@@ -136,6 +141,7 @@
       *ngIf="!loading && isSecretary && isMyInbox"
       [list]="filtredItemList"
       [hasPaging]="true"
+      emptyList="Vous n'avez aucun nouveau message actuellement."
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
       (archieveAction)="archieveMessage($event)"
@@ -151,7 +157,7 @@
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
