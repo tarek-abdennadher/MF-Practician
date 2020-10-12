@@ -17,6 +17,7 @@
       [list]="filtredPatients"
       [imageSource]="imageSource"
       [isMyPatients]="isMyPatients"
+      emptyList="Vous n'avez aucun patient actuellement."
       (markAsSeenAction)="writeAction($event)"
       (writeAction)="writeAction($event)"
       (prohibitAction)="prohibitAction($event)"
