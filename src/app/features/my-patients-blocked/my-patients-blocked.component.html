@@ -12,6 +12,7 @@
       [list]="filtredPatients"
       [imageSource]="imageSource"
       [isMyPatients]="isMyPatients"
+      emptyList="Vous n'avez aucun patient bloqué actuellement."
       (authorizedAction)="authorizeAction($event)"
       (cardAction)="cardClicked($event)"
       [hasPaging]="true"

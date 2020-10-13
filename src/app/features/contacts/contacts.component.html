@@ -14,6 +14,7 @@
     <lib-hls-generic-list
       [list]="filtredItemsList"
       [isMyPatients]="false"
+      emptyList="Vous n'avez aucun contact pro actuellement."
       (cardAction)="cardClicked($event)"
       (detailAction)="cardClicked($event)"
       (markAsSeenAction)="markAsSeenClicked($event)"
