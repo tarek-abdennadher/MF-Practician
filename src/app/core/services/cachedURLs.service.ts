@@ -1,14 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class CachedURLs {
-
-  cachedURLs = [
-    '/ms-coreapplication/photo/generate/',
-    '/ms-filer/node/',
-  ];
+  //do not change index of these two urls
+  cachedURLs = ["/ms-coreapplication/photo/generate/", "/ms-filer/node/"];
 
   getList(): string[] {
     return this.cachedURLs;
