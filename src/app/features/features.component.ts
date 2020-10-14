@@ -201,7 +201,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   sentMessage() {
-    this.messageService.sentMessage().subscribe(res => {
+    this.messageService.sentMessageFullSize().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
     });
   }
