@@ -4,24 +4,35 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { FeaturesService } from '@app/features/features.service';
+import { NotifierService } from 'angular-notifier';
 
 @Injectable()
 export class ResponseInterceptor implements HttpInterceptor {
+  private readonly notifier: NotifierService;
   constructor(
     private localSt: LocalStorageService,
-    private router: Router, private featureService: FeaturesService) {
+    private router: Router,
+    private notifierService: NotifierService,) {
+    this.notifier = notifierService;
   }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        const token = this.localSt.retrieve("token");
-        if (error.status === 401 && (token != null) && (this.featureService.getExpiretime().getTime() <= (new Date()).getTime())) {
-          this.router.navigate(["/connexion"]);
-        } else {
-          return throwError(error);
+        switch (error.status) {
+          case 401:
+            this.router.navigate(["/connexion"]);
+            break;
+          case 500 :
+            this.setNotif("Une erreur s’est produite et l'équipe travail dessus.", "error");
+            break;
+          default:
+            return throwError(error);
         }
       })
     );
+  }
+
+  setNotif(msg, type) {
+    this.notifier.notify(type, msg, "0");
   }
 }
