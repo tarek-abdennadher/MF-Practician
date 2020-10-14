@@ -678,7 +678,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     this.messagesServ.getNotificationObs().subscribe(notif => {
       if (notif != "") {
         if (this.isMyInbox) {
-          let message = this.parseMessage(notif.message);
+          const exist = (this.filtredItemList && this.filtredItemList.length>0 && notif.message.id == this.filtredItemList[0].id) ;
+          if (!exist) {
+            let message = this.parseMessage(notif.message);
           this.documentService
             .getDefaultImage(notif.message.sender.senderId)
             .pipe(takeUntil(this._destroyed$))
@@ -706,6 +708,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             this.number > 1
               ? this.globalService.messagesDisplayScreen.newMessages
               : this.globalService.messagesDisplayScreen.newMessage;
+          }
         }
       }
     });

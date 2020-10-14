@@ -34,6 +34,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   messagingDetail: any;
   idMessage: number;
   bodyObs = new BehaviorSubject(null);
+  disableSending = new BehaviorSubject(false);
 
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
@@ -230,25 +231,31 @@ getParamObs() {
         };
       }
       if (this.refuseResponse) {
+        this.disableSending.next(true);
         this.messagingDetailService
           .getRefuseRequest(requestDto)
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
+            this.disableSending.next(false);
           });
       }
       if (this.acceptResponse) {
+        this.disableSending.next(true);
         this.messagingDetailService
           .getAcceptRequest(requestDto)
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
+            this.disableSending.next(false);
           });
       }
       if (this.forwardedResponse) {
+        this.disableSending.next(true);
         requestDto.websiteOrigin = "TLS";
         this.messagingDetailService
           .getAcceptRequest(requestDto)
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
+            this.disableSending.next(false);
           });
       }
     }

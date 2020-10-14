@@ -1076,18 +1076,23 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         );
       if (selectedObj.allowDocument) {
         this.loading = true;
+        this.ctr.body.disable();
         const doc = this.getPdfAsHtml(objectDto, newData);
-        forkJoin(body, doc)
+        forkJoin([body, doc])
           .pipe(takeUntil(this._destroyed$))
           .subscribe((res) => {
             this.selectedObject.next(newData);
             this.loading = false;
+            this.ctr.body.enable();
           });
       } else {
-        forkJoin(body)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe((res) => {
+        this.loading = true;
+        this.ctr.body.disable();
+        body.pipe(takeUntil(this._destroyed$))
+          .subscribe(res => {
             this.selectedObject.next(newData);
+            this.loading = false;
+            this.ctr.body.enable();
           });
       }
     } else if (selectedObj) {

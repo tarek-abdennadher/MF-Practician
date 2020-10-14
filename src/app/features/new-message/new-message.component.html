@@ -365,7 +365,7 @@
   <br />
   <div class="row mb-2">
     <div class="col-5 col-sm-3 col-md-3">
-      <button *ngIf="!isInstruction" id="send-button" type="button" class="btn btn-primary" (click)="sendEmail()">ENVOYER</button>
+      <button *ngIf="!isInstruction" id="send-button" type="button" class="btn btn-primary" [attr.disabled]="loading? true : null" (click)="sendEmail()">ENVOYER</button>
       <button *ngIf="isInstruction" id="send-button-instruction" type="button" class="btn btn-primary" (click)="sendInstructionEmit()">ENVOYER</button>
     </div>
     <div class="col-4 col-sm-3 col-md-2 file-clip">
