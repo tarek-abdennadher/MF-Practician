@@ -82,6 +82,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   realTime() {
     this.messagingDetailService.getIdObs().subscribe((resp) => {
       this.route.queryParams.subscribe((params) => {
+        this.messagingDetail = window.history.state.data;
         this.forwardedResponse = false;
         this.acceptResponse = false;
         this.refuseResponse = false;
@@ -101,15 +102,14 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.realTime();
-    this.messagingDetail = window.history.state.data;
-      if (!this.messagingDetail) {
-        this.goToBack();
-      } else {
-        this.updateMessageDetail();
-        setTimeout(() => {
-          this.featureService.setIsMessaging(true);
-        });
-      }
+    if (!this.messagingDetail) {
+      this.goToBack();
+    } else {
+      this.updateMessageDetail();
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
+    }
     jQuery([document.documentElement, document.body]).animate(
       {
         scrollTop: $("#reply").offset().top,
@@ -119,11 +119,11 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     this.getParamObs();
   }
 
-getParamObs() {
-  this.paramObs.subscribe(val => {
-    this.getResponseBody(this.messagingDetail);
-  })
-}
+  getParamObs() {
+    this.paramObs.subscribe((val) => {
+      this.getResponseBody(this.messagingDetail);
+    });
+  }
 
   getForwardToList() {
     this.messagingDetailService.getTlsSecretaryList().subscribe((list) => {
@@ -132,23 +132,6 @@ getParamObs() {
       });
       this.toList.next(list);
     });
-  }
-
-  getMessageDetailById(id) {
-    this.messagingDetailService
-      .getMessagingDetailById(id)
-      .subscribe((message) => {
-        message.toReceivers.forEach((element) => {
-          if (element.receiverId == this.featureService.getUserId()) {
-            this.isMyMessage = true;
-          }
-        });
-        this.getResponseBody(message);
-        message.hasFiles = false;
-        message.body = "";
-        this.messagingDetail = message;
-        this.loadingReply = false;
-      });
   }
 
   updateMessageDetail() {

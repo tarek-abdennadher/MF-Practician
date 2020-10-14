@@ -293,4 +293,10 @@ export class MyPatientsService {
       linkedPatient
     );
   }
+  getAccountIdByPatientFileId(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "patientAccount/" + id
+    );
+  }
 }
