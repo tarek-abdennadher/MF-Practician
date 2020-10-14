@@ -4,7 +4,7 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnDestroy,
+  OnDestroy
 } from "@angular/core";
 import {
   FormGroup,
@@ -12,7 +12,7 @@ import {
   FormArray,
   FormControl,
   Validators,
-  AbstractControl,
+  AbstractControl
 } from "@angular/forms";
 import { Subject, BehaviorSubject } from "rxjs";
 import { emailValidator } from "@app/core/Validators/email.validator";
@@ -43,7 +43,7 @@ function requiredValidator(c: AbstractControl): { [key: string]: any } {
   selector: "app-patient-file",
   templateUrl: "./patient-file.component.html",
   styleUrls: ["./patient-file.component.scss"],
-  providers: [CorrespondencePipe, CivilityPipe],
+  providers: [CorrespondencePipe, CivilityPipe]
 })
 export class PatientFileComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -164,27 +164,28 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.initNoteForm();
     this.initAddAttachedInfoForm();
     this.initAttachedInfoForm();
-    this.categoryList.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
+    this.categoryList.pipe(takeUntil(this._destroyed$)).subscribe(res => {
       if (res) {
         this.categories = res;
       }
     });
-    this.patient.pipe(takeUntil(this._destroyed$)).subscribe((val) => {
+    this.patient.pipe(takeUntil(this._destroyed$)).subscribe(val => {
       this.isList = true;
       if (val) {
         this.selectedTabIndex = 0;
         this.info = val;
+        this.pageNo = 0;
         this.getPersonalInformation(val);
         this.filtredItemList = [];
         this.itemsList = [];
       }
     });
-    this.linkedPatients.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
+    this.linkedPatients.pipe(takeUntil(this._destroyed$)).subscribe(res => {
       if (res) {
         this.attachedPatients = res;
       }
     });
-    this.notes.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
+    this.notes.pipe(takeUntil(this._destroyed$)).subscribe(res => {
       if (res) {
         this.noteList = res;
       }
@@ -197,7 +198,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.patientFileService
       .getCorrespondence()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.correspondenceList = resp;
       });
   }
@@ -205,7 +206,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.patientFileService
       .getCivility()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         this.civilityList = resp;
       });
   }
@@ -227,7 +228,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       additionalAddress: new FormControl(null),
       photoId: new FormControl(null),
       category: new FormControl(null),
-      invitationStatus: new FormControl(null),
+      invitationStatus: new FormControl(null)
     });
     this.personalInfoForm.setValidators(requiredValidator);
   }
@@ -240,7 +241,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       otherCorrespondence: new FormControl(null),
       birthday: new FormControl(null, [
         Validators.required,
-        DateValidator.dateVaidator,
+        DateValidator.dateVaidator
       ]),
       lastName: new FormControl(null, Validators.required),
       firstName: new FormControl(null, Validators.required),
@@ -250,7 +251,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       zipCode: new FormControl(null),
       city: new FormControl(null),
       additionalAddress: new FormControl(null),
-      photoId: new FormControl(null),
+      photoId: new FormControl(null)
     });
   }
   initAddAttachedInfoForm() {
@@ -260,7 +261,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       otherCorrespondence: new FormControl(null),
       birthday: new FormControl(null, [
         Validators.required,
-        DateValidator.dateVaidator,
+        DateValidator.dateVaidator
       ]),
       lastName: new FormControl(null, Validators.required),
       firstName: new FormControl(null, Validators.required),
@@ -270,14 +271,14 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       zipCode: new FormControl(null),
       city: new FormControl(null),
       additionalAddress: new FormControl(null),
-      photoId: new FormControl(null),
+      photoId: new FormControl(null)
     });
   }
   initNoteForm() {
     this.noteForm = this.formBuilder.group({
       id: new FormControl(null),
       value: new FormControl(null, Validators.required),
-      date: new FormControl(new Date(), Validators.required),
+      date: new FormControl(new Date(), Validators.required)
     });
   }
 
@@ -313,7 +314,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       category: patient.category ? patient.category.id : null,
       invitationStatus: patient.invitationStatus
         ? patient.invitationStatus
-        : null,
+        : null
     });
     this.getPatientInbox(this.pageNo);
   }
@@ -329,7 +330,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.initAttachedInfoForm();
     if (item) {
       let patient = this.attachedPatients.find(
-        (element) => element.fullInfo.id == item.fullInfo.id
+        element => element.fullInfo.id == item.fullInfo.id
       );
       if (
         patient.fullInfo.correspondence == "OTHER" ||
@@ -368,7 +369,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         otherCorrespondence: patient.fullInfo.otherCorrespondence
           ? patient.fullInfo.otherCorrespondence
           : null,
-        photoId: patient.fullInfo.photoId ? patient.fullInfo.photoId : null,
+        photoId: patient.fullInfo.photoId ? patient.fullInfo.photoId : null
       });
     }
   }
@@ -406,7 +407,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       photoId: this.personalInfoForm.value.photoId,
       categoryId: this.personalInfoForm.value.category,
       phones: this.phones,
-      invitationStatus: this.personalInfoForm.value.invitationStatus,
+      invitationStatus: this.personalInfoForm.value.invitationStatus
     };
     this.submitAction.emit(model);
   }
@@ -423,7 +424,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     const model = {
       id: this.noteForm.value.id,
       value: this.noteForm.value.value,
-      noteDate: this.noteForm.value.date,
+      noteDate: this.noteForm.value.date
     };
     this.submitNoteAction.emit(model);
     this.isnoteList = true;
@@ -432,11 +433,11 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   }
   noteCardClicked(item) {
     this.isnoteList = false;
-    let note = this.noteList.find((element) => element.id == item.id);
+    let note = this.noteList.find(element => element.id == item.id);
     this.noteForm.patchValue({
       id: note.id ? note.id : null,
       value: note.users[0].fullName ? note.users[0].fullName : null,
-      date: note.time ? new Date(note.time) : null,
+      date: note.time ? new Date(note.time) : null
     });
   }
   archieveNote(item) {
@@ -447,7 +448,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       )
       .afterClosed()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         if (res) {
           this.archieveNoteAction.emit(item.id);
         }
@@ -485,7 +486,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   onCheckboxChange($event) {
     if ($event.target.checked) {
       this.personalInfoForm.patchValue({
-        invitationStatus: "NOT_SENT",
+        invitationStatus: "NOT_SENT"
       });
     }
   }
@@ -499,14 +500,14 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.direction
       )
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         this.messages = res;
-        this.messages.sort(function (m1, m2) {
+        this.messages.sort(function(m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
         });
-        this.itemsList = this.messages.map((item) => this.parseMessage(item));
+        this.itemsList = this.messages.map(item => this.parseMessage(item));
         this.filtredItemList = this.itemsList;
       });
   }
@@ -519,15 +520,15 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.direction
       )
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         this.messages = res;
-        this.messages.sort(function (m1, m2) {
+        this.messages.sort(function(m1, m2) {
           return (
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
           );
         });
         this.itemsList.push(
-          ...this.messages.map((item) => this.parseMessage(item))
+          ...this.messages.map(item => this.parseMessage(item))
         );
         this.filtredItemList = this.itemsList;
       });
@@ -546,34 +547,34 @@ export class PatientFileComponent implements OnInit, OnDestroy {
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
-              : message.sender.role,
-        },
+              : message.sender.role
+        }
       ],
       object: {
         name: message.object,
-        isImportant: message.importantObject,
+        isImportant: message.importantObject
       },
       time: message.updatedAt,
       isImportant: message.important,
       hasFiles: message.hasFiles,
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
-      photoId: message.sender.photoId,
+      photoId: message.sender.photoId
     };
     this.documentService
       .getDefaultImageEntity(message.sender.senderId, "ACCOUNT")
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
           };
           let ok = myReader.readAsDataURL(response);
         },
-        (error) => {
+        error => {
           parsedMessage.users[0].img = this.avatars.user;
         }
       );
@@ -591,8 +592,8 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.markMessageAsSeen(item);
     this.router.navigate(["/messagerie-lire/" + item.id], {
       queryParams: {
-        context: "inbox",
-      },
+        context: "inbox"
+      }
     });
   }
 
@@ -602,17 +603,17 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       .markMessageAsSeen(messageId)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (resp) => {
+        resp => {
           if (resp == true) {
             let filtredIndex = this.filtredItemList.findIndex(
-              (item) => item.id == messageId
+              item => item.id == messageId
             );
             if (filtredIndex != -1) {
               this.filtredItemList[filtredIndex].isSeen = true;
             }
           }
         },
-        (error) => {
+        error => {
           //We have to find a way to notify user by this error
         }
       );
@@ -667,7 +668,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       city: this.addAttachedInfoForm.value.city,
       additionalAddress: this.addAttachedInfoForm.value.additionalAddress,
       correspondence: this.addAttachedInfoForm.value.correspondence,
-      otherCorrespondence: this.addAttachedInfoForm.value.otherCorrespondence,
+      otherCorrespondence: this.addAttachedInfoForm.value.otherCorrespondence
     };
     this.submitAttachedAction.emit(model);
     this.isAddPatient = false;
@@ -698,7 +699,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       city: this.attachedInfoForm.value.city,
       additionalAddress: this.attachedInfoForm.value.additionalAddress,
       correspondence: this.attachedInfoForm.value.correspondence,
-      otherCorrespondence: this.attachedInfoForm.value.otherCorrespondence,
+      otherCorrespondence: this.attachedInfoForm.value.otherCorrespondence
     };
     this.updateAttachedAction.emit(model);
     this.isList = true;

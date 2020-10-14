@@ -10,11 +10,11 @@ const routes: Routes = [
     component: MessagingDetailComponent,
     children: [
       {
-        path: "messagerie-repondre/:id",
+        path: "messagerie-repondre",
         component: MessagingReplyComponent,
-        resolve: {
-          messagingdetail: MessagingDetailResolve,
-        },
+        // resolve: {
+        //   messagingdetail: MessagingDetailResolve,
+        // },
       },
     ],
   },

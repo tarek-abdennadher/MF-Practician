@@ -1,26 +1,50 @@
-<lib-hlsLinks [links]="links" [page]="page" [topText]="topText" [bottomText]="bottomText" [number]="number"
+<lib-hlsLinks
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
   [backButton]="backButton"
   [paginationText]="searchContext ? '-' : pagination.text"
   [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
   [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
-  (nextPageAction) = "nextPageActionClicked()"
-  (previousPageAction) = "previousPageActionClicked()" (selectAllAction)="selectAllActionClicked()"
-  (deSelectAllAction)="deSelectAllActionClicked()" (seenAction)="seenActionClicked()"
-  (seenAllAction)="seenAllActionClicked()" (importantAction)="importantActionClicked()"
-  (deleteAction)="deleteActionClicked()" (archieveAction)="archieveActionClicked()"
-  (filterAction)="filterActionClicked($event)" (refreshMessagingListAction)="refreshMessagingList()"></lib-hlsLinks>
+  (nextPageAction)="nextPageActionClicked()"
+  (previousPageAction)="previousPageActionClicked()"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
+  (seenAction)="seenActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (importantAction)="importantActionClicked()"
+  (deleteAction)="deleteActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (filterAction)="filterActionClicked($event)"
+  (refreshMessagingListAction)="refreshMessagingList()"
+></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
-<lib-hlsMessagingList *ngIf="!loading" [list]="filtredItemList" [isSent]="true" (archieveAction)="archieveMessage($event)"
-  (cardAction)="cardClicked($event)" [caller]="'sentMessage'" [imageSource]="imageSource"></lib-hlsMessagingList>
+    <lib-hlsMessagingList
+      *ngIf="!loading"
+      [list]="filtredItemList"
+      [isSent]="true"
+      emptyList="Vous n'avez aucun message envoyé actuellement."
+      (archieveAction)="archieveMessage($event)"
+      (cardAction)="cardClicked($event)"
+      [caller]="'sentMessage'"
+      [imageSource]="imageSource"
+    ></lib-hlsMessagingList>
   </div>
 </div>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
     &nbsp;<span>{{ notificationData.message }}</span>
   </div>
 </ng-template>
-<mat-progress-spinner *ngIf="loading" diameter="20"
-mode="indeterminate" value="100"> </mat-progress-spinner>
+<mat-progress-spinner
+  *ngIf="loading"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
+</mat-progress-spinner>

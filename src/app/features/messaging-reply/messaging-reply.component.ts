@@ -34,6 +34,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   messagingDetail: any;
   idMessage: number;
   bodyObs = new BehaviorSubject(null);
+  disableSending = new BehaviorSubject(false);
 
   page = this.globalService.messagesDisplayScreen.inbox;
   number = 0;
@@ -49,6 +50,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   forwardedResponse = false;
   objectsList = [];
   toList = new BehaviorSubject(null);
+  paramObs = new BehaviorSubject("");
   avatars: {
     doctor: string;
     child: string;
@@ -80,6 +82,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   realTime() {
     this.messagingDetailService.getIdObs().subscribe((resp) => {
       this.route.queryParams.subscribe((params) => {
+        this.messagingDetail = window.history.state.data;
         this.forwardedResponse = false;
         this.acceptResponse = false;
         this.refuseResponse = false;
@@ -91,26 +94,37 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
           this.forwardedResponse = true;
           this.getForwardToList();
         }
-      });
-      this.route.params.subscribe((params) => {
-        this.idMessage = params["id"];
-        this.messagingDetail = this.route.snapshot.data.messagingdetail;
-        this.getMessageDetailById(this.idMessage);
-      });
-      setTimeout(() => {
-        this.featureService.setIsMessaging(true);
+        if (this.paramObs.getValue() != params["status"]) {
+          this.paramObs.next(params["status"]);
+        }
       });
     });
   }
   ngOnInit(): void {
     this.realTime();
+    if (!this.messagingDetail) {
+      this.goToBack();
+    } else {
+      this.updateMessageDetail();
+      setTimeout(() => {
+        this.featureService.setIsMessaging(true);
+      });
+    }
     jQuery([document.documentElement, document.body]).animate(
       {
         scrollTop: $("#reply").offset().top,
       },
       1000
     );
+    this.getParamObs();
   }
+
+  getParamObs() {
+    this.paramObs.subscribe((val) => {
+      this.getResponseBody(this.messagingDetail);
+    });
+  }
+
   getForwardToList() {
     this.messagingDetailService.getTlsSecretaryList().subscribe((list) => {
       list.forEach((receiver) => {
@@ -120,21 +134,16 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     });
   }
 
-  getMessageDetailById(id) {
-    this.messagingDetailService
-      .getMessagingDetailById(id)
-      .subscribe((message) => {
-        message.toReceivers.forEach((element) => {
-          if (element.receiverId == this.featureService.getUserId()) {
-            this.isMyMessage = true;
-          }
-        });
-        this.getResponseBody(message);
-        message.hasFiles = false;
-        message.body = "";
-        this.messagingDetail = message;
-        this.loadingReply = false;
-      });
+  updateMessageDetail() {
+    this.messagingDetail.toReceivers.forEach((element) => {
+      if (element.receiverId == this.featureService.getUserId()) {
+        this.isMyMessage = true;
+      }
+    });
+    this.messagingDetail.hasFiles = false;
+    this.messagingDetail.body = "";
+    this.messagingDetail = this.messagingDetail;
+    this.loadingReply = false;
   }
 
   loadPhoto(user) {
@@ -205,25 +214,31 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         };
       }
       if (this.refuseResponse) {
+        this.disableSending.next(true);
         this.messagingDetailService
           .getRefuseRequest(requestDto)
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
+            this.disableSending.next(false);
           });
       }
       if (this.acceptResponse) {
+        this.disableSending.next(true);
         this.messagingDetailService
           .getAcceptRequest(requestDto)
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
+            this.disableSending.next(false);
           });
       }
       if (this.forwardedResponse) {
+        this.disableSending.next(true);
         requestDto.websiteOrigin = "TLS";
         this.messagingDetailService
           .getAcceptRequest(requestDto)
           .subscribe((resp) => {
             this.bodyObs.next(resp.body);
+            this.disableSending.next(false);
           });
       }
     }

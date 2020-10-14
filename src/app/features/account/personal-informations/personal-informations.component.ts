@@ -21,6 +21,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 import { takeUntil } from "rxjs/operators";
+import { RequestCache } from "@app/core/services/request-cache.service";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
@@ -83,7 +84,8 @@ export class PersonalInformationsComponent
     private featureService: FeaturesService,
     private globalService: GlobalService,
     private jobTitlePipe: JobtitlePipe,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private requestCache: RequestCache
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -333,6 +335,7 @@ export class PersonalInformationsComponent
         this.showAlert = true;
         $(".alert").alert();
         this.submitted = false;
+        this.requestCache.safeDeleteAvatar(this.accountId);
         if (this.image) {
           this.featureService.imageSource = this.image;
         } else {

@@ -86,4 +86,12 @@ export class LoginComponent implements OnInit {
   redirectToLoginPatient() {
     this.document.location.href = this.url.patient_connexion;
   }
+  public redirectToPracticien() {
+    this.errorMessage = "";
+    this.successMessage = "";
+    this.router.navigate(["/connexion"]);
+  }
+  public redirectToPatient() {
+    this.document.location.href = this.url.patient_connexion;
+  }
 }

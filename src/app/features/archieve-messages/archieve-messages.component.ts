@@ -139,13 +139,13 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       },
     ];
     messageArchived.progress = {
-      name:
+      name: message.senderArchived.closed ? "clôturé" :
         message.messageStatus == "TREATED"
           ? "répondu"
           : message.toReceiversArchived[0].seen
             ? "Lu"
             : "Envoyé",
-      value:
+      value: message.senderArchived.closed ? 200 :
         message.messageStatus == "TREATED"
           ? 100
           : message.toReceiversArchived[0].seen

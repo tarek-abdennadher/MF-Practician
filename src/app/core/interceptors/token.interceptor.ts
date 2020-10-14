@@ -30,13 +30,6 @@ export class TokenInterceptor implements HttpInterceptor {
           }
         });
       }
-      return next.handle(request).pipe(
-      tap(
-        event => { },
-        error => {
-          return throwError(error);
-        }
-      )
-    );
+      return next.handle(request);
   }
 }

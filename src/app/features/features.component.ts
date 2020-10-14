@@ -392,27 +392,33 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   displayInboxAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie-envoyes"]);
   }
   displayForwardedAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie-transferes"]);
   }
   displayArchieveAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie-archives"]);
   }
 
   displayMyPatientsAction(event) {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     switch (event) {
       case "accepted": {
         this.router.navigate(["/mes-patients"]);
@@ -434,14 +440,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
   displayMyMedicalsAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/favorites"]);
   }
   displayMyProContactsAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/mes-contacts-pro"]);
   }
   displayMyDocumentsAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/mes-documents"]);
   }
   displayHelpAction() {}
@@ -454,6 +463,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   filterActionClicked(event) {}
   logoClicked() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie"]);
   }
 
@@ -666,6 +676,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   displayInboxOfPracticiansAction(event) {
     jQuery("#sidebar").addClass("hidden-side-bar");
     this.localSt.store("practicianId", event);
+    this.scrolToTop();
     this.router.navigate(["/messagerie/" + event]);
   }
 
@@ -844,26 +855,26 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           senderRole == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
-        id: message.senderDetail.id,
-      },
+        id: message.senderDetail.id
+      }
     ];
     messageArchived.progress = {
       name:
         message.messageStatus == "TREATED"
           ? "répondu"
           : message.toReceiversArchived[0].seen
-            ? "Lu"
-            : "Envoyé",
+          ? "Lu"
+          : "Envoyé",
       value:
         message.messageStatus == "TREATED"
           ? 100
           : message.toReceiversArchived[0].seen
-            ? 50
-            : 20,
+          ? 50
+          : 20
     };
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
@@ -918,10 +929,20 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   myObjects() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["mes-objets"]);
   }
   myCategories() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["mes-categories"]);
+  }
+  scrolToTop() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#main-container").offset().top - 100
+      },
+      1000
+    );
   }
 }
