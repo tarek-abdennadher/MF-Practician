@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { FeaturesService } from '@app/features/features.service';
 import { NotifierService } from 'angular-notifier';
 
 @Injectable()
@@ -25,8 +24,6 @@ export class ResponseInterceptor implements HttpInterceptor {
             break;
           case 500 :
             this.setNotif("Une erreur s’est produite et l'équipe travail dessus.", "error");
-            // console.log("500");
-            // send notification
             break;
           default:
             return throwError(error);
