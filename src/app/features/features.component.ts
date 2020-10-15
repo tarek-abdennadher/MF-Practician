@@ -201,7 +201,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   sentMessage() {
-    this.messageService.sentMessage().subscribe(res => {
+    this.messageService.sentMessageFullSize().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
     });
   }
@@ -517,10 +517,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       if (event) {
         let result = this.featuresService
           .getSearchSentValue()
-          .filter(
-            x =>
-              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
-              x.object.name.toLowerCase().includes(event.toLowerCase())
+          .filter(x =>
+            x.users[0].fullName
+              ? x.users[0].fullName.toLowerCase().includes(event.toLowerCase())
+              : "" || x.object.name.toLowerCase().includes(event.toLowerCase())
           );
         result = result.length > 0 ? result : null;
         this.featuresService.setFilteredSentSearch(result);

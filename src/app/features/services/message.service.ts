@@ -25,14 +25,30 @@ export class MessageService {
     );
   }
 
-  sentFirstMessage(listSize: number, pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+  sentMessageFullSize(): Observable<Array<Message>> {
+    let params = {};
+    params = { params: { pageSize: 1000000 } };
+
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.sentMessage,
+      params
+    );
+  }
+
+  sentFirstMessage(
+    listSize: number,
+    pageNo?,
+    order?: OrderDirection
+  ): Observable<Array<Message>> {
     let params = {};
     if (pageNo && order) {
-      params = { params: { 'pageNo': pageNo, 'order': order } }
+      params = { params: { pageNo: pageNo, order: order } };
     }
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.sentMessage+"/listSize/" + listSize, params
+      this.globalService.url.sentMessage + "/listSize/" + listSize,
+      params
     );
   }
 
@@ -51,14 +67,19 @@ export class MessageService {
     );
   }
 
-  forwardedFirstMessage(listSize: number, pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+  forwardedFirstMessage(
+    listSize: number,
+    pageNo?,
+    order?: OrderDirection
+  ): Observable<Array<Message>> {
     let params = {};
     if (pageNo && order) {
-      params = { params: { 'pageNo': pageNo, 'order': order } }
+      params = { params: { pageNo: pageNo, order: order } };
     }
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.forwardedMessage+"/listSize/" + listSize, params
+      this.globalService.url.forwardedMessage + "/listSize/" + listSize,
+      params
     );
   }
 
