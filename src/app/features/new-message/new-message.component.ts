@@ -503,7 +503,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           : false
         : null;
     this.hasError = false;
-    this.sendMessageForm.controls["body"].enable();
+    //this.sendMessageForm.controls["body"].enable();
     this.sendMessageForm.patchValue({
       body:
         this.sendMessageForm.value.object.length == 1
@@ -751,7 +751,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         : null;
 
       this.hasError = false;
-      this.sendMessageForm.controls["body"].enable();
+      //this.sendMessageForm.controls["body"].enable();
       this.sendMessageForm.patchValue({
         body:
           this.sendMessageForm.value.object[0] &&
