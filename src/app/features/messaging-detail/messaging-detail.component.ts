@@ -155,7 +155,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         if (this.message && this.message != null) {
           if (
             this.message.sender &&
-            this.message.sender.role == "TELESECRETARYGROUP" &&
+            (this.message.sender.role == "TELESECRETARYGROUP" ||
+              this.message.sender.role == "SUPERVISOR" ||
+              this.message.sender.role == "SUPER_SUPERVISOR" ||
+              this.message.sender.role == "OPERATOR") &&
             this.message.sender.concernsType &&
             this.message.sender.concernsType == "PATIENT_FILE"
           ) {
@@ -301,7 +304,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           this.message = message;
           if (
             this.message.sender &&
-            this.message.sender.role == "TELESECRETARYGROUP" &&
+            (this.message.sender.role == "TELESECRETARYGROUP" ||
+              this.message.sender.role == "SUPERVISOR" ||
+              this.message.sender.role == "SUPER_SUPERVISOR" ||
+              this.message.sender.role == "OPERATOR") &&
             this.message.sender.concernsType &&
             this.message.sender.concernsType == "PATIENT_FILE"
           ) {
