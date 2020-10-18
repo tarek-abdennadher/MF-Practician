@@ -85,14 +85,23 @@ $color-helssy-white: #ffffff;
   .display-lg {
     display: unset;
   }
+  .display-lg-top {
+    display: unset;
+  }
 }
 
 @media (max-width: 1417px) {
+  .img-login {
+    width: 100%;
+  }
   .top-login {
-    flex-flow: column-reverse;
+    flex-flow: wrap-reverse;
   }
   .display-lg {
     // display: none;
+  }
+  .display-lg-top {
+    display: none;
   }
   .change-width {
     max-width: 100%;
@@ -297,7 +306,6 @@ a:focus {
   left: 0;
   right: 0;
   margin: auto;
-  // height: 66px;
 }
 
 .custom-card {
@@ -316,6 +324,7 @@ a:focus {
   border: 1px solid rgba(0, 0, 0, 0.125) !important;
   border-radius: 17px;
   opacity: 1;
+  flex-direction: inherit;
 }
 .custom-dimensions {
   height: 101px;
