@@ -10,7 +10,6 @@ import { PracticianSearch } from "../practician-search/practician-search.model";
 import { enableRipple } from "@syncfusion/ej2-base";
 enableRipple(true);
 
-import { AutoComplete } from "@syncfusion/ej2-dropdowns";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { FeaturesService } from "../features.service";
@@ -131,7 +130,6 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
               );
           });
         });
-        this.searchAutoComplete(this.myPatients);
       });
   }
   getDetailSwitchRole(senderDetail) {
@@ -221,23 +219,6 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     );
   }
 
-  searchAutoComplete(myPatients) {
-    let atcObj: AutoComplete = new AutoComplete({
-      dataSource: myPatients,
-      fields: { value: "fullName" },
-      itemTemplate:
-        "<div><img src=${img.changingThisBreaksApplicationSecurity} style='height:2rem; width:2rem;   border-radius: 50%;'></img>" +
-        '<span class="country"> ${fullName} </span>',
-      placeholder: "Recherche par nom ...",
-      popupHeight: "450px",
-      highlight: true,
-      suggestionCount: 5,
-      noRecordsTemplate: "Aucune données trouvé",
-      sortOrder: "Ascending"
-    });
-    atcObj.appendTo("#patients");
-    atcObj.showSpinner();
-  }
   getMySendersAndReceiversBySenderForAndObject(senderFor, object) {
     this.mydocumentsService
       .getMySendersAndreceiversDetailsBySenderForIdAndObject(senderFor, object)
