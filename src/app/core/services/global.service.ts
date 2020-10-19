@@ -136,6 +136,10 @@ export class GlobalService {
     user: "assets/imgs/user.png",
     telesecretary: "assets/imgs/etablissement.svg"
   };
+
+  public excludedExceptions = [
+    "Le mot de passe saisi est invalide",
+  ]
   public call(
     method: RequestType,
     url: string,
