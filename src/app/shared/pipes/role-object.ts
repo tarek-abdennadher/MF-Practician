@@ -16,6 +16,9 @@ export class RoleObjectPipe implements PipeTransform {
       case "TELESECRETARYGROUP":
         res = "telesecretaryGroup"
         break;
+      case "SYSTEM":
+      res = "systemUser"
+      break;
       default:
         res = value && value.toLowerCase() || "";
         break;
