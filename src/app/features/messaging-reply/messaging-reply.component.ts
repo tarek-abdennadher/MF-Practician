@@ -269,6 +269,15 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       replyMessage.requestTypeId = message.requestTypeId;
       replyMessage.requestTitleId = message.requestTitleId;
     }
+    if (this.forwardedResponse) {
+      replyMessage.toReceivers = [
+        { receiverId: message.trReceiver[0].id, seen: 0 },
+      ];
+    } else {
+      replyMessage.toReceivers = [
+        { receiverId: message.sender.senderId, seen: 0 },
+      ];
+    }
     let sendedFor = null;
     if (!this.isMyMessage) {
       sendedFor =
@@ -283,69 +292,82 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       sendedForId: sendedFor,
       forwarded: this.forwardedResponse,
     };
-    if (this.forwardedResponse) {
-      replyMessage.toReceivers = [
-        { receiverId: message.trReceiver[0].id, seen: 0 },
-      ];
+    // sending to patient file without account
+    if (replyMessage.toReceivers[0].receiverId == null) {
+      this.messageService.replyMessageToContact(replyMessage).subscribe(
+        (message) => {
+          if (this.forwardedResponse) {
+            this.featureService.numberOfForwarded =
+              this.featureService.numberOfForwarded + 1;
+          }
+          this.spinner.hide();
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_success
+          );
+          this.router.navigate(["/messagerie"]);
+        },
+        (error) => {
+          this.spinner.hide();
+          this.featureComp.setNotif(
+            this.globalService.toastrMessages.send_message_error
+          );
+        }
+      );
     } else {
-      replyMessage.toReceivers = [
-        { receiverId: message.sender.senderId, seen: 0 },
-      ];
-    }
+      if (message.file !== undefined) {
+        this.selectedFiles = message.file;
 
-    if (message.file !== undefined) {
-      this.selectedFiles = message.file;
-
-      const formData = new FormData();
-      if (this.selectedFiles) {
-        replyMessage.hasFiles = true;
-        replyMessage.uuid = this.uuid;
-        formData.append("model", JSON.stringify(replyMessage));
-        formData.append(
-          "file",
-          this.selectedFiles.item(0),
-          this.selectedFiles.item(0).name
+        const formData = new FormData();
+        if (this.selectedFiles) {
+          replyMessage.hasFiles = true;
+          replyMessage.uuid = this.uuid;
+          formData.append("model", JSON.stringify(replyMessage));
+          formData.append(
+            "file",
+            this.selectedFiles.item(0),
+            this.selectedFiles.item(0).name
+          );
+        }
+        this.nodeService.saveFileInMemory(this.uuid, formData).subscribe(
+          (message) => {
+            if (this.forwardedResponse) {
+              this.featureService.numberOfForwarded =
+                this.featureService.numberOfForwarded + 1;
+            }
+            this.spinner.hide();
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
+          },
+          (error) => {
+            this.spinner.hide();
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
+          }
+        );
+      } else {
+        this.messageService.replyMessage(replyMessage).subscribe(
+          (message) => {
+            if (this.forwardedResponse) {
+              this.featureService.numberOfForwarded =
+                this.featureService.numberOfForwarded + 1;
+            }
+            this.spinner.hide();
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
+          },
+          (error) => {
+            this.spinner.hide();
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
+          }
         );
       }
-      this.nodeService.saveFileInMemory(this.uuid, formData).subscribe(
-        (message) => {
-          if (this.forwardedResponse) {
-            this.featureService.numberOfForwarded =
-              this.featureService.numberOfForwarded + 1;
-          }
-          this.spinner.hide();
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.send_message_success
-          );
-          this.router.navigate(["/messagerie"]);
-        },
-        (error) => {
-          this.spinner.hide();
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.send_message_error
-          );
-        }
-      );
-    } else {
-      this.messageService.replyMessage(replyMessage).subscribe(
-        (message) => {
-          if (this.forwardedResponse) {
-            this.featureService.numberOfForwarded =
-              this.featureService.numberOfForwarded + 1;
-          }
-          this.spinner.hide();
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.send_message_success
-          );
-          this.router.navigate(["/messagerie"]);
-        },
-        (error) => {
-          this.spinner.hide();
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.send_message_error
-          );
-        }
-      );
     }
   }
   goToBack() {

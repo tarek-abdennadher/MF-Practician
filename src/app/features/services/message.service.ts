@@ -6,7 +6,7 @@ import { Message } from "@app/shared/models/message";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessageService {
   constructor(private globalService: GlobalService) {}
@@ -104,7 +104,7 @@ export class MessageService {
       formData,
       {
         reportProgress: true,
-        responseType: "text"
+        responseType: "text",
       }
     );
   }
@@ -115,7 +115,13 @@ export class MessageService {
       formData
     );
   }
-
+  replyMessageToContact(data): Observable<any> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.message + "/contact",
+      data
+    );
+  }
   sendMessage(message: Message): Observable<Message> {
     return this.globalService.call(
       RequestType.POST,
