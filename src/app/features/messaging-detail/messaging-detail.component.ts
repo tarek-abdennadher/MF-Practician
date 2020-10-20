@@ -152,6 +152,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         }
       }
       this.route.params.subscribe((params) => {
+        this.patientFileAccountId = null;
         if (this.message && this.message != null) {
           if (
             this.message.sender &&
@@ -176,7 +177,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
                       this.showReplyActionsForPatient = true;
                       this.patientFileAccountId = res;
                     } else {
-                      this.showReplyActionsForPatient = false;
+                      this.showReplyActionsForPatient = true;
                       this.patientFileAccountId = null;
                     }
                   });
@@ -325,7 +326,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
                       this.showReplyActionsForPatient = true;
                       this.patientFileAccountId = res;
                     } else {
-                      this.showReplyActionsForPatient = false;
+                      this.showReplyActionsForPatient = true;
                       this.patientFileAccountId = null;
                     }
                   });
@@ -512,6 +513,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       this.newMessage.sender.concernsFullName = null;
     }
     this.loading = false;
+
     this.messagingDetailService.setId(this.idMessage);
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
