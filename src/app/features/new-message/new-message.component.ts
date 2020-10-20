@@ -303,7 +303,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       singleSelection: false,
       text:
         this.innerWidth > 420
-          ? "Sélectionner un ou plusieurs correspondants"
+          ? ""
           : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
@@ -1307,7 +1307,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       ...this.dropdownSettings,
       text:
         this.innerWidth > 420
-          ? "Sélectionner un ou plusieurs correspondants"
+          ? ""
           : "Sélectionner",
     };
     this.dropdownSettingsForList = {

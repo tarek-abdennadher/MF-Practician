@@ -244,7 +244,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
-            if (notification.type == "MESSAGE") {
+            if (notification.type == "MESSAGE" || notification.type == "MESSAGE_FAILED") {
               that.messageListService.setNotificationObs(notification);
             } else if (notification.type == "MESSAGE_IN_PROGRESS") {
               that.messageListService.setNotificationMessageStateObs(

@@ -113,7 +113,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
               users: [
                 {
                   id: elm.id,
-                  fullName: elm.fullName,
+                  fullName: elm.fullName.substring(elm.fullName.indexOf(" ") + 1) + " (" + elm.fullName.substring(0, elm.fullName.indexOf( " " )) + ")",
                   img: this.avatars.user,
                   title: elm.speciality ? elm.speciality : elm.title,
                   type: "CONTACT-BOOK",
@@ -176,7 +176,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
               users: [
                 {
                   id: elm.id,
-                  fullName: elm.fullName,
+                  fullName: elm.fullName.substring(elm.fullName.indexOf(" ") + 1) + " (" + elm.fullName.substring(0, elm.fullName.indexOf( " " )) + ")",
                   img: this.avatars.user,
                   title: elm.speciality ? elm.speciality : elm.title,
                   type: "CONTACT-BOOK",
