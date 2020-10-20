@@ -125,6 +125,15 @@ export class MessagingListService {
                 type: notification.type,
               });
             }
+          } else if (notification.message.sender.role == "SYSTEM") {
+            this.featuresService.listNotifications.unshift({
+              id: notification.id,
+              sender: notification.senderFullName,
+              senderId: notification.senderId,
+              picture: null,
+              messageId: notification.messageId,
+              type: notification.type,
+            });
           }
 
         }
