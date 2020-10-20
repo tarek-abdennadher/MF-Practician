@@ -192,7 +192,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
+      fullName: patient.fullName.substring(patient.civility.length) + " (" + patient.civility + ")",
       img: this.avatars.user,
       civility: patient.civility,
     });
