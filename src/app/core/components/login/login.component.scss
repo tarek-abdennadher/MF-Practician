@@ -122,6 +122,9 @@ $color-helssy-white: #ffffff;
   .patient-img {
     left: 304px !important;
   }
+  .description {
+    display: none;
+  }
 }
 
 @media (max-width: 1417px) {
@@ -156,10 +159,16 @@ $color-helssy-white: #ffffff;
     padding: 0;
   }
   .w-75 {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-    padding-left: unset !important;
+    display: none !important;
+  }
+  .description {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .font-montserrat {
+    line-height: 2;
   }
 }
 /* End Logo CSS */
