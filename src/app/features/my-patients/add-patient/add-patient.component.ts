@@ -113,12 +113,11 @@ export class AddPatientComponent implements OnInit, OnDestroy {
   }
   handleResponse = res => {
     if (res) {
-      this.notifMessage = this.patientService.messages.add_info_success;
-      this.notifier.show({
-        message: this.notifMessage,
+      let model = {
+        message: this.patientService.messages.add_info_success,
         type: "info",
-        template: this.customNotificationTmpl
-      });
+      }
+      this.patientService.refreshPatientFileListObs.next(model);
       this.submitted = false;
       this.router.navigate(["/mes-patients"], {
         queryParams: { loading: true }
