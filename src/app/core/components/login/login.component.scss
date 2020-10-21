@@ -25,7 +25,6 @@ $color-helssy-white: #ffffff;
     border: unset;
     opacity: 1;
     top: 50px;
-    left: 304px;
   }
 }
 @media (min-width: 1100px) {
@@ -51,7 +50,6 @@ $color-helssy-white: #ffffff;
     border: unset;
     opacity: 1;
     top: 50px;
-    left: 304px;
   }
 
   .card-body {
@@ -121,11 +119,14 @@ $color-helssy-white: #ffffff;
   .display-lg-top {
     display: unset;
   }
+  .patient-img {
+    left: 304px !important;
+  }
 }
 
 @media (max-width: 1417px) {
   .img-login {
-    width: 90%;
+    width: 100%;
   }
   .top-login {
     flex-flow: wrap-reverse;
@@ -136,6 +137,29 @@ $color-helssy-white: #ffffff;
   .change-width {
     max-width: 100%;
     flex: 0 0 100%;
+  }
+  .ml-custom-50 {
+    margin-right: 6% !important;
+  }
+  .ml-custom-footer {
+    margin-left: 10% !important;
+  }
+  .custom-footer-width {
+    max-width: 20%;
+    flex: 0 0 20%;
+  }
+  .patient-img {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  .card-body {
+    padding: 0;
+  }
+  .w-75 {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    padding-left: unset !important;
   }
 }
 /* End Logo CSS */
@@ -238,8 +262,9 @@ $color-helssy-white: #ffffff;
   color: #203c66;
   opacity: 1;
   font-size: 37px;
-  margin-top: 40px;
+  margin-top: 90px;
   margin-bottom: 60px;
+  line-height: normal;
 }
 .font-montserrat {
   font-family: "Montserrat";
@@ -262,8 +287,6 @@ $color-helssy-white: #ffffff;
 
 @media (min-width: 700px) and (orientation: portrait) {
   .hls-connexion {
-    margin-left: 20%;
-    margin-right: 20%;
     margin-top: 50px;
   }
   .links {
@@ -274,7 +297,6 @@ $color-helssy-white: #ffffff;
 @media (max-width: 798px) and (orientation: landscape) {
   .hls-connexion {
     margin-top: 70px;
-    margin-right: 15%;
   }
   .links {
     margin-left: 0%;
@@ -284,7 +306,6 @@ $color-helssy-white: #ffffff;
 @media (min-width: 799px) and (orientation: landscape) {
   .hls-connexion {
     margin-top: 70px;
-    margin-right: 10%;
   }
   .links {
     margin-left: 10%;
