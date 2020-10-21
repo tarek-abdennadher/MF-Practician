@@ -84,6 +84,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   filtredItemList: Array<any> = new Array();
   scroll = false;
   isCheckbox = false;
+  click: boolean = false;
   /** Inputs */
   @Input("imageSource") imageSource: string;
   @Input("practicianImage") practicianImage: string;
@@ -135,6 +136,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.errors = this.patientFileService.errors;
     this.maxDate.setDate(new Date().getDate() - 1);
     this.avatars = this.globalService.avatars;
+    this.click = false;
   }
   get ctr() {
     return this.personalInfoForm.controls;
@@ -171,6 +173,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     });
     this.patient.pipe(takeUntil(this._destroyed$)).subscribe(val => {
       this.isList = true;
+      this.click = false;
       if (val) {
         this.selectedTabIndex = 0;
         this.info = val;
@@ -409,6 +412,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       phones: this.phones,
       invitationStatus: this.personalInfoForm.value.invitationStatus
     };
+    this.click = !this.click;
     this.submitAction.emit(model);
   }
   addNote() {

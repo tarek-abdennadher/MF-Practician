@@ -63,8 +63,8 @@ select {
 ::ng-deep {
   international-phone-number .form-control {
     height: 30px !important;
-    border-color: $helssy_white;
-    background-color: $helssy_white;
+    border-color: $helssy_white !important;
+    background-color: $helssy_white !important;
   }
   international-phone-number .dropdown button.dropbtn.btn,
   button.dropbtn.btn:hover {
