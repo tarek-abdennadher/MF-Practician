@@ -244,7 +244,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
-            if (notification.type == "MESSAGE" || notification.type == "MESSAGE_FAILED") {
+            if (
+              notification.type == "MESSAGE" ||
+              notification.type == "MESSAGE_FAILED"
+            ) {
               that.messageListService.setNotificationObs(notification);
             } else if (notification.type == "MESSAGE_IN_PROGRESS") {
               that.messageListService.setNotificationMessageStateObs(
@@ -517,10 +520,14 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       if (event) {
         let result = this.featuresService
           .getSearchSentValue()
-          .filter(x =>
-            x.users[0].fullName
-              ? x.users[0].fullName.toLowerCase().includes(event.toLowerCase())
-              : "" || x.object.name.toLowerCase().includes(event.toLowerCase())
+          .filter(
+            x =>
+              (x.users[0].fullName
+                ? x.users[0].fullName
+                    .toLowerCase()
+                    .includes(event.toLowerCase())
+                : x.object.name.toLowerCase().includes(event.toLowerCase())) ||
+              x.object.name.toLowerCase().includes(event.toLowerCase())
           );
         result = result.length > 0 ? result : null;
         this.featuresService.setFilteredSentSearch(result);
