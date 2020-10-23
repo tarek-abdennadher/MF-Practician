@@ -241,6 +241,10 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
             this.disableSending.next(false);
           });
       }
+      if (!(this.acceptResponse && this.refuseResponse && this.forwardedResponse)) {
+        this.bodyObs.next("");
+        this.disableSending.next(false);
+      }
     }
   }
   replyMessage(message) {
