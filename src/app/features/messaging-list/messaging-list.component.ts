@@ -435,6 +435,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 new Date(m2.updatedAt).getTime() -
                 new Date(m1.updatedAt).getTime()
             );
+            this.itemsList = new Array();
+            this.filtredItemList = new Array();
             this.itemsList.push(
               ...retrievedMess.map(item => this.parseMessage(item))
             );
@@ -678,36 +680,39 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     this.messagesServ.getNotificationObs().subscribe(notif => {
       if (notif != "") {
         if (this.isMyInbox) {
-          const exist = (this.filtredItemList && this.filtredItemList.length>0 && notif.message.id == this.filtredItemList[0].id) ;
+          const exist =
+            this.filtredItemList &&
+            this.filtredItemList.length > 0 &&
+            notif.message.id == this.filtredItemList[0].id;
           if (!exist) {
             let message = this.parseMessage(notif.message);
-          this.documentService
-            .getDefaultImage(notif.message.sender.senderId)
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              response => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
+            this.documentService
+              .getDefaultImage(notif.message.sender.senderId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                response => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = e => {
+                    message.users.forEach(user => {
+                      user.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    });
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                error => {
                   message.users.forEach(user => {
-                    user.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
+                    user.img = this.avatars.user;
                   });
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              error => {
-                message.users.forEach(user => {
-                  user.img = this.avatars.user;
-                });
-              }
-            );
-          this.filtredItemList.unshift(message);
+                }
+              );
+            this.filtredItemList.unshift(message);
 
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
           }
         }
       }
