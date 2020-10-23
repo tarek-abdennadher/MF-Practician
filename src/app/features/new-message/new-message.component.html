@@ -19,8 +19,8 @@
     class="row mb-2"
     *ngIf="messageTypesList && messageTypesList.length !== 0"
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">Type</label>
+    <div class="col-md-2 col-sm-2 col-2">
+      <label class="label">Type :</label>
     </div>
     <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect
@@ -58,8 +58,8 @@
 
   <!-- To List DropDown-->
   <div class="row mb-2">
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">À</label>
+    <div class="col-md-2 col-sm-2 col-2">
+      <label class="label">À : </label>
     </div>
     <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect
@@ -97,8 +97,8 @@
 
   <!-- CC List DropDown-->
   <div class="row mb-2" *ngIf="isCCListVisible">
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">CC</label>
+    <div class="col-md-2 col-sm-2 col-2">
+      <label class="label">CC : </label>
     </div>
     <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect
@@ -140,8 +140,8 @@
       isForListVisible
     "
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">Pour</label>
+    <div class="col-md-2 col-sm-2 col-2">
+      <label class="label">Pour : </label>
     </div>
     <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect
@@ -227,8 +227,8 @@
     class="row mb-4"
     *ngIf="(contactType && !isSecretary()) || isInstruction"
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">{{ texts.object }}</label>
+    <div class="col-md-2 col-sm-2 col-2">
+      <label class="label">{{ texts.object }} : </label>
     </div>
     <div class="col-md-10 col-sm-9 col-10">
       <angular2-multiselect
@@ -271,8 +271,8 @@
       (otherObject || !contactType || (isSecretary() && contactType) || newFlag)
     "
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label-free-object">{{ texts.object }}</label>
+    <div class="col-md-2 col-sm-2 col-2">
+      <label class="label-free-object">{{ texts.object }} : </label>
     </div>
     <div class="col-md-10 col-sm-9 col-10">
       <input
