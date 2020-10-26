@@ -4,7 +4,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable, BehaviorSubject } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessagingDetailService {
   public id = new BehaviorSubject(null);
@@ -25,7 +25,12 @@ export class MessagingDetailService {
       this.globalService.url.messages + id
     );
   }
-
+  getMessageContactDetailById(id): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "contact/" + id
+    );
+  }
   getMessageArchivedById(id): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
