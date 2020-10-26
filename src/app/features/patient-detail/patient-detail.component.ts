@@ -212,13 +212,12 @@ export class PatientDetailComponent implements OnInit {
   }
   handleResponse = (res) => {
     if (res) {
-      this.notifMessage = this.patientService.messages.edit_info_success;
-      this.notifier.show({
-        message: this.notifMessage,
-        type: "info",
-        template: this.customNotificationTmpl,
-      });
       this.submitted = false;
+      let model = {
+        message:  this.patientService.messages.edit_info_success,
+        type: "info",
+      }
+      this.patientService.refreshPatientFileListObs.next(model);
       this.router.navigate(["."], {
         relativeTo: this.route.parent,
         queryParams: { loading: true },

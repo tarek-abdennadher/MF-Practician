@@ -149,6 +149,18 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.isFromArchive = true;
             break;
           }
+          case "patient": {
+            this.isFromInbox = false;
+            this.showAcceptRefuse = false;
+            this.hidefrom = false;
+            this.hideTo = false;
+            this.isFromArchive = true;
+            this.sentContext = true;
+            this.message = null;
+            this.messagingDetail = null;
+            this.previousURL = "/mes-patients";
+            break;
+          }
         }
       }
       this.route.params.subscribe((params) => {
@@ -204,7 +216,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         }
         if (this.idMessage !== params["id"]) {
           this.idMessage = params["id"];
-          this.getMessageDetailById(this.idMessage);
+          this.getMessageDetailById(this.idMessage, this.context);
         }
       });
       setTimeout(() => {
@@ -213,55 +225,40 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     });
   }
   checkContect(context) {}
-  getMessageDetailById(id) {
+  getMessageDetailById(id, context) {
     this.loading = true;
-    if (this.isFromArchive && this.showAcceptRefuse == false) {
+    if (context && context == "patient") {
       this.messagingDetailService
-        .getMessageArchivedById(id)
+        .getMessageContactDetailById(id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
+          console.log(message);
           this.message = message;
+          this.showReplyActionsForPatient = false;
+          this.showReplyActionsForTls = false;
+          this.showRefuseForTls = false;
+          this.showAcceptRefuse = false;
           this.getAttachements(message.nodesId);
-          message.sender = message.senderArchived;
-          message.toReceivers = message.toReceiversArchived;
-          message.ccReceivers = message.ccReceiversArchived;
+          this.senderRolePatient = false;
           this.messagingDetail = message;
           this.prohibited = message.prohibited;
-          this.isFromInbox = true;
-
+          this.isFromInbox = false;
           this.links = {
-            isArchieve: !this.isFromArchive,
+            isArchieve: true,
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
           };
-          if (
-            this.messagingDetail.sender.senderId ==
-            this.featureService.getUserId()
-          ) {
-            this.isFromInbox = false;
+          const filtredReceivers = this.messagingDetail.toReceivers.filter(
+            (to) => to.receiverId != this.featureService.getUserId()
+          );
+          if (filtredReceivers.length > 0) {
+            this.hideTo = false;
+            this.messagingDetail.toReceivers = filtredReceivers;
           }
+          this.setParentImg(this.messagingDetail.parent);
           this.messagingDetail.toReceivers.forEach((receiver) => {
             this.documentService
-              .getDefaultImage(receiver.receiverId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
-                  };
-                  let ok = myReader.readAsDataURL(response);
-                },
-                (error) => {
-                  receiver.img = this.avatars.user;
-                }
-              );
-          });
-          this.messagingDetail.ccReceivers.forEach((receiver) => {
-            this.documentService
-              .getDefaultImage(receiver.receiverId)
+              .getDefaultImageEntity(receiver.receiverId, "PATIENT_FILE")
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
                 (response) => {
@@ -298,131 +295,215 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           this.loading = false;
         });
     } else {
-      this.messagingDetailService
-        .getMessagingDetailById(id)
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((message) => {
-          this.message = message;
-          if (
-            this.message.sender &&
-            (this.message.sender.role == "TELESECRETARYGROUP" ||
-              this.message.sender.role == "SUPERVISOR" ||
-              this.message.sender.role == "SUPER_SUPERVISOR" ||
-              this.message.sender.role == "OPERATOR") &&
-            this.message.sender.concernsType &&
-            this.message.sender.concernsType == "PATIENT_FILE"
-          ) {
-            if (this.message.receiveDocument == true) {
-              this.showReplyActionsForTls = true;
-              if (
-                this.message.sender.concernsId &&
-                this.message.sender.concernsId != null
-              ) {
-                this.patientService
-                  .getAccountIdByPatientFileId(this.message.sender.concernsId)
-                  .pipe(takeUntil(this._destroyed$))
-                  .subscribe((res) => {
-                    if (res && res != null) {
-                      this.showReplyActionsForPatient = true;
-                      this.patientFileAccountId = res;
-                    } else {
-                      this.showReplyActionsForPatient = true;
-                      this.patientFileAccountId = null;
-                    }
-                  });
-              }
-            } else {
-              this.showReplyActionsForPatient = false;
-              this.showReplyActionsForTls = true;
+      if (this.isFromArchive && this.showAcceptRefuse == false) {
+        this.messagingDetailService
+          .getMessageArchivedById(id)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((message) => {
+            this.message = message;
+            this.getAttachements(message.nodesId);
+            message.sender = message.senderArchived;
+            message.toReceivers = message.toReceiversArchived;
+            message.ccReceivers = message.ccReceiversArchived;
+            this.messagingDetail = message;
+            this.prohibited = message.prohibited;
+            this.isFromInbox = true;
+
+            this.links = {
+              isArchieve: !this.isFromArchive,
+              isImportant: this.isFromInbox ? !message.important : false,
+              isAddNote: true,
+            };
+            if (
+              this.messagingDetail.sender.senderId ==
+              this.featureService.getUserId()
+            ) {
+              this.isFromInbox = false;
             }
-          }
-          this.showRefuseForTls =
-            (message.sender.role == "TELESECRETARYGROUP" ||
-              message.sender.role == "TELESECRETARYGROUP") &&
-            message.requestTypeId != null &&
-            message.requestTitleId != null;
-          this.showAcceptRefuse =
-            message.sender.role == "PATIENT" &&
-            message.requestTypeId != null &&
-            message.requestTitleId != null;
-          this.getAttachements(message.nodesId);
-          this.senderRolePatient =
-            this.sentContext && message.toReceivers.length == 1
-              ? message.toReceivers[0].role == "PATIENT"
-              : message.sender.role == "PATIENT";
-          this.messagingDetail = message;
-          this.prohibited = message.prohibited;
-          this.isFromInbox = this.IsinboxContext;
-          this.links = {
-            isArchieve: !this.isFromArchive,
-            isImportant: this.isFromInbox ? !message.important : false,
-            isAddNote: true,
-          };
-          const filtredReceivers = this.messagingDetail.toReceivers.filter(
-            (to) => to.receiverId != this.featureService.getUserId()
-          );
-          if (filtredReceivers.length > 0) {
-            this.hideTo = false;
-            this.messagingDetail.toReceivers = filtredReceivers;
-          }
-          this.setParentImg(this.messagingDetail.parent);
-          this.messagingDetail.toReceivers.forEach((receiver) => {
+            this.messagingDetail.toReceivers.forEach((receiver) => {
+              this.documentService
+                .getDefaultImage(receiver.receiverId)
+                .pipe(takeUntil(this._destroyed$))
+                .subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    };
+                    let ok = myReader.readAsDataURL(response);
+                  },
+                  (error) => {
+                    receiver.img = this.avatars.user;
+                  }
+                );
+            });
+            this.messagingDetail.ccReceivers.forEach((receiver) => {
+              this.documentService
+                .getDefaultImage(receiver.receiverId)
+                .pipe(takeUntil(this._destroyed$))
+                .subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    };
+                    let ok = myReader.readAsDataURL(response);
+                  },
+                  (error) => {
+                    receiver.img = this.avatars.user;
+                  }
+                );
+            });
             this.documentService
-              .getDefaultImage(receiver.receiverId)
+              .getDefaultImage(this.messagingDetail.sender.senderId)
               .pipe(takeUntil(this._destroyed$))
               .subscribe(
                 (response) => {
                   let myReader: FileReader = new FileReader();
                   myReader.onloadend = (e) => {
-                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                    this.messagingDetail.sender.img = this.sanitizer.bypassSecurityTrustUrl(
                       myReader.result as string
                     );
                   };
                   let ok = myReader.readAsDataURL(response);
                 },
                 (error) => {
-                  receiver.img = this.avatars.user;
+                  this.messagingDetail.sender.img = this.avatars.user;
                 }
               );
+            this.loading = false;
           });
-          this.messagingDetail.ccReceivers.forEach((receiver) => {
-            this.documentService
-              .getDefaultImage(receiver.receiverId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe(
-                (response) => {
-                  let myReader: FileReader = new FileReader();
-                  myReader.onloadend = (e) => {
-                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
-                  };
-                  let ok = myReader.readAsDataURL(response);
-                },
-                (error) => {
-                  receiver.img = this.avatars.user;
+      } else {
+        this.messagingDetailService
+          .getMessagingDetailById(id)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((message) => {
+            this.message = message;
+            if (
+              this.message.sender &&
+              (this.message.sender.role == "TELESECRETARYGROUP" ||
+                this.message.sender.role == "SUPERVISOR" ||
+                this.message.sender.role == "SUPER_SUPERVISOR" ||
+                this.message.sender.role == "OPERATOR") &&
+              this.message.sender.concernsType &&
+              this.message.sender.concernsType == "PATIENT_FILE"
+            ) {
+              if (this.message.receiveDocument == true) {
+                this.showReplyActionsForTls = true;
+                if (
+                  this.message.sender.concernsId &&
+                  this.message.sender.concernsId != null
+                ) {
+                  this.patientService
+                    .getAccountIdByPatientFileId(this.message.sender.concernsId)
+                    .pipe(takeUntil(this._destroyed$))
+                    .subscribe((res) => {
+                      if (res && res != null) {
+                        this.showReplyActionsForPatient = true;
+                        this.patientFileAccountId = res;
+                      } else {
+                        this.showReplyActionsForPatient = true;
+                        this.patientFileAccountId = null;
+                      }
+                    });
                 }
-              );
-          });
-          this.documentService
-            .getDefaultImage(this.messagingDetail.sender.senderId)
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  this.messagingDetail.sender.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                this.messagingDetail.sender.img = this.avatars.user;
+              } else {
+                this.showReplyActionsForPatient = false;
+                this.showReplyActionsForTls = true;
               }
+            }
+            this.showRefuseForTls =
+              (message.sender.role == "TELESECRETARYGROUP" ||
+                message.sender.role == "TELESECRETARYGROUP") &&
+              message.requestTypeId != null &&
+              message.requestTitleId != null;
+            this.showAcceptRefuse =
+              message.sender.role == "PATIENT" &&
+              message.requestTypeId != null &&
+              message.requestTitleId != null;
+            this.getAttachements(message.nodesId);
+            this.senderRolePatient =
+              this.sentContext && message.toReceivers.length == 1
+                ? message.toReceivers[0].role == "PATIENT"
+                : message.sender.role == "PATIENT";
+            this.messagingDetail = message;
+            this.prohibited = message.prohibited;
+            this.isFromInbox = this.IsinboxContext;
+            this.links = {
+              isArchieve: !this.isFromArchive,
+              isImportant: this.isFromInbox ? !message.important : false,
+              isAddNote: true,
+            };
+            const filtredReceivers = this.messagingDetail.toReceivers.filter(
+              (to) => to.receiverId != this.featureService.getUserId()
             );
-          this.loading = false;
-        });
+            if (filtredReceivers.length > 0) {
+              this.hideTo = false;
+              this.messagingDetail.toReceivers = filtredReceivers;
+            }
+            this.setParentImg(this.messagingDetail.parent);
+            this.messagingDetail.toReceivers.forEach((receiver) => {
+              this.documentService
+                .getDefaultImage(receiver.receiverId)
+                .pipe(takeUntil(this._destroyed$))
+                .subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    };
+                    let ok = myReader.readAsDataURL(response);
+                  },
+                  (error) => {
+                    receiver.img = this.avatars.user;
+                  }
+                );
+            });
+            this.messagingDetail.ccReceivers.forEach((receiver) => {
+              this.documentService
+                .getDefaultImage(receiver.receiverId)
+                .pipe(takeUntil(this._destroyed$))
+                .subscribe(
+                  (response) => {
+                    let myReader: FileReader = new FileReader();
+                    myReader.onloadend = (e) => {
+                      receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    };
+                    let ok = myReader.readAsDataURL(response);
+                  },
+                  (error) => {
+                    receiver.img = this.avatars.user;
+                  }
+                );
+            });
+            this.documentService
+              .getDefaultImage(this.messagingDetail.sender.senderId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    this.messagingDetail.sender.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  this.messagingDetail.sender.img = this.avatars.user;
+                }
+              );
+            this.loading = false;
+          });
+      }
     }
   }
   setParentImg(parent) {

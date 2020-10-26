@@ -11,19 +11,19 @@
 
     <div class="col-6 display-lg-top">
       <button
+        id="patient-acces"
+        class="btn text-center"
+        (click)="redirectToLoginPatient()"
+      >
+        <span>Accès patient</span>
+        <i class="fas fa-arrow-right ml-4"></i>
+      </button>
+      <button
         id="practicien-bt-link"
         class="btn btn-primary text-center"
         (click)="redirectToPracticien()"
       >
         <span>Accès professionnel de la santé</span>
-        <i class="fas fa-arrow-right ml-4"></i>
-      </button>
-      <button
-        id="patient-acces"
-        class="btn text-center"
-        (click)="redirectToPracticien()"
-      >
-        <span>Accès praticien</span>
         <i class="fas fa-arrow-right ml-4"></i>
       </button>
     </div>
@@ -32,6 +32,32 @@
     <div class="card patient-img col-12 col-md-6 display-lg">
       <div class="card-body">
         <img src="assets/imgs/patient_login.png" class="img-login" alt="" />
+        <div class="description">
+          <span>
+            <span class="font-montserrat">
+              <i class="far fa-check-circle icon-check mr-custom-05"></i>Une
+              solution de messagerie 100% gratuite</span
+            ><br /><span class="font-montserrat">
+              <i class="far fa-check-circle icon-check mr-custom-05"></i>Une
+              réponse simple & rapide dans les meilleurs délais </span
+            ><br /><span class="font-montserrat">
+              <i class="far fa-check-circle icon-check mr-custom-05"></i>
+              service accessible 24h/24 et 7j/7</span
+            ><br />
+            <span class="font-montserrat">
+              <i class="far fa-check-circle icon-check mr-custom-05"></i
+              >Conservez un historique de tous vos échanges</span
+            ><br />
+            <span class="font-montserrat">
+              <i class="far fa-check-circle icon-check mr-custom-05"></i>Un
+              service entièrement sécurisé</span
+            ><br />
+            <span class="font-montserrat">
+              <i class="far fa-check-circle icon-check mr-custom-05"></i>Une
+              solution innovante, en constante évolution</span
+            >
+          </span>
+        </div>
         <div class="w-75 p-l-5-rem">
           <i class="far fa-check-circle icon-check mr-custom-05"></i
           ><span class="font-montserrat"

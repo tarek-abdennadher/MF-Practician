@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
@@ -21,13 +21,13 @@ export class MyPatientsService {
       "Erreur survenue lors de la modification du patient attaché",
   };
   public messages = {
-    edit_info_success: "Informations personnelles modifiées avec succès",
-    add_info_success: "Fiche Patient créée avec succès",
+    edit_info_success: "La fiche patient est modifiée avec succès",
+    add_info_success: "La fiche patient est créée avec succès",
     invitation_success: "Invitation envoyée avec succès ",
-    add_success: "Patient attaché ajouté avec succès ",
-    update_sucess: " Patient attaché modifié avec succès ",
+    add_success: "Le patient attaché est ajouté avec succès ",
+    update_sucess: "Le patient attaché est modifié avec succès ",
   };
-
+  refreshPatientFileListObs = new Subject();
   getPatientsOfCurrentParactician(
     pageNo: number,
     order: OrderDirection = OrderDirection.DESC

@@ -115,10 +115,10 @@ export class MessageService {
       formData
     );
   }
-  replyMessageToContact(data): Observable<any> {
+  replyMessageToContact(data, patientFileId): Observable<any> {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.message + "/contact",
+      this.globalService.url.message + "/contact/" + patientFileId,
       data
     );
   }

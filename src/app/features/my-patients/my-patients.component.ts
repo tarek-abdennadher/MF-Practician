@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { GlobalService } from "@app/core/services/global.service";
@@ -13,6 +13,7 @@ import { filter, takeUntil } from "rxjs/operators";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { Subject } from "rxjs";
+import { NotifierService } from 'angular-notifier';
 declare var $: any;
 @Component({
   selector: "app-my-patients",
@@ -20,6 +21,7 @@ declare var $: any;
   styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit, OnDestroy {
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
@@ -46,6 +48,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     user: string;
   };
   direction: OrderDirection = OrderDirection.DESC;
+  private readonly notifier: NotifierService;
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
@@ -58,8 +61,10 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     private featuresService: FeaturesService,
     private categoryService: CategoryService,
     private sanitizer: DomSanitizer,
-    private messageWidgetService: NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService,
+    notifierService: NotifierService,
   ) {
+    this.notifier = notifierService;
     this.filterPatientsForm = this.formBuilder.group({
       category: [""],
     });
@@ -67,13 +72,19 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.imageSource = this.avatars.user;
   }
 
-  ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.unsubscribe();
-  }
-
   ngOnInit(): void {
     this.initPatients();
+    this.myPatientsService.refreshPatientFileListObs
+    .pipe(takeUntil(this._destroyed$))
+    .subscribe((res : any) => {
+      if (res) {
+        this.notifier.show({
+          message: res.message,
+          type: res.type,
+          template: this.customNotificationTmpl
+        });
+      }
+    });
     // update list after detail view
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -192,7 +203,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName.substring(patient.civility.length) + " (" + patient.civility + ")",
+      fullName: patient.fullName.substring(patient.civility.length) + " (" + (patient.civility !== "" ? patient.civility : "Enfant") + ")",
       img: this.avatars.user,
       civility: patient.civility,
     });
@@ -277,7 +288,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   archivedAction(item) {
     this.dialogService
       .openConfirmDialog(
-        "Etes vous sur de bien vouloir archiver ce patient",
+        "Êtes vous sur de bien vouloir archiver ce patient",
         "Confirmation d'archivage"
       )
       .afterClosed()
@@ -361,5 +372,9 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       1000
     );
     this.router.navigate(["ajout-patient"], { relativeTo: this.route });
+  }
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }

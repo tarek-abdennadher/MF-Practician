@@ -241,6 +241,12 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
             this.disableSending.next(false);
           });
       }
+      if (
+        !(this.acceptResponse && this.refuseResponse && this.forwardedResponse)
+      ) {
+        this.bodyObs.next("");
+        this.disableSending.next(false);
+      }
     }
   }
   replyMessage(message) {
@@ -294,25 +300,30 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     };
     // sending to patient file without account
     if (replyMessage.toReceivers[0].receiverId == null) {
-      this.messageService.replyMessageToContact(replyMessage).subscribe(
-        (message) => {
-          if (this.forwardedResponse) {
-            this.featureService.numberOfForwarded =
-              this.featureService.numberOfForwarded + 1;
+      this.messageService
+        .replyMessageToContact(
+          replyMessage,
+          this.messagingDetail.sender.concernsId
+        )
+        .subscribe(
+          (message) => {
+            if (this.forwardedResponse) {
+              this.featureService.numberOfForwarded =
+                this.featureService.numberOfForwarded + 1;
+            }
+            this.spinner.hide();
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_success
+            );
+            this.router.navigate(["/messagerie"]);
+          },
+          (error) => {
+            this.spinner.hide();
+            this.featureComp.setNotif(
+              this.globalService.toastrMessages.send_message_error
+            );
           }
-          this.spinner.hide();
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.send_message_success
-          );
-          this.router.navigate(["/messagerie"]);
-        },
-        (error) => {
-          this.spinner.hide();
-          this.featureComp.setNotif(
-            this.globalService.toastrMessages.send_message_error
-          );
-        }
-      );
+        );
     } else {
       if (message.file !== undefined) {
         this.selectedFiles = message.file;
