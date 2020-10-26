@@ -96,6 +96,15 @@ export class MessagingListService {
               messageId: notification.messageId,
               type: notification.type,
             });
+          } else if (notification.message.sender.role == "TELESECRETARY") {
+            this.featuresService.listNotifications.unshift({
+              id: notification.id,
+              sender: notification.jobTitle ? this.jobTitlePipe.transform(notification.jobTitle) + " " + notification.senderFullName : notification.senderFullName,
+              senderId: notification.senderId,
+              picture: this.avatars.tls,
+              messageId: notification.messageId,
+              type: notification.type,
+            });
           } else if (notification.message.sender.role == "PATIENT") {
             if (notification.message.sender.civility == "M") {
               this.featuresService.listNotifications.unshift({
