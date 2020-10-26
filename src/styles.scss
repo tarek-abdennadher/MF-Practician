@@ -41,7 +41,7 @@
 $custom-typography: mat-typography-config(
   $font-family: "Montserrat",
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500),
+  $body-1: mat-typography-level(16px, 24px, 500)
 );
 @include mat-base-typography($custom-typography);
 @include mat-checkbox-typography($custom-typography);
@@ -394,7 +394,11 @@ a {
     display: none !important;
   }
 }
-
+@media only screen and (max-width: 769px) {
+  .text-center .information-text {
+    font-size: 70% !important;
+  }
+}
 /* ============================================= */
 
 /* ============= flags of phone component ============ */
