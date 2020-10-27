@@ -603,11 +603,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
   markNotificationsAsViewed(notifications) {
     notifications.forEach(notification => {
-      if (notification.type == "MESSAGE") {
-        this.featuresService
-          .markMessageAsSeenByNotification(notification.messageId)
-          .subscribe(() => {});
-      } else if (
+      if (
         notification.type == "MESSAGE_IN_PROGRESS" ||
         notification.type == "MESSAGE_TREATED" ||
         notification.type == "MESSAGE_FAILED" ||
@@ -621,6 +617,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+
   selectNotification(notification) {
     if (notification.type == "MESSAGE") {
       this.featuresService
