@@ -214,6 +214,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
+    myPatients.isAddedByPatient = patient.addedByPatient
     myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
