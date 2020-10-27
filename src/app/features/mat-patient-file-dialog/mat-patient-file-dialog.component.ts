@@ -67,7 +67,6 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.noteimageSource = this.avatars.user;
     this.linkedPatientList = [];
     this.notesList = [];
-    this.patchValue(this.data);
   }
   ngOnInit() {
     this.patchValue(this.data);

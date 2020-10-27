@@ -755,13 +755,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN",
       };
-      this.patientService
-        .getPatientFileByPracticianId(
-          idAccount,
-          this.featureService.getUserId()
-        )
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {});
       this.getPatientFile(info);
     } else {
       if (
