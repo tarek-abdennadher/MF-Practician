@@ -411,7 +411,7 @@
           </form>
           <br />
           <!-- Linked Patients -->
-          <div class="card-body">
+          <div class="card-body" *ngIf="!isAdd">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <i class="far fa-user-plus fa-icon"></i>
               <span class="Mes-informations">{{ labels.attached_info }} </span>
