@@ -1,223 +1,124 @@
-<div class="container-fluid my-container register">
-  <div class="row">
-    <div class="col-6 change-width">
-      <img
-        id="helssy-logo"
-        src="assets/imgs/helssy_bleu_long.svg"
-        alt="Helssy"
-        (click)="redirectToPracticien()"
-      />
-    </div>
-
-    <div class="col-6 display-lg-top">
-      <button
-        id="patient-acces"
-        class="btn text-center"
-        (click)="redirectToLoginPatient()"
-      >
-        <span>Accès patient</span>
-        <i class="fas fa-arrow-right ml-4"></i>
-      </button>
-      <button
-        id="practicien-bt-link"
-        class="btn btn-primary text-center"
-        (click)="redirectToPracticien()"
-      >
-        <span>Accès professionnel de la santé</span>
-        <i class="fas fa-arrow-right ml-4"></i>
-      </button>
-    </div>
-  </div>
-  <div class="row top-login">
-    <div class="card patient-img col-12 col-md-6 display-lg">
-      <div class="card-body">
-        <img src="assets/imgs/patient_login.png" class="img-login" alt="" />
-        <div class="description">
-          <span>
-            <span class="font-montserrat">
-              <i class="far fa-check-circle icon-check mr-custom-05"></i>Une
-              solution de messagerie 100% gratuite</span
-            ><br /><span class="font-montserrat">
-              <i class="far fa-check-circle icon-check mr-custom-05"></i>Une
-              réponse simple & rapide dans les meilleurs délais </span
-            ><br /><span class="font-montserrat">
-              <i class="far fa-check-circle icon-check mr-custom-05"></i>
-              service accessible 24h/24 et 7j/7</span
-            ><br />
-            <span class="font-montserrat">
-              <i class="far fa-check-circle icon-check mr-custom-05"></i
-              >Conservez un historique de tous vos échanges</span
-            ><br />
-            <span class="font-montserrat">
-              <i class="far fa-check-circle icon-check mr-custom-05"></i>Un
-              service entièrement sécurisé</span
-            ><br />
-            <span class="font-montserrat">
-              <i class="far fa-check-circle icon-check mr-custom-05"></i>Une
-              solution innovante, en constante évolution</span
-            >
-          </span>
-        </div>
-        <div class="w-75 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat"
-            >Une solution de messagerie 100% gratuite</span
-          >
-        </div>
-        <div class="w-75 mt-3 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat"
-            >Une réponse simple & rapide dans les meilleurs délais</span
-          >
-        </div>
-        <div class="w-75 mt-3 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat"
-            >Un service accessible 24h/24 et 7j/7</span
-          >
-        </div>
-        <div class="w-75 mt-3 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat"
-            >Conservez un historique de tous vos échanges</span
-          >
-        </div>
-        <div class="w-75 mt-3 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat">Un service entièrement sécurisé</span>
-        </div>
-        <div class="w-75 mt-3 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat"
-            >Accessible sur ordinateur, mobile et tablette</span
-          >
-        </div>
-        <div class="w-75 mt-3 p-l-5-rem">
-          <i class="far fa-check-circle icon-check mr-custom-05"></i
-          ><span class="font-montserrat"
-            >Une solution innovante, en constante évolution</span
-          >
-        </div>
-      </div>
-    </div>
-    <div class="card custom-card col-12 col-md-6 change-width">
-      <div class="card-body">
-        <div class="hls-connexion">
-          <lib-hls-connexion
-            [errorMessage]="errorMessage"
-            [successMessage]="successMessage"
-            [page]="'login-practician'"
-            [title]="messages.card_title"
-            (submitAction)="submit($event)"
-            (redirectPatientConnexion)="redirectToLoginPatient()"
-            (forgotPasswordAction)="forgotPassword()"
-          >
-          </lib-hls-connexion>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <p class="text-center heb-details col-12 display-lg">
-      Hébergement agrée et certifié
-    </p>
-    <div class="container display-lg">
-      <div class="row">
-        <div class="col-md-3 col-sm-6">
-          <div class="card custom-height-card">
-            <div class="col-md-12">
-              <div class="card-body custom_card">
-                <img
-                  class="center-img"
-                  src="assets/imgs/hebergement_image1.png"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="card custom-height-card">
-            <div class="col-md-12">
-              <div class="card-body custom_card">
-                <img
-                  class="center-img"
-                  src="assets/imgs/hebergement_image2.jpg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="card custom-height-card">
-            <div class="card-body custom_card">
-              <img
-                class="center-img"
-                src="assets/imgs/hebergement_image3.png"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="card custom-height-card">
-            <div class="card-body custom_card">
-              <img
-                class="center-img"
-                src="assets/imgs/hebergement_image4.png"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer col-md-12 mt-custom-100 display-lg">
-      <div class="row mt-custom-50">
-        <div class="col-md-1 ml-custom-footer ml-custom-50 custom-footer-width">
+<div class="bg-image">
+  <div class="container-fluid my-container">
+    <div class="row">
+      <div class="col">
+        <br /><br />
+        <div class="card-body">
           <img
-            class="mb-2 custom-width-img"
+            id="helssy-logo"
             src="assets/imgs/helssy_bleu_long.svg"
+            alt="Helssy"
           />
-          <p class="font-footer-custom link-footer">
-            Obtenez des réponses à vos questions gratuitement & sans vous
-            déplacer. <span class="bold-montserrat-font">Helssy.io</span>, c’est
-            votre messagerie médicale 100% sécurisée.
-          </p>
-        </div>
-        <div class="col-md-1 ml-custom-50">
-          <p class="title-footer text-center">Navigation</p>
-          <p
-            class="bold-montserrat-font link-footer"
-            (click)="redirectToPracticien()"
-          >
-            Accès PRO
-          </p>
-          <p
-            class="bold-montserrat-font link-footer"
-            (click)="redirectToPatient()"
-          >
-            Accès patient
-          </p>
-          <p class="bold-montserrat-font link-footer">Plan du site</p>
-        </div>
-        <div class="col-md-1 ml-custom-50">
-          <p class="title-footer text-center">Liens utiles</p>
-          <p class="bold-montserrat-font link-footer">Qui sommes-nous</p>
-          <p class="bold-montserrat-font link-footer">Notre solution</p>
-          <p class="bold-montserrat-font link-footer">Blog</p>
-        </div>
-        <div class="col-md-1 ml-custom-50">
-          <p class="title-footer text-center">Des Questions</p>
-          <p class="link-footer">Nous contacter</p>
-        </div>
-        <div class="col-md-1 stores">
-          <img src="assets/imgs/appStoreLogo.png" />
-          <img src="assets/imgs/playStore.png" />
+          <div class="hls-connexion">
+            <lib-hls-connexion
+              [errorMessage]="errorMessage"
+              [successMessage]="successMessage"
+              [page]="'login-practician'"
+              [title]="messages.card_title"
+              (submitAction)="submit($event)"
+              (redirectPatientConnexion)="redirectToLoginPatient()"
+              (forgotPasswordAction)="forgotPassword()"
+            >
+            </lib-hls-connexion>
+            <div class="container d-none d-lg-flex">
+              <div class="row">
+                <div class="col-3 custom-dimensions">
+                  <div class="card custom-height-card">
+                    <div class="card-body custom_card">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image1.png"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3 custom-dimensions">
+                  <div class="card custom-height-card">
+                    <div class="card-body custom_card">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image2.jpg"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3 custom-dimensions">
+                  <div class="card custom-height-card">
+                    <div class="card-body custom_card">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image3.png"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3 custom-dimensions">
+                  <div class="card custom-height-card">
+                    <div class="card-body custom_card">
+                      <img
+                        class="center-img"
+                        src="assets/imgs/hebergement_image4.png"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row copyrights mt-3">
-        Copyright 2020 Helssy - Tous droits réservés -
-        <a href="https://helssy-test.aymax.fr/cgu/" target="_blank">
-          Mentions légales
-        </a>
+      <div class="footer col-md-12 mt-custom-100 display-lg">
+        <div class="row mt-custom-50">
+          <div
+            class="col-md-1 ml-custom-footer ml-custom-50 custom-footer-width"
+          >
+            <img
+              class="mb-2 custom-width-img"
+              src="assets/imgs/helssy_bleu_long.svg"
+            />
+            <p class="font-footer-custom link-footer">
+              Obtenez des réponses à vos questions gratuitement & sans vous
+              déplacer. <span class="bold-montserrat-font">Helssy.io</span>,
+              c’est votre messagerie médicale 100% sécurisée.
+            </p>
+          </div>
+          <div class="col-md-1 ml-custom-50">
+            <p class="title-footer text-center">Navigation</p>
+            <p
+              class="bold-montserrat-font link-footer"
+              (click)="redirectToPracticien()"
+            >
+              Accès PRO
+            </p>
+            <p
+              class="bold-montserrat-font link-footer"
+              (click)="redirectToPatient()"
+            >
+              Accès patient
+            </p>
+            <p class="bold-montserrat-font link-footer">Plan du site</p>
+          </div>
+          <div class="col-md-1 ml-custom-50">
+            <p class="title-footer text-center">Liens utiles</p>
+            <p class="bold-montserrat-font link-footer">Qui sommes-nous</p>
+            <p class="bold-montserrat-font link-footer">Notre solution</p>
+            <p class="bold-montserrat-font link-footer">Blog</p>
+          </div>
+          <div class="col-md-1 ml-custom-50">
+            <p class="title-footer text-center">Des Questions</p>
+            <p class="link-footer">Nous contacter</p>
+          </div>
+          <div class="col-md-1 stores">
+            <img src="assets/imgs/appStoreLogo.png" />
+            <img src="assets/imgs/playStore.png" />
+          </div>
+        </div>
+        <div class="row copyrights mt-3">
+          Copyright 2020 Helssy - Tous droits réservés -
+          <a href="https://helssy-test.aymax.fr/cgu/" target="_blank">
+            Mentions légales
+          </a>
+        </div>
       </div>
     </div>
   </div>
