@@ -352,6 +352,7 @@ export class PersonalInformationsComponent
         } else {
           this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`;
         }
+        this.scrolToTop();
       });
   }
   resetPasswordSubmit() {
@@ -473,6 +474,7 @@ export class PersonalInformationsComponent
     } else {
       throw err;
     }
+    this.scrolToTop();
   };
   handleResponsePasswordUpdate = response => {
     if (response) {
@@ -491,6 +493,7 @@ export class PersonalInformationsComponent
       this.showPasswordFailure = true;
       $("#alertPasswordFailure").alert();
     }
+    this.scrolToTop();
   };
   addPhone() {
     this.addnewPhone.next(true);
@@ -503,5 +506,13 @@ export class PersonalInformationsComponent
       .subscribe(resp => {
         this.jobTitlesList = resp;
       });
+  }
+  scrolToTop() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#Mon-compte").offset().top - 100
+      },
+      1000
+    );
   }
 }
