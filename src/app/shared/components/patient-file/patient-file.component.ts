@@ -200,7 +200,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.noteList = res;
       }
     });
-
     setTimeout(() => {
       $(".selectpicker").selectpicker("refresh");
     }, 500);
