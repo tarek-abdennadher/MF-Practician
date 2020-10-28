@@ -152,10 +152,12 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           case "patient": {
             this.isFromInbox = false;
             this.showAcceptRefuse = false;
-            this.hidefrom = true;
-            this.isFromArchive = false;
+            this.hidefrom = false;
+            this.hideTo = false;
+            this.isFromArchive = true;
             this.sentContext = true;
             this.message = null;
+            this.messagingDetail = null;
             this.previousURL = "/mes-patients";
             break;
           }
@@ -214,7 +216,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         }
         if (this.idMessage !== params["id"]) {
           this.idMessage = params["id"];
-          this.getMessageDetailById(this.idMessage, params["context"]);
+          this.getMessageDetailById(this.idMessage, this.context);
         }
       });
       setTimeout(() => {
@@ -226,6 +228,72 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   getMessageDetailById(id, context) {
     this.loading = true;
     if (context && context == "patient") {
+      this.messagingDetailService
+        .getMessageContactDetailById(id)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((message) => {
+          console.log(message);
+          this.message = message;
+          this.showReplyActionsForPatient = false;
+          this.showReplyActionsForTls = false;
+          this.showRefuseForTls = false;
+          this.showAcceptRefuse = false;
+          this.getAttachements(message.nodesId);
+          this.senderRolePatient = false;
+          this.messagingDetail = message;
+          this.prohibited = message.prohibited;
+          this.isFromInbox = false;
+          this.links = {
+            isArchieve: true,
+            isImportant: this.isFromInbox ? !message.important : false,
+            isAddNote: true,
+          };
+          const filtredReceivers = this.messagingDetail.toReceivers.filter(
+            (to) => to.receiverId != this.featureService.getUserId()
+          );
+          if (filtredReceivers.length > 0) {
+            this.hideTo = false;
+            this.messagingDetail.toReceivers = filtredReceivers;
+          }
+          this.setParentImg(this.messagingDetail.parent);
+          this.messagingDetail.toReceivers.forEach((receiver) => {
+            this.documentService
+              .getDefaultImageEntity(receiver.receiverId, "PATIENT_FILE")
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
+                    receiver.img = this.sanitizer.bypassSecurityTrustUrl(
+                      myReader.result as string
+                    );
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  receiver.img = this.avatars.user;
+                }
+              );
+          });
+          this.documentService
+            .getDefaultImage(this.messagingDetail.sender.senderId)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe(
+              (response) => {
+                let myReader: FileReader = new FileReader();
+                myReader.onloadend = (e) => {
+                  this.messagingDetail.sender.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
+                };
+                let ok = myReader.readAsDataURL(response);
+              },
+              (error) => {
+                this.messagingDetail.sender.img = this.avatars.user;
+              }
+            );
+          this.loading = false;
+        });
     } else {
       if (this.isFromArchive && this.showAcceptRefuse == false) {
         this.messagingDetailService
@@ -687,13 +755,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN",
       };
-      this.patientService
-        .getPatientFileByPracticianId(
-          idAccount,
-          this.featureService.getUserId()
-        )
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {});
       this.getPatientFile(info);
     } else {
       if (

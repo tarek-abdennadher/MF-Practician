@@ -210,6 +210,9 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(resp => {});
+            this.router.navigate(["/mes-invitations"], {
+              queryParams: { loading: true }
+            });
         }
       });
   }
@@ -229,6 +232,9 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
             notif => notif.senderId != item.users[0].accountId
           );
+          this.router.navigate(["/mes-invitations"], {
+            queryParams: { loading: true }
+          });
         }
       });
   }
