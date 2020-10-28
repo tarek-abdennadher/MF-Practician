@@ -47,6 +47,7 @@ export class FeaturesService {
   public searchFilteredArchive = new BehaviorSubject([]);
   public searchArchive = new BehaviorSubject([]);
   public activeChild = new BehaviorSubject("inbox");
+  public historyPatient = new BehaviorSubject(false);
 
   public searchPatientsFiltered = new BehaviorSubject([]);
   public searchPatients = new BehaviorSubject([]);
@@ -170,6 +171,9 @@ export class FeaturesService {
 
   setActiveChild(text) {
     this.activeChild.next(text);
+  }
+  setHistoryPatient(value) {
+    this.historyPatient.next(value);
   }
 
   // patient Search getter and setter
