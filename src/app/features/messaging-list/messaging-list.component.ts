@@ -170,6 +170,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       } else {
         this.featureService.selectedPracticianId = 0;
         this.featureService.getNumberOfInbox().subscribe(val => {
+          this.inboxPracticianNumber = val;
           this.number = val;
           this.bottomText =
             this.number > 1
@@ -681,7 +682,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
 
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe(notif => {
-      if (notif != "" && this.messagesServ.practicianNotifPreviousValue != notif.id) {
+      if (notif != "") {
         if (this.isMyInbox) {
           this.messagesServ.practicianNotifPreviousValue = notif.id;
           const exist =
