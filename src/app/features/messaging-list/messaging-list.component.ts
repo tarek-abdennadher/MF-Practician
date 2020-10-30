@@ -40,6 +40,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   filtredItemList: Array<any> = new Array();
   selectedObjects: Array<any>;
   myPracticians = [];
+  inboxPracticianNumber : any;
   links = {
     isAllSelect: true,
     isAllSeen: true,
@@ -125,6 +126,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             ).fullName,
             picture: this.practicianImage
           };
+
+          this.inboxPracticianNumber = this.myPracticians.find(practician => practician.id == this.featureService.selectedPracticianId).number;
 
           this.documentService
             .getDefaultImage(
