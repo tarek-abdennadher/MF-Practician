@@ -19,10 +19,10 @@
     class="row mb-2"
     *ngIf="messageTypesList && messageTypesList.length !== 0"
   >
-    <div class="col-md-2 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">Type :</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="type-dropdown"
         [data]="messageTypesList"
@@ -58,10 +58,10 @@
 
   <!-- To List DropDown-->
   <div class="row mb-2">
-    <div class="col-md-2 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">À : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="to-dropdown"
         [data]="toListParsed"
@@ -97,10 +97,10 @@
 
   <!-- CC List DropDown-->
   <div class="row mb-2" *ngIf="isCCListVisible">
-    <div class="col-md-2 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">CC : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="cc-dropdown"
         [data]="ccParsedList"
@@ -140,10 +140,10 @@
       isForListVisible
     "
   >
-    <div class="col-md-2 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">Pour : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="for-dropdown"
         [data]="forFilteredList"
@@ -183,10 +183,10 @@
       !isInstruction
     "
   >
-    <div class="col-md-1 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">{{ texts.concerns }}</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="concern-dropdown"
         [data]="concernFilteredList"
@@ -227,10 +227,10 @@
     class="row mb-4"
     *ngIf="(contactType && !isSecretary()) || isInstruction"
   >
-    <div class="col-md-2 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">{{ texts.object }} : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="objects-dropdown"
         [data]="objectsList"
@@ -271,10 +271,10 @@
       (otherObject || !contactType || (isSecretary() && contactType) || newFlag)
     "
   >
-    <div class="col-md-2 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label-free-object">{{ texts.object }} : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <input
         formControlName="freeObject"
         class="form-control"
