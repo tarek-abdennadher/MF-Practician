@@ -389,7 +389,7 @@
               >
             </div>
             <br *ngIf="isAdd" />
-            <div id="buttons" class="row justify-content-left">
+            <div id="buttons" class="row justify-content-left" *ngIf="!disabled" >
               <div class="col-md-12">
                 <button
                   class="btn btn-primary col-md-4 mr-4"
@@ -417,7 +417,7 @@
                 <i class="far fa-user-plus fa-icon"></i>
                 <span class="Mes-informations">{{ labels.attached_info }} </span>
               </div>
-              <div class="col">
+              <div class="col" *ngIf="!disabled">
                 <button
                   (click)="addPerson()"
                   class="btn btn-primary float-right"
@@ -1133,7 +1133,7 @@
                   </div>
                   <br />
                 </div>
-                <div class="row justify-content-left">
+                <div class="row justify-content-left" *ngIf="!disabled">
                   <div class="col-md-12">
                     <button
                       class="btn btn-primary col-md-4 mr-4"
@@ -1157,7 +1157,7 @@
         </div>
       </mat-tab>
       <!-- Notes -->
-      <mat-tab label="Notes" *ngIf="!isAdd">
+      <mat-tab label="Notes" *ngIf="!isAdd && !disabled">
         <ng-template mat-tab-label>
           <i class="fas fa-notes-medical my-tab-icon pr-custom-11px"></i>
           <span>{{ labels.notes }}</span>
@@ -1261,7 +1261,7 @@
         </div>
       </mat-tab>
       <!-- History -->
-      <mat-tab label="Historique" *ngIf="!isAdd">
+      <mat-tab label="Historique" *ngIf="!isAdd && !disabled">
         <ng-template mat-tab-label>
           <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
           {{ labels.history }}
