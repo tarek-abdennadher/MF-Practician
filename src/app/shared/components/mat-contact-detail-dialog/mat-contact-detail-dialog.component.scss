@@ -233,12 +233,3 @@ input[type="checkbox"]:focus {
     margin-right: 0;
   }
 }
-// notification CSS
-
-::ng-deep {
-  .notifier__notification--material {
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
