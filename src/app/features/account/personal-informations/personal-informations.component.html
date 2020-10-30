@@ -280,130 +280,136 @@
       </div>
     </form>
     <br />
-    <!-- Password Form -->
-    <div class="password">
-      <div class="row justify-content-center">
-        <a
-          *ngIf="showPasswordSuccess"
-          id="alertPasswordSuccess"
-          (click)="close()"
-          class="alert alert-success alert-dismissible fade show pointer"
-          role="alert"
-        >
-          {{ messages.edit_password_success }}
-          <button
-            type="button"
-            (click)="close()"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </a>
-        <a
-          *ngIf="showPasswordFailure"
-          id="alertPasswordFailure"
-          (click)="close()"
-          class="alert alert-danger alert-dismissible fade show pointer"
-          role="alert"
-        >
-          {{ passwordErrorMessage }}
-          <button
-            type="button"
-            (click)="close()"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </a>
-        <br />
-      </div>
 
-      <form [formGroup]="passwordForm" (ngSubmit)="resetPasswordSubmit()">
-        <div class="row reset-password col-md-12">
+        <!-- Password Form -->
+  <div class="password panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <br />
+        <div class="row reset-password col-12 ml-1" data-toggle="collapse" href="#collapse1">
           {{ messages.reset_pwd }}
         </div>
-        <br />
-        <div class="row">
-          <div class="col col-12 col-sm-6">
-            <label for="pass" class="col-sm-12 col-form-label">{{
-              messages.new_pwd
-            }}</label>
-            <div class="col-sm-12">
-              <input
-                type="password"
-                autocomplete="new-password"
-                formControlName="new_password"
-                class="form-control"
-                id="pass"
-                [ngClass]="{
-                  'is-invalid': passwordSubmitted && f2.new_password.errors
-                }"
-              />
-              <div
-                *ngIf="passwordSubmitted && f2.new_password.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f2.new_password.errors.required">
-                  {{ errors.required }}
-                </div>
-                <div *ngIf="f2.new_password.errors.minlength">
-                  {{ errors.min_length }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col col-12 col-sm-6">
-            <label for="confirmpass" class="col-sm-12 col-form-label">{{
-              messages.confirm_pwd
-            }}</label>
-            <div class="col-sm-12">
-              <input
-                type="password"
-                autocomplete="new-password"
-                class="form-control"
-                formControlName="confirm_password"
-                id="confirmpass"
-                [ngClass]="{
-                  'is-invalid': passwordSubmitted && f2.confirm_password.errors
-                }"
-              />
-              <div
-                *ngIf="passwordSubmitted && f2.confirm_password.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f2.confirm_password.errors.required">
-                  {{ errors.required }}
-                </div>
-                <div *ngIf="f2.confirm_password.errors.mustMatch">
-                  {{ errors.must_match }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row ml-4">
-          <lib-hls-password-strength
-            id="checkstrength"
-            [passwordToCheck]="passwordForm.value.new_password"
-            (passwordStrength)="passwordValid($event)"
-          ></lib-hls-password-strength>
-        </div>
-        <br />
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
         <div class="row justify-content-center">
-          <button
-            type="submit"
-            class="btn btn-primary"
-            id="password-submit-button"
+          <a
+            *ngIf="showPasswordSuccess"
+            id="alertPasswordSuccess"
+            (click)="close()"
+            class="alert alert-success alert-dismissible fade show pointer"
+            role="alert"
           >
-            {{ messages.save }}
-          </button>
+            {{ messages.edit_password_success }}
+            <button
+              type="button"
+              (click)="close()"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </a>
+          <a
+            *ngIf="showPasswordFailure"
+            id="alertPasswordFailure"
+            (click)="close()"
+            class="alert alert-danger alert-dismissible fade show pointer"
+            role="alert"
+          >
+            {{ passwordErrorMessage }}
+            <button
+              type="button"
+              (click)="close()"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </a>
+          <br />
         </div>
-      </form>
+        <form [formGroup]="passwordForm" (ngSubmit)="resetPasswordSubmit()">
+          <div class="row">
+            <div class="col col-12 col-sm-6">
+              <label for="pass" class="col-sm-12 col-form-label">{{
+                messages.new_pwd
+              }}</label>
+              <div class="col-sm-12">
+                <input
+                  type="password"
+                  autocomplete="new-password"
+                  formControlName="new_password"
+                  class="form-control"
+                  id="pass"
+                  [ngClass]="{
+                    'is-invalid': passwordSubmitted && f2.new_password.errors
+                  }"
+                />
+                <div
+                  *ngIf="passwordSubmitted && f2.new_password.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f2.new_password.errors.required">
+                    {{ errors.required }}
+                  </div>
+                  <div *ngIf="f2.new_password.errors.minlength">
+                    {{ errors.min_length }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col col-12 col-sm-6">
+              <label for="confirmpass" class="col-sm-12 col-form-label">{{
+                messages.confirm_pwd
+              }}</label>
+              <div class="col-sm-12">
+                <input
+                  type="password"
+                  autocomplete="new-password"
+                  class="form-control"
+                  formControlName="confirm_password"
+                  id="confirmpass"
+                  [ngClass]="{
+                    'is-invalid': passwordSubmitted && f2.confirm_password.errors
+                  }"
+                />
+                <div
+                  *ngIf="passwordSubmitted && f2.confirm_password.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f2.confirm_password.errors.required">
+                    {{ errors.required }}
+                  </div>
+                  <div *ngIf="f2.confirm_password.errors.mustMatch">
+                    {{ errors.must_match }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row ml-4">
+            <lib-hls-password-strength
+              id="checkstrength"
+              [passwordToCheck]="passwordForm.value.new_password"
+              (passwordStrength)="passwordValid($event)"
+            ></lib-hls-password-strength>
+          </div>
+          <br />
+          <div class="row justify-content-center">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="password-submit-button"
+            >
+              {{ messages.save }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
   </div>
 </div>
 <!-- Practician Account -->
@@ -822,145 +828,150 @@
     </div>
   </form>
   <br />
-  <!-- Password Form -->
-  <div class="password">
-    <div class="row justify-content-center">
-      <a
-        *ngIf="showPasswordSuccess"
-        id="alertPasswordSuccess"
-        (click)="close()"
-        class="alert alert-success alert-dismissible fade show pointer"
-        role="alert"
-      >
-        {{ messages.edit_password_success }}
-        <button
-          type="button"
-          (click)="close()"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </a>
-      <a
-        *ngIf="showPasswordFailure"
-        id="alertPasswordFailure"
-        (click)="close()"
-        class="alert alert-danger alert-dismissible fade show pointer"
-        role="alert"
-      >
-        {{ passwordErrorMessage }}
-        <button
-          type="button"
-          (click)="close()"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </a>
-      <br />
-    </div>
-    <form
-      class="col-12"
-      [formGroup]="passwordForm"
-      (ngSubmit)="resetPasswordSubmit()"
-    >
-      <div class="col-1"></div>
-
-      <div class="col-11">
-        <div class="row reset-password col-12">
+    <!-- Password Form -->
+  <div class="password panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <br />
+        <div class="row reset-password col-12 ml-1" data-toggle="collapse" href="#collapse1">
           {{ messages.reset_pwd }}
         </div>
-        <br />
-        <div class="row">
-          <div class="col-6 col-lg-6 col-sm-6 col-md-6 p-0">
-            <label for="pass" class="col-sm-12 col-form-label new-password">{{
-              messages.new_pwd
-            }}</label>
-            <div class="col-sm-12 new-password">
-              <input
-                type="password"
-                autocomplete="new-password"
-                formControlName="new_password"
-                class="form-control"
-                id="pass"
-                [ngClass]="{
-                  'is-invalid': passwordSubmitted && f2.new_password.errors
-                }"
-              />
-              <div
-                *ngIf="passwordSubmitted && f2.new_password.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f2.new_password.errors.required">
-                  {{ errors.required }}
-                </div>
-                <div *ngIf="f2.new_password.errors.minlength">
-                  {{ errors.min_length }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-lg-6 col-sm-6 col-md-6">
-            <label
-              for="confirmpass"
-              class="col-sm-12 col-form-label new-password"
-              >{{ messages.confirm_pwd }}</label
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class="row justify-content-center">
+          <a
+            *ngIf="showPasswordSuccess"
+            id="alertPasswordSuccess"
+            (click)="close()"
+            class="alert alert-success alert-dismissible fade show pointer"
+            role="alert"
+          >
+            {{ messages.edit_password_success }}
+            <button
+              type="button"
+              (click)="close()"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
             >
-            <div class="col-sm-12 new-password">
-              <input
-                type="password"
-                autocomplete="new-password"
-                class="form-control"
-                formControlName="confirm_password"
-                id="confirmpass"
-                [ngClass]="{
-                  'is-invalid': passwordSubmitted && f2.confirm_password.errors
-                }"
-              />
-              <div
-                *ngIf="passwordSubmitted && f2.confirm_password.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f2.confirm_password.errors.required">
-                  {{ errors.required }}
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </a>
+          <a
+            *ngIf="showPasswordFailure"
+            id="alertPasswordFailure"
+            (click)="close()"
+            class="alert alert-danger alert-dismissible fade show pointer"
+            role="alert"
+          >
+            {{ passwordErrorMessage }}
+            <button
+              type="button"
+              (click)="close()"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </a>
+          <br />
+        </div>
+        <form
+        class="col-12"
+        [formGroup]="passwordForm"
+        (ngSubmit)="resetPasswordSubmit()"
+      >
+        <div class="col-1"></div>
+        <div class="col-11">
+          <div class="row">
+            <div class="col-6 col-lg-6 col-sm-6 col-md-6 p-0">
+              <label for="pass" class="col-sm-12 col-form-label new-password">{{
+                messages.new_pwd
+              }}</label>
+              <div class="col-sm-12 new-password">
+                <input
+                  type="password"
+                  autocomplete="new-password"
+                  formControlName="new_password"
+                  class="form-control"
+                  id="pass"
+                  [ngClass]="{
+                    'is-invalid': passwordSubmitted && f2.new_password.errors
+                  }"
+                />
+                <div
+                  *ngIf="passwordSubmitted && f2.new_password.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f2.new_password.errors.required">
+                    {{ errors.required }}
+                  </div>
+                  <div *ngIf="f2.new_password.errors.minlength">
+                    {{ errors.min_length }}
+                  </div>
                 </div>
-                <div *ngIf="f2.confirm_password.errors.mustMatch">
-                  {{ errors.must_match }}
+              </div>
+            </div>
+            <div class="col-6 col-lg-6 col-sm-6 col-md-6">
+              <label
+                for="confirmpass"
+                class="col-sm-12 col-form-label new-password"
+                >{{ messages.confirm_pwd }}</label
+              >
+              <div class="col-sm-12 new-password">
+                <input
+                  type="password"
+                  autocomplete="new-password"
+                  class="form-control"
+                  formControlName="confirm_password"
+                  id="confirmpass"
+                  [ngClass]="{
+                    'is-invalid': passwordSubmitted && f2.confirm_password.errors
+                  }"
+                />
+                <div
+                  *ngIf="passwordSubmitted && f2.confirm_password.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f2.confirm_password.errors.required">
+                    {{ errors.required }}
+                  </div>
+                  <div *ngIf="f2.confirm_password.errors.mustMatch">
+                    {{ errors.must_match }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div class="row d-none d-sm-block m-0">
+            <lib-hls-password-strength
+              id="checkstrength"
+              [passwordToCheck]="passwordForm.value.new_password"
+              (passwordStrength)="passwordValid($event)"
+            ></lib-hls-password-strength>
+          </div>
+          <div class="row d-sm-none d-md-none d-lg-none d-xl-none">
+            <lib-hls-password-strength
+              id="checkstrength"
+              [passwordToCheck]="passwordForm.value.new_password"
+              (passwordStrength)="passwordValid($event)"
+            ></lib-hls-password-strength>
+          </div>
         </div>
-        <div class="row d-none d-sm-block m-0">
-          <lib-hls-password-strength
-            id="checkstrength"
-            [passwordToCheck]="passwordForm.value.new_password"
-            (passwordStrength)="passwordValid($event)"
-          ></lib-hls-password-strength>
+  
+        <br />
+        <div class="row justify-content-center">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="password-submit-button"
+          >
+            {{ messages.save }}
+          </button>
         </div>
-        <div class="row d-sm-none d-md-none d-lg-none d-xl-none">
-          <lib-hls-password-strength
-            id="checkstrength"
-            [passwordToCheck]="passwordForm.value.new_password"
-            (passwordStrength)="passwordValid($event)"
-          ></lib-hls-password-strength>
-        </div>
+      </form>
       </div>
-
-      <br />
-      <div class="row justify-content-center">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          id="password-submit-button"
-        >
-          {{ messages.save }}
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
