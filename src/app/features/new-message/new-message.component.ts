@@ -343,7 +343,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           : this.isSecretary()
           ? "Sélectionner un contact"
           : "Sélectionner un patient concerné si nécessaire"
-        : "Sélectionner";
+        : "Patient Concerné";
     this.dropdownSettingsListObject = {
       singleSelection: true,
       text:
@@ -1310,7 +1310,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             : this.isSecretary()
             ? "Sélectionner un contact"
             : "Sélectionner un patient concerné si nécessaire"
-          : "Sélectionner"
+          : "Patient concerné"
     };
     this.dropdownSettingsListObject.text =
       this.innerWidth > 420
