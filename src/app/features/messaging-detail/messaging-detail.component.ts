@@ -790,7 +790,16 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         patientFileId: patientFileId,
         practicianId: this.featureService.getUserId(),
         userRole: "PRACTICIAN",
+        disabled : false
       };
+      if( this.messagingDetail.sender.senderId !== this.featureService.getUserId() ){
+         info = {
+          patientFileId: patientFileId,
+          practicianId: this.featureService.getUserId(),
+          userRole: "PRACTICIAN",
+          disabled : true
+        };
+      }
       this.getPatientFile(info);
     } else {
       if (
