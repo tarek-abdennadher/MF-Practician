@@ -20,6 +20,7 @@ import { PaginationService } from "../services/pagination.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
 import { SenderRole } from "@app/shared/enmus/sender-role";
+import { resolveMx } from "dns";
 
 @Component({
   selector: "app-messaging-list",
@@ -51,7 +52,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     isMenuDisplay: true,
     isAllSelectCarret: true,
     isRefresh: true,
-    isPagination: true
+    isPagination: true,
+    isMenuImportant: false,
+    isMenuNotSeen: false
   };
   page = "INBOX";
   number: number;
@@ -162,7 +165,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           isMenuDisplay: true,
           isAllSelectCarret: true,
           isRefresh: true,
-          isPagination: true
+          isPagination: true,
+          isMenuImportant: false,
+          isMenuNotSeen: false
         };
         this.paramsId = this.featureService.selectedPracticianId;
         this.getMyInbox(this.featureService.selectedPracticianId);
@@ -187,7 +192,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           isMenuDisplay: true,
           isAllSelectCarret: true,
           isRefresh: true,
-          isPagination: true
+          isPagination: true,
+          isMenuImportant: false,
+          isMenuNotSeen: false
         };
         this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;
@@ -652,6 +659,17 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
+    let isSeenTable = [];
+    let isImportantTable = [];
+    this.selectedObjects.forEach(elm => {
+      isSeenTable.push(elm.isSeen);
+      isImportantTable.push(elm.isImportant);
+    });
+    this.links.isMenuImportant =
+      isImportantTable.filter(elm => elm == false).length == 0;
+    this.links.isMenuNotSeen =
+      isSeenTable.filter(elm => elm == true).length == 0;
+    this.links.isAllSeen = isSeenTable.filter(elm => elm == false).length > 0;
   }
 
   getFirstMessageInNextPage(accountId, size) {
