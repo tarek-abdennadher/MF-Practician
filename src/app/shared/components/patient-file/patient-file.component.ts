@@ -92,6 +92,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   @Input("noteimageSource") noteimageSource: string;
   @Input("userRole") userRole: string;
   @Input("popup") popup: boolean = false;
+  @Input("disabled") disabled: boolean = false;
   @Input() isAdd: boolean = false;
   /* Patient file information */
   @Input("patient") patient = new Subject();
@@ -174,6 +175,9 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       }
     });
     this.patient.pipe(takeUntil(this._destroyed$)).subscribe(val => {
+      if(this.disabled == true){
+        this.personalInfoForm.disable();
+      }
       this.isList = true;
       this.click = false;
       if (val) {
@@ -381,6 +385,9 @@ export class PatientFileComponent implements OnInit, OnDestroy {
           : null,
         photoId: patient.fullInfo.photoId ? patient.fullInfo.photoId : null
       });
+      if(this.disabled == true){
+        this.attachedInfoForm.disable();
+      }
     }
   }
   cancel() {

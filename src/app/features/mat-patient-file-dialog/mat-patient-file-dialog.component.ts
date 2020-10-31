@@ -44,6 +44,7 @@ export class MatPatientFileDialogComponent implements OnInit {
     user: string;
     tls: string;
   };
+  public disabled : boolean = false;
   private _destroyed$ = new Subject();
   private readonly notifier: NotifierService;
   popup: boolean = true;
@@ -72,6 +73,9 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.patchValue(this.data);
   }
   patchValue(data) {
+    if(data.info.disabled && data.info.disabled == true){
+      this.disabled = true;
+    }
     if (data.info.patientFileId != null) {
       this.patientService
         .getPatientFileById(data.info.patientFileId)

@@ -131,12 +131,3 @@ i.close {
   height: 55px;
   border-radius: 50%;
 }
-// notification CSS
-
-::ng-deep {
-  .notifier__notification--material {
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
