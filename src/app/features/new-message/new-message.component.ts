@@ -1306,7 +1306,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       text:
         this.innerWidth > 420
           ? this.isPatient
-            ? "Sélectionner une personne attachée à votre compte"
+            ? "Sélectionner une personne rattachée à votre compte"
             : this.isSecretary()
             ? "Sélectionner un contact"
             : "Sélectionner un patient concerné si nécessaire"

@@ -39,7 +39,7 @@ export class PatientFileService {
       "Ne pas envoyer une invitation à votre patient lui permettant de vous contacter via la messagerie Helssy.",
     history: "Historique",
     invite_patient: "Inviter le patient",
-    link_patient: "Attacher une personne",
+    link_patient: "Rattacher une personne",
   };
   public errors = {
     required: "Le champ est obligatoire",

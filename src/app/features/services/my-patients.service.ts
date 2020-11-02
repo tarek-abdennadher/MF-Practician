@@ -16,16 +16,16 @@ export class MyPatientsService {
     failed_invitation:
       "Erreur survenue lors de l'envoi de l'invitation au patient",
     error_message: "Une erreur est survenue, veuillez réessayer plus tard",
-    failed_add_patient: "Erreur survenue lors de l'ajout du patient attaché",
+    failed_add_patient: "Erreur survenue lors de l'ajout du patient rattaché",
     failed_edit_patient:
-      "Erreur survenue lors de la modification du patient attaché",
+      "Erreur survenue lors de la modification du patient rattaché",
   };
   public messages = {
     edit_info_success: "La fiche patient est modifiée avec succès",
     add_info_success: "La fiche patient est créée avec succès",
     invitation_success: "Invitation envoyée avec succès ",
-    add_success: "Le patient attaché est ajouté avec succès ",
-    update_sucess: "Le patient attaché est modifié avec succès ",
+    add_success: "Le patient rattaché est ajouté avec succès ",
+    update_sucess: "Le patient rattaché est modifié avec succès ",
   };
   refreshPatientFileListObs = new Subject();
   getPatientsOfCurrentParactician(
