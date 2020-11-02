@@ -33,6 +33,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   showRefuseForTls: boolean;
   messagingDetail: any;
   idMessage: number;
+  receiverId: number;
   bodyObs = new BehaviorSubject(null);
   disableSending = new BehaviorSubject(false);
 
@@ -83,6 +84,12 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     this.messagingDetailService.getIdObs().subscribe((resp) => {
       this.route.queryParams.subscribe((params) => {
         this.messagingDetail = window.history.state.data;
+        if (!this.receiverId && this.messagingDetail) {
+          this.receiverId = this.messagingDetail.toReceivers[0].receiverId;
+        }
+        if (this.messagingDetail.toReceivers[0].receiverId == this.featureService.getUserId()) {
+          this.isMyMessage = true;
+        }
         this.forwardedResponse = false;
         this.acceptResponse = false;
         this.refuseResponse = false;
@@ -126,20 +133,26 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   }
 
   getForwardToList() {
-    this.messagingDetailService.getTlsSecretaryList().subscribe((list) => {
-      list.forEach((receiver) => {
-        this.loadPhoto(receiver);
+    if (this.isMyMessage) {
+      this.messagingDetailService.getTlsSecretaryList().subscribe((list) => {
+        list.forEach((receiver) => {
+          this.loadPhoto(receiver);
+        });
+        this.toList.next(list);
       });
-      this.toList.next(list);
-    });
+    } else {
+      this.messagingDetailService.getTlsSecretaryListByPracticianId(this.receiverId).subscribe((list) => {
+        const filtredList = list.filter(r => r.id != this.featureService.getUserId());
+        filtredList.forEach((receiver) => {
+          this.loadPhoto(receiver);
+        });
+        this.toList.next(filtredList);
+      });
+    }
+
   }
 
   updateMessageDetail() {
-    this.messagingDetail.toReceivers.forEach((element) => {
-      if (element.receiverId == this.featureService.getUserId()) {
-        this.isMyMessage = true;
-      }
-    });
     this.messagingDetail.hasFiles = false;
     this.messagingDetail.body = "";
     this.messagingDetail = this.messagingDetail;
@@ -189,13 +202,19 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   }
 
   getResponseBody(message) {
-    if (this.isMyMessage && message.requestTypeId && message.requestTitleId) {
+    let practicianId;
+    if (this.isMyMessage) {
+      practicianId = this.featureService.getUserId();
+    } else {
+      practicianId = this.receiverId;
+    }
+    if (message.requestTypeId && message.requestTitleId) {
       let requestDto;
       if (message.sender.role == "PATIENT") {
         requestDto = {
           patientId: message.sender.senderId,
           patientForId: message.sender.sendedForId,
-          practicianId: this.featureService.getUserId(),
+          practicianId: practicianId,
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
           websiteOrigin: "PATIENT",
@@ -207,7 +226,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         requestDto = {
           patientId: message.sender.sendedForId,
           patientForId: null,
-          practicianId: this.featureService.getUserId(),
+          practicianId: practicianId,
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
           websiteOrigin: "TLS",
