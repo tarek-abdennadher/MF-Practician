@@ -293,7 +293,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   archivedAction(item) {
     this.dialogService
       .openConfirmDialog(
-        "Êtes vous sur de bien vouloir archiver ce patient",
+        this.globalService.messagesDisplayScreen.archive_confirmation_patient,
         "Confirmation d'archivage"
       )
       .afterClosed()
