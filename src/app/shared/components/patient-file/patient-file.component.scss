@@ -60,6 +60,10 @@ select {
   padding: unset;
   background-color: rgba(243, 243, 243, 0.5);
 }
+.form-control.disabled,
+.phones-disabled {
+  pointer-events: none;
+}
 ::ng-deep {
   international-phone-number .form-control {
     height: 30px !important;

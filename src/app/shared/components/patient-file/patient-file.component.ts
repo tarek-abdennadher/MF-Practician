@@ -171,7 +171,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.initAttachedInfoForm();
     this.categoryList.subscribe(res => {
       if (res) {
-        console.log(res);
         this.categories = res;
       }
     });
@@ -308,7 +307,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     } else {
       this.displayMaidenName = false;
     }
-    console.log(patient.category);
     this.personalInfoForm.patchValue({
       id: patient.id ? patient.id : null,
       patientId: patient.patientId ? patient.patientId : null,
