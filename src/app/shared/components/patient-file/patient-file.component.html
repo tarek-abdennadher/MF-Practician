@@ -194,8 +194,26 @@
               </div>
             </div>
             <br />
+                        <!-- Phone number for popup -->
+                        <div class="row" *ngIf="disabled">
+                          <div class="col pr-0 pl-0">
+                          <div class="col-12 col-form-label">{{ labels.phone }}</div>
+                          <div class="col-12">
+                            <international-phone-number
+                            class="form-control disabled"
+                            id="phoneNumber"
+                            formControlName="phoneNumber"
+                            placeholder="Téléphone ou fixe *"
+                            [maxlength]="20"
+                            name="phoneNumber"
+                            [defaultCountry]="''"
+                          >
+                          </international-phone-number>
+                          </div>
+                        </div>
+                      </div>
             <!-- Phone number -->
-            <div class="row">
+            <div class="row" *ngIf="!disabled">
               <div class="col col-12 pr-0 pl-0">
                 <div class="col-12 col-form-label">{{ labels.phone }}</div>
                 <div class="col-12 row">
@@ -267,6 +285,7 @@
                     [addnewPhone]="addnewPhone"
                     (validPhones)="submitPhones($event)"
                     id="other-phones"
+                    [ngClass]="{'phones-disabled': disabled}"
                   >
                   </int-phone>
                 </div>
