@@ -37,7 +37,7 @@ export class AccountService {
     add_img: "Ajouter une photo",
     save: "Enregistrer",
     linked_patients: "Personnes Rattachées à mon compte",
-    link_patient: "Attacher une personne",
+    link_patient: "Rattacher une personne",
     reset_pwd: "Réinitialisation du mot de passe",
     new_pwd: "Nouveau mot de passe",
     confirm_pwd: "Confirmer le mot de passe",
