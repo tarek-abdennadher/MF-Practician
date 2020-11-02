@@ -82,4 +82,11 @@ export class MessagingDetailService {
       this.globalService.url.contact_pro + "/allSecretaries"
     );
   }
+
+  public getTlsSecretaryListByPracticianId(id): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/allSecretaries/"+id
+    );
+  }
 }

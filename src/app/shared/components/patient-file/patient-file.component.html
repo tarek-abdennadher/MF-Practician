@@ -194,8 +194,26 @@
               </div>
             </div>
             <br />
+            <!-- Phone number for popup -->
+            <div class="row" *ngIf="disabled">
+              <div class="col pr-0 pl-0">
+                <div class="col-12 col-form-label">{{ labels.phone }}</div>
+                <div class="col-12">
+                  <international-phone-number
+                    class="form-control disabled"
+                    id="phoneNumber"
+                    formControlName="phoneNumber"
+                    placeholder="Téléphone ou fixe *"
+                    [maxlength]="20"
+                    name="phoneNumber"
+                    [defaultCountry]="''"
+                  >
+                  </international-phone-number>
+                </div>
+              </div>
+            </div>
             <!-- Phone number -->
-            <div class="row">
+            <div class="row" *ngIf="!disabled">
               <div class="col col-12 pr-0 pl-0">
                 <div class="col-12 col-form-label">{{ labels.phone }}</div>
                 <div class="col-12 row">
@@ -267,6 +285,7 @@
                     [addnewPhone]="addnewPhone"
                     (validPhones)="submitPhones($event)"
                     id="other-phones"
+                    [ngClass]="{ 'phones-disabled': disabled }"
                   >
                   </int-phone>
                 </div>
@@ -359,7 +378,7 @@
                     formControlName="category"
                     data-none-results-text="Aucune catégorie"
                     class="selectpicker form-control"
-                    data-container="categories"
+                    data-container="body"
                     id="category"
                   >
                     <option value="null" disabled="true" [selected]="true">
@@ -386,7 +405,11 @@
               >
             </div>
             <br *ngIf="isAdd" />
-            <div id="buttons" class="row justify-content-left" *ngIf="!disabled" >
+            <div
+              id="buttons"
+              class="row justify-content-left"
+              *ngIf="!disabled"
+            >
               <div class="col-md-12">
                 <button
                   class="btn btn-primary col-md-4 mr-4"
@@ -412,14 +435,18 @@
             <div class="row">
               <div class="col">
                 <i class="far fa-user-plus fa-icon"></i>
-                <span class="Mes-informations">{{ labels.attached_info }} </span>
+                <span class="Mes-informations"
+                  >{{ labels.attached_info }}
+                </span>
               </div>
               <div class="col" *ngIf="!disabled">
                 <button
                   (click)="addPerson()"
                   class="btn btn-primary float-right"
-                  id="add-attached-button">
-                  <i class="fal fa-user-plus">&nbsp;&nbsp;</i>{{ labels.link_patient }}
+                  id="add-attached-button"
+                >
+                  <i class="fal fa-user-plus">&nbsp;&nbsp;</i
+                  >{{ labels.link_patient }}
                 </button>
               </div>
             </div>
