@@ -10,7 +10,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { CategoryService } from "../services/category.service";
 import { MyPatients } from "@app/shared/models/my-patients";
 import { filter, takeUntil } from "rxjs/operators";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { Subject } from "rxjs";
 import { NotifierService } from "angular-notifier";
@@ -62,8 +62,10 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.notifier = notifierService;
     this.filterPatientsForm = this.formBuilder.group({
       category: [""]

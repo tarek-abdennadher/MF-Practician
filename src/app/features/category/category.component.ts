@@ -7,6 +7,7 @@ import { FeaturesService } from "@app/features/features.service";
 import { filter, takeUntil } from "rxjs/operators";
 import { DialogService } from "../services/dialog.service";
 import { Subject } from "rxjs";
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: "app-category",
@@ -34,8 +35,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private globalService: GlobalService,
     private featureService: FeaturesService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private title: Title
   ) {
+    this.title.setTitle(this.accountService.messages.categories);
     this.messages = this.accountService.messages;
     this.avatars = globalService.avatars;
     this.imageSource = this.avatars.user;

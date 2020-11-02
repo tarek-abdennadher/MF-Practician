@@ -7,6 +7,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { filter, takeUntil } from "rxjs/operators";
 import { DialogService } from "../services/dialog.service";
 import { Subject } from "rxjs";
+import { Title } from "@angular/platform-browser";
 
 @Component({
   selector: "app-my-objects",
@@ -36,8 +37,10 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private featureService: FeaturesService,
     private globalService: GlobalService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private title: Title
   ) {
+    this.title.setTitle(this.accountService.messages.my_object);
     this.messages = this.accountService.messages;
     this.avatars = globalService.avatars;
     this.imageSource = this.avatars.user;

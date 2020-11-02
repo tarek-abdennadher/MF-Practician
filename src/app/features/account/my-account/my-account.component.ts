@@ -5,6 +5,7 @@ import { LocalStorageService } from "ngx-webstorage";
 import { FeaturesService } from "@app/features/features.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { Title } from '@angular/platform-browser';
 declare var $: any;
 @Component({
   selector: "app-my-account",
@@ -24,8 +25,10 @@ export class MyAccountComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private router: Router,
     private localSt: LocalStorageService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.labels = this.accountService.messages;
     this.practicianId = this.featureService.getUserId();
   }
