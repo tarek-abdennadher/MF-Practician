@@ -108,7 +108,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   @Output("archieveNoteAction") archieveNoteAction = new EventEmitter();
   @Output("cancelAction") cancelAction = new EventEmitter();
   @Input("notes") notes = new BehaviorSubject([]);
-  categories = [];
   attachedPatients = [];
   isLabelShow: boolean = false;
   phones = [];
@@ -169,12 +168,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.initNoteForm();
     this.initAddAttachedInfoForm();
     this.initAttachedInfoForm();
-    this.categoryList.subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.categories = res;
-      }
-    });
     this.patient.pipe(takeUntil(this._destroyed$)).subscribe(val => {
       if (this.disabled == true) {
         this.personalInfoForm.disable();
@@ -205,9 +198,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.noteList = res;
       }
     });
-    setTimeout(() => {
-      $(".selectpicker").selectpicker("refresh");
-    }, 500);
   }
   getCorrespondence() {
     this.patientFileService
@@ -308,7 +298,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     } else {
       this.displayMaidenName = false;
     }
-    console.log(patient.category);
     this.personalInfoForm.patchValue({
       id: patient.id ? patient.id : null,
       patientId: patient.patientId ? patient.patientId : null,
@@ -332,6 +321,9 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         ? patient.invitationStatus
         : null
     });
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
     this.getPatientInbox(this.pageNo);
   }
   changeMaidenName() {

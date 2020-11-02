@@ -359,18 +359,15 @@
                     formControlName="category"
                     data-none-results-text="Aucune catégorie"
                     class="selectpicker form-control"
-                    data-container="body"
+                    data-container="categories"
                     id="category"
                   >
-                    <option value="null" disabled="true">
+                    <option value="null" disabled="true" [selected]="true">
                       Aucune catégorie
                     </option>
                     <option
-                      *ngFor="let item of categories"
-                      value="{{ item.id }}"
-                      [selected]="
-                        personalInfoForm.controls.category.value == item.id
-                      "
+                      *ngFor="let item of categoryList | async"
+                      [value]="item.id"
                     >
                       {{ item.name }}
                     </option>
