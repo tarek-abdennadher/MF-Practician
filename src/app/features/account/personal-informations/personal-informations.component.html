@@ -890,9 +890,17 @@
               <label for="pass" class="col-sm-12 col-form-label new-password">{{
                 messages.new_pwd
               }}</label>
-              <div class="col-sm-12 new-password">
+              <div class="form-group row inner-addon right-addon col-sm-12 new-password custom-padding-50">
+                  <i
+                  class="far icon custom-padding-right-70"
+                  [ngClass]="{
+                    'fa-eye-slash': !fieldTextType,
+                    'fa-eye': fieldTextType
+                  }"
+                  (click)="toggleFieldTextType()"
+                ></i>
                 <input
-                  type="password"
+                [type]="fieldTextType ? 'text' : 'password'"
                   autocomplete="new-password"
                   formControlName="new_password"
                   class="form-control"
@@ -920,9 +928,17 @@
                 class="col-sm-12 col-form-label new-password"
                 >{{ messages.confirm_pwd }}</label
               >
-              <div class="col-sm-12 new-password">
+              <div class="form-group row inner-addon right-addon col-sm-12 new-password custom-padding-50">
+                  <i
+                  class="far icon custom-padding-right-70"
+                  [ngClass]="{
+                    'fa-eye-slash': !fieldTextType2,
+                    'fa-eye': fieldTextType2
+                  }"
+                  (click)="toggleFieldTextType2()"
+                ></i>
                 <input
-                  type="password"
+                [type]="fieldTextType2 ? 'text' : 'password'"
                   autocomplete="new-password"
                   class="form-control"
                   formControlName="confirm_password"
