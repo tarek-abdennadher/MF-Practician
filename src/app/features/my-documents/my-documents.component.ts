@@ -14,7 +14,7 @@ import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { FeaturesService } from "../features.service";
 import { PatientSerch } from "@app/shared/models/my-patients";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 @Component({
@@ -66,8 +66,10 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private featureService: FeaturesService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
     this.filterDocumentsForm = this.formBuilder.group({

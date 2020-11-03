@@ -108,7 +108,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   @Output("archieveNoteAction") archieveNoteAction = new EventEmitter();
   @Output("cancelAction") cancelAction = new EventEmitter();
   @Input("notes") notes = new BehaviorSubject([]);
-  categories = [];
   attachedPatients = [];
   isLabelShow: boolean = false;
   phones = [];
@@ -169,13 +168,8 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.initNoteForm();
     this.initAddAttachedInfoForm();
     this.initAttachedInfoForm();
-    this.categoryList.pipe(takeUntil(this._destroyed$)).subscribe(res => {
-      if (res) {
-        this.categories = res;
-      }
-    });
     this.patient.pipe(takeUntil(this._destroyed$)).subscribe(val => {
-      if(this.disabled == true){
+      if (this.disabled == true) {
         this.personalInfoForm.disable();
       }
       this.isList = true;
@@ -204,10 +198,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.noteList = res;
       }
     });
-
-    setTimeout(() => {
-      $(".selectpicker").selectpicker("refresh");
-    }, 500);
   }
   getCorrespondence() {
     this.patientFileService
@@ -331,6 +321,9 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         ? patient.invitationStatus
         : null
     });
+    setTimeout(() => {
+      $(".selectpicker").selectpicker("refresh");
+    }, 500);
     this.getPatientInbox(this.pageNo);
   }
   changeMaidenName() {
@@ -386,7 +379,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
           : null,
         photoId: patient.fullInfo.photoId ? patient.fullInfo.photoId : null
       });
-      if(this.disabled == true){
+      if (this.disabled == true) {
         this.attachedInfoForm.disable();
       }
     }
@@ -413,8 +406,12 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       practicianId: this.personalInfoForm.value.practicianId,
       civility: this.personalInfoForm.value.civility,
       birthday: this.personalInfoForm.value.birthday,
-      lastName: this.personalInfoForm.value.lastName,
-      firstName: this.personalInfoForm.value.firstName,
+      lastName:
+        this.personalInfoForm.value.lastName[0].toUpperCase() +
+        this.personalInfoForm.value.lastName.substr(1).toLowerCase(),
+      firstName:
+        this.personalInfoForm.value.firstName[0].toUpperCase() +
+        this.personalInfoForm.value.firstName.substr(1).toLowerCase(),
       maidenName: this.personalInfoForm.value.maidenName,
       phoneNumber: this.personalInfoForm.value.phoneNumber,
       email: this.personalInfoForm.value.email,
@@ -694,8 +691,12 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     const model = {
       civility: this.addAttachedInfoForm.value.civility,
       birthday: this.addAttachedInfoForm.value.birthday,
-      lastName: this.addAttachedInfoForm.value.lastName,
-      firstName: this.addAttachedInfoForm.value.firstName,
+      lastName:
+        this.addAttachedInfoForm.value.lastName[0].toUpperCase() +
+        this.addAttachedInfoForm.value.lastName.substr(1).toLowerCase(),
+      firstName:
+        this.addAttachedInfoForm.value.firstName[0].toUpperCase() +
+        this.addAttachedInfoForm.value.firstName.substr(1).toLowerCase(),
       maidenName: this.addAttachedInfoForm.value.maidenName,
       phoneNumber: this.addAttachedInfoForm.value.phoneNumber,
       address: this.addAttachedInfoForm.value.address,
@@ -725,8 +726,12 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       id: this.attachedInfoForm.value.id,
       civility: this.attachedInfoForm.value.civility,
       birthday: this.attachedInfoForm.value.birthday,
-      lastName: this.attachedInfoForm.value.lastName,
-      firstName: this.attachedInfoForm.value.firstName,
+      lastName:
+        this.attachedInfoForm.value.lastName[0].toUpperCase() +
+        this.attachedInfoForm.value.lastName.substr(1).toLowerCase(),
+      firstName:
+        this.attachedInfoForm.value.firstName[0].toUpperCase() +
+        this.attachedInfoForm.value.firstName.substr(1).toLowerCase(),
       maidenName: this.attachedInfoForm.value.maidenName,
       phoneNumber: this.attachedInfoForm.value.phoneNumber,
       address: this.attachedInfoForm.value.address,

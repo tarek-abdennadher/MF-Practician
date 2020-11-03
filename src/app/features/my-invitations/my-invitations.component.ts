@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FeaturesService } from "@app/features/features.service";
 import { MyPatientsService } from "@app/features/services/my-patients.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
 import { MyPatients } from "@app/shared/models/my-patients";
 import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
@@ -45,8 +45,10 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
@@ -210,9 +212,9 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(resp => {});
-            this.router.navigate(["/mes-invitations"], {
-              queryParams: { loading: true }
-            });
+          this.router.navigate(["/mes-invitations"], {
+            queryParams: { loading: true }
+          });
         }
       });
   }

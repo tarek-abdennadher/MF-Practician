@@ -108,6 +108,8 @@ export class GlobalService {
     my_patients: "Mes patients",
     documents: "Documents reçus",
     delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
+    archive_confirmation_patient:
+      "Êtes vous sur de bien vouloir archiver ce patient ?",
     delete_confirmation_contact: "Voulez vous vraiment archiver ce contact ?",
     archive_confirmation_message:
       "Voulez vous vraiment archiver ce(s) message(s) ?",
@@ -137,9 +139,7 @@ export class GlobalService {
     telesecretary: "assets/imgs/etablissement.svg"
   };
 
-  public excludedExceptions = [
-    "Le mot de passe saisi est invalide",
-  ]
+  public excludedExceptions = ["Le mot de passe saisi est invalide"];
   public call(
     method: RequestType,
     url: string,

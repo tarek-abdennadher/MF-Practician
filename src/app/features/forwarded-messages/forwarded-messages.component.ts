@@ -8,7 +8,7 @@ import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { PaginationService } from "../services/pagination.service";
 import { DialogService } from "../services/dialog.service";
 
@@ -57,8 +57,10 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
     private documentService: MyDocumentsService,
     private sanitizer: DomSanitizer,
     public pagination: PaginationService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { FeaturesService } from "../features.service";
 import { MyPatientsService } from "../services/my-patients.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
@@ -44,8 +44,10 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }

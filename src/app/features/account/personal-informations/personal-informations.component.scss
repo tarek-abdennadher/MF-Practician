@@ -1,6 +1,7 @@
 $hlessy-dark-grey: #344448;
 $hlessy-blue: #2460b4;
 $helssy_white: #ffffff;
+$color-helssy-pink: #ff0063;
 /* Title */
 .Mon-compte {
   font-family: Montserrat-Medium;
@@ -325,4 +326,31 @@ button.close {
 }
 .submit-btn {
   margin: auto;
+}
+.icon {
+  color: $color-helssy-pink;
+  width: 40px;
+  text-align: center;
+  font-size: 17px;
+}
+/* enable absolute positioning */
+.inner-addon {
+  position: relative;
+}
+/* style icon */
+.inner-addon i {
+  position: absolute;
+  padding: 10px;
+  color: $color-helssy-pink;
+  cursor: pointer;
+}
+
+/* align icon */
+.right-addon i {
+  right: 25px;
+}
+
+/* add padding  */
+.right-addon input {
+  padding-right: 30px;
 }
