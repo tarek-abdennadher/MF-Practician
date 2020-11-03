@@ -74,6 +74,8 @@ export class PersonalInformationsComponent
     user: string;
   };
   accountId: number;
+  public fieldTextType: boolean;
+  public fieldTextType2: boolean;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -114,6 +116,8 @@ export class PersonalInformationsComponent
       this.featureService.setIsMessaging(false);
     });
     this.passwordSubmitted = false;
+    this.fieldTextType = false;
+    this.fieldTextType2 = false;
     this.getAllSpeciality();
     this.getjobTitles();
     this.initInfoForm();
@@ -514,5 +518,11 @@ export class PersonalInformationsComponent
       },
       1000
     );
+  }
+  toggleFieldTextType() {
+    this.fieldTextType = !this.fieldTextType;
+  }
+  toggleFieldTextType2() {
+    this.fieldTextType2 = !this.fieldTextType2;
   }
 }

@@ -9,7 +9,7 @@ import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { DialogService } from "../services/dialog.service";
 import { Subject } from "rxjs";
@@ -63,8 +63,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
     private featureService: FeaturesService,
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;

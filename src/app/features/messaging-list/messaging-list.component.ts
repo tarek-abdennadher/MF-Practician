@@ -12,7 +12,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { takeUntil, tap } from "rxjs/operators";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { MyPatientsService } from "../services/my-patients.service";
@@ -97,8 +97,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     public pagination: PaginationService,
     private localSt: LocalStorageService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.practicianImage = this.avatars.doctor;

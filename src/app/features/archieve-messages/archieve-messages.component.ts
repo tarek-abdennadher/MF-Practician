@@ -7,7 +7,7 @@ import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { GlobalService } from "@app/core/services/global.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { PaginationService } from "../services/pagination.service";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
 import { Subject } from "rxjs";
@@ -58,8 +58,10 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     private globalService: GlobalService,
     private sanitizer: DomSanitizer,
     public pagination: PaginationService,
-    public roleObjectPipe: RoleObjectPipe
+    public roleObjectPipe: RoleObjectPipe,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
