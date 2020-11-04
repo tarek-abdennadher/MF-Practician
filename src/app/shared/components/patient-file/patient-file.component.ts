@@ -609,7 +609,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       this.getPatientNextInbox(this.pageNo);
     }
   }
-
   messageClicked(item) {
     if (item.sendType && item.sendType == "HISTORY") {
       this.featureService.setHistoryPatient(true);

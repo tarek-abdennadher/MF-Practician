@@ -373,22 +373,6 @@ export class FeaturesService {
   }
   encrypt(data) {
     try {
-      // console.log(
-      //   "without",
-      //   CryptoJS.AES.encrypt(
-      //     JSON.stringify(data),
-      //     this.globalService.encyptionKey
-      //   ).toString()
-      // );
-      // console.log(
-      //   "encode",
-      //   this.encode.encodeKey(
-      //     CryptoJS.AES.encrypt(
-      //       JSON.stringify(data),
-      //       this.globalService.encyptionKey
-      //     ).toString()
-      //   )
-      // );
       return encodeURIComponent(
         CryptoJS.AES.encrypt(
           JSON.stringify(data),
