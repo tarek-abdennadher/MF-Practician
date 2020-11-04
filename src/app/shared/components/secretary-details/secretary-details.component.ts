@@ -11,7 +11,7 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 @Component({
   selector: "app-secretary-details",
   templateUrl: "./secretary-details.component.html",
-  styleUrls: ["./secretary-details.component.scss"],
+  styleUrls: ["./secretary-details.component.scss"]
 })
 export class SecretaryDetailsComponent implements OnInit {
   public infoForm: FormGroup;
@@ -52,8 +52,8 @@ export class SecretaryDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.getSecretary(params["id"]);
+    this.route.params.subscribe(params => {
+      this.getSecretary(this.featureService.decrypt(params["id"]));
     });
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
@@ -69,7 +69,7 @@ export class SecretaryDetailsComponent implements OnInit {
       civility: new FormControl(null),
       phone: new FormControl(),
       picture: new FormControl(null),
-      otherPhones: this.formBuilder.array([]),
+      otherPhones: this.formBuilder.array([])
     });
   }
 
@@ -77,13 +77,13 @@ export class SecretaryDetailsComponent implements OnInit {
     return this.formBuilder.group({
       id: [p.id ? p.id : null],
       phoneNumber: [p.phoneNumber ? p.phoneNumber : ""],
-      note: [p.note ? p.note : null],
+      note: [p.note ? p.note : null]
     });
   }
 
   getSecretary(id) {
     this.initInfoForm();
-    this.accountService.getAccountById(id).subscribe((value) => {
+    this.accountService.getAccountById(id).subscribe(value => {
       this.selectedSecretary = value;
       this.hasImage = true;
       this.getPictureProfile(value.id);
@@ -93,7 +93,7 @@ export class SecretaryDetailsComponent implements OnInit {
         this.selectedSecretary?.otherPhones.length != 0
       ) {
         this.isLabelShow = true;
-        this.selectedSecretary.otherPhones.forEach((p) =>
+        this.selectedSecretary.otherPhones.forEach(p =>
           this.phoneList.push(this.updatePhone(p))
         );
       }
@@ -106,7 +106,7 @@ export class SecretaryDetailsComponent implements OnInit {
         civility: value.secretary ? value.secretary.civility : null,
         phone: value.phoneNumber,
         picture: value.secretary ? value.secretary.photoId : null,
-        otherPhones: value.secretary.otherPhones ? this.phoneList : [],
+        otherPhones: value.secretary.otherPhones ? this.phoneList : []
       });
       this.infoForm.disable();
     });
@@ -114,16 +114,16 @@ export class SecretaryDetailsComponent implements OnInit {
   // initialise profile picture
   getPictureProfile(id) {
     this.documentService.getDefaultImage(id).subscribe(
-      (response) => {
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
+        myReader.onloadend = e => {
           this.image = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         this.image = this.avatars.secretary;
       }
     );

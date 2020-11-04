@@ -326,7 +326,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.featureService.setHistoryPatient(false);
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: this.featureService.encrypt(item.users[0].id)
       },
       relativeTo: this.route
     });

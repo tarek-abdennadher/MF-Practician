@@ -12,7 +12,7 @@ declare var $: any;
 @Component({
   selector: "app-category-detail",
   templateUrl: "./category-detail.component.html",
-  styleUrls: ["./category-detail.component.scss"],
+  styleUrls: ["./category-detail.component.scss"]
 })
 export class CategoryDetailComponent
   implements OnInit, ComponentCanDeactivate, OnDestroy {
@@ -46,8 +46,8 @@ export class CategoryDetailComponent
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.selectedCategoryId = params["id"];
+    this.route.params.subscribe(params => {
+      this.selectedCategoryId = this.featureService.decrypt(params["id"]);
       this.initInfoForm();
     });
     setTimeout(() => {
@@ -62,16 +62,16 @@ export class CategoryDetailComponent
   initInfoForm() {
     this.infoForm = new FormGroup({
       id: new FormControl(null),
-      name: new FormControl(null, Validators.required),
+      name: new FormControl(null, Validators.required)
     });
     if (this.selectedCategoryId != "add") {
       this.categoryService
         .getCategoryById(this.selectedCategoryId)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((category) => {
+        .subscribe(category => {
           this.infoForm.patchValue({
             id: category.id,
-            name: category.name,
+            name: category.name
           });
         });
     }
@@ -90,37 +90,37 @@ export class CategoryDetailComponent
     let model;
     model = {
       id: this.infoForm.value.id,
-      name: this.infoForm.value.name,
+      name: this.infoForm.value.name
     };
     if (this.selectedCategoryId == "add") {
       this.categoryService
         .addCategory(model)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {
+        .subscribe(res => {
           this.showAlert = true;
           $(".alert").alert();
           this.submitted = false;
           this.router.navigate(["mes-categories"], {
-            queryParams: { loading: true },
+            queryParams: { loading: true }
           });
         });
     } else {
       this.categoryService
         .updateCategory(model)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {
+        .subscribe(res => {
           this.showAlert = true;
           $(".alert").alert();
           this.submitted = false;
           this.router.navigate(["mes-categories"], {
-            queryParams: { loading: true },
+            queryParams: { loading: true }
           });
         });
     }
   }
   cancel() {
     this.router.navigate(["mes-categories"], {
-      queryParams: { loading: false },
+      queryParams: { loading: false }
     });
   }
 }

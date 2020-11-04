@@ -6,11 +6,13 @@ import { LocalStorageService } from "ngx-webstorage";
 import * as jwt_decode from "jwt-decode";
 import { search } from "./practician-search/search.model";
 import { SafeUrl } from "@angular/platform-browser";
-
+import * as CryptoJS from "crypto-js";
+import { HttpUrlEncodingCodec } from "@angular/common/http";
 @Injectable({
   providedIn: "root"
 })
 export class FeaturesService {
+  encode = new HttpUrlEncodingCodec();
   public listNotifications = [];
   public selectedPracticianId = 0;
   private _numberOfInbox = new BehaviorSubject<number>(0);
@@ -368,5 +370,32 @@ export class FeaturesService {
       RequestType.PUT,
       this.globalService.url.option + "/activate-postal/" + this.getUserId()
     );
+  }
+  encrypt(data) {
+    try {
+      return encodeURIComponent(
+        CryptoJS.AES.encrypt(
+          JSON.stringify(data),
+          this.globalService.encyptionKey
+        ).toString()
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  decrypt(data) {
+    try {
+      const bytes = CryptoJS.AES.decrypt(
+        decodeURIComponent(data),
+        this.globalService.encyptionKey
+      );
+      if (bytes.toString()) {
+        return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      }
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

@@ -216,8 +216,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.isFromInbox = this.IsinboxContext;
           }
         }
-        if (this.idMessage !== params["id"]) {
-          this.idMessage = params["id"];
+        if (this.idMessage !== this.featureService.decrypt(params["id"])) {
+          this.idMessage = this.featureService.decrypt(params["id"]);
           this.getMessageDetailById(this.idMessage, this.context);
         }
       });
@@ -234,7 +234,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .getMessageContactDetailById(id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(message => {
-          console.log(message);
           this.message = message;
           this.showReplyActionsForPatient = false;
           this.showReplyActionsForTls = false;
@@ -738,6 +737,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   getAttachements(nodesId: string[]) {
     if (nodesId) {
       this.attachements = [];
+
       nodesId.forEach(id => {
         this.documentService
           .getNodeDetailsFromAlfresco(id)

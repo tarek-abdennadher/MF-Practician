@@ -14,7 +14,7 @@ declare var $: any;
 @Component({
   selector: "app-my-secretaries",
   templateUrl: "./my-secretaries.component.html",
-  styleUrls: ["./my-secretaries.component.scss"],
+  styleUrls: ["./my-secretaries.component.scss"]
 })
 export class MySecretariesComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -75,9 +75,9 @@ export class MySecretariesComponent implements OnInit, OnDestroy {
     this.accountService
       .getMySecretaries()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((contacts) => {
+      .subscribe(contacts => {
         this.users = contacts;
-        this.itemsList = this.users.map((elm) => this.parseSec(elm));
+        this.itemsList = this.users.map(elm => this.parseSec(elm));
       });
   }
   parseSec(sec): any {
@@ -89,8 +89,8 @@ export class MySecretariesComponent implements OnInit, OnDestroy {
           id: sec.id,
           fullName: sec.fullName,
           img: null,
-          type: "SECRETARY",
-        },
+          type: "SECRETARY"
+        }
       ],
       isArchieve: false,
       isImportant: false,
@@ -98,23 +98,23 @@ export class MySecretariesComponent implements OnInit, OnDestroy {
       isViewDetail: false,
       isMarkAsSeen: false,
       isChecked: false,
-      photoId: sec.photoId,
+      photoId: sec.photoId
     };
-    parsedSec.users.forEach((user) => {
+    parsedSec.users.forEach(user => {
       this.documentService
         .getDefaultImage(parsedSec.id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          (error) => {
+          error => {
             user.img = this.avatars.secretary;
           }
         );
@@ -127,14 +127,14 @@ export class MySecretariesComponent implements OnInit, OnDestroy {
       .downloadFile(nodeId)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             this.image = myReader.result;
           };
           let ok = myReader.readAsDataURL(response.body);
         },
-        (error) => {
+        error => {
           this.image = this.avatars.secretary;
         }
       );
@@ -142,12 +142,13 @@ export class MySecretariesComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#secretaires").offset().top - 100,
+        scrollTop: $("#secretaires").offset().top - 100
       },
       1000
     );
     this.router.navigate([
-      "compte/mes-secretaires/secretaire-detail/" + item.id,
+      "compte/mes-secretaires/secretaire-detail/" +
+        this.featureService.encrypt(item.id)
     ]);
   }
 }

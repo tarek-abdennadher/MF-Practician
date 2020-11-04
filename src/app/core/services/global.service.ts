@@ -16,6 +16,7 @@ export class GlobalService {
   private BASE_URL_FL: string = this.BASE_URL + "/ms-filer";
   public BASE_URL_SMS: string =
     environment.BASE_END_POINT + "/ms-smsapplication";
+  public encyptionKey = environment.encryptKey;
   public url = {
     base: this.BASE_URL,
     patient_connexion: this.PATIENT_SITE + "/connexion",
