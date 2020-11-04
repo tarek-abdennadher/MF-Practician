@@ -166,4 +166,13 @@ export class GlobalService {
       }
     }
   }
+
+  getSelector(id) {
+    return (
+      "#main-container > app-my-account > app-my-leaves > div > form > div:nth-child(8) > div.col-12.col-sm-8.col-lg-8.col-md-8.col-xl-8 > hls-ckeditor > ckeditor > div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__top.ck-reset_all > div > div.ck.ck-sticky-panel__content > div > div.ck.ck-toolbar__items > div:nth-child(2) > div > ul > li:nth-child"
+    );
+  }
+
+  LeavesTags = ["(1)","(1)","(1)","(1)","(1)","(1)","(1)","(1)",
+  "(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)"];
 }
