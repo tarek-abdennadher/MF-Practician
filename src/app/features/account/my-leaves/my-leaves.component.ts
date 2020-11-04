@@ -5,6 +5,7 @@ import {
   LOCALE_ID,
   ViewChild,
   OnDestroy,
+  AfterViewChecked,
 } from "@angular/core";
 import { AccountService } from "@app/features/services/account.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -16,6 +17,7 @@ import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 import { FeaturesComponent } from "@app/features/features.component";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { GlobalService } from '@app/core/services/global.service';
 declare var $: any;
 
 @Component({
@@ -24,12 +26,13 @@ declare var $: any;
   styleUrls: ["./my-leaves.component.scss"],
 })
 export class MyLeavesComponent
-  implements OnInit, ComponentCanDeactivate, OnDestroy {
+  implements OnInit, AfterViewChecked, ComponentCanDeactivate, OnDestroy {
   private _destroyed$ = new Subject();
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   public messages: any;
   public errors: any;
   public leavesForm: FormGroup;
+  init = true;
   submitted: boolean;
   leaveStartDate: Date = null;
   leaveEndDate: Date = null;
@@ -41,7 +44,8 @@ export class MyLeavesComponent
     private localeService: BsLocaleService,
     private featureService: FeaturesService,
     @Inject(LOCALE_ID) public locale: string,
-    private featureComp: FeaturesComponent
+    private featureComp: FeaturesComponent,
+    private global: GlobalService
   ) {
     defineLocale(this.locale, frLocale);
     this.localeService.use(this.locale);
@@ -50,11 +54,6 @@ export class MyLeavesComponent
     this.errors = this.service.errors;
     this.submitted = false;
     this.isInvalidDates = false;
-  }
-
-  ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.unsubscribe();
   }
 
   get f() {
@@ -69,6 +68,23 @@ export class MyLeavesComponent
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.init) {
+      const testVal = document.querySelector(
+        this.global.getSelector("id1") + "(1)"
+      );
+      if (testVal != null) {
+        this.global.LeavesTags.forEach((elm) => {
+          var elem1 = document.querySelector(
+            this.global.getSelector("id1") + elm
+          );
+          elem1.parentNode.removeChild(elem1);
+        });
+        this.init = false;
+      }
+    }
   }
 
   initLeaveForm() {
@@ -166,5 +182,10 @@ export class MyLeavesComponent
       this.f.leaveEndDate.updateValueAndValidity();
       this.f.leaveAutoMessage.updateValueAndValidity();
     }
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }
