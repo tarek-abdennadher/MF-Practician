@@ -217,7 +217,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           }
         }
         if (this.idMessage !== params["id"]) {
-          this.idMessage = params["id"];
+          console.log(this.featureService.decrypt(params["id"]));
+          this.idMessage = this.featureService.decrypt(params["id"]);
           this.getMessageDetailById(this.idMessage, this.context);
         }
       });

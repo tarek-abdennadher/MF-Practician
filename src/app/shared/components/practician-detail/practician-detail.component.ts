@@ -54,8 +54,8 @@ export class PracticianDetailComponent implements OnInit {
       params => (this.fromSearch = params["search"] || false)
     );
     this.route.params.subscribe(params => {
-      this.isMyFAvorite(params["id"]);
-      this.getPractician(params["id"]);
+      this.isMyFAvorite(this.featureService.decrypt(params["id"]));
+      this.getPractician(this.featureService.decrypt(params["id"]));
     });
     setTimeout(() => {
       this.featureService.setIsMessaging(false);

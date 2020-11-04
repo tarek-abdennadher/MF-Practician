@@ -193,11 +193,14 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     if (!item.isSeen) {
       this.markMessageAsSeen(item.id);
     }
-    this.router.navigate(["/messagerie-lire/" + item.id], {
-      queryParams: {
-        context: "archive"
+    this.router.navigate(
+      ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
+      {
+        queryParams: {
+          context: "archive"
+        }
       }
-    });
+    );
   }
 
   BackButton() {

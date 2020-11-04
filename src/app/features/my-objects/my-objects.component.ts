@@ -87,7 +87,9 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
       },
       1000
     );
-    this.router.navigate(["mes-objets/" + `${object.id}`]);
+    this.router.navigate([
+      "mes-objets/" + this.featureService.encrypt(`${object.id}`)
+    ]);
   }
 
   deleteCategory(object) {

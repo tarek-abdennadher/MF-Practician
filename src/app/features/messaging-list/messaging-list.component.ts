@@ -41,7 +41,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   filtredItemList: Array<any> = new Array();
   selectedObjects: Array<any>;
   myPracticians = [];
-  inboxPracticianNumber : any;
+  inboxPracticianNumber: any;
   links = {
     isAllSelect: true,
     isAllSeen: true,
@@ -120,7 +120,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       if (params["id"]) {
         this.isMyInbox = false;
         this.featureService.selectedPracticianId = params["id"]
-          ? params["id"]
+          ? this.featureService.decrypt(params["id"])
           : this.featureService.selectedPracticianId;
         this.myPracticians = this.featureService.myPracticians.getValue();
 
@@ -132,7 +132,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             picture: this.practicianImage
           };
 
-          this.inboxPracticianNumber = this.myPracticians.find(practician => practician.id == this.featureService.selectedPracticianId).number;
+          this.inboxPracticianNumber = this.myPracticians.find(
+            practician =>
+              practician.id == this.featureService.selectedPracticianId
+          ).number;
 
           this.documentService
             .getDefaultImage(
@@ -244,11 +247,14 @@ export class MessagingListComponent implements OnInit, OnDestroy {
 
   cardClicked(item) {
     this.markMessageAsSeen(item);
-    this.router.navigate(["/messagerie-lire/" + item.id], {
-      queryParams: {
-        context: this.isMyInbox ? "inbox" : "inboxPraticien"
+    this.router.navigate(
+      ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
+      {
+        queryParams: {
+          context: this.isMyInbox ? "inbox" : "inboxPraticien"
+        }
       }
-    });
+    );
   }
 
   selectAllActionClicked() {

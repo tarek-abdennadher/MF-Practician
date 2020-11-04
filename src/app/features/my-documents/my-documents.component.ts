@@ -204,11 +204,14 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
       1000
     );
     this.documentService.setId(item.id);
-    this.router.navigate(["/mes-documents/list/" + item.id], {
-      queryParams: {
-        type: this.filterDocumentsForm.value.documentType
+    this.router.navigate(
+      ["/mes-documents/list/" + this.featureService.encrypt(item.id)],
+      {
+        queryParams: {
+          type: this.filterDocumentsForm.value.documentType
+        }
       }
-    });
+    );
   }
 
   searchAction(value) {

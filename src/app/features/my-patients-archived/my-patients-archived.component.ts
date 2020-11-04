@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
   selector: "app-my-patients-archived",
   templateUrl: "./my-patients-archived.component.html",
-  styleUrls: ["./my-patients-archived.component.scss"],
+  styleUrls: ["./my-patients-archived.component.scss"]
 })
 export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -62,7 +62,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
     this.initArchivedPatients();
     // update list after detail view
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-patients-archives?loading=true") {
           let currentRoute = this.route;
@@ -86,9 +86,9 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         this.number = myPatients.length;
-        myPatients.forEach((elm) => {
+        myPatients.forEach(elm => {
           this.myPatients.push(this.mappingMyPatients(elm, false, true));
         });
         this.filtredPatients = this.myPatients;
@@ -99,10 +99,10 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
+      .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
-          myPatients.forEach((elm) => {
+          myPatients.forEach(elm => {
             this.myPatients.push(this.mappingMyPatients(elm, false, true));
           });
         }
@@ -124,7 +124,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      civility: patient.civility,
+      civility: patient.civility
     });
     myPatients.id = patient.id;
     myPatients.photoId = patient.photoId;
@@ -133,21 +133,21 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
-    myPatients.users.forEach((user) => {
+    myPatients.users.forEach(user => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          (error) => {
+          error => {
             user.img = this.avatars.user;
           }
         );
@@ -158,25 +158,25 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100,
+        scrollTop: $("#appPatientFile").offset().top - 100
       },
       1000
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id,
+        id: this.featureService.encrypt(item.users[0].id)
       },
-      relativeTo: this.route,
+      relativeTo: this.route
     });
   }
   activatedAction(item) {
     this.myPatientsService
       .activatePatientFile(item.users[0].id)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((resp) => {
+      .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            (elm) => elm.users[0].id != item.users[0].id
+            elm => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }

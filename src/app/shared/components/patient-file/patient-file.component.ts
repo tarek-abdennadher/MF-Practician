@@ -613,19 +613,25 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   messageClicked(item) {
     if (item.sendType && item.sendType == "HISTORY") {
       this.featureService.setHistoryPatient(true);
-      this.router.navigate(["/messagerie-lire/" + item.id], {
-        queryParams: {
-          context: "patient"
+      this.router.navigate(
+        ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
+        {
+          queryParams: {
+            context: "patient"
+          }
         }
-      });
+      );
     } else {
       this.markMessageAsSeen(item);
       this.featureService.setHistoryPatient(true);
-      this.router.navigate(["/messagerie-lire/" + item.id], {
-        queryParams: {
-          context: "inbox"
+      this.router.navigate(
+        ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
+        {
+          queryParams: {
+            context: "inbox"
+          }
         }
-      });
+      );
     }
   }
 

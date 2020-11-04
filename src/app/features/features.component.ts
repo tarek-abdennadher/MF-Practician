@@ -618,7 +618,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   selectNotification(notification) {
     if (notification.type == "MESSAGE") {
       this.featuresService
@@ -626,11 +625,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
         .subscribe(() => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
-            queryParams: {
-              context: "inbox"
+          this.router.navigate(
+            [
+              "/messagerie-lire/" +
+                this.featuresService.encrypt(notification.messageId)
+            ],
+            {
+              queryParams: {
+                context: "inbox"
+              }
             }
-          });
+          );
           this.featuresService.setNumberOfInbox(
             this.featuresService.getNumberOfInboxValue() - 1
           );
@@ -644,11 +649,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
-            queryParams: {
-              context: "sent"
+          this.router.navigate(
+            [
+              "/messagerie-lire/" +
+                this.featuresService.encrypt(notification.messageId)
+            ],
+            {
+              queryParams: {
+                context: "sent"
+              }
             }
-          });
+          );
         });
     } else if (notification.type == "INVITATION") {
       this.featuresService
@@ -663,11 +674,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         .markNotificationAsSeen(notification.id)
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
-            queryParams: {
-              section: "sent"
+          this.router.navigate(
+            [
+              "/messagerie-lire/" +
+                this.featuresService.encrypt(notification.messageId)
+            ],
+            {
+              queryParams: {
+                section: "sent"
+              }
             }
-          });
+          );
         });
     } else if (notification.type == "MESSAGE_FAILED") {
       this.featuresService
@@ -682,7 +699,9 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     jQuery("#sidebar").addClass("hidden-side-bar");
     this.localSt.store("practicianId", event);
     this.scrolToTop();
-    this.router.navigate(["/messagerie/" + event]);
+    this.router.navigate([
+      "/messagerie/" + this.featuresService.encrypt(event)
+    ]);
   }
 
   getPersonalInfo() {
