@@ -47,6 +47,7 @@ import { MyPatientsArchivedComponent } from "./my-patients-archived/my-patients-
 import { MyPatientsBlockedComponent } from "./my-patients-blocked/my-patients-blocked.component";
 import { MatPatientFileDialogComponent } from "./mat-patient-file-dialog/mat-patient-file-dialog.component";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
+import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -105,6 +106,7 @@ const notifierOptions: NotifierOptions = {
     MyPatientsBlockedComponent,
     MatPatientFileDialogComponent,
     ContactDetailComponent,
+    ForbiddenComponent,
   ],
   imports: [
     FormsModule,
