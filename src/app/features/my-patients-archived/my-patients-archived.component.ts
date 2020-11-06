@@ -68,6 +68,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsArchivedOfCurrentParactician(this.pageNo);
           setTimeout(() => {

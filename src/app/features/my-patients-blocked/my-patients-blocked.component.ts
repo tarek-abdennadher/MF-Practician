@@ -67,6 +67,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
