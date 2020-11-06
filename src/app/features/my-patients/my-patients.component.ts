@@ -136,6 +136,18 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
+        });
         this.filtredPatients = this.myPatients;
       });
   }
@@ -150,6 +162,18 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           patients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        patients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = patients;
         this.number = this.filtredPatients.length;
@@ -193,6 +217,18 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = this.myPatients;
       });
@@ -326,7 +362,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.featureService.setHistoryPatient(false);
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: this.featureService.encrypt(item.users[0].id)
       },
       relativeTo: this.route
     });

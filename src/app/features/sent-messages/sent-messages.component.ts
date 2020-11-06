@@ -209,11 +209,14 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   }
 
   cardClicked(item) {
-    this.router.navigate(["/messagerie-lire/" + item.id], {
-      queryParams: {
-        context: "sent"
+    this.router.navigate(
+      ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
+      {
+        queryParams: {
+          context: "sent"
+        }
       }
-    });
+    );
   }
 
   selectAllActionClicked() {
@@ -366,8 +369,8 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       )
       .pipe(takeUntil(this._destroyed$))
       .pipe(
-        tap((messages) => {
-          let parsedList =  new Array();
+        tap(messages => {
+          let parsedList = new Array();
           messages.forEach(message => {
             const messageSent = this.mappingMessage(message);
             messageSent.id = message.id;

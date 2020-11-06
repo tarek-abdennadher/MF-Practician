@@ -7,7 +7,7 @@ import { FeaturesService } from "@app/features/features.service";
 import { filter, takeUntil } from "rxjs/operators";
 import { DialogService } from "../services/dialog.service";
 import { Subject } from "rxjs";
-import { Title } from '@angular/platform-browser';
+import { Title } from "@angular/platform-browser";
 
 @Component({
   selector: "app-category",
@@ -74,7 +74,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
       },
       1000
     );
-    this.router.navigate(["mes-categories/" + `${category.id}`]);
+    this.router.navigate([
+      "mes-categories/" + this.featureService.encrypt(`${category.id}`)
+    ]);
   }
 
   deleteCategory(category) {

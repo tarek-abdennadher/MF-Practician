@@ -16,6 +16,7 @@ export class GlobalService {
   private BASE_URL_FL: string = this.BASE_URL + "/ms-filer";
   public BASE_URL_SMS: string =
     environment.BASE_END_POINT + "/ms-smsapplication";
+  public encyptionKey = environment.encryptKey;
   public url = {
     base: this.BASE_URL,
     patient_connexion: this.PATIENT_SITE + "/connexion",
@@ -166,4 +167,13 @@ export class GlobalService {
       }
     }
   }
+
+  getSelector(id) {
+    return (
+      "#main-container > app-my-account > app-my-leaves > div > form > div:nth-child(8) > div.col-12.col-sm-8.col-lg-8.col-md-8.col-xl-8 > hls-ckeditor > ckeditor > div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__top.ck-reset_all > div > div.ck.ck-sticky-panel__content > div > div.ck.ck-toolbar__items > div:nth-child(2) > div > ul > li:nth-child"
+    );
+  }
+
+  LeavesTags = ["(1)","(1)","(1)","(1)","(1)","(1)","(1)","(1)",
+  "(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)"];
 }

@@ -9,11 +9,12 @@ import { catchError, takeUntil } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
 import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
+import { FeaturesService } from "@app/features/features.service";
 
 @Component({
   selector: "app-documents-list",
   templateUrl: "./documents-list.component.html",
-  styleUrls: ["./documents-list.component.scss"],
+  styleUrls: ["./documents-list.component.scss"]
 })
 export class DocumentsListComponent implements OnInit, OnDestroy {
   idSenderReceiver: any;
@@ -51,11 +52,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     private _location: Location,
     private formBuilder: FormBuilder,
     private accountService: AccountService,
-    private civilityPipe: CivilityPipe
+    private civilityPipe: CivilityPipe,
+    private featureService: FeaturesService
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
-      destination: [""],
+      destination: [""]
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -67,23 +69,20 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   }
 
   realTime() {
-    this.documentsService
-      .getIdObs()
-      .subscribe((resp) => {
-        this.idSenderReceiver = resp;
-        this.filter();
-      });
+    this.documentsService.getIdObs().subscribe(resp => {
+      this.idSenderReceiver = resp;
+      this.filter();
+    });
   }
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.idSenderReceiver = params["id"];
+    this.route.params.subscribe(params => {
+      this.idSenderReceiver = this.featureService.decrypt(params["id"]);
     });
-    this.route.queryParams
-      .subscribe((params) => {
-        this.filterDocumentsForm.patchValue({
-          documentType: params["type"],
-        });
+    this.route.queryParams.subscribe(params => {
+      this.filterDocumentsForm.patchValue({
+        documentType: params["type"]
       });
+    });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);
     this.realTime();
@@ -92,11 +91,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.accountService
       .getCurrentAccount()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((account) => {
+      .subscribe(account => {
         if (account && account.patient) {
           this.account = account.patient;
           this.linkedPatients = this.account.linkedPatients;
-          this.linkedPatients.forEach((patient) => {
+          this.linkedPatients.forEach(patient => {
             this.destinations.add(patient);
           });
         }
@@ -107,67 +106,67 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.accountService
       .getAccountDetails(id)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((account) => {
+      .subscribe(account => {
         let details = this.getDetailSwitchRole(account);
         if (details.photoId) {
           this.documentsService
             .downloadFile(details.photoId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(
-              (response) => {
+              response => {
                 let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
+                myReader.onloadend = e => {
                   if (account.role == "PRACTICIAN") {
                     this.documentsService.person = {
                       fullName: `${details.jobTitle} ${details.fullName}`,
-                      picture: myReader.result,
+                      picture: myReader.result
                     };
                   } else {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
-                      picture: myReader.result,
+                      picture: myReader.result
                     };
                   }
                 };
                 let ok = myReader.readAsDataURL(response.body);
               },
-              (error) => {
+              error => {
                 if (account.role == "PATIENT") {
                   if (details.civility == "M") {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
-                      picture: this.avatars.man,
+                      picture: this.avatars.man
                     };
                   } else if (details.civility == "MME") {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
-                      picture: this.avatars.women,
+                      picture: this.avatars.women
                     };
                   } else if (details.civility == "CHILD") {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
-                      picture: this.avatars.child,
+                      picture: this.avatars.child
                     };
                   }
                 } else if (account.role == "PRACTICIAN") {
                   this.documentsService.person = {
                     fullName: `${details.jobTitle} ${details.fullName}`,
-                    picture: this.avatars.doctor,
+                    picture: this.avatars.doctor
                   };
                 } else if (account.role == "SECRETARY") {
                   this.documentsService.person = {
                     fullName: `${this.civilityPipe.transform(
                       details.civility
                     )} ${details.fullName}`,
-                    picture: this.avatars.secretary,
+                    picture: this.avatars.secretary
                   };
                 }
               }
@@ -179,34 +178,34 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
-                picture: this.avatars.man,
+                picture: this.avatars.man
               };
             } else if (details.civility == "MME") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
-                picture: this.avatars.women,
+                picture: this.avatars.women
               };
             } else if (details.civility == "CHILD") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
-                picture: this.avatars.child,
+                picture: this.avatars.child
               };
             }
           } else if (account.role == "PRACTICIAN") {
             this.documentsService.person = {
               fullName: `${details.jobTitle} ${details.fullName}`,
-              picture: this.avatars.doctor,
+              picture: this.avatars.doctor
             };
           } else if (account.role == "SECRETARY") {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${
                 details.fullName
               }`,
-              picture: this.avatars.secretary,
+              picture: this.avatars.secretary
             };
           }
         }
@@ -220,23 +219,23 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.documentsService
       .getMyAttachementsBySenderOrReceiverId(id, pageNo)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
         forkJoin(this.observables)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((nodes) => {
+          .subscribe(nodes => {
             this.scroll = false;
             nodes.forEach((node: any) => {
               if (node.entry) {
@@ -244,7 +243,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 const extention = splitName[splitName.length - 1];
 
                 const attachement = this.attachementsList.find(
-                  (x) => x.nodeId == node.entry.id
+                  x => x.nodeId == node.entry.id
                 );
 
                 this.itemList.push(this.parseMessage(attachement, node.entry));
@@ -267,21 +266,21 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
           ),
           title: attachement.senderForId
             ? "Pour " + attachement.senderForDetails.fullName
-            : null,
-        },
+            : null
+        }
       ],
       object: {
         name:
           node.name.length < 30
             ? node.name
             : node.name.substring(0, 30) + "...",
-        isImportant: false,
+        isImportant: false
       },
       nodeId: attachement.nodeId,
       time: attachement.updatedAt,
       download: true,
       visualize: true,
-      realName: node.name,
+      realName: node.name
     };
   }
 
@@ -323,7 +322,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.documentsService
       .downloadFile(attachement.nodeId)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((response) => {
+      .subscribe(response => {
         const blob = new Blob([response.body]);
         const filename = attachement.realName;
         const filenameDisplay = filename;
@@ -358,14 +357,14 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.documentsService
       .downloadFile(attachement.nodeId)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((response) => {
+      .subscribe(response => {
         const filename = attachement.realName;
         const filenameDisplay = filename;
         const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
 
         const blob = new Blob([response.body], {
-          type: this.getType(extension),
+          type: this.getType(extension)
         });
 
         let resultname: string;
@@ -408,23 +407,23 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.documentsService
       .getMyAttachementsByObject(id, object, pageNo)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
         forkJoin(this.observables)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((nodes) => {
+          .subscribe(nodes => {
             this.scroll = false;
             nodes.forEach((node: any) => {
               if (node.entry) {
@@ -432,7 +431,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 const extention = splitName[splitName.length - 1];
 
                 const attachement = this.attachementsList.find(
-                  (x) => x.nodeId == node.entry.id
+                  x => x.nodeId == node.entry.id
                 );
 
                 this.itemList.push(this.parseMessage(attachement, node.entry));
@@ -448,23 +447,23 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.documentsService
       .getMyAttachementsBySenderForId(id, senderForId, pageNo)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
         forkJoin(this.observables)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((nodes) => {
+          .subscribe(nodes => {
             this.scroll = false;
             nodes.forEach((node: any) => {
               if (node.entry) {
@@ -472,7 +471,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 const extention = splitName[splitName.length - 1];
 
                 const attachement = this.attachementsList.find(
-                  (x) => x.nodeId == node.entry.id
+                  x => x.nodeId == node.entry.id
                 );
 
                 this.itemList.push(this.parseMessage(attachement, node.entry));
@@ -489,23 +488,23 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.documentsService
       .getMyAttachementsBySenderForIdAndObject(id, senderForId, object, pageNo)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((attachements) => {
+      .subscribe(attachements => {
         if (attachements.length == 0) {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        attachements.forEach((attachement) => {
+        attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
             this.documentsService
               .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError((error) => of(error)))
+              .pipe(catchError(error => of(error)))
           );
         });
 
         forkJoin(this.observables)
           .pipe(takeUntil(this._destroyed$))
-          .subscribe((nodes) => {
+          .subscribe(nodes => {
             this.scroll = false;
             nodes.forEach((node: any) => {
               if (node.entry) {
@@ -513,7 +512,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 const extention = splitName[splitName.length - 1];
 
                 const attachement = this.attachementsList.find(
-                  (x) => x.nodeId == node.entry.id
+                  x => x.nodeId == node.entry.id
                 );
                 this.itemList.push(this.parseMessage(attachement, node.entry));
               }

@@ -31,6 +31,9 @@ export class ResponseInterceptor implements HttpInterceptor {
               this.router.navigate(["/connexion"]);
             }
             break;
+          case 403:
+            this.router.navigate(["/forbidden"]);
+            break;
           case 500:
             this.setNotif("Une erreur s’est produite et l'équipe travail dessus.", "error");
             break;

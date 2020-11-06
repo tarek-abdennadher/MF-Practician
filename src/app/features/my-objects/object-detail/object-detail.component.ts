@@ -11,7 +11,7 @@ declare var $: any;
 @Component({
   selector: "app-object-detail",
   templateUrl: "./object-detail.component.html",
-  styleUrls: ["./object-detail.component.scss"],
+  styleUrls: ["./object-detail.component.scss"]
 })
 export class ObjectDetailComponent
   implements OnInit, ComponentCanDeactivate, OnDestroy {
@@ -47,8 +47,8 @@ export class ObjectDetailComponent
   }
   ngOnInit(): void {
     this.getAllDocumentModel();
-    this.route.params.subscribe((params) => {
-      this.selectedCategoryId = params["id"];
+    this.route.params.subscribe(params => {
+      this.selectedCategoryId = this.featureService.decrypt(params["id"]);
       this.initInfoForm();
     });
     setTimeout(() => {
@@ -70,13 +70,13 @@ export class ObjectDetailComponent
       docBody: new FormControl(null),
       documentModelId: new FormControl(null),
       accountId: new FormControl(null),
-      originalCloneId: new FormControl(null),
+      originalCloneId: new FormControl(null)
     });
     if (this.selectedCategoryId != "add") {
       this.accountService
         .getPracticianObjectById(this.selectedCategoryId)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((object) => {
+        .subscribe(object => {
           this.infoForm.patchValue({
             id: object.id,
             object: object.object,
@@ -86,7 +86,7 @@ export class ObjectDetailComponent
             docBody: object?.docBody,
             documentModelId: object?.documentModel?.id,
             accountId: object?.accountId,
-            originalCloneId: object?.originalCloneId,
+            originalCloneId: object?.originalCloneId
           });
         });
     }
@@ -99,7 +99,7 @@ export class ObjectDetailComponent
     this.accountService
       .getAllDocumentModel()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {
+      .subscribe(res => {
         this.documentModelList = res;
       });
   }
@@ -131,24 +131,24 @@ export class ObjectDetailComponent
       this.accountService
         .createPracticianObject(model)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {
+        .subscribe(res => {
           this.showAlert = true;
           $(".alert").alert();
           this.submitted = false;
           this.router.navigate(["mes-objets"], {
-            queryParams: { loading: true },
+            queryParams: { loading: true }
           });
         });
     } else {
       this.accountService
         .updatePracticianObject(model)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((res) => {
+        .subscribe(res => {
           this.showAlert = true;
           $(".alert").alert();
           this.submitted = false;
           this.router.navigate(["mes-objets"], {
-            queryParams: { loading: true },
+            queryParams: { loading: true }
           });
         });
     }
