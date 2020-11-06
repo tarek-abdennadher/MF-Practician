@@ -15,8 +15,8 @@ import { MessagingListService } from "@app/features/services/messaging-list.serv
 import { GlobalService } from "@app/core/services/global.service";
 import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
 import { takeUntil, tap } from "rxjs/operators";
-import { MyPatients } from "@app/shared/models/my-patients";
-import { PatientFileComponent } from "@app/shared/components/patient-file/patient-file.component";
+import { MyPatients } from '@app/shared/models/my-patients';
+
 
 @Component({
   selector: "app-patient-detail",
