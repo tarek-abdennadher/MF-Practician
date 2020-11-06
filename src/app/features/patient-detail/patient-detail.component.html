@@ -1,12 +1,24 @@
-<app-patient-file [imageSource]="imageSource" [practicianImage]="practicianImage" [noteimageSource]="noteimageSource"
-    [patient]="patientFile" [categoryList]="categoryList" [notes]="notes" (submitAction)="submit($event)"
-    (archieveNoteAction)="archieveNote($event)" [linkedPatients]="linkedPatients"
-    (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()" [userRole]="userRole">
+<app-patient-file
+  [imageSource]="imageSource"
+  [practicianImage]="practicianImage"
+  [noteimageSource]="noteimageSource"
+  [patient]="patientFile"
+  [categoryList]="categoryList"
+  [notes]="notes"
+  (submitAction)="submit($event)"
+  (archieveNoteAction)="archieveNote($event)"
+  [linkedPatients]="linkedPatients"
+  (submitNoteAction)="submitNote($event)"
+  (cancelAction)="cancelAction()"
+  [userRole]="userRole"
+  (submitAttachedAction)="submitLinkedPatient($event)"
+  (updateAttachedAction)="updateLinkedPatient($event)"
+>
 </app-patient-file>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
-    <div class="text-center" type="notificationData.type">
-        <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-        &nbsp;<span>{{ notificationData.message }}</span>
-    </div>
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
+    &nbsp;<span class="information-text">{{ notificationData.message }}</span>
+  </div>
 </ng-template>

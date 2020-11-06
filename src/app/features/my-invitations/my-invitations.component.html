@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" id="invit">
   <div class="col-md-5">
     <lib-hls-generic-list-links
       [links]="links"
@@ -13,6 +13,7 @@
       [imageSource]="imageSource"
       [isInvitationPending]="isInvitation"
       [isMyPatients]="isMyPatients"
+      emptyList="Vous n'avez aucune invitation actuellement."
       (acceptedAction)="acceptedAction($event)"
       (refuseAction)="refuseAction($event)"
       (cardAction)="cardClicked($event)"
@@ -20,7 +21,7 @@
     >
     </lib-hls-generic-list>
   </div>
-  <div id="appPatientFile" class="col-md-7 objects">
+  <div id="appPatientFile" class="col-md-7 objects readOnly">
     <router-outlet></router-outlet>
   </div>
 </div>

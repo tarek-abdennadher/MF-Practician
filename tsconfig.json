@@ -6,7 +6,8 @@
       "@app/*": ["app/*"],
       "@env/*": ["environments/*"],
       "@core/*": ["app/core/*"],
-      "@enum/*": ["app/shared/enmus/*"]
+      "@enum/*": ["app/shared/enmus/*"],
+      "crypto": ["../node_modules/crypto-js"]
     },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { GlobalService } from "@app/core/services/global.service";
@@ -9,16 +9,20 @@ import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { CategoryService } from "../services/category.service";
 import { MyPatients } from "@app/shared/models/my-patients";
-import { filter } from "rxjs/operators";
-import { DomSanitizer } from "@angular/platform-browser";
+import { filter, takeUntil } from "rxjs/operators";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
+import { Subject } from "rxjs";
+import { NotifierService } from "angular-notifier";
 declare var $: any;
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
   styleUrls: ["./my-patients.component.scss"]
 })
-export class MyPatientsComponent implements OnInit {
+export class MyPatientsComponent implements OnInit, OnDestroy {
+  @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  private _destroyed$ = new Subject();
   links = { isAdd: true, isTypeFilter: false };
   addText = "Ajouter un patient";
   imageSource: string;
@@ -44,6 +48,7 @@ export class MyPatientsComponent implements OnInit {
     user: string;
   };
   direction: OrderDirection = OrderDirection.DESC;
+  private readonly notifier: NotifierService;
   constructor(
     private globalService: GlobalService,
     private myPatientsService: MyPatientsService,
@@ -56,8 +61,12 @@ export class MyPatientsComponent implements OnInit {
     private featuresService: FeaturesService,
     private categoryService: CategoryService,
     private sanitizer: DomSanitizer,
-    private messageWidgetService: NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService,
+    notifierService: NotifierService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
+    this.notifier = notifierService;
     this.filterPatientsForm = this.formBuilder.group({
       category: [""]
     });
@@ -67,6 +76,17 @@ export class MyPatientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPatients();
+    this.myPatientsService.refreshPatientFileListObs
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((res: any) => {
+        if (res) {
+          this.notifier.show({
+            message: res.message,
+            type: res.type,
+            template: this.customNotificationTmpl
+          });
+        }
+      });
     // update list after detail view
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -75,6 +95,7 @@ export class MyPatientsComponent implements OnInit {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -108,12 +129,25 @@ export class MyPatientsComponent implements OnInit {
         pageNo,
         this.direction
       )
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         this.number = myPatients.length;
         myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = this.myPatients;
       });
@@ -130,6 +164,18 @@ export class MyPatientsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
+        // sorting the list by fullname (in the alphabetic order)
+        patients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
+        });
         this.filtredPatients = patients;
         this.number = this.filtredPatients.length;
       } else {
@@ -145,6 +191,7 @@ export class MyPatientsComponent implements OnInit {
         pageNo,
         this.direction
       )
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -164,12 +211,25 @@ export class MyPatientsComponent implements OnInit {
         this.categs.find(e => e.name == categoryId).id,
         this.direction
       )
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         this.number = myPatients.length;
         myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = this.myPatients;
       });
@@ -182,7 +242,11 @@ export class MyPatientsComponent implements OnInit {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
+      fullName:
+        patient.fullName.substring(patient.civility.length) +
+        " (" +
+        (patient.civility !== "" ? patient.civility : "Enfant") +
+        ")",
       img: this.avatars.user,
       civility: patient.civility
     });
@@ -193,6 +257,7 @@ export class MyPatientsComponent implements OnInit {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
+    myPatients.isAddedByPatient = patient.addedByPatient;
     myPatients.users.forEach(user => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
@@ -229,6 +294,7 @@ export class MyPatientsComponent implements OnInit {
   prohibitAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -239,7 +305,7 @@ export class MyPatientsComponent implements OnInit {
       });
   }
   editAction(item) {
-    this.router.navigate(["/fiche-patient/" + item.users[0].id]);
+    this.cardClicked(item);
   }
   deleteAction(item) {
     this.dialogService
@@ -252,6 +318,7 @@ export class MyPatientsComponent implements OnInit {
         if (res) {
           this.myPatientsService
             .deletePatientFromMyPatients(item.users[0].id)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(resp => {
               this.filtredPatients = this.filtredPatients.filter(
                 elm => elm.users[0].id != item.users[0].id
@@ -265,7 +332,7 @@ export class MyPatientsComponent implements OnInit {
   archivedAction(item) {
     this.dialogService
       .openConfirmDialog(
-        "Etes vous sur de bien vouloir archiver ce patient",
+        this.globalService.messagesDisplayScreen.archive_confirmation_patient,
         "Confirmation d'archivage"
       )
       .afterClosed()
@@ -273,6 +340,7 @@ export class MyPatientsComponent implements OnInit {
         if (res) {
           this.myPatientsService
             .deletePatientFile(item.users[0].id)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(resp => {
               if (resp == true) {
                 this.filtredPatients = this.filtredPatients.filter(
@@ -292,9 +360,10 @@ export class MyPatientsComponent implements OnInit {
       },
       1000
     );
+    this.featureService.setHistoryPatient(false);
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: this.featureService.encrypt(item.users[0].id)
       },
       relativeTo: this.route
     });
@@ -348,5 +417,9 @@ export class MyPatientsComponent implements OnInit {
       1000
     );
     this.router.navigate(["ajout-patient"], { relativeTo: this.route });
+  }
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }

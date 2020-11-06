@@ -1,8 +1,19 @@
 <div class="row ">
-  <a *ngIf="showAlert" id="alert" (click)="close()" class="alert alert-success alert-dismissible fade show pointer"
-    role="alert">
+  <a
+    *ngIf="showAlert"
+    id="alert"
+    (click)="close()"
+    class="alert alert-success alert-dismissible fade show pointer"
+    role="alert"
+  >
     {{ messages.edit_info_success }}
-    <button type="button" (click)="close()" class="close" data-dismiss="alert" aria-label="Close">
+    <button
+      type="button"
+      (click)="close()"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </a>
@@ -10,20 +21,25 @@
 <div class="card Rectangle" id="cat-tabs">
   <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
     <i class="fas fa-info-circle fa-icon"></i>
-    <span class="Mes-informations">{{ messages.categories_tab }}
-    </span>
+    <span class="Mes-informations">{{ messages.categories_tab }} </span>
   </div>
   <!-- Category Form -->
   <div class="card-body Rectangle-body">
     <form [formGroup]="infoForm" #f="ngForm">
       <div class="row">
         <label for="name" class="col-12 col-sm-12 col-form-label">{{
-                labels.category_name
-              }}</label>
+          labels.category_name
+        }}</label>
         <div class="col-12 col-sm-12">
-          <input type="text" formControlName="name" class="form-control" id="cat-name" [ngClass]="{
-                    'is-invalid': submitted && ctr.name.errors
-                  }" />
+          <input
+            type="text"
+            formControlName="name"
+            class="form-control"
+            id="cat-name"
+            [ngClass]="{
+              'is-invalid': submitted && ctr.name.errors
+            }"
+          />
           <div *ngIf="submitted && ctr.name.errors" class="invalid-feedback">
             <div *ngIf="ctr.name.errors.required">
               {{ labels.required }}
@@ -32,11 +48,15 @@
         </div>
       </div>
       <br />
-      <div class="row justify-content-center">
-        <button type="submit" class="btn btn-primary mr-2 mb-2" (click)="submit()">
+      <div class="row justify-content-left col-md-12">
+        <button
+          type="submit"
+          class="btn btn-primary col-md-5 mr-2 mb-2"
+          (click)="submit()"
+        >
           {{ labels.validate }}
         </button>
-        <button (click)="cancel()" class="btn btn-cancel">
+        <button (click)="cancel()" class="btn btn-cancel col-md-5 mr-2">
           {{ messages.cancel }}
         </button>
       </div>

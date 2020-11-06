@@ -1,513 +1,1325 @@
 <div class="card rectangle-custom">
-    <div class="card-body custom-card-message">
-        <mat-tab-group mat-align-tabs="start" [backgroundColor]="'primary'" [(selectedIndex)]="selectedTabIndex">
-            <mat-tab label="Informations">
-                <ng-template mat-tab-label id="info-tab">
-                    <i class="fas fa-info my-tab-icon pr-custom-11px"></i>
-                    <span> {{labels.info}}</span>
-                </ng-template>
-                <!-- Patient File information -->
-                <div class="card-body">
-                    <form [formGroup]="personalInfoForm">
-                        <div class="row">
-                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
-                                <!-- civility Field -->
-                                <label for="civility"
-                                    class="col-12 col-sm-12 col-form-label">{{ labels.civility }}</label>
-                                <div class="col-12 col-sm-12">
-                                    <select (change)="changeMaidenName()" formControlName="civility" id="civility"
-                                        class="form-control" [ngClass]="{
-                            'is-invalid': submitted && ctr.civility.errors
-                            }">
-                                        <option value="null" disabled="true" [selected]="true">{{ labels.civility }}
-                                        </option>
-                                        <option value="M">M</option>
-                                        <option value="MME">Mme</option>
-                                        <option value="CHILD">Enfant</option>
-                                    </select>
-                                    <div *ngIf="submitted && ctr.civility.errors" class="invalid-feedback">
-                                        <div *ngIf="ctr.civility.errors.required">
-                                            {{ errors.required }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
-                                <!-- last name Field -->
-                                <label for="last_name"
-                                    class="col-12 col-sm-12 col-form-label">{{ labels.last_name }}</label>
-                                <div class="col-12 col-sm-12">
-                                    <input type="text" formControlName="lastName" id="last-name"
-                                        [ngClass]="{ 'is-invalid': submitted && ctr.lastName.errors }"
-                                        class="form-control" id="lastName" />
-                                    <div *ngIf="submitted && ctr.lastName.errors" class="invalid-feedback">
-                                        <div *ngIf="ctr.lastName.errors.required">
-                                            {{ errors.required }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
-                                <!-- first name Field -->
-                                <label for="firstName"
-                                    class="col-12 col-sm-12  col-form-label">{{ labels.first_name }}</label>
-                                <div class="col-12 col-sm-12">
-                                    <input [ngClass]="{
-                               'is-invalid': submitted && ctr.firstName.errors
-                               }" type="text" formControlName="firstName" class="form-control" id="first-name" />
-                                    <div *ngIf="submitted && ctr.firstName.errors" class="invalid-feedback">
-                                        <div *ngIf="ctr.firstName.errors.required">
-                                            {{ errors.required }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <!-- maidenName  Field -->
-                        <div class="row" *ngIf="displayMaidenName">
-                            <div class="col pr-0 pl-0">
-                                <label for="maidenName"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.maiden_name }}</label>
-                                <div class="col-12">
-                                    <input type="text" formControlName="maidenName" class="form-control"
-                                        id="maidenName" />
-                                </div>
-                            </div>
-                        </div>
-                        <br *ngIf="displayMaidenName">
-                        <div class="row">
-                            <div class="col-12 col-sm-5 pr-0 pl-0">
-                                <label for="birthday"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.birthday }}</label>
-                                <div class="col-12">
-                                    <input type="text" formControlName="birthday" class="form-control"
-                                        placeholder="{{ labels.birth_date }}" bsDatepicker [maxDate]="maxDatecheck()"
-                                        [placement]="placement" [bsConfig]="{ containerClass: 'theme-dark-blue' }"
-                                        [ngClass]="{ 'is-invalid': submitted && ctr.birthday.errors }"
-                                        (change)="isInvalidDate($event)" />
-                                    <div *ngIf="submitted && ctr.birthday.errors" class="invalid-feedback">
-                                        <div *ngIf="ctr.birthday.errors.required">
-                                            {{ errors.required }}
-                                        </div>
-                                    </div>
-                                    <div *ngIf="isFutureDate" class="invalid-feedback">
-                                        <div>
-                                            {{ errors.futureDate }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Email Field -->
-                            <div class="col-12 col-sm-7 pr-0 pl-0">
-                                <label for="email"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._email_address }}
-                                    (*)</label>
-                                <div class="col-12">
-                                    <input type="text" formControlName="email" class="form-control" id="email"
-                                        [ngClass]="{ 'is-invalid': submitted && personalInfoForm.errors }" />
-                                    <div *ngIf="personalInfoForm.errors?.requiredValidator" class="invalid-feedback">
-                                        {{ errors.required }}
-                                    </div>
-                                    <div *ngIf="submitted && ctr.email.errors" class="invalid-feedback">
-                                        <div *ngIf="ctr.email.errors.email">
-                                            {{ errors.email_invalid_format }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <!-- Phone number -->
-                        <div class="row">
-                            <div class="col col-12 pr-0 pl-0">
-                                <div class="col-12 col-form-label">{{ labels.phone }}</div>
-                                <div class="col-12 row">
-                                    <div class="col-10 col-sm-11">
-                                        <international-phone-number *ngIf="!isAdd" class="form-control" id="phoneNumber"
-                                            formControlName="phoneNumber" placeholder="Téléphone ou fixe *"
-                                            [maxlength]="20" name="phoneNumber" [defaultCountry]=" '' " [ngClass]="{
-                               'is-invalid': submitted && personalInfoForm.errors
-                               }">
-                                        </international-phone-number>
-                                        <international-phone-number *ngIf="isAdd" class="form-control" id="phoneNumber"
-                                            formControlName="phoneNumber" placeholder="Téléphone ou fixe *"
-                                            [maxlength]="20" name="phoneNumber" [defaultCountry]="'fr'" [ngClass]="{
-                               'is-invalid': submitted && personalInfoForm.errors
-                               }">
-                                        </international-phone-number>
-                                        <div *ngIf="personalInfoForm.errors?.requiredValidator"
-                                            class="invalid-feedback">
-                                            {{ errors.required }}
-                                        </div>
-                                        <div *ngIf="ctr.phoneNumber.invalid && ctr.phoneNumber.touched"
-                                            class="invalid-feedback">
-                                            {{ errors.invalid_phone }}
-                                        </div>
-                                    </div>
-                                    <div class="col-1 col-sm-1">
-                                        <button (click)="addPhone()" class="btn btn-xs btn-icon" id="add-phone-button">
-                                            <i class="far fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col col-12 pr-0 pl-0">
-                                <!-- Other Phones -->
-                                <div *ngIf="isLabelShow" class="col-12 col-form-label">
-                                    {{ labels.other_phone }}
-                                </div>
-                                <div class="col-12 col-sm-12">
-                                    <int-phone [editList]="otherPhones" (phones)="getPhoneList($event)"
-                                        [addnewPhone]="addnewPhone" (validPhones)="submitPhones($event)"
-                                        id="other-phones">
-                                    </int-phone>
-                                </div>
-                            </div>
-                        </div>
-                        <br *ngIf="isLabelShow" />
-                        <!-- address Field -->
-                        <div class=" row">
-                            <div class="col pr-0 pl-0">
-                                <label for="address"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._address }}</label>
-                                <div class="col-12">
-                                    <input type="text" formControlName="address" class="form-control" id="address" />
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <!-- additional address Field -->
-                        <div class=" row">
-                            <div class="col pr-0 pl-0">
-                                <label for="additionalAddress"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.additional_address }}</label>
-                                <div class="col-12 col-sm-12">
-                                    <input type="text" formControlName="additionalAddress" class="form-control"
-                                        id="additionalAddress" />
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-12 col-sm-5 pr-0 pl-0">
-                                <!-- zipcode Field -->
-                                <label for="zipCode"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._zip_code }}</label>
-                                <div class="col-12">
-                                    <input type="text" formControlName="zipCode" class="form-control" id="zipCode" />
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-7 pr-0 pl-0">
-                                <!-- city Field -->
-                                <label for="city"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels._city }}</label>
-                                <div class="col-12">
-                                    <input type="text" formControlName="city" class="form-control" id="city" />
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col pr-0 pl-0">
-                                <label for="category"
-                                    class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label">{{ labels.category }}</label>
-                                <div class="col-12 col-sm-12">
-                                    <select data-live-search="true" formControlName="category"
-                                        data-none-results-text="Aucune catégorie" class="selectpicker form-control"
-                                        data-container="body" id="category">
-                                        <option value="null" disabled="true">
-                                            Aucune catégorie
-                                        </option>
-                                        <option *ngFor="let item of categories" value="{{ item.id }}" [selected]="
-                                            personalInfoForm.controls.category.value == item.id
-                                          ">{{ item.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <div *ngIf="isAdd " class="row send-invitation">
-                            <label for="invitationStatus" class=" invitation-text  ">
-                                <input type="checkbox" formControlName="invitationStatus"
-                                    (change)="onCheckboxChange($event)" />&nbsp;&nbsp;
-                                {{ labels.send_invitation }}</label>
-                        </div>
-                        <br *ngIf="isAdd ">
-                        <div class="row justify-content-left">
-                            <div class="col-md-12">
-                                <button class="btn btn-primary col-md-4 mr-4" id="submit-info-button"
-                                    (click)="patientSubmit()">{{ labels.save }}
-                                </button>
-                                <button (click)="cancelActionClicked()" class="btn btn-cancel col-md-4"
-                                    id="cancel-button">
-                                    {{ labels.cancel }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <br>
-                    <!-- Linked Patients -->
-                    <div class="card-body" *ngIf="!isAdd && personalInfoForm.value.patientId != null">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <i class="far fa-user-plus fa-icon"></i>
-                            <span class="Mes-informations">{{ labels.attached_info }}
-                            </span>
-                        </div>
-                        <br />
-                        <div *ngIf="!isList" class="card-body Rectangle-body">
-                            <div class="col-md-12">
-                                <form [formGroup]="attachedInfoForm">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-2">
-                                            <div class="col-12 col-sm-2 image-container-attached text-center">
-                                                <img [src]="attachedImageSource" class="profile-picture" />
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-10">
-                                            <div class="row">
-                                                <!-- Last name -->
-                                                <div class="col col-12 col-sm-6 ">
-                                                    <label class="col-12 col-form-label">{{ labels.last_name}}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="lastName"
-                                                            class="form-control" id="attached-last-name" />
-                                                    </div>
-                                                </div>
-                                                <!-- First name -->
-                                                <div class="col col-12 col-sm-6 ">
-                                                    <label class="col-12 col-form-label">{{labels.first_name }}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="firstName"
-                                                            class="form-control" id="attached-frist-name" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <div class="row">
-                                                <!-- Civility -->
-                                                <div class="col col-12 col-sm-6">
-                                                    <div class="col-12 col-form-label">{{labels.civility}}</div>
-                                                    <div class="col-12">
-                                                        <input formControlName="civility" class="form-control"
-                                                            id="attached-civility" />
-                                                    </div>
-                                                </div>
-                                                <!-- Birthdate -->
-                                                <div class="col col-12 col-sm-6">
-                                                    <div class="col-12 col-form-label">{{labels.birthday}}</div>
-                                                    <div class="col-12 input-icons">
-                                                        <i class="fa fa-calendar icon"></i>
-                                                        <input type="text" formControlName="birthday"
-                                                            class="calender form-control"
-                                                            placeholder="{{ attachedInfoForm.controls.birthday.value }}"
-                                                            (change)="isInvalidDate($event)" bsDatepicker
-                                                            [bsConfig]="{ containerClass: 'theme-dark-blue' }"
-                                                            id="attached-birthdate" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <!-- Maiden name -->
-                                            <div class="row" *ngIf="displayMaidenName">
-                                                <div class="col col-12 col-sm-12">
-                                                    <label
-                                                        class="col-12 col-form-label">{{ labels.maiden_name }}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="maidenName"
-                                                            class="form-control" id="attached-maiden-name" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br *ngIf="displayMaidenName">
-                                            <div class="row">
-                                                <!-- Correspondance field -->
-                                                <div class="col col-12 col-sm-12">
-                                                    <label
-                                                        class="col-12 col-form-label">{{ labels.correspondence }}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="correspondence"
-                                                            class="form-control" id="attached-correspondance" />
-                                                    </div>
-                                                </div>
-                                                <!-- Other Corresspondance field -->
-                                                <div class="col col-12 col-sm-6" *ngIf="displayOtherCorrespondence">
-                                                    <label for="otherCorrespondence"
-                                                        class="col-12 col-form-label">{{ labels.otherCorrespondence }}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="otherCorrespondence"
-                                                            class="form-control" id="attached-otherCorrespondence" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <!-- Address -->
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label class="col-12 col-form-label">{{ labels._address }}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="address"
-                                                            class="form-control" id="attached-address" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <!-- Additional Address -->
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label
-                                                        class="col-12 col-form-label">{{ labels.additional_address }}</label>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="additionalAddress"
-                                                            class="form-control" id="attached-additionalAddress" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <div class="row">
-                                                <!-- Zipcode -->
-                                                <div class="col-12 col-sm-4">
-                                                    <div class="col-12 col-form-label">{{ labels._zip_code }}</div>
-                                                    <div class="col-12">
-                                                        <input type="text" formControlName="zipCode"
-                                                            class="form-control" id="attached-zipCode" />
-                                                    </div>
-                                                </div>
-                                                <!-- City -->
-                                                <div class="col-12 col-sm-8">
-                                                    <div class="col-12 col-form-label">{{ labels._city }}</div>
-                                                    <div class="col-12 col-sm-12">
-                                                        <input type="text" formControlName="city" class="form-control"
-                                                            id="attached-city" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <!-- Phone number -->
-                                            <div class="row">
-                                                <div class="col col-12">
-                                                    <div class=" col-12 col-form-label">{{ labels.phone }}</div>
-                                                    <div class="col-12">
-                                                        <international-phone-number class="form-control disabled"
-                                                            formControlName="phoneNumber" [defaultCountry]="'fr'"
-                                                            placeholder="Téléphone ou fixe *" name="phoneNumber"
-                                                            id="attached-phone-number">
-                                                        </international-phone-number>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
-                                        <br>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <button (click)="cancel()" class="btn btn-cancel" id="cancel-add-button">
-                                            {{ labels.cancel }}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <br />
-                        <lib-hls-generic-list [isCheckbox]="false" [list]="attachedPatients" [imageSource]="imageSource"
-                            (cardAction)="cardClicked($event)" (detailAction)="cardClicked($event)">
-                        </lib-hls-generic-list>
+  <div class="card-body custom-card-message">
+    <mat-tab-group
+      mat-align-tabs="start"
+      [backgroundColor]="'primary'"
+      [(selectedIndex)]="selectedTabIndex"
+    >
+      <mat-tab label="Informations">
+        <ng-template mat-tab-label id="info-tab">
+          <i class="fas fa-info my-tab-icon pr-custom-11px"></i>
+          <span> {{ labels.info }}</span>
+        </ng-template>
+        <!-- Patient File information -->
+        <div class="card-body">
+          <form [formGroup]="personalInfoForm">
+            <div class="row">
+              <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
+                <!-- civility Field -->
+                <label for="civility" class="col-12 col-sm-12 col-form-label">{{
+                  labels.civility
+                }}</label>
+                <div class="col-12 col-sm-12">
+                  <select
+                    (change)="changeMaidenName()"
+                    formControlName="civility"
+                    id="civility"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.civility.errors
+                    }"
+                  >
+                    <option value="null" disabled="true" [selected]="true">
+                      {{ labels.civility }}
+                    </option>
+                    <option value="M">M</option>
+                    <option value="MME">Mme</option>
+                    <option value="CHILD">Enfant</option>
+                  </select>
+                  <div
+                    *ngIf="submitted && ctr.civility.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.civility.errors.required">
+                      {{ errors.required }}
                     </div>
+                  </div>
                 </div>
-            </mat-tab>
-            <!-- Notes -->
-            <mat-tab label="Notes" *ngIf="!isAdd">
-                <ng-template mat-tab-label>
-                    <i class="fas fa-notes-medical my-tab-icon pr-custom-11px"></i>
-                    <span>{{labels.notes}}</span>
-                </ng-template>
-                <div class="card-body">
-                    <div class="row add-note">
-                        <button class="btn btn-success" (click)="addNote()">
-                            <i class="far fa-plus"></i>&nbsp;&nbsp;{{ labels.add_note }}
-                        </button>
+              </div>
+              <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
+                <!-- last name Field -->
+                <label
+                  for="last_name"
+                  class="col-12 col-sm-12 col-form-label"
+                  >{{ labels.last_name }}</label
+                >
+                <div class="col-12 col-sm-12">
+                  <input
+                    type="text"
+                    formControlName="lastName"
+                    id="last-name"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.lastName.errors
+                    }"
+                    class="form-control"
+                    id="lastName"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.lastName.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.lastName.errors.required">
+                      {{ errors.required }}
                     </div>
-                    <br>
-                    <div *ngIf="!isnoteList" class="card-body-note">
-                        <form [formGroup]="noteForm">
-                            <br>
-                            <div class="row">
-                                <div class="col-7">
-                                    <label for="date" class="col-12 col-form-label">{{ labels.note_date }}</label>
-                                    <div class="col-12 input-icons">
-                                        <i class="fa fa-calendar icon"></i>
-                                        <input type="text" formControlName="date" class="calender form-control"
-                                            bsDatepicker [bsConfig]="{
-          containerClass: 'theme-dark-blue',
-          dateInputFormat: 'DD/MM/YYYY'
-          }" [ngClass]="{
-          'is-invalid': noteSubmitted && f.date.errors
-          }" />
-                                        <div *ngIf="noteSubmitted && f.date.errors" class="invalid-feedback">
-                                            <div *ngIf="f.date.errors.required">
-                                                {{ errors.required }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 ">
-                                    <!-- Note Field -->
-                                    <label for="value" class="col-12 col-form-label">{{ labels.note_value }}</label>
-                                    <div class="col-12">
-                                        <textarea type="text" formControlName="value" class="form-control" [ngClass]="{
-             'is-invalid': noteSubmitted && f.value.errors
-             }">
-          </textarea>
-                                        <div *ngIf="noteSubmitted && f.value.errors" class="invalid-feedback">
-                                            <div *ngIf="f.value.errors.required">
-                                                {{ errors.required }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row justify-content-center actions">
-                                <button (click)="NoteSubmit()" class="btn btn-primary mr-3">
-                                    {{ labels.save }}
-                                </button>
-                                <button (click)="cancelNoteAdd()" class="btn btn-cancel">
-                                    {{ labels.cancel }}
-                                </button>
-                            </div>
-                            <br>
-                        </form>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
+                <!-- first name Field -->
+                <label
+                  for="firstName"
+                  class="col-12 col-sm-12 col-form-label"
+                  >{{ labels.first_name }}</label
+                >
+                <div class="col-12 col-sm-12">
+                  <input
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.firstName.errors
+                    }"
+                    type="text"
+                    formControlName="firstName"
+                    class="form-control"
+                    id="first-name"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.firstName.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.firstName.errors.required">
+                      {{ errors.required }}
                     </div>
-                    <br *ngIf="!isnoteList">
-                    <lib-hls-generic-list [imageSource]="noteimageSource" [isCheckbox]="false" [list]="noteList"
-                        (archieveAction)="archieveNote($event)" (cardAction)="noteCardClicked($event)"
-                        [caller]="'notes'">
-                    </lib-hls-generic-list>
+                  </div>
                 </div>
-            </mat-tab>
-            <!-- History -->
-            <mat-tab label="Historique" *ngIf="!isAdd">
-                <ng-template mat-tab-label>
-                    <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
-                    {{labels.history}}
-                </ng-template>
-                <div class="card-body justify-content-center">
-                    <lib-hlsMessagingList [list]=" filtredItemList" [hasPaging]="true"
-                        (cardAction)="messageClicked($event)" [imageSource]="imageSource" [hasPaging]="true">
-                    </lib-hlsMessagingList>
+              </div>
+            </div>
+            <br />
+            <!-- maidenName  Field -->
+            <div class="row" *ngIf="displayMaidenName">
+              <div class="col pr-0 pl-0">
+                <label
+                  for="maidenName"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels.maiden_name }}</label
+                >
+                <div class="col-12">
+                  <input
+                    type="text"
+                    formControlName="maidenName"
+                    class="form-control"
+                    id="maidenName"
+                  />
                 </div>
+              </div>
+            </div>
+            <br *ngIf="displayMaidenName" />
+            <div class="row">
+              <div class="col-12 col-sm-5 pr-0 pl-0">
+                <label
+                  for="birthday"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels.birthday }}</label
+                >
+                <div class="col-12">
+                  <input
+                    type="text"
+                    formControlName="birthday"
+                    class="form-control"
+                    placeholder="{{ labels.birth_date }}"
+                    bsDatepicker
+                    [maxDate]="maxDatecheck()"
+                    [placement]="placement"
+                    [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.birthday.errors
+                    }"
+                    (change)="isInvalidDate($event)"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.birthday.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.birthday.errors.required">
+                      {{ errors.required }}
+                    </div>
+                  </div>
+                  <div *ngIf="isFutureDate" class="invalid-feedback">
+                    <div>
+                      {{ errors.futureDate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Email Field -->
+              <div class="col-12 col-sm-7 pr-0 pl-0">
+                <label
+                  for="email"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels._email_address }} (*)</label
+                >
+                <div class="col-12">
+                  <input
+                    type="text"
+                    formControlName="email"
+                    class="form-control"
+                    id="email"
+                    [ngClass]="{
+                      'is-invalid': submitted && personalInfoForm.errors
+                    }"
+                  />
+                  <div
+                    *ngIf="personalInfoForm.errors?.requiredValidator"
+                    class="invalid-feedback"
+                  >
+                    {{ errors.required }}
+                  </div>
+                  <div
+                    *ngIf="submitted && ctr.email.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.email.errors.email">
+                      {{ errors.email_invalid_format }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <!-- Phone number for popup -->
+            <div class="row" *ngIf="disabled">
+              <div class="col pr-0 pl-0">
+                <div class="col-12 col-form-label">{{ labels.phone }}</div>
+                <div class="col-12">
+                  <international-phone-number
+                    class="form-control disabled"
+                    id="phoneNumber"
+                    formControlName="phoneNumber"
+                    placeholder="Téléphone ou fixe *"
+                    [maxlength]="20"
+                    name="phoneNumber"
+                    [defaultCountry]="''"
+                  >
+                  </international-phone-number>
+                </div>
+              </div>
+            </div>
+            <!-- Phone number -->
+            <div class="row" *ngIf="!disabled">
+              <div class="col col-12 pr-0 pl-0">
+                <div class="col-12 col-form-label">{{ labels.phone }}</div>
+                <div class="col-12 row">
+                  <div class="col-10 col-sm-11">
+                    <international-phone-number
+                      *ngIf="!isAdd"
+                      class="form-control"
+                      id="phoneNumber"
+                      formControlName="phoneNumber"
+                      placeholder="Téléphone ou fixe *"
+                      [maxlength]="20"
+                      name="phoneNumber"
+                      [defaultCountry]="''"
+                      [ngClass]="{
+                        'is-invalid': submitted && personalInfoForm.errors
+                      }"
+                    >
+                    </international-phone-number>
+                    <international-phone-number
+                      *ngIf="isAdd"
+                      class="form-control"
+                      id="phoneNumber"
+                      formControlName="phoneNumber"
+                      placeholder="Téléphone ou fixe *"
+                      [maxlength]="20"
+                      name="phoneNumber"
+                      [defaultCountry]="'fr'"
+                      [ngClass]="{
+                        'is-invalid': submitted && personalInfoForm.errors
+                      }"
+                    >
+                    </international-phone-number>
+                    <div
+                      *ngIf="personalInfoForm.errors?.requiredValidator"
+                      class="invalid-feedback"
+                    >
+                      {{ errors.required }}
+                    </div>
+                    <div
+                      *ngIf="ctr.phoneNumber.invalid && ctr.phoneNumber.touched"
+                      class="invalid-feedback"
+                    >
+                      {{ errors.invalid_phone }}
+                    </div>
+                  </div>
+                  <div class="col-1 col-sm-1">
+                    <button
+                      (click)="addPhone()"
+                      class="btn btn-xs btn-icon"
+                      id="add-phone-button"
+                    >
+                      <i class="far fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col col-12 pr-0 pl-0">
+                <!-- Other Phones -->
+                <div *ngIf="isLabelShow" class="col-12 col-form-label">
+                  {{ labels.other_phone }}
+                </div>
+                <div class="col-12 col-sm-12">
+                  <int-phone
+                    [editList]="otherPhones"
+                    (phones)="getPhoneList($event)"
+                    [addnewPhone]="addnewPhone"
+                    (validPhones)="submitPhones($event)"
+                    id="other-phones"
+                    [ngClass]="{ 'phones-disabled': disabled }"
+                  >
+                  </int-phone>
+                </div>
+              </div>
+            </div>
+            <br *ngIf="isLabelShow" />
+            <!-- address Field -->
+            <div class="row">
+              <div class="col pr-0 pl-0">
+                <label
+                  for="address"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels._address }}</label
+                >
+                <div class="col-12">
+                  <input
+                    type="text"
+                    formControlName="address"
+                    class="form-control"
+                    id="address"
+                  />
+                </div>
+              </div>
+            </div>
+            <br />
+            <!-- additional address Field -->
+            <div class="row">
+              <div class="col pr-0 pl-0">
+                <label
+                  for="additionalAddress"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels.additional_address }}</label
+                >
+                <div class="col-12 col-sm-12">
+                  <input
+                    type="text"
+                    formControlName="additionalAddress"
+                    class="form-control"
+                    id="additionalAddress"
+                  />
+                </div>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col-12 col-sm-5 pr-0 pl-0">
+                <!-- zipcode Field -->
+                <label
+                  for="zipCode"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels._zip_code }}</label
+                >
+                <div class="col-12">
+                  <input
+                    type="text"
+                    formControlName="zipCode"
+                    class="form-control"
+                    id="zipCode"
+                  />
+                </div>
+              </div>
+              <div class="col-12 col-sm-7 pr-0 pl-0">
+                <!-- city Field -->
+                <label
+                  for="city"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels._city }}</label
+                >
+                <div class="col-12">
+                  <input
+                    type="text"
+                    formControlName="city"
+                    class="form-control"
+                    id="city"
+                  />
+                </div>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col pr-0 pl-0">
+                <label
+                  for="category"
+                  class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
+                  >{{ labels.category }}</label
+                >
+                <div class="col-12 col-sm-12">
+                  <select
+                    data-live-search="true"
+                    formControlName="category"
+                    data-none-results-text="Aucune catégorie"
+                    class="selectpicker form-control"
+                    data-container="body"
+                    id="category"
+                  >
+                    <option value="null" disabled="true" [selected]="true">
+                      Aucune catégorie
+                    </option>
+                    <option
+                      *ngFor="let item of categoryList | async"
+                      [value]="item.id"
+                    >
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div *ngIf="isAdd" class="row send-invitation">
+              <label for="invitationStatus" class="invitation-text">
+                <input
+                  type="checkbox"
+                  formControlName="invitationStatus"
+                  (change)="onCheckboxChange($event)"
+                />&nbsp;&nbsp; {{ labels.send_invitation }}</label
+              >
+            </div>
+            <br *ngIf="isAdd" />
+            <div
+              id="buttons"
+              class="row justify-content-left"
+              *ngIf="!disabled"
+            >
+              <div class="col-md-12">
+                <button
+                  class="btn btn-primary col-md-4 mr-4"
+                  id="submit-info-button"
+                  (click)="patientSubmit()"
+                  [disabled]="click"
+                >
+                  {{ labels.save }}
+                </button>
+                <button
+                  (click)="cancelActionClicked()"
+                  class="btn btn-cancel col-md-4"
+                  id="cancel-button"
+                >
+                  {{ labels.cancel }}
+                </button>
+              </div>
+            </div>
+          </form>
+          <br />
+          <!-- Linked Patients -->
+          <div class="card-body" *ngIf="!isAdd">
+            <div class="row">
+              <div class="col">
+                <i class="far fa-user-plus fa-icon"></i>
+                <span class="Mes-informations"
+                  >{{ labels.attached_info }}
+                </span>
+              </div>
+              <div class="col" *ngIf="!disabled">
+                <button
+                  (click)="addPerson()"
+                  class="btn btn-primary float-right"
+                  id="add-attached-button"
+                >
+                  <i class="fal fa-user-plus">&nbsp;&nbsp;</i
+                  >{{ labels.link_patient }}
+                </button>
+              </div>
+            </div>
+            <!-- Add Linked Patient -->
+            <div class="card-body pl-0 pr-0" *ngIf="isAddPatient">
+              <form [formGroup]="addAttachedInfoForm">
+                <div class="row">
+                  <div class="col-12 col-sm-2">
+                    <div
+                      class="col-12 col-sm-2 image-container-attached text-center"
+                    >
+                      <img
+                        [src]="
+                          attachedImageSource
+                            ? attachedImageSource
+                            : 'assets/imgs/avatar_homme.svg'
+                        "
+                        class="profile-picture"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <div class="row">
+                      <!-- Last name -->
+                      <div class="col col-12 col-sm-6">
+                        <label class="col-12 col-form-label">{{
+                          labels.last_name
+                        }}</label>
+                        <div class="col-12 pr-0">
+                          <input
+                            type="text"
+                            formControlName="lastName"
+                            class="form-control"
+                            id="last-Name-Attached"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientSubmitted && f1.lastName.errors
+                            }"
+                          />
+                          <div
+                            *ngIf="patientSubmitted && f1.lastName.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f1.lastName.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- First name -->
+                      <div class="col col-12 col-sm-6">
+                        <label class="col-12 col-form-label">{{
+                          labels.first_name
+                        }}</label>
+                        <div class="col-12 pl-0">
+                          <input
+                            formControlName="firstName"
+                            type="text"
+                            class="form-control"
+                            id="first-Name-Attached"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientSubmitted && f1.firstName.errors
+                            }"
+                          />
+                          <div
+                            *ngIf="patientSubmitted && f1.firstName.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f1.firstName.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <!-- Civility -->
+                      <div class="col col-12 col-sm-6">
+                        <div class="col-12 col-form-label">
+                          {{ labels.civility }}
+                        </div>
+                        <div class="col-12 pr-0">
+                          <select
+                            id="attached-civility"
+                            class="form-control"
+                            formControlName="civility"
+                            (change)="
+                              changeMaidenName2(
+                                addAttachedInfoForm.value.civility
+                              )
+                            "
+                            id="civility-attached"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientSubmitted && f1.civility.errors
+                            }"
+                          >
+                            <option
+                              [value]="null"
+                              disabled="true"
+                              [selected]="true"
+                            >
+                              {{ labels.civility }}
+                            </option>
+                            <option
+                              *ngFor="let item of civilityList"
+                              value="{{ item }}"
+                            >
+                              {{ item | civility }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="patientSubmitted && f1.civility.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f1.civility.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Birthdate -->
+                      <div class="col col-12 col-sm-6">
+                        <div class="col-12 col-form-label">
+                          {{ labels.birthday }}
+                        </div>
+                        <div class="col-12 pl-0 input-icons">
+                          <i class="fa fa-calendar icon"></i>
+                          <input
+                            type="text"
+                            formControlName="birthday"
+                            class="calender form-control"
+                            id="attached-birthdate"
+                            placeholder="   {{ labels.birthday }}"
+                            bsDatepicker
+                            [placement]="placement"
+                            [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientSubmitted && f1.birthday.errors
+                            }"
+                            (change)="isInvalidDate($event)"
+                          />
+                          <div
+                            *ngIf="patientSubmitted && f1.birthday.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f1.birthday.errors.required">
+                              {{ errors.required }}
+                            </div>
+                            <div *ngIf="f1.birthday.errors.dateVaidator">
+                              {{ errors.futureDate }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <!-- Maiden name -->
+                    <div class="row" *ngIf="displayMaidenName2">
+                      <div class="col col-12 col-sm-12">
+                        <label class="col-12 col-form-label">{{
+                          labels.maiden_name
+                        }}</label>
+                        <div class="col-12 pr-0">
+                          <input
+                            type="text"
+                            formControlName="maidenName"
+                            class="form-control"
+                            id="attached-maiden-name"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br *ngIf="displayMaidenName2" />
+                    <div class="row">
+                      <!-- Correspondance field -->
+                      <div class="col col-12 col-sm-12">
+                        <label class="col-12 col-form-label">{{
+                          labels.correspondence
+                        }}</label>
+                        <div class="col-12">
+                          <select
+                            (change)="
+                              changeCorrespondance(
+                                addAttachedInfoForm.value.correspondence
+                              )
+                            "
+                            formControlName="correspondence"
+                            class="form-control"
+                            id="attached-correspondance"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientSubmitted && f1.correspondence.errors
+                            }"
+                          >
+                            <option
+                              value="null"
+                              disabled="true"
+                              [selected]="true"
+                            >
+                              {{ labels.correspondence }}
+                            </option>
+                            <option
+                              *ngFor="let item of correspondenceList"
+                              value="{{ item }}"
+                            >
+                              {{ item | correspondence }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="patientSubmitted && f1.correspondence.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f1.correspondence.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                      <!-- Other Corresspondance field -->
+                      <div
+                        class="col col-12 col-sm-12"
+                        *ngIf="displayOtherCorrespondence"
+                      >
+                        <label
+                          for="otherCorrespondence"
+                          class="col-12 col-form-label"
+                          >{{ labels.otherCorrespondence }}</label
+                        >
+                        <div class="col-12">
+                          <input
+                            type="text"
+                            formControlName="otherCorrespondence"
+                            class="form-control"
+                            id="attached-otherCorrespondence"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br *ngIf="displayOtherCorrespondence" />
+                    <!-- Address -->
+                    <div class="row">
+                      <div class="col">
+                        <label class="col-12 col-form-label">{{
+                          labels._address
+                        }}</label>
+                        <div class="col-12">
+                          <input
+                            type="text"
+                            formControlName="address"
+                            class="form-control"
+                            id="attached-address"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <!-- Additional Address -->
+                    <div class="row">
+                      <div class="col">
+                        <label class="col-12 col-form-label">{{
+                          labels.additional_address
+                        }}</label>
+                        <div class="col-12">
+                          <input
+                            type="text"
+                            formControlName="additionalAddress"
+                            class="form-control"
+                            id="attached-additionalAddress"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <!-- Zipcode -->
+                      <div class="col-12 col-sm-4">
+                        <div class="col-12 col-form-label">
+                          {{ labels._zip_code }}
+                        </div>
+                        <div class="col-12 col-sm-12 pr-0">
+                          <input
+                            type="text"
+                            formControlName="zipCode"
+                            class="form-control"
+                            id="attached-zipCode"
+                          />
+                        </div>
+                      </div>
+                      <!-- City -->
+                      <div class="col-12 col-sm-8">
+                        <div class="col-12 col-form-label">
+                          {{ labels._city }}
+                        </div>
+                        <div class="col-12 col-sm-12 pl-0">
+                          <input
+                            type="text"
+                            formControlName="city"
+                            class="form-control"
+                            id="attached-city"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <!-- Phone number -->
+                    <div class="row">
+                      <div class="col col-12">
+                        <div class="col-12 col-form-label">
+                          {{ labels._phone }}
+                        </div>
+                        <div class="col-12">
+                          <international-phone-number
+                            class="form-control disabled"
+                            formControlName="phoneNumber"
+                            [defaultCountry]="'fr'"
+                            placeholder="Téléphone ou fixe *"
+                            name="phoneNumber"
+                            id="attached-phone-number"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientSubmitted && f1.phoneNumber.errors
+                            }"
+                          >
+                          </international-phone-number>
+                          <div
+                            *ngIf="
+                              f1.phoneNumber.invalid && f1.phoneNumber.touched
+                            "
+                            class="invalid-feedback"
+                          >
+                            {{ errors.invalid_phone }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                  </div>
+                  <br />
+                </div>
+                <div class="row justify-content-left">
+                  <div class="col-md-12">
+                    <button
+                      class="btn btn-primary col-md-4 mr-4"
+                      id="submit-info-button"
+                      (click)="attachedPatientSubmit()"
+                    >
+                      {{ labels.save }}
+                    </button>
+                    <button
+                      (click)="cancelAddPatient()"
+                      class="btn btn-cancel col-md-4"
+                      id="cancel-button"
+                    >
+                      {{ labels.cancel }}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <br />
+            <br />
+            <lib-hls-generic-list
+              [isCheckbox]="false"
+              [list]="attachedPatients"
+              [imageSource]="imageSource"
+              (cardAction)="cardClicked($event)"
+              (detailAction)="cardClicked($event)"
+            >
+            </lib-hls-generic-list>
+            <!-- Update Linked Patient -->
+            <div *ngIf="!isList" class="card-body pl-0 pr-0">
+              <form [formGroup]="attachedInfoForm">
+                <div class="row">
+                  <div class="col-12 col-sm-2">
+                    <div
+                      class="col-12 col-sm-2 image-container-attached text-center"
+                    >
+                      <img
+                        [src]="
+                          attachedImageSource
+                            ? attachedImageSource
+                            : 'assets/imgs/avatar_homme.svg'
+                        "
+                        class="profile-picture"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <div class="row">
+                      <!-- Last name -->
+                      <div class="col col-12 col-sm-6">
+                        <label class="col-12 col-form-label">{{
+                          labels.last_name
+                        }}</label>
+                        <div class="col-12 pr-0">
+                          <input
+                            type="text"
+                            formControlName="lastName"
+                            class="form-control"
+                            id="last-Name-Attached"
+                            [ngClass]="{
+                              'is-invalid': patientUpdated && f2.lastName.errors
+                            }"
+                          />
+                          <div
+                            *ngIf="patientUpdated && f2.lastName.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f2.lastName.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- First name -->
+                      <div class="col col-12 col-sm-6">
+                        <label class="col-12 col-form-label">{{
+                          labels.first_name
+                        }}</label>
+                        <div class="col-12 pl-0">
+                          <input
+                            formControlName="firstName"
+                            type="text"
+                            class="form-control"
+                            id="first-Name-Attached"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientUpdated && f2.firstName.errors
+                            }"
+                          />
+                          <div
+                            *ngIf="patientUpdated && f2.firstName.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f2.firstName.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <!-- Civility -->
+                      <div class="col col-12 col-sm-6">
+                        <div class="col-12 col-form-label">
+                          {{ labels.civility }}
+                        </div>
+                        <div class="col-12 pr-0">
+                          <select
+                            id="attached-civility"
+                            class="form-control"
+                            formControlName="civility"
+                            (change)="
+                              changeMaidenName2(attachedInfoForm.value.civility)
+                            "
+                            id="civility-attached"
+                            [ngClass]="{
+                              'is-invalid': patientUpdated && f2.civility.errors
+                            }"
+                          >
+                            <option
+                              [value]="null"
+                              disabled="true"
+                              [selected]="true"
+                            >
+                              {{ labels.civility }}
+                            </option>
+                            <option
+                              *ngFor="let item of civilityList"
+                              value="{{ item }}"
+                            >
+                              {{ item | civility }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="patientUpdated && f2.civility.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f2.civility.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Birthdate -->
+                      <div class="col col-12 col-sm-6">
+                        <div class="col-12 col-form-label">
+                          {{ labels.birthday }}
+                        </div>
+                        <div class="col-12 pl-0 input-icons">
+                          <i class="fa fa-calendar icon"></i>
+                          <input
+                            type="text"
+                            formControlName="birthday"
+                            class="calender form-control"
+                            id="attached-birthdate"
+                            placeholder="   {{ labels.birthday }}"
+                            bsDatepicker
+                            [placement]="placement"
+                            [bsConfig]="{ containerClass: 'theme-dark-blue' }"
+                            [ngClass]="{
+                              'is-invalid': patientUpdated && f2.birthday.errors
+                            }"
+                            (change)="isInvalidDate($event)"
+                          />
+                          <div
+                            *ngIf="patientUpdated && f2.birthday.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f2.birthday.errors.required">
+                              {{ errors.required }}
+                            </div>
+                            <div *ngIf="f2.birthday.errors.dateVaidator">
+                              {{ errors.futureDate }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <!-- Maiden name -->
+                    <div class="row" *ngIf="displayMaidenName2">
+                      <div class="col col-12 col-sm-12">
+                        <label class="col-12 col-form-label">{{
+                          labels.maiden_name
+                        }}</label>
+                        <div class="col-12 pr-0">
+                          <input
+                            type="text"
+                            formControlName="maidenName"
+                            class="form-control"
+                            id="attached-maiden-name"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br *ngIf="displayMaidenName2" />
+                    <div class="row">
+                      <!-- Correspondance field -->
+                      <div class="col col-12 col-sm-12">
+                        <label class="col-12 col-form-label">{{
+                          labels.correspondence
+                        }}</label>
+                        <div class="col-12">
+                          <select
+                            (change)="
+                              changeCorrespondance(
+                                attachedInfoForm.value.correspondence
+                              )
+                            "
+                            formControlName="correspondence"
+                            class="form-control"
+                            id="attached-correspondance"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientUpdated && f2.correspondence.errors
+                            }"
+                          >
+                            <option
+                              value="null"
+                              disabled="true"
+                              [selected]="true"
+                            >
+                              {{ labels.correspondence }}
+                            </option>
+                            <option
+                              *ngFor="let item of correspondenceList"
+                              value="{{ item }}"
+                            >
+                              {{ item | correspondence }}
+                            </option>
+                          </select>
+                          <div
+                            *ngIf="patientUpdated && f2.correspondence.errors"
+                            class="invalid-feedback"
+                          >
+                            <div *ngIf="f2.correspondence.errors.required">
+                              {{ errors.required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                      <!-- Other Corresspondance field -->
+                      <div
+                        class="col col-12 col-sm-12"
+                        *ngIf="displayOtherCorrespondence"
+                      >
+                        <label
+                          for="otherCorrespondence"
+                          class="col-12 col-form-label"
+                          >{{ labels.otherCorrespondence }}</label
+                        >
+                        <div class="col-12">
+                          <input
+                            type="text"
+                            formControlName="otherCorrespondence"
+                            class="form-control"
+                            id="attached-otherCorrespondence"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br *ngIf="displayOtherCorrespondence" />
+                    <!-- Address -->
+                    <div class="row">
+                      <div class="col">
+                        <label class="col-12 col-form-label">{{
+                          labels._address
+                        }}</label>
+                        <div class="col-12">
+                          <input
+                            type="text"
+                            formControlName="address"
+                            class="form-control"
+                            id="attached-address"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <!-- Additional Address -->
+                    <div class="row">
+                      <div class="col">
+                        <label class="col-12 col-form-label">{{
+                          labels.additional_address
+                        }}</label>
+                        <div class="col-12">
+                          <input
+                            type="text"
+                            formControlName="additionalAddress"
+                            class="form-control"
+                            id="attached-additionalAddress"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <!-- Zipcode -->
+                      <div class="col-12 col-sm-4">
+                        <div class="col-12 col-form-label">
+                          {{ labels._zip_code }}
+                        </div>
+                        <div class="col-12 col-sm-12 pr-0">
+                          <input
+                            type="text"
+                            formControlName="zipCode"
+                            class="form-control"
+                            id="attached-zipCode"
+                          />
+                        </div>
+                      </div>
+                      <!-- City -->
+                      <div class="col-12 col-sm-8">
+                        <div class="col-12 col-form-label">
+                          {{ labels._city }}
+                        </div>
+                        <div class="col-12 col-sm-12 pl-0">
+                          <input
+                            type="text"
+                            formControlName="city"
+                            class="form-control"
+                            id="attached-city"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <!-- Phone number -->
+                    <div class="row">
+                      <div class="col col-12">
+                        <div class="col-12 col-form-label">
+                          {{ labels._phone }}
+                        </div>
+                        <div class="col-12">
+                          <international-phone-number
+                            class="form-control disabled"
+                            formControlName="phoneNumber"
+                            [defaultCountry]="'fr'"
+                            placeholder="Téléphone ou fixe *"
+                            name="phoneNumber"
+                            id="attached-phone-number"
+                            [ngClass]="{
+                              'is-invalid':
+                                patientUpdated && f2.phoneNumber.errors
+                            }"
+                          >
+                          </international-phone-number>
+                          <div
+                            *ngIf="
+                              f2.phoneNumber.invalid && f2.phoneNumber.touched
+                            "
+                            class="invalid-feedback"
+                          >
+                            {{ errors.invalid_phone }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                  </div>
+                  <br />
+                </div>
+                <div class="row justify-content-left" *ngIf="!disabled">
+                  <div class="col-md-12">
+                    <button
+                      class="btn btn-primary col-md-4 mr-4"
+                      id="submit-info-button"
+                      (click)="attachedPatientupdate()"
+                    >
+                      {{ labels.save }}
+                    </button>
+                    <button
+                      (click)="cancelUpdatePatient()"
+                      class="btn btn-cancel col-md-4"
+                      id="cancel-button"
+                    >
+                      {{ labels.cancel }}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <!-- Notes -->
+      <mat-tab label="Notes" *ngIf="!isAdd && !disabled">
+        <ng-template mat-tab-label>
+          <i class="fas fa-notes-medical my-tab-icon pr-custom-11px"></i>
+          <span>{{ labels.notes }}</span>
+        </ng-template>
+        <div class="card-body">
+          <div class="row add-note">
+            <button class="btn btn-success" (click)="addNote()">
+              <i class="far fa-plus"></i>&nbsp;&nbsp;{{ labels.add_note }}
+            </button>
+          </div>
+          <br />
+          <div *ngIf="!isnoteList" class="card-body-note">
+            <form [formGroup]="noteForm">
+              <br />
+              <div class="row">
+                <div class="col-7">
+                  <label for="date" class="col-12 col-form-label">{{
+                    labels.note_date
+                  }}</label>
+                  <div class="col-12 input-icons">
+                    <i class="fa fa-calendar icon"></i>
+                    <input
+                      type="text"
+                      formControlName="date"
+                      class="calender form-control"
+                      bsDatepicker
+                      [bsConfig]="{
+                        containerClass: 'theme-dark-blue',
+                        dateInputFormat: 'DD/MM/YYYY'
+                      }"
+                      [ngClass]="{
+                        'is-invalid': noteSubmitted && f.date.errors
+                      }"
+                    />
+                    <div
+                      *ngIf="noteSubmitted && f.date.errors"
+                      class="invalid-feedback"
+                    >
+                      <div *ngIf="f.date.errors.required">
+                        {{ errors.required }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <!-- Note Field -->
+                  <label for="value" class="col-12 col-form-label">{{
+                    labels.note_value
+                  }}</label>
+                  <div class="col-12">
+                    <textarea
+                      type="text"
+                      formControlName="value"
+                      class="form-control"
+                      [ngClass]="{
+                        'is-invalid': noteSubmitted && f.value.errors
+                      }"
+                    >
+                    </textarea>
+                    <div
+                      *ngIf="noteSubmitted && f.value.errors"
+                      class="invalid-feedback"
+                    >
+                      <div *ngIf="f.value.errors.required">
+                        {{ errors.required }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div class="row justify-content-center actions">
+                <button
+                  (click)="NoteSubmit()"
+                  class="btn btn-primary col-md-4 mr-3"
+                >
+                  {{ labels.save }}
+                </button>
+                <button
+                  (click)="cancelNoteAdd()"
+                  class="btn btn-cancel col-md-4"
+                >
+                  {{ labels.cancel }}
+                </button>
+              </div>
+              <br />
+            </form>
+          </div>
+          <br *ngIf="!isnoteList" />
+          <lib-hls-generic-list
+            [imageSource]="noteimageSource"
+            [isCheckbox]="false"
+            [list]="noteList"
+            (archieveAction)="archieveNote($event)"
+            (cardAction)="noteCardClicked($event)"
+            [caller]="'notes'"
+          >
+          </lib-hls-generic-list>
+        </div>
+      </mat-tab>
+      <!-- History -->
+      <mat-tab label="Historique" *ngIf="!isAdd && !disabled">
+        <ng-template mat-tab-label>
+          <i class="fas fa-history my-tab-icon pr-custom-11px"></i>
+          {{ labels.history }}
+        </ng-template>
+        <div
+          class="card-body justify-content-center"
+          [ngClass]="popup ? 'without-click' : ''"
+        >
+          <lib-hlsMessagingList
+            [list]="filtredItemList"
+            [hasPaging]="true"
+            (cardAction)="messageClicked($event)"
+            [imageSource]="imageSource"
+            [hasPaging]="true"
+            [isCheckbox]="isCheckbox"
+          >
+          </lib-hlsMessagingList>
+        </div>
 
-                <div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
-                    (scrolled)="onScroll()"></div>
-                <mat-progress-spinner *ngIf="scroll" diameter="20" mode="indeterminate" value="100">
-                </mat-progress-spinner>
-            </mat-tab>
-        </mat-tab-group>
-    </div>
+        <div
+          class="search-results"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          (scrolled)="onScroll()"
+        ></div>
+        <mat-progress-spinner
+          *ngIf="scroll"
+          diameter="20"
+          mode="indeterminate"
+          value="100"
+        >
+        </mat-progress-spinner>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

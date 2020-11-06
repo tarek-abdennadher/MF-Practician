@@ -3,47 +3,97 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { GlobalService } from "@app/core/services/global.service";
 import { Observable } from "rxjs";
 import { Message } from "@app/shared/models/message";
-import { OrderDirection } from '@app/shared/enmus/order-direction';
+import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessageService {
-  constructor(private globalService: GlobalService) { }
+  constructor(private globalService: GlobalService) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   sentMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
     let params = {};
     if (pageNo && order) {
-      params = { params: { 'pageNo': pageNo, 'order': order } }
+      params = { params: { pageNo: pageNo, order: order } };
     }
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.sentMessage, params
+      this.globalService.url.sentMessage,
+      params
     );
   }
 
-  forwardedMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
+  sentMessageFullSize(): Observable<Array<Message>> {
+    let params = {};
+    params = { params: { pageSize: 1000000 } };
+
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.forwardedMessage, {
-      params: { 'pageNo': pageNo, 'order': order }
+      this.globalService.url.sentMessage,
+      params
+    );
+  }
+
+  sentFirstMessage(
+    listSize: number,
+    pageNo?,
+    order?: OrderDirection
+  ): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo && order) {
+      params = { params: { pageNo: pageNo, order: order } };
     }
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.sentMessage + "/listSize/" + listSize,
+      params
+    );
+  }
+
+  forwardedMessage(
+    pageNo?,
+    order?: OrderDirection
+  ): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo != undefined && order != undefined) {
+      params = { params: { pageNo: pageNo, order: order } };
+    }
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.forwardedMessage,
+      params
+    );
+  }
+
+  forwardedFirstMessage(
+    listSize: number,
+    pageNo?,
+    order?: OrderDirection
+  ): Observable<Array<Message>> {
+    let params = {};
+    if (pageNo && order) {
+      params = { params: { pageNo: pageNo, order: order } };
+    }
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.forwardedMessage + "/listSize/" + listSize,
+      params
     );
   }
 
   countForwardedMessage(): Observable<number> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + 'countForwarded'
+      this.globalService.url.messages + "countForwarded"
     );
   }
 
   countSentMessage(): Observable<number> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.messages + 'countSentInBox'
+      this.globalService.url.messages + "countSentInBox"
     );
   }
 
@@ -54,7 +104,7 @@ export class MessageService {
       formData,
       {
         reportProgress: true,
-        responseType: "text"
+        responseType: "text",
       }
     );
   }
@@ -65,7 +115,13 @@ export class MessageService {
       formData
     );
   }
-
+  replyMessageToContact(data, patientFileId): Observable<any> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.message + "/contact/" + patientFileId,
+      data
+    );
+  }
   sendMessage(message: Message): Observable<Message> {
     return this.globalService.call(
       RequestType.POST,

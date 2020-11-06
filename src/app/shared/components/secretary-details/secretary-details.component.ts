@@ -53,9 +53,11 @@ export class SecretaryDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.getSecretary(params["id"]);
+      this.getSecretary(this.featureService.decrypt(params["id"]));
     });
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
   }
   initInfoForm() {
     this.infoForm = new FormGroup({

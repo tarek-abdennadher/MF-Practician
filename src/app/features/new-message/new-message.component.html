@@ -2,7 +2,7 @@
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
     <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
-    &nbsp;<span>{{ notificationData.message }}</span>
+    &nbsp;<span class="information-text">{{ notificationData.message }}</span>
   </div>
 </ng-template>
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
@@ -19,10 +19,10 @@
     class="row mb-2"
     *ngIf="messageTypesList && messageTypesList.length !== 0"
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">Type</label>
+    <div class="col-md-2 col-sm-2 col-3">
+      <label class="label">Type :</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="type-dropdown"
         [data]="messageTypesList"
@@ -58,10 +58,10 @@
 
   <!-- To List DropDown-->
   <div class="row mb-2">
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">À</label>
+    <div class="col-md-2 col-sm-2 col-3">
+      <label class="label">À : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="to-dropdown"
         [data]="toListParsed"
@@ -97,10 +97,10 @@
 
   <!-- CC List DropDown-->
   <div class="row mb-2" *ngIf="isCCListVisible">
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">CC</label>
+    <div class="col-md-2 col-sm-2 col-3">
+      <label class="label">CC : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="cc-dropdown"
         [data]="ccParsedList"
@@ -140,10 +140,10 @@
       isForListVisible
     "
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">Pour</label>
+    <div class="col-md-2 col-sm-2 col-3">
+      <label class="label">Pour : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="for-dropdown"
         [data]="forFilteredList"
@@ -183,10 +183,10 @@
       !isInstruction
     "
   >
-    <div class="col-md-1 col-sm-2 col-2">
+    <div class="col-md-2 col-sm-2 col-3">
       <label class="label">{{ texts.concerns }}</label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="concern-dropdown"
         [data]="concernFilteredList"
@@ -227,10 +227,10 @@
     class="row mb-4"
     *ngIf="(contactType && !isSecretary()) || isInstruction"
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label">{{ texts.object }}</label>
+    <div class="col-md-2 col-sm-2 col-3">
+      <label class="label">{{ texts.object }} : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <angular2-multiselect
         id="objects-dropdown"
         [data]="objectsList"
@@ -271,10 +271,10 @@
       (otherObject || !contactType || (isSecretary() && contactType) || newFlag)
     "
   >
-    <div class="col-md-1 col-sm-2 col-2">
-      <label class="label-free-object">{{ texts.free_object }}</label>
+    <div class="col-md-2 col-sm-2 col-3">
+      <label class="label-free-object">{{ texts.object }} : </label>
     </div>
-    <div class="col-md-10 col-sm-9 col-10">
+    <div class="col-md-10 col-sm-10 col-9">
       <input
         formControlName="freeObject"
         class="form-control"
@@ -294,7 +294,7 @@
   </div>
   <hr />
   <!-- body with no document-->
-  <div class="row mb-2" *ngIf="!ctr.document.value">
+  <div class="row mb-2" *ngIf="!ctr.documentBody.value">
     <div class="col-md-12">
       <lib-hls-ckeditor
         id="body"
@@ -314,7 +314,7 @@
   </div>
 
   <!-- body with document-->
-  <mat-tab-group headerPosition="below" *ngIf="ctr.document.value">
+  <mat-tab-group headerPosition="below" *ngIf="ctr.documentBody.value">
     <mat-tab label="Message">
       <div class="row mb-2">
         <div class="col-md-12">
@@ -339,14 +339,14 @@
         <div class="col-md-12">
           <lib-hls-ckeditor
             [ngClass]="{
-              'is-invalid': submited && ctr.document.errors,
-              invalid: submited && ctr.document.errors
+              'is-invalid': submited && ctr.documentBody.errors,
+              invalid: submited && ctr.documentBody.errors
             }"
-            [ctrl]="ctr.document"
+            [ctrl]="ctr.documentBody"
           >
           </lib-hls-ckeditor>
-          <div *ngIf="ctr.document.errors" class="invalid-feedback">
-            <div *ngIf="ctr.document.errors.required">
+          <div *ngIf="ctr.documentBody.errors" class="invalid-feedback">
+            <div *ngIf="ctr.documentBody.errors.required">
               {{ texts.required }}
             </div>
           </div>
@@ -357,12 +357,13 @@
 
   <br />
   <div class="row mb-2">
-    <div class="col-4 col-sm-3 col-md-3">
+    <div class="col-5 col-sm-3 col-md-3">
       <button
         *ngIf="!isInstruction"
         id="send-button"
         type="button"
         class="btn btn-primary"
+        [attr.disabled]="loading ? true : null"
         (click)="sendEmail()"
       >
         ENVOYER
@@ -394,6 +395,7 @@
         />
       </svg>
       <input
+        #fileInput
         [hidden]="true"
         id="file-input"
         type="file"
@@ -408,7 +410,7 @@
     </div>
     <div
       *ngIf="sendMessageForm.get('file').value"
-      class="col-4 col-sm-5 col-md-5 attach"
+      class="col-3 col-sm-5 col-md-5 attach"
     >
       <div
         id="attachement"
@@ -426,8 +428,9 @@
             <path
               fill-rule="evenodd"
               d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z"
-            /></svg
-          >{{
+            />
+          </svg>
+          {{
             file.name.length < 20 ? file.name : file.name.substr(0, 19) + "..."
           }}
         </p>

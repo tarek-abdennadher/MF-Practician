@@ -1,25 +1,33 @@
-import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  HostListener,
+  OnDestroy
+} from "@angular/core";
 import { MessagingListService } from "../services/messaging-list.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { GlobalService } from "@app/core/services/global.service";
 import { FeaturesService } from "../features.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
-import { takeUntil } from "rxjs/operators";
-import { DomSanitizer } from "@angular/platform-browser";
+import { takeUntil, tap } from "rxjs/operators";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { MyPatientsService } from "../services/my-patients.service";
 import { PaginationService } from "../services/pagination.service";
 import { LocalStorageService } from "ngx-webstorage";
 import { DialogService } from "../services/dialog.service";
+import { SenderRole } from "@app/shared/enmus/sender-role";
+import { resolveMx } from "dns";
 
 @Component({
   selector: "app-messaging-list",
   templateUrl: "./messaging-list.component.html",
   styleUrls: ["./messaging-list.component.scss"]
 })
-export class MessagingListComponent implements OnInit {
+export class MessagingListComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   public selectedTabIndex = 0;
   person;
@@ -33,6 +41,7 @@ export class MessagingListComponent implements OnInit {
   filtredItemList: Array<any> = new Array();
   selectedObjects: Array<any>;
   myPracticians = [];
+  inboxPracticianNumber: any;
   links = {
     isAllSelect: true,
     isAllSeen: true,
@@ -43,7 +52,9 @@ export class MessagingListComponent implements OnInit {
     isMenuDisplay: true,
     isAllSelectCarret: true,
     isRefresh: true,
-    isPagination: true
+    isPagination: true,
+    isMenuImportant: false,
+    isMenuNotSeen: false
   };
   page = "INBOX";
   number: number;
@@ -72,7 +83,7 @@ export class MessagingListComponent implements OnInit {
   };
   searchContext = false;
   listLength = 10;
-  userTypeTabsFilter: string = "all";
+  userTypeTabsFilter: SenderRole = SenderRole.ALL;
   isSecretary = this.localSt.retrieve("role") == "SECRETARY";
   constructor(
     private messagesServ: MessagingListService,
@@ -86,8 +97,10 @@ export class MessagingListComponent implements OnInit {
     private sanitizer: DomSanitizer,
     public pagination: PaginationService,
     private localSt: LocalStorageService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.practicianImage = this.avatars.doctor;
@@ -107,7 +120,7 @@ export class MessagingListComponent implements OnInit {
       if (params["id"]) {
         this.isMyInbox = false;
         this.featureService.selectedPracticianId = params["id"]
-          ? params["id"]
+          ? this.featureService.decrypt(params["id"])
           : this.featureService.selectedPracticianId;
         this.myPracticians = this.featureService.myPracticians.getValue();
 
@@ -119,12 +132,18 @@ export class MessagingListComponent implements OnInit {
             picture: this.practicianImage
           };
 
+          this.inboxPracticianNumber = this.myPracticians.find(
+            practician =>
+              practician.id == this.featureService.selectedPracticianId
+          ).number;
+
           this.documentService
             .getDefaultImage(
               this.myPracticians.find(
                 p => p.id == this.featureService.selectedPracticianId
               ).id
             )
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(
               response => {
                 let myReader: FileReader = new FileReader();
@@ -151,7 +170,9 @@ export class MessagingListComponent implements OnInit {
           isMenuDisplay: true,
           isAllSelectCarret: true,
           isRefresh: true,
-          isPagination: true
+          isPagination: true,
+          isMenuImportant: false,
+          isMenuNotSeen: false
         };
         this.paramsId = this.featureService.selectedPracticianId;
         this.getMyInbox(this.featureService.selectedPracticianId);
@@ -159,6 +180,7 @@ export class MessagingListComponent implements OnInit {
       } else {
         this.featureService.selectedPracticianId = 0;
         this.featureService.getNumberOfInbox().subscribe(val => {
+          this.inboxPracticianNumber = val;
           this.number = val;
           this.bottomText =
             this.number > 1
@@ -175,7 +197,9 @@ export class MessagingListComponent implements OnInit {
           isMenuDisplay: true,
           isAllSelectCarret: true,
           isRefresh: true,
-          isPagination: true
+          isPagination: true,
+          isMenuImportant: false,
+          isMenuNotSeen: false
         };
         this.featureService.selectedPracticianId = 0;
         this.isMyInbox = true;
@@ -195,11 +219,17 @@ export class MessagingListComponent implements OnInit {
               .send_message_success;
             break;
           }
-          case "archiveSuccess": {
-            notifMessage = this.globalService.toastrMessages
-              .archived_message_success;
-            break;
-          }
+          case "archiveSuccess":
+            {
+              notifMessage = this.globalService.toastrMessages
+                .archived_message_success;
+              break;
+            }
+            this.notifier.show({
+              message: notifMessage,
+              type: "info",
+              template: this.customNotificationTmpl
+            });
         }
         this.notifier.show({
           message: notifMessage,
@@ -208,18 +238,23 @@ export class MessagingListComponent implements OnInit {
         });
       }
     });
-    this.featureService.setIsMessaging(true);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(true);
+    });
     this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
 
   cardClicked(item) {
     this.markMessageAsSeen(item);
-    this.router.navigate(["/messagerie-lire/" + item.id], {
-      queryParams: {
-        context: this.isMyInbox ? "inbox" : "inboxPraticien"
+    this.router.navigate(
+      ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
+      {
+        queryParams: {
+          context: this.isMyInbox ? "inbox" : "inboxPraticien"
+        }
       }
-    });
+    );
   }
 
   selectAllActionClicked() {
@@ -250,7 +285,7 @@ export class MessagingListComponent implements OnInit {
             }
           },
           error => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
       } else {
@@ -276,7 +311,7 @@ export class MessagingListComponent implements OnInit {
               }
             },
             error => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
       }
@@ -300,8 +335,13 @@ export class MessagingListComponent implements OnInit {
             e => e.isChecked == true
           );
           const messagesId = checkedMessages.map(e => e.id);
-
           if (messagesId.length > 0) {
+            this.getFirstMessageInNextPage(
+              this.featureService.getUserId(),
+              messagesId.length
+            )
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe();
             this.messagesServ.markMessageAsArchived(messagesId).subscribe(
               resp => {
                 let listToArchive = this.itemsList
@@ -333,9 +373,7 @@ export class MessagingListComponent implements OnInit {
                 this.messagesServ.uncheckMessages(checkedMessages);
               },
               error => {
-                console.log(
-                  "We have to find a way to notify user by this error"
-                );
+                //We have to find a way to notify user by this error
               }
             );
           }
@@ -359,13 +397,33 @@ export class MessagingListComponent implements OnInit {
                 return item.users[0].type.toLowerCase() == event;
             }
           });
-    this.userTypeTabsFilter = event;
+    switch (event) {
+      case "all":
+        this.userTypeTabsFilter = SenderRole.ALL;
+        break;
+      case "doctor":
+        this.userTypeTabsFilter = SenderRole.PRACTICIAN;
+        break;
+      case "secretary":
+        this.userTypeTabsFilter = SenderRole.SECRETARY;
+        break;
+      default:
+        this.userTypeTabsFilter = SenderRole.PATIENT;
+        break;
+    }
+    this.refreshCurrentPage();
+  }
+
+  private refreshCurrentPage() {
+    this.resetData();
+    this.getMyInbox(this.paramsId);
   }
 
   getMyInbox(accountId) {
     this.loading = true;
     this.messagesServ
       .countInboxByAccountId(accountId, this.userTypeTabsFilter)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(num => {
         this.pagination.init(num);
         this.messagesServ
@@ -375,6 +433,7 @@ export class MessagingListComponent implements OnInit {
             this.pagination.pageNo,
             this.pagination.direction
           )
+          .pipe(takeUntil(this._destroyed$))
           .subscribe(retrievedMess => {
             this.loading = false;
             if (!this.isMyInbox) {
@@ -389,19 +448,18 @@ export class MessagingListComponent implements OnInit {
                       ? this.globalService.messagesDisplayScreen.newMessages
                       : this.globalService.messagesDisplayScreen.newMessage;
                 });
-            } else {
-              this.messages = retrievedMess;
-              this.messages.sort(function(m1, m2) {
-                return (
-                  new Date(m2.updatedAt).getTime() -
-                  new Date(m1.updatedAt).getTime()
-                );
-              });
-              this.itemsList.push(
-                ...this.messages.map(item => this.parseMessage(item))
-              );
-              this.filtredItemList = this.itemsList;
             }
+            retrievedMess.sort(
+              (m1, m2) =>
+                new Date(m2.updatedAt).getTime() -
+                new Date(m1.updatedAt).getTime()
+            );
+            this.itemsList = new Array();
+            this.filtredItemList = new Array();
+            this.itemsList.push(
+              ...retrievedMess.map(item => this.parseMessage(item))
+            );
+            this.filtredItemList = this.itemsList;
           });
       });
   }
@@ -415,29 +473,17 @@ export class MessagingListComponent implements OnInit {
         this.pagination.pageNo,
         this.pagination.direction
       )
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(retrievedMess => {
         this.loading = false;
-        this.listLength = retrievedMess.length;
-        if (retrievedMess.length > 0) {
-          this.messages = retrievedMess;
-          this.messages.sort(function(m1, m2) {
-            return (
-              new Date(m2.updatedAt).getTime() -
-              new Date(m1.updatedAt).getTime()
-            );
-          });
-          this.itemsList.push(
-            ...this.messages.map(item => this.parseMessage(item))
-          );
-
-          if (this.filtredItemList.length != this.itemsList.length) {
-            this.filtredItemList = this.itemsList.filter(item =>
-              [item.users[0].type.toLowerCase(), "all"].includes(
-                this.userTypeTabsFilter
-              )
-            );
-          }
-        }
+        retrievedMess.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+        this.itemsList.push(
+          ...retrievedMess.map(item => this.parseMessage(item))
+        );
+        this.filtredItemList = this.itemsList;
       });
   }
 
@@ -470,20 +516,23 @@ export class MessagingListComponent implements OnInit {
       isArchieve: this.isMyInbox,
       photoId: message.sender.photoId
     };
-    this.documentService.getDefaultImage(message.sender.senderId).subscribe(
-      response => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
-          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      error => {
-        parsedMessage.users[0].img = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(message.sender.senderId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
     return parsedMessage;
   }
 
@@ -519,9 +568,12 @@ export class MessagingListComponent implements OnInit {
               this.filtredItemList[filtredIndex].isSeen = true;
             }
           }
+          error => {
+            //We have to find a way to notify user by this error
+          };
         },
         error => {
-          console.log("We have to find a way to notify user by this error");
+          //We have to find a way to notify user by this error
         }
       );
     } else {
@@ -565,7 +617,7 @@ export class MessagingListComponent implements OnInit {
             }
           },
           error => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
     }
@@ -604,9 +656,10 @@ export class MessagingListComponent implements OnInit {
                   notification => notification.messageId != event.id
                 );
               }
+              this.refreshCurrentPage();
             },
             error => {
-              console.log("We have to find a way to notify user by this error");
+              //We have to find a way to notify user by this error
             }
           );
         }
@@ -614,39 +667,84 @@ export class MessagingListComponent implements OnInit {
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
+    let isSeenTable = [];
+    let isImportantTable = [];
+    this.selectedObjects.forEach(elm => {
+      isSeenTable.push(elm.isSeen);
+      isImportantTable.push(elm.isImportant);
+    });
+    this.links.isMenuImportant =
+      isImportantTable.filter(elm => elm == false).length == 0;
+    this.links.isMenuNotSeen =
+      isSeenTable.filter(elm => elm == true).length == 0;
+    this.links.isAllSeen = isSeenTable.filter(elm => elm == false).length > 0;
+  }
+
+  getFirstMessageInNextPage(accountId, size) {
+    return this.messagesServ
+      .getFirstInboxMessageByAccountId(
+        accountId,
+        size,
+        this.userTypeTabsFilter,
+        this.pagination.pageNo + 1,
+        this.pagination.direction
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        tap(messages => {
+          messages.sort(
+            (m1, m2) =>
+              new Date(m2.updatedAt).getTime() -
+              new Date(m1.updatedAt).getTime()
+          );
+          const parsedMessages = messages.map(message =>
+            this.parseMessage(message)
+          );
+          this.filtredItemList.push(...parsedMessages);
+          this.itemsList.push(...parsedMessages);
+        })
+      );
   }
 
   getRealTimeMessage() {
     this.messagesServ.getNotificationObs().subscribe(notif => {
       if (notif != "") {
         if (this.isMyInbox) {
-          let message = this.parseMessage(notif.message);
-          this.documentService
-            .getDefaultImage(notif.message.sender.senderId)
-            .subscribe(
-              response => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
+          this.messagesServ.practicianNotifPreviousValue = notif.id;
+          const exist =
+            this.filtredItemList &&
+            this.filtredItemList.length > 0 &&
+            notif.message.id == this.filtredItemList[0].id;
+          if (!exist) {
+            let message = this.parseMessage(notif.message);
+            this.documentService
+              .getDefaultImage(notif.message.sender.senderId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                response => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = e => {
+                    message.users.forEach(user => {
+                      user.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
+                    });
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                error => {
                   message.users.forEach(user => {
-                    user.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
+                    user.img = this.avatars.user;
                   });
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              error => {
-                message.users.forEach(user => {
-                  user.img = this.avatars.user;
-                });
-              }
-            );
-          this.filtredItemList.unshift(message);
+                }
+              );
+            this.filtredItemList.unshift(message);
 
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
+          }
         }
       }
     });
@@ -666,39 +764,36 @@ export class MessagingListComponent implements OnInit {
           num + 1
         );
         this.messagesServ.practicianNotifPreviousValue = notif.id;
-        if (
-          !this.isMyInbox &&
-          this.featureService.selectedPracticianId == notif.receiverId
-        ) {
-          let message = this.parseMessage(notif.message);
-          this.documentService
-            .getDefaultImage(notif.message.sender.senderId)
-            .subscribe(
-              response => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = e => {
-                  message.users.forEach(user => {
-                    user.img = this.sanitizer.bypassSecurityTrustUrl(
-                      myReader.result as string
-                    );
-                  });
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              error => {
+        let message = this.parseMessage(notif.message);
+        this.documentService
+          .getDefaultImage(notif.message.sender.senderId)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe(
+            response => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = e => {
                 message.users.forEach(user => {
-                  user.img = this.avatars.user;
+                  user.img = this.sanitizer.bypassSecurityTrustUrl(
+                    myReader.result as string
+                  );
                 });
-              }
-            );
-
-          this.filtredItemList.unshift(message);
-
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
-        }
+              };
+              let ok = myReader.readAsDataURL(response);
+            },
+            error => {
+              message.users.forEach(user => {
+                user.img = this.avatars.user;
+              });
+            }
+          );
+        let messagesList = this.filtredItemList.slice(0);
+        this.filtredItemList = [];
+        messagesList.unshift(message);
+        this.filtredItemList = messagesList;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newMessages
+            : this.globalService.messagesDisplayScreen.newMessage;
       }
     });
   }
@@ -775,29 +870,26 @@ export class MessagingListComponent implements OnInit {
     for (let message of checkedMessages) {
       ids.push(message.id);
     }
-    this.messagesServ
-      .markMessageAsImportant(ids)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        message => {
-          this.links.isImportant = false;
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_success,
-            type: "info",
-            template: this.customNotificationTmpl
-          });
-          this.messagesServ.uncheckMessages(checkedMessages);
-        },
-        error => {
-          this.notifier.show({
-            message: this.globalService.toastrMessages
-              .mark_important_message_error,
-            type: "error",
-            template: this.customNotificationTmpl
-          });
-        }
-      );
+    this.messagesServ.markMessageAsImportant(ids).subscribe(
+      message => {
+        this.links.isImportant = false;
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_important_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+        this.messagesServ.uncheckMessages(checkedMessages);
+      },
+      error => {
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_important_message_error,
+          type: "error",
+          template: this.customNotificationTmpl
+        });
+      }
+    );
 
     this.messagesServ.changeFlagImportant(this.filtredItemList, ids);
   }
@@ -824,7 +916,7 @@ export class MessagingListComponent implements OnInit {
             }
           },
           error => {
-            console.log("We have to find a way to notify user by this error");
+            //We have to find a way to notify user by this error
           }
         );
       }
@@ -883,9 +975,18 @@ export class MessagingListComponent implements OnInit {
     }
   }
 
-  loadPage() {
+  private resetData() {
     this.itemsList = [];
     this.filtredItemList = [];
+  }
+
+  loadPage() {
+    this.resetData();
     this.getMyInboxNextPage(this.paramsId);
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }

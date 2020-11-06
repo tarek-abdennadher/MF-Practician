@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" id="archive">
   <div class="col-md-5">
     <lib-hls-generic-list-links
       [links]="links"
@@ -12,6 +12,7 @@
       [list]="filtredPatients"
       [imageSource]="imageSource"
       [isMyPatients]="isMyPatients"
+      emptyList="Vous n'avez aucun patient archivé actuellement."
       (activatedAction)="activatedAction($event)"
       (cardAction)="cardClicked($event)"
       [hasPaging]="true"

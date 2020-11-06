@@ -10,7 +10,16 @@
     (importantAction)="importantAction()"
     (archieveAction)="archieveActionClicked()"
   ></lib-hlsLinks>
+  <mat-progress-spinner
+    class="spinner"
+    *ngIf="loading"
+    diameter="20"
+    mode="indeterminate"
+    value="100"
+  >
+  </mat-progress-spinner>
   <lib-hlsMessagingDetail
+    *ngIf="!loading"
     [imageSource]="imageSource"
     [messagingDetail]="messagingDetail"
     [isFromInbox]="isFromInbox"
@@ -21,8 +30,12 @@
     [showAcceptRefuse]="showAcceptRefuse"
     [showRefuseForTls]="showRefuseForTls"
     [hideButtons]="prohibited"
+    [showReplyActionsForPatient]="showReplyActionsForPatient"
+    [showReplyActionsForTls]="showReplyActionsForTls"
+    (refuseToPatientAction)="refuseToPatientAction()"
     (displayPatientFile)="displayPatientFile($event)"
     (displayForPatientFile)="displayForPatientFile($event)"
+    (displayContact)="displayContact($event)"
     (replyAction)="replyAction()"
     (forwardAction)="forwardAction()"
     (acceptAction)="acceptAction()"
@@ -37,8 +50,8 @@
   <notifier-container></notifier-container>
   <ng-template #customNotification let-notificationData="notification">
     <div class="text-center" type="notificationData.type">
-      <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-      &nbsp;<span>{{ notificationData.message }}</span>
+      <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
+      &nbsp;<span class="information-text">{{ notificationData.message }}</span>
     </div>
   </ng-template>
 </div>

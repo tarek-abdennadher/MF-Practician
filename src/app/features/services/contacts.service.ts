@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { RequestType } from "@app/shared/enmus/requestType";
 import { GlobalService } from "@app/core/services/global.service";
-import { Observable } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { Speciality } from "@app/shared/models/speciality";
 
 @Injectable({
@@ -21,7 +21,7 @@ export class ContactsService {
     firstname: "Prénom (*)",
     name: "Nom (*)",
     email: "Email",
-    phone: "Téléphone ",
+    phone: "Téléphone (*)",
     address: "Adresse",
     first_name: "Prénom (*)",
     last_name: "Nom (*)",
@@ -41,16 +41,31 @@ export class ContactsService {
     note: " Note",
     additionalEmail: "Email secondaire",
     category: "Nom de la catégorie ",
-    contact_pro:
+    parrainer_practician:
       "Parrainer un confrère et bénéficiez d'un mois d'abonnement offert",
+    parrainer_secretary:
+      "Parrainer un praticien et bénéficiez d'un mois d'abonnement offert",
     category_name: "Nom de la catégorie (*)",
     zip_code: "Code postal",
     city: "Ville",
     send: "Envoyer",
     email_exist: "Email déja utilisé",
+    edit_failed: "Erreur survenue lors de la modification du contact",
+    contact_edit: "Contact modifié avec succès",
+    info: "Informations",
   };
-  constructor(private globalService: GlobalService) {}
 
+  public id = new BehaviorSubject(null);
+  constructor(private globalService: GlobalService) {}
+  getIdValue() {
+    return this.id.getValue();
+  }
+  getIdObs() {
+    return this.id.asObservable();
+  }
+  setId(id) {
+    this.id.next(id);
+  }
   getContactsPro() {
     return this.globalService.call(
       RequestType.GET,

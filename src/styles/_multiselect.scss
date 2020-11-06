@@ -41,15 +41,16 @@ $blue-helssy: #1a56a7;
     font-size: 14px;
     font-weight: 1000;
     font-stretch: normal;
-    font-style: normal;
+    font-style: italic;
     line-height: normal;
     letter-spacing: 0.07px;
     text-align: center;
-    color: $blue-helssy;
+    color: gray !important;
     border: 0;
     outline: 0px !important;
     -webkit-appearance: none;
     box-shadow: none !important;
+    padding: 0;
   }
 
   .selected-list .c-list .c-token {
@@ -59,15 +60,29 @@ $blue-helssy: #1a56a7;
     background-color: rgba(26, 86, 167, 0.12) !important;
   }
 
-  .selected-list .c-list .c-token .c-label {
-    height: 18px;
-    font-family: Montserrat;
-    font-size: 14px;
-    font-weight: 1000;
-    font-stretch: normal;
-    font-style: normal;
-    letter-spacing: normal;
-    color: rgba(26, 86, 167, 0.7) !important;
+  @media (min-width: 420px) {
+    .selected-list .c-list .c-token .c-label {
+      height: 18px;
+      font-family: Montserrat;
+      font-size: 14px;
+      font-weight: 1000;
+      font-stretch: normal;
+      font-style: normal;
+      letter-spacing: normal;
+      color: rgba(26, 86, 167, 0.7) !important;
+    }
+  }
+
+  @media (max-width: 519px) {
+    .selected-list .c-list .c-token {
+      height: 34px;
+      line-height: 25px;
+      border-radius: 4px !important;
+      background-color: rgba(26, 86, 167, 0.12) !important;
+      color: rgba(26, 86, 167, 0.7) !important;
+      width: 100%;
+      font-size: 12px;
+    }
   }
 
   .selected-list .c-list :hover {
@@ -164,6 +179,7 @@ $blue-helssy: #1a56a7;
     line-height: 25px;
     border-radius: 4px !important;
     background-color: rgba(80, 227, 194, 0.2) !important;
+    margin-left: -10px;
   }
   .selected-list .c-list .c-token .c-label {
     height: 18px;
@@ -252,5 +268,8 @@ $blue-helssy: #1a56a7;
 
   ::placeholder {
     color: $blue-helssy;
+  }
+  .selected-list .c-list .c-token .c-remove svg {
+    fill: rgba(26, 86, 167, 0.7);
   }
 }

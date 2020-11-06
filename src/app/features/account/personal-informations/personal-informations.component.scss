@@ -1,6 +1,7 @@
 $hlessy-dark-grey: #344448;
 $hlessy-blue: #2460b4;
 $helssy_white: #ffffff;
+$color-helssy-pink: #ff0063;
 /* Title */
 .Mon-compte {
   font-family: Montserrat-Medium;
@@ -56,7 +57,6 @@ label {
 /* Informations */
 .Rectangle-body {
   background-color: rgba(243, 243, 243, 0.5);
-  min-height: 946px;
 }
 // Image CSS
 .image-container {
@@ -97,7 +97,7 @@ label {
   transition: 0.5s ease;
   opacity: 0;
   position: absolute;
-  top: 8%;
+  top: 10%;
   left: 50%;
   right: 50%;
   transform: translate(-50%, -50%);
@@ -182,6 +182,7 @@ input[type="file"] {
   letter-spacing: -0.18px;
   //Button CSS
   height: 40px;
+  min-width: 169px;
   border-radius: 6px;
   border-color: transparent;
   background-image: linear-gradient(103deg, #f82e6c, #8c1bab 98%);
@@ -215,6 +216,7 @@ hr {
   letter-spacing: -0.2px;
   text-align: left;
   color: #4a4a4a;
+  cursor: pointer;
 }
 .password {
   border-top: solid 1px #d0d0d0;
@@ -223,9 +225,8 @@ hr {
   }
 }
 
-
 @media (max-width: 575px) {
-  .new-password{
+  .new-password {
     padding-left: 0px;
   }
 }
@@ -322,4 +323,34 @@ button.close {
     margin-left: 0;
     margin-right: 0;
   }
+}
+.submit-btn {
+  margin: auto;
+}
+.icon {
+  color: $color-helssy-pink;
+  width: 40px;
+  text-align: center;
+  font-size: 17px;
+}
+/* enable absolute positioning */
+.inner-addon {
+  position: relative;
+}
+/* style icon */
+.inner-addon i {
+  position: absolute;
+  padding: 10px;
+  color: $color-helssy-pink;
+  cursor: pointer;
+}
+
+/* align icon */
+.right-addon i {
+  right: 25px;
+}
+
+/* add padding  */
+.right-addon input {
+  padding-right: 30px;
 }

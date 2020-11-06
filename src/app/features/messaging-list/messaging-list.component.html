@@ -8,38 +8,46 @@
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
-  [paginationText]="this.searchContext ? '-' : pagination.text"
-  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !this.searchContext"
-  [isNextPageAllowed]="pagination.hasNext && !loading && !this.searchContext"
-  (nextPageAction) = "nextPageActionClicked()"
-  (previousPageAction) = "previousPageActionClicked()"
+  [paginationText]="searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
+  (nextPageAction)="nextPageActionClicked()"
+  (previousPageAction)="previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
   (archieveAction)="archieveActionClicked()"
-  (importantAction) = "importantAction()"
-  (filterAction)="filterActionClicked($event)"
+  (importantAction)="importantAction()"
   (refreshMessagingListAction)="refreshMessagingList()"
-  (notSeenAction) = "notSeenActionClicked()"
-  (checkSeenMessagesAction) = "checkSeenMessagingList()"
-  (checkNotSeenMessagesAction) = "checkNotSeenMessagingList()"
-  (checkImportantMessagesAction) = "checkImportantMessagingList()"
+  (notSeenAction)="notSeenActionClicked()"
+  (checkSeenMessagesAction)="checkSeenMessagingList()"
+  (checkNotSeenMessagesAction)="checkNotSeenMessagingList()"
+  (checkImportantMessagesAction)="checkImportantMessagingList()"
 ></lib-hlsLinks>
 
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
     <mat-tab-group
-    *ngIf="!isSecretary"
-    class="links" mat-align-tabs="start" [backgroundColor]="'primary'" (selectedTabChange)="selectedTab($event)" [(selectedIndex)]="selectedTabIndex">
-      <mat-tab label="TousMessages" >
+      *ngIf="!isSecretary || !isMyInbox"
+      class="links"
+      mat-align-tabs="start"
+      [backgroundColor]="'primary'"
+      (selectedTabChange)="selectedTab($event)"
+      [(selectedIndex)]="selectedTabIndex"
+    >
+      <mat-tab label="TousMessages" [disabled]="loading">
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
-          <span (click)="filterActionClicked('all')">Tous mes messages</span> <span class="number">{{ featureService.getNumberOfInboxValue() }}</span>
+          <span>Tous mes messages</span>
+          <span class="number">{{
+            inboxPracticianNumber
+          }}</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -50,15 +58,16 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Secrétaire">
+      <mat-tab label="Secrétaire" [disabled]="loading">
         <ng-template mat-tab-label>
           <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
-          <span (click)="filterActionClicked('secretary')">Secrétaire</span>
+          <span>Secrétaire</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -69,7 +78,7 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Patients" (click)="filterActionClicked('patient')">
+      <mat-tab label="Patients" [disabled]="loading">
         <ng-template mat-tab-label>
           <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
           Patients
@@ -78,6 +87,7 @@
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -88,7 +98,7 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Praticiens">
+      <mat-tab label="Praticiens" [disabled]="loading">
         <ng-template mat-tab-label>
           <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
           Praticiens
@@ -97,6 +107,7 @@
           *ngIf="!loading"
           [list]="filtredItemList"
           [hasPaging]="true"
+          emptyList="Vous n'avez aucun nouveau message actuellement."
           (cardAction)="cardClicked($event)"
           (markAsSeenAction)="markMessageAsSeen($event)"
           (archieveAction)="archieveMessage($event)"
@@ -109,10 +120,12 @@
       </mat-tab>
     </mat-tab-group>
 
-    <lib-hlsMessagingList class="mobile-links"
+    <lib-hlsMessagingList
+      class="mobile-links"
       *ngIf="!loading"
       [list]="filtredItemList"
       [hasPaging]="true"
+      emptyList="Vous n'avez aucun nouveau message actuellement."
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
       (archieveAction)="archieveMessage($event)"
@@ -125,9 +138,10 @@
 
     <lib-hlsMessagingList
       class="links"
-      *ngIf="!loading && isSecretary"
+      *ngIf="!loading && isSecretary && isMyInbox"
       [list]="filtredItemList"
       [hasPaging]="true"
+      emptyList="Vous n'avez aucun nouveau message actuellement."
       (cardAction)="cardClicked($event)"
       (markAsSeenAction)="markMessageAsSeen($event)"
       (archieveAction)="archieveMessage($event)"
@@ -140,17 +154,21 @@
   </div>
 </div>
 
-
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-    &nbsp;<span>{{ notificationData.message }}</span>
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
+    &nbsp;<span class="information-text">{{ notificationData.message }}</span>
   </div>
 </ng-template>
 
-<mat-progress-spinner *ngIf="loading" diameter="20"
-mode="indeterminate" value="100"> </mat-progress-spinner>
+<mat-progress-spinner
+  *ngIf="loading"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
+</mat-progress-spinner>
 <lib-hlsLinks
   class="mobile-links"
   [links]="links"
@@ -164,17 +182,17 @@ mode="indeterminate" value="100"> </mat-progress-spinner>
   [paginationText]="pagination.text"
   [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
   [isNextPageAllowed]="pagination.hasNext && !loading"
-  (nextPageAction) = "nextPageActionClicked()"
-  (previousPageAction) = "previousPageActionClicked()"
+  (nextPageAction)="nextPageActionClicked()"
+  (previousPageAction)="previousPageActionClicked()"
   (selectAllAction)="selectAllActionClicked()"
   (deSelectAllAction)="deSelectAllActionClicked()"
   (seenAllAction)="seenAllActionClicked()"
   (archieveAction)="archieveActionClicked()"
-  (importantAction) = "importantAction()"
+  (importantAction)="importantAction()"
   (filterAction)="filterActionClicked($event)"
   (refreshMessagingListAction)="refreshMessagingList()"
-  (notSeenAction) = "notSeenActionClicked()"
-  (checkSeenMessagesAction) = "checkSeenMessagingList()"
-  (checkNotSeenMessagesAction) = "checkNotSeenMessagingList()"
-  (checkImportantMessagesAction) = "checkImportantMessagingList()"
+  (notSeenAction)="notSeenActionClicked()"
+  (checkSeenMessagesAction)="checkSeenMessagingList()"
+  (checkNotSeenMessagesAction)="checkNotSeenMessagingList()"
+  (checkImportantMessagesAction)="checkImportantMessagingList()"
 ></lib-hlsLinks>

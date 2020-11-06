@@ -1,0 +1,3 @@
+export enum SenderRole {
+  PATIENT = "PATIENT", PRACTICIAN = "PRACTICIAN", SECRETARY = "SECRETARY", ALL = "ALL"
+}

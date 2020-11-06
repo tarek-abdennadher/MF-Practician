@@ -20,6 +20,9 @@ $color-helssy-grey: #6e819bd4;
   color: $hlessy-blue;
   padding: 21px 18px 21px 18px;
 }
+.without-click {
+  pointer-events: none;
+}
 .fa-icon {
   font-size: 15px;
   font-stretch: normal;
@@ -57,11 +60,15 @@ select {
   padding: unset;
   background-color: rgba(243, 243, 243, 0.5);
 }
+.form-control.disabled,
+.phones-disabled {
+  pointer-events: none;
+}
 ::ng-deep {
   international-phone-number .form-control {
     height: 30px !important;
-    border-color: $helssy_white;
-    background-color: $helssy_white;
+    border-color: $helssy_white !important;
+    background-color: $helssy_white !important;
   }
   international-phone-number .dropdown button.dropbtn.btn,
   button.dropbtn.btn:hover {
