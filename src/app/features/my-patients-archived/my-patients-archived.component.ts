@@ -68,6 +68,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsArchivedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -90,6 +91,18 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
         this.number = myPatients.length;
         myPatients.forEach(elm => {
           this.myPatients.push(this.mappingMyPatients(elm, false, true));
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = this.myPatients;
       });
@@ -122,7 +135,11 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
+      fullName:
+        patient.fullName.substring(patient.civility.length) +
+        " (" +
+        (patient.civility !== "" ? patient.civility : "Enfant") +
+        ")",
       img: this.avatars.user,
       civility: patient.civility
     });

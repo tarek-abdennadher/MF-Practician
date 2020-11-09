@@ -21,7 +21,7 @@ export class ContactsService {
     firstname: "Prénom (*)",
     name: "Nom (*)",
     email: "Email",
-    phone: "Téléphone ",
+    phone: "Téléphone (*)",
     address: "Adresse",
     first_name: "Prénom (*)",
     last_name: "Nom (*)",
