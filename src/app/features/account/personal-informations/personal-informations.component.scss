@@ -359,3 +359,11 @@ button.close {
 .right-addon input {
   padding-right: 30px;
 }
+@media (max-width: 410px) {
+  .phone {
+    padding-right: 0px;
+  }
+  .phone-btn {
+    padding-left: 0px;
+  }
+}

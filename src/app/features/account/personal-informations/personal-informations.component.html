@@ -706,9 +706,9 @@
             </div>
           </div>
           <!-- City -->
-          <div class="col-12 col-sm-8">
+          <div class="col-12 col-sm-9">
             <div class="col-12 col-form-label">{{ messages._city }}</div>
-            <div class="col-12 col-sm-10">
+            <div class="col-12 col-sm-12">
               <input
                 type="text"
                 formControlName="city"
@@ -721,10 +721,10 @@
         <br />
         <!-- Phone number -->
         <div class="row">
-          <div class="col col-12">
+          <div class="col col-11">
             <div class="col-12 col-form-label">{{ labels.phone }}</div>
-            <div class="col-12 row">
-              <div class="col-9 col-sm-9">
+            <div class="col-11 row">
+              <div class="col-11 phone-input">
                 <international-phone-number
                   class="form-control phone"
                   id="sec-phone"
@@ -747,7 +747,7 @@
                   {{ errors.invalid_phone }}
                 </div>
               </div>
-              <div class="col-1 col-sm-2">
+              <div class="col-1 phone-btn">
                 <button
                   (click)="addPhone()"
                   class="btn btn-xs btn-icon"
@@ -766,7 +766,7 @@
             <div *ngIf="isLabelShow" class="col-12 col-form-label">
               {{ labels.other_phone }}
             </div>
-            <div class="col-12 col-sm-11">
+            <div class="col-11">
               <int-phone
                 [editList]="otherPhones"
                 (phones)="getPhoneList($event)"
@@ -783,8 +783,8 @@
         <div class="row">
           <div class="col col-12">
             <div class="col-12 col-form-label">{{ labels.email_input }}</div>
-            <div class="col-12 row">
-              <div class="col-12 col-sm-12 col-md-10">
+            <div>
+              <div class="col-12 col-sm-12 col-md-12">
                 <input
                   disabled
                   type="text"
@@ -815,8 +815,8 @@
             <div class="col-12 col-form-label">
               {{ labels.additionalEmail }}
             </div>
-            <div class="col-12 row">
-              <div class="col-12 col-sm-12 col-md-10">
+            <div>
+              <div class="col-12 col-sm-12 col-md-12">
                 <input
                   type="text"
                   formControlName="additionalEmail"
