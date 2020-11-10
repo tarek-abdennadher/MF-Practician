@@ -893,12 +893,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           img: this.avatars.secretary
         });
         this.toList.next(myList);
-      } else if (contactPractician.contactType == "PATIENT") {
+      } else if (contactPractician.contactType == "PATIENT_FILE") {
         if (contactPractician.civility == "M") {
           myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
-            type: contactPractician.contactType,
+            type: "PATIENT",
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.man
