@@ -20,7 +20,7 @@ export class MatContactDetailDialogComponent implements OnInit, OnDestroy {
   submitted = false;
   public infoForm: FormGroup;
   click: boolean = false;
-  otherPhones = new Subject<any[]>();
+  otherPhones = new Array();
   addnewPhone = new Subject<boolean>();
   public phones = new Array();
   public isPhonesValid = false;
@@ -50,7 +50,7 @@ export class MatContactDetailDialogComponent implements OnInit, OnDestroy {
       .getContactById(contactId)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((contact) => {
-        this.otherPhones.next(contact.otherPhones);
+        this.otherPhones = contact.otherPhones;
         this.infoForm.patchValue({
           id: contact.id,
           type: contact.contactType,
