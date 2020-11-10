@@ -2,17 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["node", "googlemaps","jquery"]
+    "types": ["node", "googlemaps", "jquery"]
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ],
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ]
+  "exclude": ["test.ts", "**/*.spec.ts"],
+  "files": ["src/main.ts", "src/polyfills.ts"],
+  "include": ["src/**/*.d.ts"]
 }

@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { AccountService } from "@app/features/services/account.service";
 import {
   FormBuilder,
   FormGroup,
   FormControl,
-  Validators,
+  Validators
 } from "@angular/forms";
 import { MustMatch } from "./must-match";
 import { Speciality } from "@app/shared/models/speciality";
@@ -16,23 +16,23 @@ import { MyDocumentsService } from "@app/features/my-documents/my-documents.serv
 import { HttpResponse } from "@angular/common/http";
 import { FeaturesService } from "@app/features/features.service";
 import { emailValidator } from "@app/core/Validators/email.validator";
-import { CategoryService } from "@app/features/services/category.service";
-import { MyPatientsService } from "@app/features/services/my-patients.service";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
+import { takeUntil } from "rxjs/operators";
+import { RequestCache } from "@app/core/services/request-cache.service";
 declare var $: any;
 @Component({
   selector: "app-personal-informations",
   templateUrl: "./personal-informations.component.html",
   styleUrls: ["./personal-informations.component.scss"],
-  providers: [JobtitlePipe],
+  providers: [JobtitlePipe]
 })
 export class PersonalInformationsComponent
-  implements OnInit, ComponentCanDeactivate {
+  implements OnInit, ComponentCanDeactivate, OnDestroy {
   @Input("practicianId") practicianId;
-
+  private _destroyed$ = new Subject();
   specialities = new Subject<Array<Speciality>>();
   specialitiesContainingDeleted: Array<Speciality>;
   isPasswordValid = false;
@@ -47,7 +47,7 @@ export class PersonalInformationsComponent
   showPasswordSuccess = false;
   showPasswordFailure = false;
   passwordSubmitted = false;
-  otherPhones = new Subject<any[]>();
+  otherPhones = new Array();
   addnewPhone = new Subject<boolean>();
   isLabelShow: boolean;
   public infoForm: FormGroup;
@@ -74,6 +74,8 @@ export class PersonalInformationsComponent
     user: string;
   };
   accountId: number;
+  public fieldTextType: boolean;
+  public fieldTextType2: boolean;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -82,11 +84,10 @@ export class PersonalInformationsComponent
     private localSt: LocalStorageService,
     private documentService: MyDocumentsService,
     private featureService: FeaturesService,
-    private categoryService: CategoryService,
-    private patientService: MyPatientsService,
     private globalService: GlobalService,
     private jobTitlePipe: JobtitlePipe,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private requestCache: RequestCache
   ) {
     this.messages = this.accountService.messages;
     this.labels = this.contactsService.messages;
@@ -100,13 +101,23 @@ export class PersonalInformationsComponent
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
   }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
+
   public isPractician = this.localSt.retrieve("role") == "PRACTICIAN";
   canDeactivate(): boolean {
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
     this.passwordSubmitted = false;
+    this.fieldTextType = false;
+    this.fieldTextType2 = false;
     this.getAllSpeciality();
     this.getjobTitles();
     this.initInfoForm();
@@ -124,7 +135,7 @@ export class PersonalInformationsComponent
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, emailValidator],
+          validators: [Validators.required, emailValidator]
         }),
         title: new FormControl(null, Validators.required),
         speciality: new FormControl(null, Validators.required),
@@ -134,7 +145,7 @@ export class PersonalInformationsComponent
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null),
+        additionalEmail: new FormControl(null)
       });
     } else {
       this.infoForm = new FormGroup({
@@ -142,7 +153,7 @@ export class PersonalInformationsComponent
         last_name: new FormControl(null, Validators.required),
         first_name: new FormControl(null, Validators.required),
         email: new FormControl(null, {
-          validators: [Validators.required, emailValidator],
+          validators: [Validators.required, emailValidator]
         }),
         civility: new FormControl(null, Validators.required),
         birthday: new FormControl(null),
@@ -150,7 +161,7 @@ export class PersonalInformationsComponent
         additional_address: new FormControl(null),
         phone: new FormControl(null, Validators.required),
         picture: new FormControl(null),
-        category: new FormControl(null),
+        category: new FormControl(null)
       });
     }
   }
@@ -158,10 +169,10 @@ export class PersonalInformationsComponent
     this.passwordForm = this.formBuilder.group(
       {
         new_password: ["", [Validators.required, Validators.minLength(8)]],
-        confirm_password: ["", Validators.required],
+        confirm_password: ["", Validators.required]
       },
       {
-        validator: MustMatch("new_password", "confirm_password"),
+        validator: MustMatch("new_password", "confirm_password")
       }
     );
   }
@@ -172,12 +183,15 @@ export class PersonalInformationsComponent
     return this.passwordForm.controls;
   }
   getAllSpeciality() {
-    this.contactsService.getAllSpecialities().subscribe((specialitiesList) => {
-      $(".selectpicker").selectpicker();
-      this.specialities.next(specialitiesList);
-      $(".selectpicker").selectpicker("refresh");
-      this.specialitiesContainingDeleted = specialitiesList;
-    });
+    this.contactsService
+      .getAllSpecialities()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(specialitiesList => {
+        $(".selectpicker").selectpicker();
+        this.specialities.next(specialitiesList);
+        $(".selectpicker").selectpicker("refresh");
+        this.specialitiesContainingDeleted = specialitiesList;
+      });
   }
 
   passwordValid(event) {
@@ -192,70 +206,75 @@ export class PersonalInformationsComponent
     this.showPasswordFailure = false;
   }
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
-      if (account && account.practician) {
-        this.accountId = account.id;
-        this.account = account.practician;
-        this.otherPhones.next(account.otherPhones);
-        this.hasImage = true;
-        this.getPictureProfile(account.id);
-        this.infoForm.patchValue({
-          id: account.practician.id ? account.practician.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "+33",
-          last_name: account.practician.lastName
-            ? account.practician.lastName
-            : "",
-          first_name: account.practician.firstName
-            ? account.practician.firstName
-            : "",
-          title: account.practician.jobTitle
-            ? account.practician.jobTitle
-            : null,
-          civility: account.practician.civility
-            ? account.practician.civility
-            : null,
-          speciality: account.practician.speciality
-            ? account.practician.speciality.id
-            : null,
-          address: account.practician.address ? account.practician.address : "",
-          additional_address: account.practician.additionalAddress
-            ? account.practician.additionalAddress
-            : "",
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-          picture: account.practician.photoId
-            ? account.practician.photoId
-            : null,
-          city: account.practician.city ? account.practician.city : null,
-          zipCode: account.practician.zipCode
-            ? account.practician.zipCode
-            : null,
-          additionalEmail: account.practician.additionalEmail
-            ? account.practician.additionalEmail
-            : null,
-        });
-      } else if (account && account.secretary) {
-        this.account = account.secretary;
-        this.otherPhones.next(account.otherPhones);
-        this.hasImage = true;
-        this.getPictureProfile(account.id);
-        this.infoForm.patchValue({
-          id: account.secretary.id ? account.secretary.id : null,
-          email: account.email ? account.email : "",
-          phone: account.phoneNumber ? account.phoneNumber : "+33",
-          last_name: account.secretary.lastName
-            ? account.secretary.lastName
-            : "",
-          first_name: account.secretary.firstName
-            ? account.secretary.firstName
-            : "",
-          civility: account.secretary.civility
-            ? account.secretary.civility
-            : null,
-          otherPhones: account.otherPhones ? account.otherPhones : [],
-        });
-      }
-    });
+    this.accountService
+      .getCurrentAccount()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(account => {
+        if (account && account.practician) {
+          this.accountId = account.id;
+          this.account = account.practician;
+          this.otherPhones= account.otherPhones;
+          this.hasImage = true;
+          this.getPictureProfile(account.id);
+          this.infoForm.patchValue({
+            id: account.practician.id ? account.practician.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.practician.lastName
+              ? account.practician.lastName
+              : "",
+            first_name: account.practician.firstName
+              ? account.practician.firstName
+              : "",
+            title: account.practician.jobTitle
+              ? account.practician.jobTitle
+              : null,
+            civility: account.practician.civility
+              ? account.practician.civility
+              : null,
+            speciality: account.practician.speciality
+              ? account.practician.speciality.id
+              : null,
+            address: account.practician.address
+              ? account.practician.address
+              : "",
+            additional_address: account.practician.additionalAddress
+              ? account.practician.additionalAddress
+              : "",
+            otherPhones: account.otherPhones ? account.otherPhones : [],
+            picture: account.practician.photoId
+              ? account.practician.photoId
+              : null,
+            city: account.practician.city ? account.practician.city : null,
+            zipCode: account.practician.zipCode
+              ? account.practician.zipCode
+              : null,
+            additionalEmail: account.practician.additionalEmail
+              ? account.practician.additionalEmail
+              : null
+          });
+        } else if (account && account.secretary) {
+          this.account = account.secretary;
+          this.otherPhones = account.otherPhones;
+          this.hasImage = true;
+          this.getPictureProfile(account.id);
+          this.infoForm.patchValue({
+            id: account.secretary.id ? account.secretary.id : null,
+            email: account.email ? account.email : "",
+            phone: account.phoneNumber ? account.phoneNumber : "+33",
+            last_name: account.secretary.lastName
+              ? account.secretary.lastName
+              : "",
+            first_name: account.secretary.firstName
+              ? account.secretary.firstName
+              : "",
+            civility: account.secretary.civility
+              ? account.secretary.civility
+              : null,
+            otherPhones: account.otherPhones ? account.otherPhones : []
+          });
+        }
+      });
     if (this.account?.otherPhones) {
       this.isLabelShow = true;
     }
@@ -291,13 +310,13 @@ export class PersonalInformationsComponent
           speciality:
             this.infoForm.value.speciality != null
               ? this.specialitiesContainingDeleted.find(
-                  (s) => s.id == this.infoForm.value.speciality
+                  s => s.id == this.infoForm.value.speciality
                 )
               : null,
           address: this.infoForm.value.address,
           additionalAddress: this.infoForm.value.additional_address,
-          photoId: this.account.photoId,
-        },
+          photoId: this.account.photoId
+        }
       };
     } else {
       model = {
@@ -309,31 +328,36 @@ export class PersonalInformationsComponent
           firstName: this.infoForm.value.first_name,
           lastName: this.infoForm.value.last_name,
           civility: this.infoForm.value.civility,
-          photoId: this.account.photoId,
-        },
+          photoId: this.account.photoId
+        }
       };
     }
-    this.accountService.updateAccount(model).subscribe((res) => {
-      this.showAlert = true;
-      $(".alert").alert();
-      this.submitted = false;
-      if (this.image) {
-        this.featureService.imageSource = this.image;
-      } else {
-        if (this.isPractician) {
-          this.featureService.imageSource = this.avatars.doctor;
+    this.accountService
+      .updateAccount(model)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(res => {
+        this.showAlert = true;
+        $(".alert").alert();
+        this.submitted = false;
+        this.requestCache.safeDeleteAvatar(this.accountId);
+        if (this.image) {
+          this.featureService.imageSource = this.image;
         } else {
-          this.featureService.imageSource = this.avatars.secretary;
+          if (this.isPractician) {
+            this.featureService.imageSource = this.avatars.doctor;
+          } else {
+            this.featureService.imageSource = this.avatars.secretary;
+          }
         }
-      }
-      if (this.isPractician) {
-        this.featureService.fullName = `${this.jobTitlePipe.transform(
-          model.practician.jobTitle
-        )} ${model.practician.firstName} ${model.practician.lastName}`;
-      } else {
-        this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`;
-      }
-    });
+        if (this.isPractician) {
+          this.featureService.fullName = `${this.jobTitlePipe.transform(
+            model.practician.jobTitle
+          )} ${model.practician.firstName} ${model.practician.lastName}`;
+        } else {
+          this.featureService.fullName = `${model.secretary.firstName} ${model.secretary.lastName}`;
+        }
+        this.scrolToTop();
+      });
   }
   resetPasswordSubmit() {
     this.passwordSubmitted = true;
@@ -342,6 +366,7 @@ export class PersonalInformationsComponent
     }
     this.accountService
       .updatePasswordV2(this.passwordForm.value.new_password)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponsePasswordUpdate, this.handleError);
   }
   getPhoneList(event) {
@@ -358,20 +383,23 @@ export class PersonalInformationsComponent
 
   // initialise profile picture
   getPictureProfile(id) {
-    this.documentService.getDefaultImage(id).subscribe(
-      (response) => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
-          this.image = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      (error) => {
-        this.image = this.avatars.user;
-      }
-    );
+    this.documentService
+      .getDefaultImage(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            this.image = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          this.image = this.avatars.user;
+        }
+      );
   }
 
   // Select file to upload
@@ -383,7 +411,8 @@ export class PersonalInformationsComponent
       const currentFileUpload = selectedFiles.item(0);
       this.documentService
         .uploadFileSelected(this.nodeId, currentFileUpload)
-        .subscribe((event) => {
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(event => {
           if (event.body) {
             const bodySplited = event.body.toString().split("/");
             this.account.photoId = bodySplited[bodySplited.length - 1];
@@ -392,7 +421,7 @@ export class PersonalInformationsComponent
           if (event instanceof HttpResponse) {
             const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               this.image = myReader.result;
             };
             myReader.readAsDataURL(file);
@@ -405,24 +434,29 @@ export class PersonalInformationsComponent
   getAttachementFolderId() {
     this.documentService
       .getSiteById("helssycoreapplication")
-      .subscribe((directory) => {
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(directory => {
         const guid = directory.entry.guid;
-        this.documentService.getAllChildFolders(guid).subscribe((data) => {
-          const profilAttachementFolder = data.list.entries.filter(
-            (directory) => directory.entry.name === "Profiles Pictures"
-          )[0].entry;
-          this.nodeId = profilAttachementFolder.id;
-        });
+        this.documentService
+          .getAllChildFolders(guid)
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe(data => {
+            const profilAttachementFolder = data.list.entries.filter(
+              directory => directory.entry.name === "Profiles Pictures"
+            )[0].entry;
+            this.nodeId = profilAttachementFolder.id;
+          });
       });
   }
 
   deletePicture() {
     this.documentService
       .getLettersImageEntity(this.accountId, "ACCOUNT")
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        (response) => {
+        response => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = (e) => {
+          myReader.onloadend = e => {
             this.image = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
@@ -431,12 +465,12 @@ export class PersonalInformationsComponent
           };
           let ok = myReader.readAsDataURL(response);
         },
-        (error) => {
+        error => {
           this.image = this.avatars.user;
         }
       );
   }
-  handleError = (err) => {
+  handleError = err => {
     if (err && err.error && err.error.apierror) {
       this.passwordErrorMessage = err.error.apierror.message;
       this.showPasswordFailure = true;
@@ -444,14 +478,15 @@ export class PersonalInformationsComponent
     } else {
       throw err;
     }
+    this.scrolToTop();
   };
-  handleResponsePasswordUpdate = (response) => {
+  handleResponsePasswordUpdate = response => {
     if (response) {
       this.showPasswordSuccess = true;
       $("#alertPasswordSuccess").alert();
       this.passwordForm.patchValue({
         new_password: "",
-        confirm_password: "",
+        confirm_password: ""
       });
       this.isPasswordValid = false;
       this.initPasswordForm();
@@ -462,14 +497,32 @@ export class PersonalInformationsComponent
       this.showPasswordFailure = true;
       $("#alertPasswordFailure").alert();
     }
+    this.scrolToTop();
   };
   addPhone() {
     this.addnewPhone.next(true);
     this.isLabelShow = true;
   }
   getjobTitles() {
-    this.accountService.getJobTiles().subscribe((resp) => {
-      this.jobTitlesList = resp;
-    });
+    this.accountService
+      .getJobTiles()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(resp => {
+        this.jobTitlesList = resp;
+      });
+  }
+  scrolToTop() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#Mon-compte").offset().top - 100
+      },
+      1000
+    );
+  }
+  toggleFieldTextType() {
+    this.fieldTextType = !this.fieldTextType;
+  }
+  toggleFieldTextType2() {
+    this.fieldTextType2 = !this.fieldTextType2;
   }
 }

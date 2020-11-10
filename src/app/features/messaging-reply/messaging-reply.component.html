@@ -1,4 +1,13 @@
+<mat-progress-spinner
+  class="spinner"
+  *ngIf="loadingReply"
+  diameter="20"
+  mode="indeterminate"
+  value="100"
+>
+</mat-progress-spinner>
 <lib-hls-new-message-detail
+  *ngIf="!loadingReply"
   [imageSource]="imageSource"
   [messagingDetail]="messagingDetail"
   [body]="bodyObs"
@@ -7,9 +16,12 @@
   [senderRolePatient]="messagingDetail.sender.role == 'PATIENT'"
   [objectsList]="objectsList"
   [toList]="toList"
-  [refuseResponse]="false"
+  [acceptResponse]="acceptResponse"
+  [refuseResponse]="refuseResponse"
   [forwardedResponse]="forwardedResponse"
+  [disableSending]="disableSending"
   (sendAction)="replyMessage($event)"
+  (backButtonAction)="goToBack()"
 ></lib-hls-new-message-detail>
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
   <div class="card" id="card-gif">

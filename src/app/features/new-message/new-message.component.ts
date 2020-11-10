@@ -1,10 +1,17 @@
-import { Component, OnInit, Input, HostListener } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  HostListener,
+  OnDestroy,
+  ElementRef
+} from "@angular/core";
 import { Subject } from "rxjs";
 import {
   FormGroup,
   Validators,
-  FormControl,
-  FormBuilder
+  FormBuilder,
+  FormControl
 } from "@angular/forms";
 import { GlobalService } from "@app/core/services/global.service";
 import { ViewChild } from "@angular/core";
@@ -12,7 +19,6 @@ import { BehaviorSubject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { NotifierService } from "angular-notifier";
-import { MatDialog } from "@angular/material/dialog";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { takeUntil, tap } from "rxjs/operators";
 import { forkJoin } from "rxjs";
@@ -40,7 +46,8 @@ declare var $: any;
   templateUrl: "./new-message.component.html",
   styleUrls: ["./new-message.component.scss"]
 })
-export class NewMessageComponent implements OnInit {
+export class NewMessageComponent implements OnInit, OnDestroy {
+  ctrl: FormControl = new FormControl();
   @Input() id: number;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
@@ -61,6 +68,7 @@ export class NewMessageComponent implements OnInit {
   selectedFiles: any;
   selectedPracticianId: number;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
+  @ViewChild("fileInput", { static: false }) fileInput: ElementRef;
   private readonly notifier: NotifierService;
   avatars: {
     doctor: string;
@@ -108,7 +116,7 @@ export class NewMessageComponent implements OnInit {
   practicianFullToList: any[];
 
   lastObjectList: any[];
-
+  loading: boolean = false;
   //////
   private _forList = [];
   private _objectsList = [];
@@ -207,7 +215,9 @@ export class NewMessageComponent implements OnInit {
       freeObject: ["", Validators.required],
       body: ["", Validators.required],
       file: [""],
-      document: null
+      documentHeader: null,
+      documentBody: "",
+      documentFooter: null
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -239,6 +249,7 @@ export class NewMessageComponent implements OnInit {
     return this.sendMessageForm.controls;
   }
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
@@ -247,20 +258,25 @@ export class NewMessageComponent implements OnInit {
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     if (this.localSt.retrieve("role") == "SECRETARY") {
       this.connectedUserType = "SECRETARY";
-      this.featureService.getSecretaryPracticians().subscribe(value => {
-        value.forEach(item => {
-          item.type = "CONTACT_PRO";
+      this.featureService
+        .getSecretaryPracticians()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(value => {
+          value.forEach(item => {
+            item.type = "CONTACT_PRO";
 
-          this.forFieldList.push(item);
+            this.forFieldList.push(item);
+          });
+          this.forList.next(this.forFieldList);
         });
-        this.forList.next(this.forFieldList);
-      });
     }
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe(res => {});
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
 
     $(document).ready(function() {
       $(window).keydown(function(event) {
@@ -287,7 +303,7 @@ export class NewMessageComponent implements OnInit {
     this.selectedObjectSubscription();
     this.dropdownSettings = {
       singleSelection: false,
-      text: "Sélectionner un ou plusieurs correspondants",
+      text: this.innerWidth > 420 ? "" : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
       enableFilterSelectAll: true,
@@ -320,14 +336,20 @@ export class NewMessageComponent implements OnInit {
       this.dropdownSettingsForList,
       this.dropdownSettingsPatientToList
     );
-    this.dropdownSettingsForList.text = this.isPatient
-      ? "Sélectionner une personne attachée à votre compte"
-      : this.isSecretary()
-      ? "Sélectionner un contact"
-      : "Sélectionner un patient concerné si nécessaire";
+    this.dropdownSettingsForList.text =
+      this.innerWidth > 420
+        ? this.isPatient
+          ? "Sélectionner une personne attachée à votre compte"
+          : this.isSecretary()
+          ? "Sélectionner un contact"
+          : "Sélectionner un patient concerné si nécessaire"
+        : "Patient Concerné";
     this.dropdownSettingsListObject = {
       singleSelection: true,
-      text: "Sélectionner un objet parmi votre liste",
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un objet parmi votre liste"
+          : "Sélectionner",
       searchPlaceholderText: "Rechercher",
       enableSearchFilter: true,
       enableFilterSelectAll: true,
@@ -348,10 +370,11 @@ export class NewMessageComponent implements OnInit {
 
     this.dropdownSettingsConcernList = {
       ...this.dropdownSettingsListObject,
-      text: "Sélectionner un patient concerné si nécessaire"
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un patient concerné si nécessaire"
+          : "Sélectionner"
     };
-
-    this.innerWidth = window.innerWidth;
   }
 
   ccListSubscription() {
@@ -422,33 +445,39 @@ export class NewMessageComponent implements OnInit {
   }
 
   selectedObjectSubscription() {
-    let selectedElements;
+    let selectedElements = [];
     this.selectedObject.subscribe(res => {
       if (res) {
         if (res.update) {
           this.sendMessageForm.patchValue({
-            body: res.body
+            body: res.body ? res.body : ""
           });
-          if (res.document) {
+          if (res.documentBody) {
             this.sendMessageForm.patchValue({
-              document: res.document
+              document: res.document,
+              documentHeader: res.documentHeader,
+              documentBody: res.documentBody ? res.documentBody : "",
+              documentFooter: res.documentFooter
             });
           }
         } else {
           selectedElements = this.objectFilteredList.filter(
             e => e.id == res.id
           );
-          selectedElements[0].name = res.name;
-          this.sendMessageForm.patchValue({
-            object: selectedElements
-          });
-
-          this.sendMessageForm.patchValue({
-            body: res.body
-          });
-          if (res.document) {
+          if (selectedElements.length > 0) {
+            selectedElements[0].name = res.name;
             this.sendMessageForm.patchValue({
-              document: res.document
+              object: selectedElements
+            });
+          }
+          this.sendMessageForm.patchValue({
+            body: res.body ? res.body : ""
+          });
+          if (res.documentBody) {
+            this.sendMessageForm.patchValue({
+              documentHeader: res.documentHeader,
+              documentBody: res.documentBody ? res.documentBody : "",
+              documentFooter: res.documentFooter
             });
           }
         }
@@ -469,7 +498,7 @@ export class NewMessageComponent implements OnInit {
           : false
         : null;
     this.hasError = false;
-    this.sendMessageForm.controls["body"].enable();
+    //this.sendMessageForm.controls["body"].enable();
     this.sendMessageForm.patchValue({
       body:
         this.sendMessageForm.value.object.length == 1
@@ -485,8 +514,9 @@ export class NewMessageComponent implements OnInit {
   }
 
   public removeAttachment() {
+    this.fileInput.nativeElement.value = "";
     this.sendMessageForm.patchValue({
-      file: undefined
+      file: ""
     });
   }
 
@@ -665,7 +695,9 @@ export class NewMessageComponent implements OnInit {
         file: null
       });
       this.sendMessageForm.patchValue({
-        document: null
+        documentHeader: null,
+        documentBody: "",
+        documentFooter: null
       });
 
       this.selectContext = false;
@@ -679,7 +711,7 @@ export class NewMessageComponent implements OnInit {
           : "information"
         : "";
     if (this.isInfoDisplay == false) {
-      this.sendMessageForm.patchValue({ body: null });
+      this.sendMessageForm.patchValue({ body: "" });
       this.otherObject = false;
     }
     if (!this.isPatient && !this.isTls) {
@@ -690,7 +722,7 @@ export class NewMessageComponent implements OnInit {
         this.otherObject = true;
         this.sendMessageForm.patchValue({
           freeObject: "",
-          body: null
+          body: ""
         });
       }
     }
@@ -715,9 +747,13 @@ export class NewMessageComponent implements OnInit {
         : null;
 
       this.hasError = false;
-      this.sendMessageForm.controls["body"].enable();
+      //this.sendMessageForm.controls["body"].enable();
       this.sendMessageForm.patchValue({
-        body: this.sendMessageForm.value.object[0].body
+        body:
+          this.sendMessageForm.value.object[0] &&
+          this.sendMessageForm.value.object[0].body
+            ? this.sendMessageForm.value.object[0].body
+            : ""
       });
     } else {
       this.otherObject = false;
@@ -868,7 +904,10 @@ export class NewMessageComponent implements OnInit {
             img: this.avatars.man
           });
           this.toList.next(myList);
-        } else if (contactPractician.civility == "MME") {
+        } else if (
+          contactPractician.civility == "MME" ||
+          contactPractician.civility == "Mme"
+        ) {
           myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
@@ -917,14 +956,17 @@ export class NewMessageComponent implements OnInit {
 
   sendMessage(message) {
     if (message.type[0].id == SendType.SEND_POSTAL) {
-      this.featureService.checkIfSendPostalEnabled().subscribe(result => {
-        this.sendPostal = result;
-        if (this.sendPostal) {
-          this.sendMessage2(message);
-        } else {
-          $("#firstModal").modal("toggle");
-        }
-      });
+      this.featureService
+        .checkIfSendPostalEnabled()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(result => {
+          this.sendPostal = result;
+          if (this.sendPostal) {
+            this.sendMessage2(message);
+          } else {
+            $("#firstModal").modal("toggle");
+          }
+        });
     } else {
       this.sendMessage2(message);
     }
@@ -1003,7 +1045,7 @@ export class NewMessageComponent implements OnInit {
 
   objectSelection(item) {
     let selectedObj = item.object[0];
-    if (selectedObj && selectedObj.title != "autre") {
+    if (selectedObj && selectedObj.title != "autre" && !this.isInstruction) {
       const objectDto = {
         senderId: this.featureService.getUserId(),
         sendedForId: item.for && item.for[0] && item.for[0].id,
@@ -1014,9 +1056,11 @@ export class NewMessageComponent implements OnInit {
       let newData = {
         id: selectedObj.id,
         name: selectedObj.title,
-        body: null,
+        body: "",
         file: null,
-        document: null
+        documentHeader: null,
+        documentBody: "",
+        documentFooter: null
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1027,18 +1071,24 @@ export class NewMessageComponent implements OnInit {
           })
         );
       if (selectedObj.allowDocument) {
+        this.loading = true;
+        this.ctr.body.disable();
         const doc = this.getPdfAsHtml(objectDto, newData);
-        forkJoin(body, doc)
+        forkJoin([body, doc])
           .pipe(takeUntil(this._destroyed$))
           .subscribe(res => {
             this.selectedObject.next(newData);
+            this.loading = false;
+            this.ctr.body.enable();
           });
       } else {
-        forkJoin(body)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(res => {
-            this.selectedObject.next(newData);
-          });
+        this.loading = true;
+        this.ctr.body.disable();
+        body.pipe(takeUntil(this._destroyed$)).subscribe(res => {
+          this.selectedObject.next(newData);
+          this.loading = false;
+          this.ctr.body.enable();
+        });
       }
     } else if (selectedObj) {
       this.selectedObject.next({
@@ -1052,11 +1102,13 @@ export class NewMessageComponent implements OnInit {
 
   getPdfAsHtml(request, newData) {
     return this.requestTypeService
-      .getDocumentAsHtml(request)
+      .getDocumentField(request)
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap(response => {
-          newData.document = response.document;
+          newData.documentHeader = response.header;
+          newData.documentBody = response.body ? response.body : "";
+          newData.documentFooter = response.footer;
         })
       );
   }
@@ -1064,10 +1116,11 @@ export class NewMessageComponent implements OnInit {
   goToBack() {
     this._location.back();
   }
-  // destory any subscribe to avoid memory leak
+
+  // destory any pipe(takeUntil(this._destroyed$)).pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   getTLSGroupByPracticianId() {
@@ -1097,11 +1150,14 @@ export class NewMessageComponent implements OnInit {
       });
   }
   getInstructionObjectListByTLSGroupId(id: any) {
-    this.objectsService.getAllByTLS(id).subscribe(objects => {
-      this.instructionObjectsList = objects.map(e => {
-        return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+    this.objectsService
+      .getAllByTLS(id)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(objects => {
+        this.instructionObjectsList = objects.map(e => {
+          return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+        });
       });
-    });
   }
 
   typeSelection(item) {
@@ -1145,7 +1201,7 @@ export class NewMessageComponent implements OnInit {
             this.toList.next([this.practicianTLSGroup]);
             this.ccList.next(
               this.practicianFullToList.filter(
-                e => e.id !== this.practicianTLSGroup.id
+                e => e.id !== this.practicianTLSGroup.id && e.type !== "PATIENT"
               )
             );
             break;
@@ -1241,6 +1297,39 @@ export class NewMessageComponent implements OnInit {
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     this.innerWidth = window.innerWidth;
+    this.dropdownSettings = {
+      ...this.dropdownSettings,
+      text: this.innerWidth > 420 ? "" : "Sélectionner"
+    };
+    this.dropdownSettingsForList = {
+      ...this.dropdownSettingsForList,
+      text:
+        this.innerWidth > 420
+          ? this.isPatient
+            ? "Sélectionner une personne rattachée à votre compte"
+            : this.isSecretary()
+            ? "Sélectionner un contact"
+            : "Sélectionner un patient concerné si nécessaire"
+          : "Patient concerné"
+    };
+    this.dropdownSettingsListObject.text =
+      this.innerWidth > 420
+        ? "Sélectionner un objet parmi votre liste"
+        : "Sélectionner";
+    this.dropdownSettingsListObject = {
+      ...this.dropdownSettingsListObject,
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un objet parmi votre liste"
+          : "Sélectionner"
+    };
+    this.dropdownSettingsConcernList = {
+      ...this.dropdownSettingsListObject,
+      text:
+        this.innerWidth > 420
+          ? "Sélectionner un patient concerné si nécessaire"
+          : "Sélectionner"
+    };
   }
   openConfirmModel() {
     $("#firstModal").modal("hide");
@@ -1248,11 +1337,14 @@ export class NewMessageComponent implements OnInit {
   }
   activateSenPostalOption() {
     if (this.addOptionConfirmed) {
-      this.featureService.activateSendPostal().subscribe(res => {
-        this.sendPostal = true;
-        $("#confirmModal").modal("hide");
-        $("#successModal").modal("toggle");
-      });
+      this.featureService
+        .activateSendPostal()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(res => {
+          this.sendPostal = true;
+          $("#confirmModal").modal("hide");
+          $("#successModal").modal("toggle");
+        });
     }
   }
   checkboxChange(event) {
@@ -1311,6 +1403,10 @@ export class NewMessageComponent implements OnInit {
           message.concerns && message.concerns[0]
             ? message.concerns[0]?.fullName
             : null;
+        newMessage.sender.concernsType =
+          message.concerns && message.concerns[0]
+            ? message.concerns[0].type
+            : null;
       }
     }
     message.object != "" &&
@@ -1320,7 +1416,9 @@ export class NewMessageComponent implements OnInit {
       : (newMessage.object = message.freeObject);
     newMessage.body = message.body;
     newMessage.showFileToPatient = true;
-    newMessage.document = message.document;
+    newMessage.documentHeader = message.documentHeader;
+    newMessage.documentBody = message.documentBody ? message.documentBody : "";
+    newMessage.documentFooter = message.documentFooter;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;

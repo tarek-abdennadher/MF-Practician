@@ -16,7 +16,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
-import { forkJoin, BehaviorSubject } from "rxjs";
+import { forkJoin, BehaviorSubject, Subject } from "rxjs";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { ArchieveMessagesService } from "./archieve-messages/archieve-messages.service";
 import { MessageService } from "./services/message.service";
@@ -26,6 +26,7 @@ import { MyPatientsService } from "./services/my-patients.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
+import { RoleObjectPipe } from "@app/shared/pipes/role-object";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -50,7 +51,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     public router: Router,
     private localSt: LocalStorageService,
     public featuresService: FeaturesService,
-    private searchService: PracticianSearchService,
     private globalService: GlobalService,
     private messageListService: MessagingListService,
     private messageService: MessageService,
@@ -63,13 +63,15 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
     private cdr: ChangeDetectorRef,
-    notifierService: NotifierService
+    notifierService: NotifierService,
+    public roleObjectPipe: RoleObjectPipe
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.initializeWebSocketConnection();
     this.getPracticiansRealTimeMessage();
   }
+
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
   }
@@ -124,6 +126,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.getAllInbox();
     this.getAllArchive();
     this.sentMessage();
+    this.forwardedMessage();
     this.observeState();
     this.subscribeIsMessaging();
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
@@ -198,8 +201,13 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   sentMessage() {
-    this.messageService.sentMessage().subscribe(res => {
+    this.messageService.sentMessageFullSize().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
+    });
+  }
+  forwardedMessage() {
+    this.messageService.forwardedMessage().subscribe(res => {
+      this.featuresService.setSearchForwarded(this.parseMessages(res));
     });
   }
 
@@ -228,6 +236,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
     this.stompClient.debug = () => {};
+
     const that = this;
     this.stompClient.connect({}, function(frame) {
       that.stompClient.subscribe(
@@ -235,7 +244,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
-            if (notification.type == "MESSAGE") {
+            if (
+              notification.type == "MESSAGE" ||
+              notification.type == "MESSAGE_FAILED"
+            ) {
               that.messageListService.setNotificationObs(notification);
             } else if (notification.type == "MESSAGE_IN_PROGRESS") {
               that.messageListService.setNotificationMessageStateObs(
@@ -383,27 +395,33 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   displayInboxAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie"]);
   }
   displaySendAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.messageWidgetService.toggleObs.next();
   }
   displaySentAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie-envoyes"]);
   }
   displayForwardedAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie-transferes"]);
   }
   displayArchieveAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie-archives"]);
   }
 
   displayMyPatientsAction(event) {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     switch (event) {
       case "accepted": {
         this.router.navigate(["/mes-patients"]);
@@ -425,42 +443,30 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
   displayMyMedicalsAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/favorites"]);
   }
   displayMyProContactsAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/mes-contacts-pro"]);
   }
   displayMyDocumentsAction() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/mes-documents"]);
   }
-  displayHelpAction() {
-    console.log("displayHelpAction");
-  }
-  selectAllActionClicked() {
-    console.log("selectAllAction");
-  }
-  seenActionClicked() {
-    console.log("seenAction");
-  }
-  seenAllActionClicked() {
-    console.log("seenAllAction");
-  }
-  importantActionClicked() {
-    console.log("importantAction");
-  }
-  deleteActionClicked() {
-    console.log("deleteAction");
-  }
-  archieveActionClicked() {
-    console.log("archieveAction");
-  }
-  filterActionClicked(event) {
-    console.log(event);
-  }
+  displayHelpAction() {}
+  selectAllActionClicked() {}
+  seenActionClicked() {}
+  seenAllActionClicked() {}
+  importantActionClicked() {}
+  deleteActionClicked() {}
+  archieveActionClicked() {}
+  filterActionClicked(event) {}
   logoClicked() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["/messagerie"]);
   }
 
@@ -516,13 +522,31 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           .getSearchSentValue()
           .filter(
             x =>
-              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
+              (x.users[0].fullName
+                ? x.users[0].fullName
+                    .toLowerCase()
+                    .includes(event.toLowerCase())
+                : x.object.name.toLowerCase().includes(event.toLowerCase())) ||
               x.object.name.toLowerCase().includes(event.toLowerCase())
           );
         result = result.length > 0 ? result : null;
         this.featuresService.setFilteredSentSearch(result);
       } else {
         this.featuresService.setFilteredSentSearch([]);
+      }
+    } else if (this.featuresService.activeChild.getValue() == "forwarded") {
+      if (event) {
+        let result = this.featuresService
+          .getSearchForwardedValue()
+          .filter(
+            x =>
+              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
+              x.object.name.toLowerCase().includes(event.toLowerCase())
+          );
+        result = result.length > 0 ? result : null;
+        this.featuresService.setFilteredForwardedSearch(result);
+      } else {
+        this.featuresService.setFilteredForwardedSearch([]);
       }
     } else if (this.featuresService.activeChild.getValue() == "archived") {
       if (event) {
@@ -540,13 +564,29 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
-        this.router.navigate(["/praticien-recherche"]);
         let result = this.practicians.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
         result = result.length > 0 ? result : null;
         this.featuresService.setSearchFiltredPractician(result);
+        this.router.navigate(["/praticien-recherche"]);
       } else {
+        this.router.navigate(["/mes-contacts-pro"]);
+      }
+    } else if (
+      this.featuresService.activeChild.getValue() == "practician-search"
+    ) {
+      if (event) {
+        let result = this.practicians.filter(
+          x =>
+            x.fullName.toLowerCase().includes(event.toLowerCase()) ||
+            x.title.toLowerCase().includes(event.toLowerCase())
+        );
+        result = result && result.length > 0 ? result : null;
+        this.featuresService.setSearchFiltredPractician(result);
+        this.router.navigate(["/praticien-recherche"]);
+      } else {
+        this.featuresService.setSearchFiltredPractician([]);
         this.router.navigate(["/mes-contacts-pro"]);
       }
     } else if (this.featuresService.activeChild.getValue() == "patient") {
@@ -563,39 +603,39 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
   markNotificationsAsViewed(notifications) {
     notifications.forEach(notification => {
-      if (notification.type == "MESSAGE") {
-        this.featuresService
-          .markMessageAsSeenByNotification(notification.messageId)
-          .subscribe(() => {});
-      } else if (
+      if (
         notification.type == "MESSAGE_IN_PROGRESS" ||
-        notification.type == "MESSAGE_TREATED"
+        notification.type == "MESSAGE_TREATED" ||
+        notification.type == "MESSAGE_FAILED" ||
+        notification.type == "INVITATION" ||
+        notification.type == "INSTRUCTION_TREATED" ||
+        notification.type == "ACCEPTED_REQUEST"
       ) {
-        this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .subscribe(resp => {});
-      } else if (notification.type == "INVITATION") {
-        this.featuresService
-          .markNotificationAsSeen(notification.id)
-          .subscribe(resp => {});
-      } else if (notification.type == "INSTRUCTION_TREATED") {
         this.featuresService
           .markNotificationAsSeen(notification.id)
           .subscribe(resp => {});
       }
     });
   }
+
   selectNotification(notification) {
     if (notification.type == "MESSAGE") {
       this.featuresService
         .markMessageAsSeenByNotification(notification.messageId)
+
         .subscribe(() => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
-            queryParams: {
-              context: "inbox"
+          this.router.navigate(
+            [
+              "/messagerie-lire/" +
+                this.featuresService.encrypt(notification.messageId)
+            ],
+            {
+              queryParams: {
+                context: "inbox"
+              }
             }
-          });
+          );
           this.featuresService.setNumberOfInbox(
             this.featuresService.getNumberOfInboxValue() - 1
           );
@@ -606,42 +646,62 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     ) {
       this.featuresService
         .markNotificationAsSeen(notification.id)
+
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
-            queryParams: {
-              context: "sent"
+          this.router.navigate(
+            [
+              "/messagerie-lire/" +
+                this.featuresService.encrypt(notification.messageId)
+            ],
+            {
+              queryParams: {
+                context: "sent"
+              }
             }
-          });
+          );
         });
     } else if (notification.type == "INVITATION") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
+
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/mes-patients"], {
-            queryParams: {
-              section: "pending"
-            }
-          });
+          this.router.navigate(["/mes-invitations"]);
         });
     } else if (notification.type == "INSTRUCTION_TREATED") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
         .subscribe(resp => {
           this.getMyNotificationsNotSeen();
-          this.router.navigate(["/messagerie-lire/" + notification.messageId], {
-            queryParams: {
-              section: "sent"
+          this.router.navigate(
+            [
+              "/messagerie-lire/" +
+                this.featuresService.encrypt(notification.messageId)
+            ],
+            {
+              queryParams: {
+                section: "sent"
+              }
             }
-          });
+          );
+        });
+    } else if (notification.type == "MESSAGE_FAILED") {
+      this.featuresService
+        .markNotificationAsSeen(notification.id)
+
+        .subscribe(resp => {
+          this.getMyNotificationsNotSeen();
         });
     }
   }
   displayInboxOfPracticiansAction(event) {
     jQuery("#sidebar").addClass("hidden-side-bar");
     this.localSt.store("practicianId", event);
-    this.router.navigate(["/messagerie/" + event]);
+    this.scrolToTop();
+    this.router.navigate([
+      "/messagerie/" + this.featuresService.encrypt(event)
+    ]);
   }
 
   getPersonalInfo() {
@@ -708,7 +768,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isArchieve: true,
       photoId: message.sender.photoId
     };
-    this.documentService.getDefaultImage(message.sender.senderId).subscribe(
+    this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
       response => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = e => {
@@ -736,7 +796,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           ? "En cours"
           : message.messageStatus == "TREATED"
           ? "répondu"
-          : message.toReceivers[0].seen
+          : message.toReceivers[0] && message.toReceivers[0].seen
           ? "Lu"
           : "Envoyé",
       value:
@@ -744,7 +804,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           ? 80
           : message.messageStatus == "TREATED"
           ? 100
-          : message.toReceivers[0].seen
+          : message.toReceivers[0] && message.toReceivers[0].seen
           ? 50
           : 20
     };
@@ -801,31 +861,41 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   // parse archive message
   mappingMessageArchived(message) {
     const messageArchived = new MessageArchived();
+    const senderRole = message?.senderDetail?.role;
+    const senderRolePascalCase = this.roleObjectPipe.transform(senderRole);
+
     messageArchived.id = message.id;
     messageArchived.isSeen = message.seen;
     messageArchived.users = [
       {
-        fullName:
-          (message.senderDetail[message.senderDetail.role.toLowerCase()] &&
-            message.senderDetail[message.senderDetail.role.toLowerCase()]
-              .fullName) ||
-          "",
+        fullName: message.senderDetail[senderRolePascalCase].fullName,
         img: this.avatars.user,
         title: message.senderDetail.practician
           ? message.senderDetail.practician.title
           : "",
-        type:
-          message.senderDetail.role == "PRACTICIAN"
-            ? "MEDICAL"
-            : message.senderDetail.role,
+        type: senderRole == "PRACTICIAN" ? "MEDICAL" : senderRole,
         photoId: this.getPhotoId(message.senderDetail),
         civility:
-          message.senderDetail.role == "PATIENT"
+          senderRole == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
         id: message.senderDetail.id
       }
     ];
+    messageArchived.progress = {
+      name:
+        message.messageStatus == "TREATED"
+          ? "répondu"
+          : message.toReceiversArchived[0].seen
+          ? "Lu"
+          : "Envoyé",
+      value:
+        message.messageStatus == "TREATED"
+          ? 100
+          : message.toReceiversArchived[0].seen
+          ? 50
+          : 20
+    };
     messageArchived.object = {
       name: message.object,
       isImportant: message.importantObject
@@ -840,16 +910,18 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   loadPhoto(user) {
-    this.documentService.downloadFile(user.photoId).subscribe(
+    this.documentService.getDefaultImage(user.id).subscribe(
       response => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = e => {
-          user.img = myReader.result;
+          user.img = this.sanitizer.bypassSecurityTrustUrl(
+            myReader.result as string
+          );
         };
-        let ok = myReader.readAsDataURL(response.body);
+        let ok = myReader.readAsDataURL(response);
       },
       error => {
-        user.img = this.avatars.user;
+        user.img = "assets/imgs/user.png";
       }
     );
   }
@@ -864,6 +936,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         return senderDetail.secretary.photoId;
       case "TELESECRETARYGROUP":
         return senderDetail.telesecretaryGroup.photoId;
+      case "SUPERVISOR" || "SUPER_SUPERVISOR" || "OPERATOR":
+        return senderDetail.telesecretary.photoId;
       default:
         return null;
     }
@@ -879,10 +953,20 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   myObjects() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["mes-objets"]);
   }
   myCategories() {
     jQuery("#sidebar").addClass("hidden-side-bar");
+    this.scrolToTop();
     this.router.navigate(["mes-categories"]);
+  }
+  scrolToTop() {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#main-container").offset().top - 100
+      },
+      1000
+    );
   }
 }

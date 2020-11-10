@@ -6,11 +6,13 @@ import { LocalStorageService } from "ngx-webstorage";
 import * as jwt_decode from "jwt-decode";
 import { search } from "./practician-search/search.model";
 import { SafeUrl } from "@angular/platform-browser";
-
+import * as CryptoJS from "crypto-js";
+import { HttpUrlEncodingCodec } from "@angular/common/http";
 @Injectable({
   providedIn: "root"
 })
 export class FeaturesService {
+  encode = new HttpUrlEncodingCodec();
   public listNotifications = [];
   public selectedPracticianId = 0;
   private _numberOfInbox = new BehaviorSubject<number>(0);
@@ -42,9 +44,12 @@ export class FeaturesService {
   public searchFiltredPractician = new BehaviorSubject([]);
   public searchFilteredSent = new BehaviorSubject([]);
   public searchSent = new BehaviorSubject([]);
+  public searchFilteredForwarded = new BehaviorSubject([]);
+  public searchForwarded = new BehaviorSubject([]);
   public searchFilteredArchive = new BehaviorSubject([]);
   public searchArchive = new BehaviorSubject([]);
   public activeChild = new BehaviorSubject("inbox");
+  public historyPatient = new BehaviorSubject(false);
 
   public searchPatientsFiltered = new BehaviorSubject([]);
   public searchPatients = new BehaviorSubject([]);
@@ -80,7 +85,9 @@ export class FeaturesService {
   getIsMessaging() {
     return this.isMessaging.asObservable();
   }
-
+  getIsMessagingValue() {
+    return this.isMessaging.getValue();
+  }
   getNumberOfInboxValue() {
     return this._numberOfInbox.getValue();
   }
@@ -124,6 +131,19 @@ export class FeaturesService {
   setFilteredSentSearch(list) {
     this.searchFilteredSent.next(list);
   }
+  getSearchForwardedValue() {
+    return this.searchForwarded.getValue();
+  }
+  setSearchForwarded(list) {
+    this.searchForwarded.next(list);
+  }
+  getFilteredForwardedSearch() {
+    return this.searchFilteredForwarded.asObservable();
+  }
+
+  setFilteredForwardedSearch(list) {
+    this.searchFilteredForwarded.next(list);
+  }
 
   // SentSearch getter and setter
 
@@ -153,6 +173,9 @@ export class FeaturesService {
 
   setActiveChild(text) {
     this.activeChild.next(text);
+  }
+  setHistoryPatient(value) {
+    this.historyPatient.next(value);
   }
 
   // patient Search getter and setter
@@ -347,5 +370,32 @@ export class FeaturesService {
       RequestType.PUT,
       this.globalService.url.option + "/activate-postal/" + this.getUserId()
     );
+  }
+  encrypt(data) {
+    try {
+      return encodeURIComponent(
+        CryptoJS.AES.encrypt(
+          JSON.stringify(data),
+          this.globalService.encyptionKey
+        ).toString()
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  decrypt(data) {
+    try {
+      const bytes = CryptoJS.AES.decrypt(
+        decodeURIComponent(data),
+        this.globalService.encyptionKey
+      );
+      if (bytes.toString()) {
+        return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      }
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

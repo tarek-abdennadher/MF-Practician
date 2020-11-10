@@ -9,6 +9,8 @@ import { StatsComponent } from "./stats/stats.component";
 import { MyLeavesComponent } from "./my-leaves/my-leaves.component";
 import { SecretaryDetailsComponent } from "@app/shared/components/secretary-details/secretary-details.component";
 import { DirtyCheckGuard } from "../dirty-check.guard";
+import { LeavesGuard } from "./guards/leaves.guard";
+import { TlsGuard } from "./guards/tls.guard";
 
 const routes: Routes = [
   {
@@ -34,6 +36,7 @@ const routes: Routes = [
       {
         path: "mon-telesecretariat",
         component: TeleSecretariesComponent,
+        canActivate: [TlsGuard],
       },
       {
         path: "mes-factures",
@@ -46,6 +49,7 @@ const routes: Routes = [
       {
         path: "mes-conges",
         component: MyLeavesComponent,
+        canActivate: [LeavesGuard],
         canDeactivate: [DirtyCheckGuard],
       },
     ],

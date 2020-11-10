@@ -1,6 +1,14 @@
 <div id="chart" class="margin-right_">
+  <mat-progress-spinner
+    class="spinner"
+    *ngIf="loading"
+    diameter="60"
+    mode="indeterminate"
+    value="100"
+  >
+  </mat-progress-spinner>
   <apx-chart
-    *ngIf="!emptyData"
+    *ngIf="!loading && !emptyData"
     [series]="chartOptions.series"
     [chart]="chartOptions.chart"
     [labels]="chartOptions.labels"
@@ -8,5 +16,5 @@
     [legend]="chartOptions.legend"
     [colors]="chartOptions.colors"
   ></apx-chart>
-  <div class="info" *ngIf="emptyData">{{ infoMessage }}</div>
+  <div class="info" *ngIf="!loading && emptyData">{{ infoMessage }}</div>
 </div>

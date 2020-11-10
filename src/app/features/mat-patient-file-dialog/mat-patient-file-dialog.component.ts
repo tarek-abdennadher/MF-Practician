@@ -1,21 +1,22 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, } from '@angular/forms';
-import { AccountService } from '../services/account.service';
-import { MyDocumentsService } from '../my-documents/my-documents.service';
-import { GlobalService } from '@app/core/services/global.service';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { CategoryService } from '../services/category.service';
-import { takeUntil } from 'rxjs/operators';
-import { MyPatientsService } from '../services/my-patients.service';
-import { NotifierService } from 'angular-notifier';
-import { NoteService } from '../services/note.service';
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { FormGroup, FormBuilder } from "@angular/forms";
+import { AccountService } from "../services/account.service";
+import { MyDocumentsService } from "../my-documents/my-documents.service";
+import { GlobalService } from "@app/core/services/global.service";
+import { Subject, BehaviorSubject } from "rxjs";
+import { CategoryService } from "../services/category.service";
+import { takeUntil } from "rxjs/operators";
+import { MyPatientsService } from "../services/my-patients.service";
+import { NotifierService } from "angular-notifier";
+import { NoteService } from "../services/note.service";
 import { MyPatients } from '@app/shared/models/my-patients';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
-  selector: 'app-mat-patient-file-dialog',
-  templateUrl: './mat-patient-file-dialog.component.html',
-  styleUrls: ['./mat-patient-file-dialog.component.scss']
+  selector: "app-mat-patient-file-dialog",
+  templateUrl: "./mat-patient-file-dialog.component.html",
+  styleUrls: ["./mat-patient-file-dialog.component.scss"],
 })
 export class MatPatientFileDialogComponent implements OnInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -35,9 +36,21 @@ export class MatPatientFileDialogComponent implements OnInit {
   patientFileId: number;
   notes = new BehaviorSubject([]);
   notesList = [];
-  avatars: { doctor: string; child: string; women: string; man: string; secretary: string; user: string; tls: string; };
+  avatars: {
+    doctor: string;
+    child: string;
+    women: string;
+    man: string;
+    secretary: string;
+    user: string;
+    tls: string;
+  };
+  public disabled : boolean = false;
   private _destroyed$ = new Subject();
   private readonly notifier: NotifierService;
+  popup: boolean = true;
+  public messages : any;
+  public loadingMessage : string;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     private noteService: NoteService,
@@ -48,8 +61,10 @@ export class MatPatientFileDialogComponent implements OnInit {
     private categoryService: CategoryService,
     private patientService: MyPatientsService,
     notifierService: NotifierService,
-    public dialogRef: MatDialogRef<MatPatientFileDialogComponent>
+    public dialogRef: MatDialogRef<MatPatientFileDialogComponent>,
+    private spinner: NgxSpinnerService,
   ) {
+    this.messages = this.patientService.messages;
     this.labels = this.service.messages;
     this.isMaidenNameShow = false;
     this.isDeleted = false;
@@ -57,44 +72,47 @@ export class MatPatientFileDialogComponent implements OnInit {
     this.avatars = this.globalService.avatars;
     this.noteimageSource = this.avatars.user;
     this.linkedPatientList = [];
-    this.notesList = []
-    this.patchValue(this.data);
+    this.notesList = [];
   }
   ngOnInit() {
-
     this.patchValue(this.data);
   }
   patchValue(data) {
-    if (data.info.patientFileId != null) {
-      this.patientService.getPatientFileById(data.info.patientFileId).pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
-        this.patientFile.next(patientFile);
-        this.userRole = data.info.userRole;
-        this.patientFileId = patientFile.id;
-        this.notesList = [];
-        if (patientFile.notes && patientFile.notes.length > 0) {
-          patientFile.notes.forEach((elm) => {
-            this.notesList.push(this.mappingNote(elm));
-          });
-        }
-        this.notes.next(this.notesList);
-        if (patientFile.patientId) {
-          this.patientService
-            .getPatientsByParentId(patientFile.patientId)
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe((res) => {
-              this.linkedPatientList = [];
-              res.forEach((elm) => {
-                this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-              });
-              this.linkedPatients.next(this.linkedPatientList);
-            }
-            );
-        }
-      });
+    if(data.info.disabled && data.info.disabled == true){
+      this.disabled = true;
     }
-    else {
-      this.patientService.getPatientFileByPracticianId(data.info.patientId, data.info.practicianId)
-        .pipe(takeUntil(this._destroyed$)).subscribe(patientFile => {
+    if (data.info.patientFileId != null) {
+      this.patientService
+        .getPatientFileById(data.info.patientFileId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((patientFile) => {
+          this.patientFile.next(patientFile);
+          this.userRole = data.info.userRole;
+          this.patientFileId = patientFile.id;
+          this.notesList = [];
+          if (patientFile.notes && patientFile.notes.length > 0) {
+            patientFile.notes.forEach((elm) => {
+              this.notesList.push(this.mappingNote(elm));
+            });
+          }
+          this.notes.next(this.notesList);
+          this.linkedPatientList = [];
+          this.linkedPatients.next(null);
+          if (patientFile.linkedPatientFiles) {
+            patientFile.linkedPatientFiles.forEach((elm) => {
+              this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+            });
+            this.linkedPatients.next(this.linkedPatientList);
+          }
+        });
+    } else {
+      this.patientService
+        .getPatientFileByPracticianId(
+          data.info.patientId,
+          data.info.practicianId
+        )
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((patientFile) => {
           this.patientFile.next(patientFile);
           this.notesList = [];
           if (patientFile.notes && patientFile.notes.length > 0) {
@@ -103,26 +121,22 @@ export class MatPatientFileDialogComponent implements OnInit {
             });
           }
           this.notes.next(this.notesList);
-          if (patientFile.patientId) {
-            this.patientService
-              .getPatientsByParentId(patientFile.patientId)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((res) => {
-                this.linkedPatientList = [];
-                res.forEach((elm) => {
-                  this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-                });
-                this.linkedPatients.next(this.linkedPatientList);
-              }
-              );
+          this.linkedPatientList = [];
+          this.linkedPatients.next(null);
+          if (patientFile.linkedPatientFiles) {
+            patientFile.linkedPatientFiles.forEach((elm) => {
+              this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+            });
+            this.linkedPatients.next(this.linkedPatientList);
           }
           this.userRole = data.info.userRole;
           this.patientFileId = patientFile.id;
         });
     }
     this.categoryService
-      .getCategoriesByPractician(data.info.practicianId).subscribe(res => {
-        this.categoryList.next(res)
+      .getCategoriesByPractician(data.info.practicianId)
+      .subscribe((res) => {
+        this.categoryList.next(res);
       });
   }
   mappingNote(note) {
@@ -140,7 +154,7 @@ export class MatPatientFileDialogComponent implements OnInit {
       isViewDetail: false,
       isArchieve: true,
       isSeen: true,
-    }
+    };
   }
   mappingLinkedPatients(patient) {
     const linkedPatients = new MyPatients();
@@ -223,10 +237,10 @@ export class MatPatientFileDialogComponent implements OnInit {
             type: "info",
             template: this.customNotificationTmpl,
           });
-          let noteToUpdate = this.notesList.findIndex(x => x.id == res.id);
+          let noteToUpdate = this.notesList.findIndex((x) => x.id == res.id);
           if (noteToUpdate !== -1) {
             this.notesList[noteToUpdate] = this.mappingNote(res);
-            this.notes.next(this.notesList)
+            this.notes.next(this.notesList);
           }
         } else {
           this.notifMessage = this.noteService.errors.failed_edit;
@@ -249,10 +263,8 @@ export class MatPatientFileDialogComponent implements OnInit {
           type: "info",
           template: this.customNotificationTmpl,
         });
-        this.notesList = this.notesList.filter(
-          note => note.id != noteId
-        );
-        this.notes.next(this.notesList)
+        this.notesList = this.notesList.filter((note) => note.id != noteId);
+        this.notes.next(this.notesList);
       }
     });
   }
@@ -304,5 +316,63 @@ export class MatPatientFileDialogComponent implements OnInit {
       });
     }
   };
-
+  submitLinkedPatient(model) {
+    this.loadingMessage = this.messages.loading_add_attached;
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
+    this.patientService
+      .addLinkedPatient(this.patientFileId, model)
+      .subscribe((res) => {
+        this.spinner.hide();
+        if (res) {
+          this.notifMessage = this.patientService.messages.add_success;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+          this.linkedPatientList.push(this.mappingLinkedPatients(res));
+          this.linkedPatients.next(this.linkedPatientList);
+        } else {
+          this.notifMessage = this.patientService.errors.failed_add_patient;
+          this.notifier.show({
+            message: this.notifMessage,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+          return;
+        }
+      });
+  }
+  updateLinkedPatient(model) {
+    this.patientService.updateLinkedPatient(model).subscribe((res) => {
+      if (res) {
+        this.notifMessage = this.patientService.messages.update_sucess;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "info",
+          template: this.customNotificationTmpl,
+        });
+        let patientToUpdate = this.linkedPatientList.findIndex(
+          (x) => x.fullInfo.id == res.id
+        );
+        if (patientToUpdate !== -1) {
+          this.linkedPatientList[patientToUpdate] = this.mappingLinkedPatients(
+            res
+          );
+          this.linkedPatients.next(this.linkedPatientList);
+        }
+      } else {
+        this.notifMessage = this.patientService.errors.failed_edit_patient;
+        this.notifier.show({
+          message: this.notifMessage,
+          type: "error",
+          template: this.customNotificationTmpl,
+        });
+        return;
+      }
+    });
+  }
 }

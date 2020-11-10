@@ -5,7 +5,6 @@ import { MessagingListComponent } from "./messaging-list/messaging-list.componen
 import { SentMessagesComponent } from "./sent-messages/sent-messages.component";
 import { ArchieveMessagesComponent } from "./archieve-messages/archieve-messages.component";
 import { PracticianSearchComponent } from "./practician-search/practician-search.component";
-import { SendMessageComponent } from "./send-message/send-message.component";
 import { MessagingDetailResolve } from "./services/messaging-detail.resolve";
 import { MessagingDetailService } from "./services/messaging-detail.service";
 import { ForwardedMessagesComponent } from "./forwarded-messages/forwarded-messages.component";
@@ -16,6 +15,7 @@ import { MyPatientsArchivedComponent } from "./my-patients-archived/my-patients-
 import { MyPatientsBlockedComponent } from "./my-patients-blocked/my-patients-blocked.component";
 import { ContactDetailComponent } from "./contacts/contact-detail/contact-detail.component";
 import { DirtyCheckGuard } from "./dirty-check.guard";
+import { ForbiddenComponent } from '@app/features/forbidden/forbidden.component';
 const routes: Routes = [
   {
     path: "",
@@ -25,6 +25,10 @@ const routes: Routes = [
       {
         path: "messagerie",
         component: MessagingListComponent,
+      },
+      {
+        path: "forbidden",
+        component: ForbiddenComponent,
       },
       {
         path: "messagerie/:id",
@@ -77,10 +81,6 @@ const routes: Routes = [
         path: "compte",
         loadChildren: () =>
           import("./account/account.module").then((m) => m.AccountModule),
-      },
-      {
-        path: "messagerie-ecrire",
-        component: SendMessageComponent,
       },
       {
         path: "mes-documents",

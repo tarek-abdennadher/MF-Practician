@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ContactsService } from "@app/features/services/contacts.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -11,13 +11,17 @@ import { ComponentCanDeactivate } from "@app/features/component-can-deactivate";
 import { EmailUniqueValidatorService } from "@app/core/Validators/email-unique-validator.service";
 import { PracticianInvitationService } from "../practician-invitation.service";
 import { FeaturesComponent } from "@app/features/features.component";
+import { takeUntil } from "rxjs/operators";
+import { LocalStorageService } from "ngx-webstorage";
 declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
   styleUrls: ["./contact-detail.component.scss"]
 })
-export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
+export class ContactDetailComponent
+  implements OnInit, ComponentCanDeactivate, OnDestroy {
+  private _destroyed$ = new Subject();
   alertMessage = "Erreur survenue lors de l'invitation' du praticien";
   specialities = new Subject<Array<Speciality>>();
   mySpecialities = Array<Speciality>();
@@ -28,6 +32,9 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   submitted = false;
   topText = "";
   page = "MY_PRACTICIANS";
+  practicianText =
+    this.localSt.retrieve("role") == "PRACTICIAN" ? "confrère" : "praticien";
+  infoText = "";
   bottomText = "";
   backButton = true;
   param;
@@ -41,20 +48,31 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
     private featureService: FeaturesService,
     public accountService: AccountService,
     private emailUnique: EmailUniqueValidatorService,
-    private featureComp: FeaturesComponent
+    private featureComp: FeaturesComponent,
+    private localSt: LocalStorageService
   ) {
     this.labels = this.contactsService.messages;
     this.failureAlert = false;
     this.isLabelShow = false;
   }
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
+  }
   canDeactivate(): boolean {
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
+    this.infoText =
+      this.localSt.retrieve("role") == "PRACTICIAN"
+        ? this.labels.parrainer_practician
+        : this.labels.parrainer_secretary;
     this.getjobTitles();
     this.getAllSpeciality();
     this.initForm();
-    this.featureService.setIsMessaging(false);
+    setTimeout(() => {
+      this.featureService.setIsMessaging(false);
+    });
     setTimeout(() => {
       $(".selectpicker").selectpicker("refresh");
     }, 1000);
@@ -77,16 +95,22 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
   }
 
   getAllSpeciality() {
-    this.contactsService.getAllSpecialities().subscribe(specialitiesList => {
-      this.specialities.next(specialitiesList);
-      this.mySpecialities = specialitiesList;
-      $(".selectpicker").selectpicker("refresh");
-    });
+    this.contactsService
+      .getAllSpecialities()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(specialitiesList => {
+        this.specialities.next(specialitiesList);
+        this.mySpecialities = specialitiesList;
+        $(".selectpicker").selectpicker("refresh");
+      });
   }
   getjobTitles() {
-    this.accountService.getJobTiles().subscribe(resp => {
-      this.jobTitlesList = resp;
-    });
+    this.accountService
+      .getJobTiles()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(resp => {
+        this.jobTitlesList = resp;
+      });
   }
   submit() {
     this.submitted = true;
@@ -112,6 +136,7 @@ export class ContactDetailComponent implements OnInit, ComponentCanDeactivate {
     };
     this.service
       .invitePractician(model)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponseInvitation, this.handleError);
   }
   handleError = err => {

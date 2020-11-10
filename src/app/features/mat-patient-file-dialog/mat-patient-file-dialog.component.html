@@ -1,31 +1,49 @@
+<ngx-spinner [fullScreen]="true" type="none" size="medium">
+  <div class="card" id="card-gif">
+      <p class="loading">{{loadingMessage}}</p>
+  </div>
+</ngx-spinner>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
-    <div class="text-center" type="notificationData.type">
-        <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-        &nbsp;<span>{{ notificationData.message }}</span>
-    </div>
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
+    &nbsp;<span class="information-text">{{ notificationData.message }}</span>
+  </div>
 </ng-template>
 <div class="group-element">
-    <span class="title-span">{{ data.title }}</span>
-    <i class="far fa-times float-right close" (click)="closeDialog()"></i>
+  <span class="title-span">{{ data.title }}</span>
+  <i class="far fa-times float-right close" (click)="closeDialog()"></i>
 </div>
 <br />
 <div *ngIf="isDeleted" class="card-message">
-    <div class="card-header bg-danger">
-        <br />
-        <div id="cercle-error">
-            <i class="fa fa-exclamation-triangle fa-lg"></i>
-        </div>
+  <div class="card-header bg-danger">
+    <br />
+    <div id="cercle-error">
+      <i class="fa fa-exclamation-triangle fa-lg"></i>
     </div>
-    <div>
-        <br />
-        <div class="card-text">{{ labels.is_deleted }}</div>
-        <br />
-    </div>
+  </div>
+  <div>
+    <br />
+    <div class="card-text">{{ labels.is_deleted }}</div>
+    <br />
+  </div>
 </div>
 <br />
-<app-patient-file [imageSource]="image" [noteimageSource]="noteimageSource" [notes]="notes" [patient]="patientFile"
-    [categoryList]="categoryList" [linkedPatients]="linkedPatients" (submitAction)="submit($event)"
-    (archieveNoteAction)="archieveNote($event)" (submitNoteAction)="submitNote($event)" (cancelAction)="cancelAction()"
-    [userRole]="userRole">
+<app-patient-file
+  [imageSource]="image"
+  [noteimageSource]="noteimageSource"
+  [notes]="notes"
+  [patient]="patientFile"
+  [categoryList]="categoryList"
+  [linkedPatients]="linkedPatients"
+  (submitAction)="submit($event)"
+  (archieveNoteAction)="archieveNote($event)"
+  (submitNoteAction)="submitNote($event)"
+  (cancelAction)="cancelAction()"
+  [userRole]="userRole"
+  [popup]="popup"
+  (submitAttachedAction)="submitLinkedPatient($event)"
+  (updateAttachedAction)="updateLinkedPatient($event)"
+  [disabled] = "disabled"
+>
 </app-patient-file>

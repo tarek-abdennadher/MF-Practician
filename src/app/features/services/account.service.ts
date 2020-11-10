@@ -37,7 +37,7 @@ export class AccountService {
     add_img: "Ajouter une photo",
     save: "Enregistrer",
     linked_patients: "Personnes Rattachées à mon compte",
-    link_patient: "Attacher une personne",
+    link_patient: "Rattacher une personne",
     reset_pwd: "Réinitialisation du mot de passe",
     new_pwd: "Nouveau mot de passe",
     confirm_pwd: "Confirmer le mot de passe",
@@ -86,7 +86,7 @@ export class AccountService {
     my_object: "Mes objets",
     cible: "Cible",
     practician: "Praticien",
-    secretary_tls: "Secrétaire/Télésecrétaire",
+    secretary_tls: "Ma secrétaire",
     patient: "Patient",
     other: "Autre",
     object: "Objet",
@@ -108,7 +108,8 @@ export class AccountService {
     received: "Messages reçus",
     sent: "Messages envoyés",
     others: "Autres",
-    leave_message: "Message automatique en cas de congés"
+    leave_message: "Message automatique en cas de congés",
+    error_message: "Une erreur est survenue, veuillez réessayer plus tard"
   };
   public errors = {
     required: "Le champ est obligatoire",

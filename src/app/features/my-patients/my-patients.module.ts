@@ -1,25 +1,25 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MyPatientsRoutingModule } from './my-patients-routing.module';
-import { MyPatientsComponent } from './my-patients.component';
-import { HlsGenericListModule } from 'hls-generic-list';
-import { HlsGenericListLinksModule } from 'hls-generic-list-links';
-import { AddPatientComponent } from './add-patient/add-patient.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { SharedModule } from '@app/shared/shared.module';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NotifierModule, NotifierOptions } from 'angular-notifier';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MyPatientsRoutingModule } from "./my-patients-routing.module";
+import { MyPatientsComponent } from "./my-patients.component";
+import { HlsGenericListModule } from "hls-generic-list";
+import { HlsGenericListLinksModule } from "hls-generic-list-links";
+import { AddPatientComponent } from "./add-patient/add-patient.component";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { SharedModule } from "@app/shared/shared.module";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { NotifierModule, NotifierOptions } from "angular-notifier";
 
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
-      position: "left",
-      distance: 370
+      position: "right",
+      distance: 20
     },
     vertical: {
-      position: "top",
-      distance: 90
+      position: "bottom",
+      distance: 250
     }
   },
   theme: "material",
@@ -64,4 +64,4 @@ const notifierOptions: NotifierOptions = {
     NotifierModule.withConfig(notifierOptions)
   ]
 })
-export class MyPatientsModule { }
+export class MyPatientsModule {}

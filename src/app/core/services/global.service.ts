@@ -16,6 +16,7 @@ export class GlobalService {
   private BASE_URL_FL: string = this.BASE_URL + "/ms-filer";
   public BASE_URL_SMS: string =
     environment.BASE_END_POINT + "/ms-smsapplication";
+  public encyptionKey = environment.encryptKey;
   public url = {
     base: this.BASE_URL,
     patient_connexion: this.PATIENT_SITE + "/connexion",
@@ -108,6 +109,8 @@ export class GlobalService {
     my_patients: "Mes patients",
     documents: "Documents reçus",
     delete_confirmation_patient: "Voulez vous vraiment supprimer ce patient ?",
+    archive_confirmation_patient:
+      "Êtes vous sur de bien vouloir archiver ce patient ?",
     delete_confirmation_contact: "Voulez vous vraiment archiver ce contact ?",
     archive_confirmation_message:
       "Voulez vous vraiment archiver ce(s) message(s) ?",
@@ -136,6 +139,8 @@ export class GlobalService {
     user: "assets/imgs/user.png",
     telesecretary: "assets/imgs/etablissement.svg"
   };
+
+  public excludedExceptions = ["Le mot de passe saisi est invalide"];
   public call(
     method: RequestType,
     url: string,
@@ -162,4 +167,13 @@ export class GlobalService {
       }
     }
   }
+
+  getSelector(id) {
+    return (
+      "#main-container > app-my-account > app-my-leaves > div > form > div:nth-child(8) > div.col-12.col-sm-8.col-lg-8.col-md-8.col-xl-8 > hls-ckeditor > ckeditor > div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__top.ck-reset_all > div > div.ck.ck-sticky-panel__content > div > div.ck.ck-toolbar__items > div:nth-child(2) > div > ul > li:nth-child"
+    );
+  }
+
+  LeavesTags = ["(1)","(1)","(1)","(1)","(1)","(1)","(1)","(1)",
+  "(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)"];
 }

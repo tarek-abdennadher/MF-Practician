@@ -1,20 +1,22 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FeaturesService } from "@app/features/features.service";
 import { MyPatientsService } from "@app/features/services/my-patients.service";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { MyDocumentsService } from "@app/features/my-documents/my-documents.service";
 import { MyPatients } from "@app/shared/models/my-patients";
 import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
-import { filter } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 declare var $: any;
 @Component({
   selector: "app-my-invitations",
   templateUrl: "./my-invitations.component.html",
   styleUrls: ["./my-invitations.component.scss"]
 })
-export class MyInvitationsComponent implements OnInit {
+export class MyInvitationsComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   isMyPatients = true;
   links = { isAdd: false, isTypeFilter: false };
   isInvitation: Boolean = true;
@@ -43,10 +45,17 @@ export class MyInvitationsComponent implements OnInit {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -59,6 +68,7 @@ export class MyInvitationsComponent implements OnInit {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPendingListRealTime(this.pageNo);
           setTimeout(() => {
@@ -75,11 +85,14 @@ export class MyInvitationsComponent implements OnInit {
   }
 
   markNotificationsAsSeen() {
-    this.featureService.markReceivedNotifAsSeen().subscribe(resp => {
-      this.featureService.listNotifications = this.featureService.listNotifications.filter(
-        notif => notif.messageId != null
-      );
-    });
+    this.featureService
+      .markReceivedNotifAsSeen()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(resp => {
+        this.featureService.listNotifications = this.featureService.listNotifications.filter(
+          notif => notif.messageId != null
+        );
+      });
   }
   getPendingListRealTime(pageNo) {
     this.number = 0;
@@ -91,6 +104,7 @@ export class MyInvitationsComponent implements OnInit {
     this.filtredPatients = [];
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         this.number = myPatients.length;
         this.myPatients = [];
@@ -99,6 +113,18 @@ export class MyInvitationsComponent implements OnInit {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
+        });
         this.filtredPatients = this.myPatients;
       });
   }
@@ -106,6 +132,7 @@ export class MyInvitationsComponent implements OnInit {
   getNextPatientsPendingOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPendingInvitations(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -131,7 +158,11 @@ export class MyInvitationsComponent implements OnInit {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
+      fullName:
+        patient.fullName.substring(patient.civility.length) +
+        " (" +
+        (patient.civility !== "" ? patient.civility : "Enfant") +
+        ")",
       img: this.avatars.user,
       civility: patient.civility
     });
@@ -145,6 +176,7 @@ export class MyInvitationsComponent implements OnInit {
     myPatients.users.forEach(user => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
+        .pipe(takeUntil(this._destroyed$))
         .subscribe(
           response => {
             let myReader: FileReader = new FileReader();
@@ -172,7 +204,7 @@ export class MyInvitationsComponent implements OnInit {
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: this.featureService.encrypt(item.users[0].id)
       },
       relativeTo: this.route
     });
@@ -180,6 +212,7 @@ export class MyInvitationsComponent implements OnInit {
   acceptedAction(item) {
     this.myPatientsService
       .acceptPatientInvitation(item.users[0].patientId)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -194,13 +227,18 @@ export class MyInvitationsComponent implements OnInit {
           );
           this.featureService
             .markNotificationAsSeenBySenderId(item.users[0].accountId)
+            .pipe(takeUntil(this._destroyed$))
             .subscribe(resp => {});
+          this.router.navigate(["/mes-invitations"], {
+            queryParams: { loading: true }
+          });
         }
       });
   }
   refuseAction(item) {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
@@ -213,6 +251,9 @@ export class MyInvitationsComponent implements OnInit {
           this.featureService.listNotifications = this.featureService.listNotifications.filter(
             notif => notif.senderId != item.users[0].accountId
           );
+          this.router.navigate(["/mes-invitations"], {
+            queryParams: { loading: true }
+          });
         }
       });
   }

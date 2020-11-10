@@ -1,20 +1,22 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { FeaturesService } from "../features.service";
 import { MyPatientsService } from "../services/my-patients.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { MyPatients } from "@app/shared/models/my-patients";
-import { filter } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 declare var $: any;
 @Component({
   selector: "app-my-patients-blocked",
   templateUrl: "./my-patients-blocked.component.html",
   styleUrls: ["./my-patients-blocked.component.scss"]
 })
-export class MyPatientsBlockedComponent implements OnInit {
+export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   isMyPatients = true;
   links = { isAdd: false, isTypeFilter: false };
   pageNo = 0;
@@ -42,10 +44,17 @@ export class MyPatientsBlockedComponent implements OnInit {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -58,6 +67,7 @@ export class MyPatientsBlockedComponent implements OnInit {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -75,12 +85,25 @@ export class MyPatientsBlockedComponent implements OnInit {
     this.filtredPatients = [];
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         this.number = myPatients.length;
         myPatients.forEach(elm => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = this.myPatients;
       });
@@ -89,6 +112,7 @@ export class MyPatientsBlockedComponent implements OnInit {
   getNextPatientsProhibitedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -107,7 +131,11 @@ export class MyPatientsBlockedComponent implements OnInit {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
+      fullName:
+        patient.fullName.substring(patient.civility.length) +
+        " (" +
+        (patient.civility !== "" ? patient.civility : "Enfant") +
+        ")",
       img: this.avatars.user,
       civility: patient.civility
     });
@@ -121,6 +149,7 @@ export class MyPatientsBlockedComponent implements OnInit {
     myPatients.users.forEach(user => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
+        .pipe(takeUntil(this._destroyed$))
         .subscribe(
           response => {
             let myReader: FileReader = new FileReader();
@@ -148,7 +177,7 @@ export class MyPatientsBlockedComponent implements OnInit {
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: this.featureService.encrypt(item.users[0].id)
       },
       relativeTo: this.route
     });
@@ -156,6 +185,7 @@ export class MyPatientsBlockedComponent implements OnInit {
   authorizeAction(item) {
     this.myPatientsService
       .authorizePatient(item.users[0].patientId)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(

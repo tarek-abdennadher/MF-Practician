@@ -1,20 +1,22 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
 import { FeaturesService } from "../features.service";
 import { MyPatientsService } from "../services/my-patients.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, Title } from "@angular/platform-browser";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { GlobalService } from "@app/core/services/global.service";
 import { MyDocumentsService } from "../my-documents/my-documents.service";
 import { MyPatients } from "@app/shared/models/my-patients";
-import { filter } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 declare var $: any;
 @Component({
   selector: "app-my-patients-archived",
   templateUrl: "./my-patients-archived.component.html",
   styleUrls: ["./my-patients-archived.component.scss"]
 })
-export class MyPatientsArchivedComponent implements OnInit {
+export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
+  private _destroyed$ = new Subject();
   isMyPatients = true;
   links = { isAdd: false, isTypeFilter: false };
   pageNo = 0;
@@ -43,10 +45,17 @@ export class MyPatientsArchivedComponent implements OnInit {
     private documentService: MyDocumentsService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private title: Title
   ) {
+    this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -59,6 +68,7 @@ export class MyPatientsArchivedComponent implements OnInit {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsArchivedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -76,10 +86,23 @@ export class MyPatientsArchivedComponent implements OnInit {
     this.filtredPatients = [];
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         this.number = myPatients.length;
         myPatients.forEach(elm => {
           this.myPatients.push(this.mappingMyPatients(elm, false, true));
+        });
+        // sorting the list by fullname (in the alphabetic order)
+        this.myPatients.sort((p1,p2) => {
+            if (p1.users[0].fullName > p2.users[0].fullName) {
+                return 1;
+            }
+        
+            if (p1.users[0].fullName < p2.users[0].fullName) {
+                return -1;
+            }
+        
+            return 0;
         });
         this.filtredPatients = this.myPatients;
       });
@@ -88,6 +111,7 @@ export class MyPatientsArchivedComponent implements OnInit {
   getNextPatientsArchivedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientFilesArchived(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
@@ -111,7 +135,11 @@ export class MyPatientsArchivedComponent implements OnInit {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
+      fullName:
+        patient.fullName.substring(patient.civility.length) +
+        " (" +
+        (patient.civility !== "" ? patient.civility : "Enfant") +
+        ")",
       img: this.avatars.user,
       civility: patient.civility
     });
@@ -125,6 +153,7 @@ export class MyPatientsArchivedComponent implements OnInit {
     myPatients.users.forEach(user => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
+        .pipe(takeUntil(this._destroyed$))
         .subscribe(
           response => {
             let myReader: FileReader = new FileReader();
@@ -152,7 +181,7 @@ export class MyPatientsArchivedComponent implements OnInit {
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: item.users[0].id
+        id: this.featureService.encrypt(item.users[0].id)
       },
       relativeTo: this.route
     });
@@ -160,6 +189,7 @@ export class MyPatientsArchivedComponent implements OnInit {
   activatedAction(item) {
     this.myPatientsService
       .activatePatientFile(item.users[0].id)
+      .pipe(takeUntil(this._destroyed$))
       .subscribe(resp => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(

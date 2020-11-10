@@ -33,4 +33,9 @@ export class RequestTypeService {
     return this.globalService.call(RequestType.POST, this.globalService.url.practicianObject + "/generateHtml"
     , request)
   }
+
+  getDocumentField(request) {
+    return this.globalService.call(RequestType.POST, this.globalService.url.practicianObject + "/documentField"
+    , request)
+  }
 }

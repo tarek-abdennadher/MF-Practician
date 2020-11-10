@@ -13,6 +13,7 @@
     (notificationsViewed)="markNotificationsAsViewed($event)"
     (logoAction)="logoClicked()"
     (resetSearchInputAction)="resetInputs()"
+    (menuClicked)="scrolToTop()"
   ></lib-hlsNavBar>
   <lib-hlsSideBar
     [practicianInbox]="myPracticians"
@@ -51,13 +52,18 @@
   >
     <!-- components will be implemented here -->
     <router-outlet></router-outlet>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <app-new-message-mobile *ngIf="messaging === true"></app-new-message-mobile>
   </section>
 </div>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
-    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-    &nbsp;<span>{{ notificationData.message }}</span>
+    <i class="fa fa-check" style="font-size: 11px" aria-hidden="true"></i>
+    &nbsp;<span class="information-text">{{ notificationData.message }}</span>
   </div>
 </ng-template>
