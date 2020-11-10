@@ -47,7 +47,7 @@ export class PersonalInformationsComponent
   showPasswordSuccess = false;
   showPasswordFailure = false;
   passwordSubmitted = false;
-  otherPhones = new Subject<any[]>();
+  otherPhones = new Array();
   addnewPhone = new Subject<boolean>();
   isLabelShow: boolean;
   public infoForm: FormGroup;
@@ -145,7 +145,7 @@ export class PersonalInformationsComponent
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null)
+        additionalEmail: new FormControl(null, emailValidator )
       });
     } else {
       this.infoForm = new FormGroup({
@@ -213,7 +213,7 @@ export class PersonalInformationsComponent
         if (account && account.practician) {
           this.accountId = account.id;
           this.account = account.practician;
-          this.otherPhones.next(account.otherPhones);
+          this.otherPhones= account.otherPhones;
           this.hasImage = true;
           this.getPictureProfile(account.id);
           this.infoForm.patchValue({
@@ -255,7 +255,7 @@ export class PersonalInformationsComponent
           });
         } else if (account && account.secretary) {
           this.account = account.secretary;
-          this.otherPhones.next(account.otherPhones);
+          this.otherPhones = account.otherPhones;
           this.hasImage = true;
           this.getPictureProfile(account.id);
           this.infoForm.patchValue({

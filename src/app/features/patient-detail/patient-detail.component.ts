@@ -16,6 +16,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { defineLocale, frLocale } from "ngx-bootstrap/chronos";
 import { takeUntil, tap } from "rxjs/operators";
 import { MyPatients } from '@app/shared/models/my-patients';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -54,6 +55,9 @@ export class PatientDetailComponent implements OnInit {
     user: string;
     tls: string;
   };
+  public messages : any;
+  public loadingMessage : string;
+  public disabled :boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -68,10 +72,12 @@ export class PatientDetailComponent implements OnInit {
     notifierService: NotifierService,
     @Inject(LOCALE_ID) public locale: string,
     private messagesServ: MessagingListService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private spinner: NgxSpinnerService,
   ) {
     defineLocale(this.locale, frLocale);
     this.localeService.use(this.locale);
+    this.messages = this.patientService.messages
     this.errors = this.accountService.errors;
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -98,6 +104,9 @@ export class PatientDetailComponent implements OnInit {
       setTimeout(() => {
         this.featureService.setIsMessaging(false);
       });
+      if(params["parent"]== "invitation"){
+        this.disabled = true;
+      }
     });
   }
 
@@ -334,9 +343,15 @@ export class PatientDetailComponent implements OnInit {
   }
 
   submitLinkedPatient(model) {
+    this.loadingMessage = this.messages.loading_add_attached;
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
     this.patientService
       .addLinkedPatient(this.patientFileId, model)
       .subscribe(res => {
+        this.spinner.hide();
         if (res) {
           this.notifMessage = this.patientService.messages.add_success;
           this.notifier.show({

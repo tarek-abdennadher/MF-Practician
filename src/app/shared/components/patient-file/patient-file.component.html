@@ -629,7 +629,7 @@
                       <div class="col col-12 col-sm-12">
                         <label class="col-12 col-form-label">{{
                           labels.correspondence
-                        }}</label>
+                        }} (*)</label>
                         <div class="col-12">
                           <select
                             (change)="
@@ -764,7 +764,7 @@
                         </div>
                         <div class="col-12">
                           <international-phone-number
-                            class="form-control disabled"
+                            class="form-control"
                             formControlName="phoneNumber"
                             [defaultCountry]="'fr'"
                             placeholder="Téléphone ou fixe *"
@@ -995,7 +995,7 @@
                       <div class="col col-12 col-sm-12">
                         <label class="col-12 col-form-label">{{
                           labels.correspondence
-                        }}</label>
+                        }} (*)</label>
                         <div class="col-12">
                           <select
                             (change)="
@@ -1130,7 +1130,7 @@
                         </div>
                         <div class="col-12">
                           <international-phone-number
-                            class="form-control disabled"
+                            class="form-control"
                             formControlName="phoneNumber"
                             [defaultCountry]="'fr'"
                             placeholder="Téléphone ou fixe *"
@@ -1138,7 +1138,8 @@
                             id="attached-phone-number"
                             [ngClass]="{
                               'is-invalid':
-                                patientUpdated && f2.phoneNumber.errors
+                                patientUpdated && f2.phoneNumber.errors,
+                                'phones-disabled' : disabled
                             }"
                           >
                           </international-phone-number>
