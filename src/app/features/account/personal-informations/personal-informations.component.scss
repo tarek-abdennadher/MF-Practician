@@ -229,6 +229,11 @@ hr {
   .new-password {
     padding-left: 0px;
   }
+  .middle {
+    top: 75%;
+    left: 51%;
+    right: 48%;
+  }
 }
 .alert.alert-danger {
   font-family: Montserrat-Medium;
@@ -353,4 +358,12 @@ button.close {
 /* add padding  */
 .right-addon input {
   padding-right: 30px;
+}
+@media (max-width: 410px) {
+  .phone {
+    padding-right: 0px;
+  }
+  .phone-btn {
+    padding-left: 0px;
+  }
 }
