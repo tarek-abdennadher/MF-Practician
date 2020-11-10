@@ -57,6 +57,7 @@ export class PatientDetailComponent implements OnInit {
   };
   public messages : any;
   public loadingMessage : string;
+  public disabled :boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -103,6 +104,9 @@ export class PatientDetailComponent implements OnInit {
       setTimeout(() => {
         this.featureService.setIsMessaging(false);
       });
+      if(params["parent"]== "invitation"){
+        this.disabled = true;
+      }
     });
   }
 
