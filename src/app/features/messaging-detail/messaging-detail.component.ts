@@ -33,7 +33,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   isFromInbox: boolean;
   IsinboxContext: boolean = false;
   showAcceptRefuse: boolean;
-  isMyMessage: boolean;
+  isNotMyMessage: boolean = false;
   senderRolePatient = false;
   messagingDetail: any;
   newMessage: any;
@@ -136,11 +136,12 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             break;
           }
           case "inboxPraticien": {
-            this.isFromInbox = false;
+            this.isFromInbox = true;
             this.showAcceptRefuse = true;
             this.IsinboxContext = true;
             this.hideTo = false;
             this.isFromArchive = true;
+            this.isNotMyMessage = true;
             break;
           }
           case "archive": {
@@ -437,7 +438,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.links = {
               isArchieve: !this.isFromArchive,
               isImportant: this.isFromInbox ? !message.important : false,
-              isAddNote: true
+              isAddNote: true,
+              isNotMyMessage: this.isNotMyMessage
             };
             const filtredReceivers = this.messagingDetail.toReceivers.filter(
               to => to.receiverId != this.featureService.getUserId()
