@@ -204,7 +204,8 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: this.featureService.encrypt(item.users[0].id)
+        id: this.featureService.encrypt(item.users[0].id),
+        parent: "invitation"
       },
       relativeTo: this.route
     });
