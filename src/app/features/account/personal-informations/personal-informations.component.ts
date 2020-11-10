@@ -145,7 +145,7 @@ export class PersonalInformationsComponent
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null)
+        additionalEmail: new FormControl(null, emailValidator )
       });
     } else {
       this.infoForm = new FormGroup({
