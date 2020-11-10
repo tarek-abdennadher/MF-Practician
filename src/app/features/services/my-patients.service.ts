@@ -25,7 +25,9 @@ export class MyPatientsService {
     add_info_success: "La fiche patient est créée avec succès",
     invitation_success: "Invitation envoyée avec succès ",
     add_success: "Le patient rattaché est ajouté avec succès ",
-    update_sucess: "Le patient rattaché est modifié avec succès "
+    update_sucess: "Le patient rattaché est modifié avec succès ",
+    loading_add_attached: "Ajout de la personne rattachée en cours...",
+    loading_edit_attached: "Modification de la personne rattachée en cours..."
   };
   refreshPatientFileListObs = new Subject();
   getPatientsOfCurrentParactician(
