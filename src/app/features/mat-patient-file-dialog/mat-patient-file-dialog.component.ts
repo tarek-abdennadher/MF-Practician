@@ -10,7 +10,8 @@ import { takeUntil } from "rxjs/operators";
 import { MyPatientsService } from "../services/my-patients.service";
 import { NotifierService } from "angular-notifier";
 import { NoteService } from "../services/note.service";
-import { MyPatients } from "@app/shared/models/my-patients";
+import { MyPatients } from '@app/shared/models/my-patients';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: "app-mat-patient-file-dialog",
@@ -48,6 +49,8 @@ export class MatPatientFileDialogComponent implements OnInit {
   private _destroyed$ = new Subject();
   private readonly notifier: NotifierService;
   popup: boolean = true;
+  public messages : any;
+  public loadingMessage : string;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     private noteService: NoteService,
@@ -58,8 +61,10 @@ export class MatPatientFileDialogComponent implements OnInit {
     private categoryService: CategoryService,
     private patientService: MyPatientsService,
     notifierService: NotifierService,
-    public dialogRef: MatDialogRef<MatPatientFileDialogComponent>
+    public dialogRef: MatDialogRef<MatPatientFileDialogComponent>,
+    private spinner: NgxSpinnerService,
   ) {
+    this.messages = this.patientService.messages;
     this.labels = this.service.messages;
     this.isMaidenNameShow = false;
     this.isDeleted = false;
@@ -312,9 +317,15 @@ export class MatPatientFileDialogComponent implements OnInit {
     }
   };
   submitLinkedPatient(model) {
+    this.loadingMessage = this.messages.loading_add_attached;
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 3000);
     this.patientService
       .addLinkedPatient(this.patientFileId, model)
       .subscribe((res) => {
+        this.spinner.hide();
         if (res) {
           this.notifMessage = this.patientService.messages.add_success;
           this.notifier.show({

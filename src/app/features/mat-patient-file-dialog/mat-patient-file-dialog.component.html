@@ -1,3 +1,8 @@
+<ngx-spinner [fullScreen]="true" type="none" size="medium">
+  <div class="card" id="card-gif">
+      <p class="loading">{{loadingMessage}}</p>
+  </div>
+</ngx-spinner>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
   <div class="text-center" type="notificationData.type">
