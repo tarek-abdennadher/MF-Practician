@@ -17,7 +17,14 @@ export class IntPhoneComponent implements OnInit {
   /* Boolean to check if the inserted numbers are valid or not to block actions of submit*/
   @Output("validPhones") validPhones = new EventEmitter<boolean>();
   /* List of exisiting phone numbers (patching the value)*/
-  @Input("editList") phonesToEdit = new Subject<[]>();
+  @Input("editList") set phonesToEdit(list: Array<any>) {
+    this.phoneForm = this.formBuilder.group({
+      phoneList: this.formBuilder.array([])
+    });
+    if (list && list.length > 0) {
+      list.forEach(p => this.phoneList.push(this.updatePhone(p)));
+    } 
+  }
   /* Action to add a new phone*/
   @Input("addnewPhone") addnewPhone = new Subject();
 
@@ -32,6 +39,7 @@ export class IntPhoneComponent implements OnInit {
   get phoneList() {
     return <FormArray>this.phoneForm.get("phoneList");
   }
+
   /* Method to add a new phone number field */
   newPhone(): FormGroup {
     this.validPhones.emit(false);
@@ -59,17 +67,7 @@ export class IntPhoneComponent implements OnInit {
     this.phoneForm = this.formBuilder.group({
       phoneList: this.formBuilder.array([])
     });
-    /* Patch list if contains elements */
-    this.phonesToEdit.subscribe(list => {
-      if (list) {
-        list.forEach(p => this.phoneList.push(this.updatePhone(p)));
-      } else {
-        /* Initialize list when there is no exisiting elements */
-        this.phoneForm = this.formBuilder.group({
-          phoneList: this.formBuilder.array([this.newPhone()])
-        });
-      }
-    });
+
     this.onChanges();
   }
 
