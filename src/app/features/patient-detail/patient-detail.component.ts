@@ -369,13 +369,7 @@ export class PatientDetailComponent implements OnInit {
       });
   }
   updateLinkedPatient(model) {
-    this.loadingMessage = this.messages.loading_edit_attached;
-    this.spinner.show();
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 3000);
     this.patientService.updateLinkedPatient(model).subscribe(res => {
-      this.spinner.hide();
       if (res) {
         this.notifMessage = this.patientService.messages.update_sucess;
         this.notifier.show({
