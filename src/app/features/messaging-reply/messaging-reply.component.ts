@@ -230,10 +230,11 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         requestDto = {
           patientId: message.sender.sendedForId,
           patientForId: null,
+          patientFileId: message.sender.concernsId,
           practicianId: practicianId,
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
-          websiteOrigin: "TLS"
+          websiteOrigin: this.refuseResponse ? "TLS" : "PRACTICIAN_TLS"
         };
       }
       if (this.refuseResponse) {
