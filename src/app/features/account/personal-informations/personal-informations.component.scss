@@ -73,7 +73,8 @@ label {
 }
 
 .image-container:hover .middle,
-.image-container:hover .middle-attached {
+.image-container:hover .middle-attached,
+.image-container:hover .middle-sec {
   opacity: 1;
 }
 
@@ -86,8 +87,8 @@ label {
   transition: 0.5s ease;
   opacity: 0;
   position: absolute;
-  top: 15%;
-  left: 50%;
+  top: 17%;
+  left: 52%;
   right: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
