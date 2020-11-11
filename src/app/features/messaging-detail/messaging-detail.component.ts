@@ -430,10 +430,20 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
-    this.router.navigate(["messagerie-repondre"], {
-      relativeTo: this.route.parent,
-      state: { data: this.messagingDetail }
-    });
+    if (this.showReplyActionsForPatient === true) {
+      this.router.navigate(["messagerie-repondre"], {
+        queryParams: {
+          status: "accept"
+        },
+        relativeTo: this.route.parent,
+        state: { data: this.messagingDetail }
+      });
+    } else {
+      this.router.navigate(["messagerie-repondre"], {
+        relativeTo: this.route.parent,
+        state: { data: this.messagingDetail }
+      });
+    }
   }
 
   forwardAction() {
@@ -659,7 +669,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         disabled: false
       };
       if (
-        this.messagingDetail.sender.role =="PRACTICIAN" &&  this.messagingDetail.sender.senderId !== this.featureService.getUserId() 
+        this.messagingDetail.sender.role =="PRACTICIAN" &&  this.messagingDetail.sender.senderId !== this.featureService.getUserId()
       ) {
         info = {
           patientFileId: patientFileId,
