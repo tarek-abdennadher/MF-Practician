@@ -241,7 +241,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.featureService.setIsMessaging(true);
     });
-    this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
 
@@ -947,22 +946,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       this.filterActionClicked("patient");
     } else if ($event.index === 3) {
       this.filterActionClicked("doctor");
-    }
-  }
-
-  private displayListMessagesBySizeScreen() {
-    let innerWidth = window.innerWidth;
-    if (innerWidth < 769) {
-      this.filterActionClicked("all");
-      this.selectedTabIndex = 0;
-    }
-  }
-
-  @HostListener("window:resize", ["$event"])
-  private onResizeScreen() {
-    if (window.innerWidth < 769) {
-      this.filterActionClicked("all");
-      this.selectedTabIndex = 0;
     }
   }
 
