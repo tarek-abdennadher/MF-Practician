@@ -90,8 +90,11 @@ export class GlobalService {
     archived_message_success: "Message archivé !",
     archived_message_error: "Votre message n'a pas pu être archivé",
     mark_important_message_success: "Message marqué comme important !",
+    mark_not_important_message_success: "Message marqué comme non important !",
     mark_important_message_error:
       "Votre message n'a pas pu être marqué comme important",
+    mark_not_important_message_error:
+      "Votre message n'a pas pu être marqué comme non important",
     send_message_to_myself:
       "Vous ne pouvez pas répondre à un message que vous avez envoyé"
   };
@@ -169,11 +172,28 @@ export class GlobalService {
   }
 
   getSelector(id) {
-    return (
-      "#main-container > app-my-account > app-my-leaves > div > form > div:nth-child(8) > div.col-12.col-sm-8.col-lg-8.col-md-8.col-xl-8 > hls-ckeditor > ckeditor > div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__top.ck-reset_all > div > div.ck.ck-sticky-panel__content > div > div.ck.ck-toolbar__items > div:nth-child(2) > div > ul > li:nth-child"
-    );
+    return "#main-container > app-my-account > app-my-leaves > div > form > div:nth-child(8) > div.col-12.col-sm-8.col-lg-8.col-md-8.col-xl-8 > hls-ckeditor > ckeditor > div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__top.ck-reset_all > div > div.ck.ck-sticky-panel__content > div > div.ck.ck-toolbar__items > div:nth-child(2) > div > ul > li:nth-child";
   }
 
-  LeavesTags = ["(1)","(1)","(1)","(1)","(1)","(1)","(1)","(1)",
-  "(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)","(3)"];
+  LeavesTags = [
+    "(1)",
+    "(1)",
+    "(1)",
+    "(1)",
+    "(1)",
+    "(1)",
+    "(1)",
+    "(1)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)",
+    "(3)"
+  ];
 }
