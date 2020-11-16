@@ -92,42 +92,10 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
         myPatients.forEach(elm => {
           this.myPatients.push(this.mappingMyPatients(elm, false, true));
         });
-        // sorting the list by fullname (in the alphabetic order)
-        this.myPatients.sort((p1,p2) => {
-            if (p1.users[0].fullName > p2.users[0].fullName) {
-                return 1;
-            }
-        
-            if (p1.users[0].fullName < p2.users[0].fullName) {
-                return -1;
-            }
-        
-            return 0;
-        });
         this.filtredPatients = this.myPatients;
       });
   }
 
-  getNextPatientsArchivedOfCurrentParactician(pageNo) {
-    this.myPatientsService
-      .getPatientFilesArchived(pageNo, this.direction)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
-            this.myPatients.push(this.mappingMyPatients(elm, false, true));
-          });
-        }
-      });
-  }
-  onScroll() {
-    if (this.listLength != this.filtredPatients.length) {
-      this.listLength = this.filtredPatients.length;
-      this.pageNo++;
-      this.getNextPatientsArchivedOfCurrentParactician(this.pageNo);
-    }
-  }
   mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];
@@ -135,11 +103,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName:
-        patient.fullName.substring(patient.civility.length) +
-        " (" +
-        (patient.civility !== "" ? patient.civility : "Enfant") +
-        ")",
+      fullName: patient.fullName,
       img: this.avatars.user,
       civility: patient.civility
     });
