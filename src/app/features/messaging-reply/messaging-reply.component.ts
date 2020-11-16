@@ -322,6 +322,13 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       sendedForId: sendedFor,
       forwarded: this.forwardedResponse
     };
+    if (message.sender.concernsId !=null) {
+      replyMessage.sender.concernsId = message.sender.concernsId;
+          replyMessage.sender.concernsCivility = message.sender.concernsCivility ?  message.sender.concernsCivility : null ;
+          replyMessage.sender.concernsPhotoId = message.sender.concernsPhotoId ?  message.sender.concernsPhotoId : null;
+          replyMessage.sender.concernsFullName = message.sender.concernsFullName ?  message.sender.concernsFullName : null;
+          replyMessage.sender.concernsType = message.sender.concernsType ?  message.sender.concernsType : null;
+    }
     // sending to patient file without account
     if (replyMessage.toReceivers[0].receiverId == null) {
       this.messageService

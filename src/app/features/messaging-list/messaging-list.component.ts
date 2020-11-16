@@ -241,7 +241,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.featureService.setIsMessaging(true);
     });
-    this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
 
@@ -671,6 +670,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
+    this.selectedObjects.length == 0
+      ? (this.links.isMenuDisplay = false)
+      : (this.links.isMenuDisplay = true);
     let isSeenTable = [];
     let isImportantTable = [];
     this.selectedObjects.forEach(elm => {
@@ -897,6 +899,37 @@ export class MessagingListComponent implements OnInit, OnDestroy {
 
     this.messagesServ.changeFlagImportant(this.filtredItemList, ids);
   }
+  removeImportantAction() {
+    const checkedMessages = this.filtredItemList.filter(
+      e => e.isChecked == true
+    );
+    let ids = [];
+    for (let message of checkedMessages) {
+      ids.push(message.id);
+    }
+    this.messagesServ.markMessageAsNotImportant(ids).subscribe(
+      message => {
+        this.links.isImportant = false;
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_not_important_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+        this.messagesServ.uncheckMessages(checkedMessages);
+      },
+      error => {
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_not_important_message_error,
+          type: "error",
+          template: this.customNotificationTmpl
+        });
+      }
+    );
+
+    this.messagesServ.changeFlagNotImportant(this.filtredItemList, ids);
+  }
 
   notSeenActionClicked() {
     const checkedMessages = this.filtredItemList.filter(
@@ -947,22 +980,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       this.filterActionClicked("patient");
     } else if ($event.index === 3) {
       this.filterActionClicked("doctor");
-    }
-  }
-
-  private displayListMessagesBySizeScreen() {
-    let innerWidth = window.innerWidth;
-    if (innerWidth < 769) {
-      this.filterActionClicked("all");
-      this.selectedTabIndex = 0;
-    }
-  }
-
-  @HostListener("window:resize", ["$event"])
-  private onResizeScreen() {
-    if (window.innerWidth < 769) {
-      this.filterActionClicked("all");
-      this.selectedTabIndex = 0;
     }
   }
 

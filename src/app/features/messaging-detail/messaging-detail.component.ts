@@ -111,7 +111,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           case "sent": {
             this.isFromInbox = false;
             this.showAcceptRefuse = false;
-            this.hidefrom = true;
+            this.hidefrom = false;
             this.isFromArchive = false;
             this.sentContext = true;
             this.previousURL = "/messagerie-envoyes";
@@ -120,7 +120,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           case "forwarded": {
             this.isFromInbox = false;
             this.showAcceptRefuse = false;
-            this.hidefrom = true;
+            this.hidefrom = false;
             this.isFromArchive = false;
             this.sentContext = true;
             this.previousURL = "/messagerie-transferes";
@@ -130,7 +130,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.isFromInbox = true;
             this.IsinboxContext = true;
             this.showAcceptRefuse = this.userRole == "PRACTICIAN";
-            this.hideTo = true;
+            this.hideTo = false;
             this.isFromArchive = false;
             this.previousURL = "/messagerie";
             break;
@@ -257,7 +257,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           this.messagingDetail.ccReceivers.forEach(receiver => {
             this.getDefaultImage(receiver, receiver.receiverId);
           });
-          this.getDefaultImage(this.messagingDetail.sender, this.messagingDetail.sender.senderId);
+          this.getDefaultImage(
+            this.messagingDetail.sender,
+            this.messagingDetail.sender.senderId
+          );
           this.loading = false;
         });
     } else {
@@ -292,7 +295,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.messagingDetail.toReceivers.forEach(receiver => {
               this.getDefaultImage(receiver, receiver.receiverId);
             });
-            this.getDefaultImage(this.messagingDetail.sender, this.messagingDetail.sender.senderId);
+            this.getDefaultImage(
+              this.messagingDetail.sender,
+              this.messagingDetail.sender.senderId
+            );
             this.loading = false;
           } else {
             this.message = message;
@@ -361,7 +367,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.messagingDetail.ccReceivers.forEach(receiver => {
               this.getDefaultImage(receiver, receiver.receiverId);
             });
-            this.getDefaultImage(this.messagingDetail.sender, this.messagingDetail.sender.senderId);
+            this.getDefaultImage(
+              this.messagingDetail.sender,
+              this.messagingDetail.sender.senderId
+            );
             this.loading = false;
           }
         });
@@ -389,22 +398,22 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
 
   getDefaultImage(user, userId) {
     this.documentService
-    .getDefaultImage(userId)
-    .pipe(takeUntil(this._destroyed$))
-    .subscribe(
-      response => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
-          user.img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      error => {
-        user.img = this.avatars.user;
-      }
-    );
+      .getDefaultImage(userId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            user.img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          user.img = this.avatars.user;
+        }
+      );
   }
   hideShowReplyBtn(message) {
     this.messagingDetailService
@@ -669,7 +678,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         disabled: false
       };
       if (
-        this.messagingDetail.sender.role =="PRACTICIAN" &&  this.messagingDetail.sender.senderId !== this.featureService.getUserId()
+        this.messagingDetail.sender.role == "PRACTICIAN" &&
+        this.messagingDetail.sender.senderId !== this.featureService.getUserId()
       ) {
         info = {
           patientFileId: patientFileId,
