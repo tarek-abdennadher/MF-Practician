@@ -45,7 +45,7 @@ export class MyPatientsService {
   getPatientsOfCurrentParacticianByCategory(
     pageNo: number,
     categoryId: number,
-    order: OrderDirection = OrderDirection.DESC
+    order: OrderDirection = OrderDirection.ASC
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
@@ -62,7 +62,7 @@ export class MyPatientsService {
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited",
+      this.globalService.url.favorite + "myPatient/prohibitedV2",
       {
         params: { pageNo: pageNo, order: order }
       }
@@ -88,7 +88,7 @@ export class MyPatientsService {
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "invitations",
+      this.globalService.url.favorite + "invitationsV2",
       {
         params: { pageNo: pageNo, order: order }
       }
@@ -224,11 +224,11 @@ export class MyPatientsService {
   getPatientsOfCurrentParacticianV2(
     id,
     pageNo: number,
-    order: OrderDirection = OrderDirection.DESC
+    order: OrderDirection = OrderDirection.ASC
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my/v2/" + id,
+      this.globalService.url.patientFile + "my/v3/" + id,
       {
         params: { pageNo: pageNo, order: order }
       }
@@ -273,7 +273,7 @@ export class MyPatientsService {
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "archived",
+      this.globalService.url.patientFile + "archivedV2",
       {
         params: { pageNo: pageNo, order: order }
       }
