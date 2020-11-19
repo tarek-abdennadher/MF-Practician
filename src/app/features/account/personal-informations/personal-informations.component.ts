@@ -497,7 +497,6 @@ export class PersonalInformationsComponent
       this.showPasswordFailure = true;
       $("#alertPasswordFailure").alert();
     }
-    this.scrolToTop();
   };
   addPhone() {
     this.addnewPhone.next(true);
