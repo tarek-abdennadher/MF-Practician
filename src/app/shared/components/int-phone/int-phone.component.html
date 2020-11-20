@@ -1,14 +1,13 @@
 <div>
   <form [formGroup]="phoneForm">
     <div
+      class="phone-list"
       formArrayName="phoneList"
       *ngFor="let p of phoneList.controls; let i = index"
     >
       <div [formGroupName]="i" class="phoneList">
         <div class="row ml-1">
-          <div
-            class="col-11 col-sm-6 col-md-6 col-xl-6 col-lg-6 form-group row mobile-display-none"
-          >
+          <div class="col-6 form-group row mobile-display-none">
             <international-phone-number
               class="form-control"
               formControlName="phoneNumber"
@@ -33,9 +32,7 @@
               {{ errorMessage }}
             </div>
           </div>
-          <div
-            class="col-9 col-sm-4 col-md-4 col-xl-4 col-lg-4 mobile-display-none"
-          >
+          <div class="col-5 mobile-display-none">
             <input
               type="text"
               class="form-control"
@@ -52,7 +49,7 @@
           </div>
 
           <div
-            class="col-11 col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group row mobile-display-flex"
+            class="col-10 form-group row mobile-display-flex mobile-phone-input"
           >
             <international-phone-number
               class="form-control"
@@ -78,9 +75,7 @@
               {{ errorMessage }}
             </div>
           </div>
-          <div
-            class="col-10 col-sm-4 col-md-4 col-lg-4 col-xl-1 mobile-display-flex"
-          >
+          <div class="col-10 mobile-display-flex note-input">
             <input
               type="text"
               class="form-control"
@@ -88,9 +83,7 @@
               placeholder="Préciser..."
             />
           </div>
-          <div
-            class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 mobile-display-flex phone-mobile"
-          >
+          <div class="mobile-display-flex phone-btn other-phone-mobile">
             <button (click)="removePhone(i)" class="btn btn-xs btn-icon">
               <i class="far fa-trash-alt"></i>
             </button>
