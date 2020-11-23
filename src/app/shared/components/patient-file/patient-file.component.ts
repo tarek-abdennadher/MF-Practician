@@ -198,6 +198,13 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.noteList = res;
       }
     });
+    this.onChanges();
+
+  }
+  onChanges() {
+    this.personalInfoForm.controls.email.valueChanges.subscribe(val => {
+      this.click = false;
+    });
   }
   getCorrespondence() {
     this.patientFileService

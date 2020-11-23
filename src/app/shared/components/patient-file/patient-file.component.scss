@@ -242,3 +242,17 @@ input[type="checkbox"]:focus {
     margin-bottom: 10px;
   }
 }
+
+@media (max-width: 410px) {
+  .add-phone {
+    padding-left: 1px !important;
+  }
+  .pr-2 {
+    padding-right: 0.5rem !important;
+  }
+}
+@media (max-width: 575px) {
+  .pr-2 {
+    padding-right: 0 !important;
+  }
+}

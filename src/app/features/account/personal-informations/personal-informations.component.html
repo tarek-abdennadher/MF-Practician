@@ -723,7 +723,7 @@
         <div class="row">
           <div class="col col-11">
             <div class="col-12 col-form-label">{{ labels.phone }}</div>
-            <div class="col-11 row">
+            <div class="col-12 row principle-phone">
               <div class="col-11 phone-input">
                 <international-phone-number
                   class="form-control phone"
@@ -761,12 +761,12 @@
         </div>
         <br />
         <div class="row">
-          <div class="col">
+          <div class="col col-11">
             <!-- Other Phones -->
             <div *ngIf="isLabelShow" class="col-12 col-form-label">
               {{ labels.other_phone }}
             </div>
-            <div class="col-11">
+            <div class="col-12">
               <int-phone
                 [editList]="otherPhones"
                 (phones)="getPhoneList($event)"

@@ -47,11 +47,38 @@
                 </div>
               </div>
               <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
+                  <!-- first name Field -->
+                  <label
+                    for="firstName"
+                    class="col-12 col-sm-12 col-form-label"
+                    >{{ labels.last_name }}</label
+                  >
+                  <div class="col-12 col-sm-12">
+                    <input
+                      [ngClass]="{
+                        'is-invalid': submitted && ctr.firstName.errors
+                      }"
+                      type="text"
+                      formControlName="firstName"
+                      class="form-control"
+                      id="first-name"
+                    />
+                    <div
+                      *ngIf="submitted && ctr.firstName.errors"
+                      class="invalid-feedback"
+                    >
+                      <div *ngIf="ctr.firstName.errors.required">
+                        {{ errors.required }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                 <!-- last name Field -->
                 <label
                   for="last_name"
                   class="col-12 col-sm-12 col-form-label"
-                  >{{ labels.last_name }}</label
+                  >{{ labels.first_name }}</label
                 >
                 <div class="col-12 col-sm-12">
                   <input
@@ -74,33 +101,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
-                <!-- first name Field -->
-                <label
-                  for="firstName"
-                  class="col-12 col-sm-12 col-form-label"
-                  >{{ labels.first_name }}</label
-                >
-                <div class="col-12 col-sm-12">
-                  <input
-                    [ngClass]="{
-                      'is-invalid': submitted && ctr.firstName.errors
-                    }"
-                    type="text"
-                    formControlName="firstName"
-                    class="form-control"
-                    id="first-name"
-                  />
-                  <div
-                    *ngIf="submitted && ctr.firstName.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="ctr.firstName.errors.required">
-                      {{ errors.required }}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              
             </div>
             <br />
             <!-- maidenName  Field -->
@@ -214,7 +215,7 @@
             </div>
             <!-- Phone number -->
             <div class="row" *ngIf="!disabled">
-              <div class="col col-12 pr-0 pl-0">
+              <div class="col col-12 pr-2 pl-0">
                 <div class="col-12 col-form-label">{{ labels.phone }}</div>
                 <div class="col-12 row">
                   <div class="col-10 col-sm-11">
@@ -259,7 +260,7 @@
                       {{ errors.invalid_phone }}
                     </div>
                   </div>
-                  <div class="col-1 col-sm-1">
+                  <div class="col-1 col-sm-1 add-phone">
                     <button
                       (click)="addPhone()"
                       class="btn btn-xs btn-icon"
@@ -470,10 +471,36 @@
                   </div>
                   <div class="col-12 col-sm-10">
                     <div class="row">
+                      <!-- First name -->
+                      <div class="col col-12 col-sm-6">
+                          <label class="col-12 col-form-label">{{
+                            labels.last_name
+                          }}</label>
+                          <div class="col-12 pl-0">
+                            <input
+                              formControlName="firstName"
+                              type="text"
+                              class="form-control"
+                              id="first-Name-Attached"
+                              [ngClass]="{
+                                'is-invalid':
+                                  patientSubmitted && f1.firstName.errors
+                              }"
+                            />
+                            <div
+                              *ngIf="patientSubmitted && f1.firstName.errors"
+                              class="invalid-feedback"
+                            >
+                              <div *ngIf="f1.firstName.errors.required">
+                                {{ errors.required }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       <!-- Last name -->
                       <div class="col col-12 col-sm-6">
                         <label class="col-12 col-form-label">{{
-                          labels.last_name
+                          labels.first_name
                         }}</label>
                         <div class="col-12 pr-0">
                           <input
@@ -496,32 +523,7 @@
                           </div>
                         </div>
                       </div>
-                      <!-- First name -->
-                      <div class="col col-12 col-sm-6">
-                        <label class="col-12 col-form-label">{{
-                          labels.first_name
-                        }}</label>
-                        <div class="col-12 pl-0">
-                          <input
-                            formControlName="firstName"
-                            type="text"
-                            class="form-control"
-                            id="first-Name-Attached"
-                            [ngClass]="{
-                              'is-invalid':
-                                patientSubmitted && f1.firstName.errors
-                            }"
-                          />
-                          <div
-                            *ngIf="patientSubmitted && f1.firstName.errors"
-                            class="invalid-feedback"
-                          >
-                            <div *ngIf="f1.firstName.errors.required">
-                              {{ errors.required }}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      
                     </div>
                     <br />
                     <div class="row">
@@ -762,7 +764,7 @@
                         <div class="col-12 col-form-label">
                           {{ labels._phone }}
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 principle-phone">
                           <international-phone-number
                             class="form-control"
                             formControlName="phoneNumber"
@@ -841,10 +843,36 @@
                   </div>
                   <div class="col-12 col-sm-10">
                     <div class="row">
+                      <!-- First name -->
+                      <div class="col col-12 col-sm-6">
+                          <label class="col-12 col-form-label">{{
+                            labels.last_name
+                          }}</label>
+                          <div class="col-12 pl-0">
+                            <input
+                              formControlName="firstName"
+                              type="text"
+                              class="form-control"
+                              id="first-Name-Attached"
+                              [ngClass]="{
+                                'is-invalid':
+                                  patientUpdated && f2.firstName.errors
+                              }"
+                            />
+                            <div
+                              *ngIf="patientUpdated && f2.firstName.errors"
+                              class="invalid-feedback"
+                            >
+                              <div *ngIf="f2.firstName.errors.required">
+                                {{ errors.required }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       <!-- Last name -->
                       <div class="col col-12 col-sm-6">
                         <label class="col-12 col-form-label">{{
-                          labels.last_name
+                          labels.first_name
                         }}</label>
                         <div class="col-12 pr-0">
                           <input
@@ -866,32 +894,7 @@
                           </div>
                         </div>
                       </div>
-                      <!-- First name -->
-                      <div class="col col-12 col-sm-6">
-                        <label class="col-12 col-form-label">{{
-                          labels.first_name
-                        }}</label>
-                        <div class="col-12 pl-0">
-                          <input
-                            formControlName="firstName"
-                            type="text"
-                            class="form-control"
-                            id="first-Name-Attached"
-                            [ngClass]="{
-                              'is-invalid':
-                                patientUpdated && f2.firstName.errors
-                            }"
-                          />
-                          <div
-                            *ngIf="patientUpdated && f2.firstName.errors"
-                            class="invalid-feedback"
-                          >
-                            <div *ngIf="f2.firstName.errors.required">
-                              {{ errors.required }}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      
                     </div>
                     <br />
                     <div class="row">
