@@ -41,7 +41,6 @@
   infiniteScroll
   [infiniteScrollDistance]="2"
   [infiniteScrollThrottle]="50"
-  (scrolled)="onScroll()"
 ></div>
 <mat-progress-spinner
   *ngIf="scroll"
@@ -52,8 +51,8 @@
 </mat-progress-spinner>
 <notifier-container></notifier-container>
 <ng-template #customNotification let-notificationData="notification">
-    <div class="text-center" type="notificationData.type">
-        <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
-        &nbsp;<span class="information-text">{{ notificationData.message }}</span>
-    </div>
+  <div class="text-center" type="notificationData.type">
+    <i class="fa fa-check" style="font-size: 11px;" aria-hidden="true"></i>
+    &nbsp;<span class="information-text">{{ notificationData.message }}</span>
+  </div>
 </ng-template>

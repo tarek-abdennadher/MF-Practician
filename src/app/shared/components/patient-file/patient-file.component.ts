@@ -113,7 +113,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   phones = [];
   noteList = [];
   addnewPhone = new Subject<boolean>();
-  otherPhones = new Subject<any[]>();
+  otherPhones = new Array();
   isFutureDate: boolean;
   public isPhonesValid = false;
   public info: any;
@@ -197,6 +197,13 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       if (res) {
         this.noteList = res;
       }
+    });
+    this.onChanges();
+
+  }
+  onChanges() {
+    this.personalInfoForm.controls.email.valueChanges.subscribe(val => {
+      this.click = false;
     });
   }
   getCorrespondence() {
@@ -289,9 +296,13 @@ export class PatientFileComponent implements OnInit, OnDestroy {
 
   getPersonalInformation(patient) {
     this.patientFileId = patient.id;
-    if (patient.phones && patient?.phones.length != 0) {
+    if (patient.phones && patient.phones.length > 0) {
       this.isLabelShow = true;
-      this.otherPhones.next(patient.phones);
+      this.otherPhones = patient.phones;
+    }
+    else{
+      this.isLabelShow = false;
+      this.otherPhones = [];
     }
     if (patient?.civility == "MME") {
       this.displayMaidenName = true;

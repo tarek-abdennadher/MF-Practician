@@ -113,44 +113,10 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
-        // sorting the list by fullname (in the alphabetic order)
-        this.myPatients.sort((p1,p2) => {
-            if (p1.users[0].fullName > p2.users[0].fullName) {
-                return 1;
-            }
-        
-            if (p1.users[0].fullName < p2.users[0].fullName) {
-                return -1;
-            }
-        
-            return 0;
-        });
         this.filtredPatients = this.myPatients;
       });
   }
 
-  getNextPatientsPendingOfCurrentParactician(pageNo) {
-    this.myPatientsService
-      .getPendingInvitations(pageNo, this.direction)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
-            this.myPatients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
-          });
-        }
-      });
-  }
-  onScroll() {
-    if (this.listLength != this.filtredPatients.length) {
-      this.listLength = this.filtredPatients.length;
-      this.pageNo++;
-      this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
-    }
-  }
   mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];
@@ -158,11 +124,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
       id: patient.id,
       accountId: patient.patient ? patient.patient.accountId : null,
       patientId: patient.patient ? patient.patient.id : null,
-      fullName:
-        patient.fullName.substring(patient.civility.length) +
-        " (" +
-        (patient.civility !== "" ? patient.civility : "Enfant") +
-        ")",
+      fullName: patient.fullName,
       img: this.avatars.user,
       civility: patient.civility
     });
@@ -204,7 +166,8 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: this.featureService.encrypt(item.users[0].id)
+        id: this.featureService.encrypt(item.users[0].id),
+        parent: "invitation"
       },
       relativeTo: this.route
     });

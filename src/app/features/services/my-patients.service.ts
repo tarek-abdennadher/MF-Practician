@@ -25,7 +25,9 @@ export class MyPatientsService {
     add_info_success: "La fiche patient est créée avec succès",
     invitation_success: "Invitation envoyée avec succès ",
     add_success: "Le patient rattaché est ajouté avec succès ",
-    update_sucess: "Le patient rattaché est modifié avec succès "
+    update_sucess: "Le patient rattaché est modifié avec succès ",
+    loading_add_attached: "Ajout de la personne rattachée en cours...",
+    loading_edit_attached: "Modification de la personne rattachée en cours..."
   };
   refreshPatientFileListObs = new Subject();
   getPatientsOfCurrentParactician(
@@ -43,7 +45,7 @@ export class MyPatientsService {
   getPatientsOfCurrentParacticianByCategory(
     pageNo: number,
     categoryId: number,
-    order: OrderDirection = OrderDirection.DESC
+    order: OrderDirection = OrderDirection.ASC
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
@@ -60,7 +62,7 @@ export class MyPatientsService {
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "myPatient/prohibited",
+      this.globalService.url.favorite + "myPatient/prohibitedV2",
       {
         params: { pageNo: pageNo, order: order }
       }
@@ -86,7 +88,7 @@ export class MyPatientsService {
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.favorite + "invitations",
+      this.globalService.url.favorite + "invitationsV2",
       {
         params: { pageNo: pageNo, order: order }
       }
@@ -222,11 +224,11 @@ export class MyPatientsService {
   getPatientsOfCurrentParacticianV2(
     id,
     pageNo: number,
-    order: OrderDirection = OrderDirection.DESC
+    order: OrderDirection = OrderDirection.ASC
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "my/v2/" + id,
+      this.globalService.url.patientFile + "my/v3/" + id,
       {
         params: { pageNo: pageNo, order: order }
       }
@@ -271,7 +273,7 @@ export class MyPatientsService {
   ): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "archived",
+      this.globalService.url.patientFile + "archivedV2",
       {
         params: { pageNo: pageNo, order: order }
       }

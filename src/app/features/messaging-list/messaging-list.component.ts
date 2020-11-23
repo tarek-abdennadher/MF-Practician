@@ -241,7 +241,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.featureService.setIsMessaging(true);
     });
-    this.displayListMessagesBySizeScreen();
     this.pagination.init(50);
   }
 
@@ -299,15 +298,19 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               if (resp == true) {
                 let list: any[] = this.featureService.myPracticians.getValue();
                 if (list && list.length > 0) {
-                  this.featureService.updateNumberOfInboxForPractician(
-                    this.featureService.selectedPracticianId,
-                    0
-                  );
+                  this.filtredItemList.forEach(elm => {
+                    if (messagesId.includes(elm.id) && !elm.isSeen) {
+                      elm.isSeen = true;
+                      this.featureService.updateNumberOfInboxForPractician(
+                        this.featureService.selectedPracticianId,
+                        this.inboxPracticianNumber - 1
+                      );
+                      this.inboxPracticianNumber--;
+                    }
+                  });
                 }
                 this.bottomText = this.globalService.messagesDisplayScreen.newMessage;
-
-                this.itemsList.forEach(item => (item.isSeen = true));
-                this.filtredItemList.forEach(item => (item.isSeen = true));
+                this.messagesServ.uncheckMessages(checkedMessages);
               }
             },
             error => {
@@ -667,6 +670,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
   selectItem(event) {
     this.selectedObjects = event.filter(a => a.isChecked == true);
+    this.selectedObjects.length == 0
+      ? (this.links.isMenuDisplay = false)
+      : (this.links.isMenuDisplay = true);
     let isSeenTable = [];
     let isImportantTable = [];
     this.selectedObjects.forEach(elm => {
@@ -893,33 +899,63 @@ export class MessagingListComponent implements OnInit, OnDestroy {
 
     this.messagesServ.changeFlagImportant(this.filtredItemList, ids);
   }
+  removeImportantAction() {
+    const checkedMessages = this.filtredItemList.filter(
+      e => e.isChecked == true
+    );
+    let ids = [];
+    for (let message of checkedMessages) {
+      ids.push(message.id);
+    }
+    this.messagesServ.markMessageAsNotImportant(ids).subscribe(
+      message => {
+        this.links.isImportant = false;
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_not_important_message_success,
+          type: "info",
+          template: this.customNotificationTmpl
+        });
+        this.messagesServ.uncheckMessages(checkedMessages);
+      },
+      error => {
+        this.notifier.show({
+          message: this.globalService.toastrMessages
+            .mark_not_important_message_error,
+          type: "error",
+          template: this.customNotificationTmpl
+        });
+      }
+    );
+
+    this.messagesServ.changeFlagNotImportant(this.filtredItemList, ids);
+  }
 
   notSeenActionClicked() {
     const checkedMessages = this.filtredItemList.filter(
       e => e.isChecked == true
     );
+    console.log(checkedMessages);
     const messagesId = checkedMessages.map(e => e.id);
     if (messagesId.length > 0) {
-      if (this.isMyInbox) {
-        this.messagesServ.markMessagesListAsNotSeen(messagesId).subscribe(
-          resp => {
-            if (resp == true) {
-              this.featureService.markAsNotSeenById(
-                this.filtredItemList,
-                messagesId
-              );
-              this.featureService.addNotificationByIdMessage(
-                this.filtredItemList,
-                messagesId
-              );
-              this.messagesServ.uncheckMessages(checkedMessages);
-            }
-          },
-          error => {
-            //We have to find a way to notify user by this error
+      this.messagesServ.markMessagesListAsNotSeen(messagesId).subscribe(
+        resp => {
+          if (resp == true) {
+            this.featureService.markAsNotSeenById(
+              this.filtredItemList,
+              messagesId
+            );
+            this.featureService.addNotificationByIdMessage(
+              this.filtredItemList,
+              messagesId
+            );
+            this.messagesServ.uncheckMessages(checkedMessages);
           }
-        );
-      }
+        },
+        error => {
+          //We have to find a way to notify user by this error
+        }
+      );
     }
   }
 
@@ -944,22 +980,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       this.filterActionClicked("patient");
     } else if ($event.index === 3) {
       this.filterActionClicked("doctor");
-    }
-  }
-
-  private displayListMessagesBySizeScreen() {
-    let innerWidth = window.innerWidth;
-    if (innerWidth < 769) {
-      this.filterActionClicked("all");
-      this.selectedTabIndex = 0;
-    }
-  }
-
-  @HostListener("window:resize", ["$event"])
-  private onResizeScreen() {
-    if (window.innerWidth < 769) {
-      this.filterActionClicked("all");
-      this.selectedTabIndex = 0;
     }
   }
 

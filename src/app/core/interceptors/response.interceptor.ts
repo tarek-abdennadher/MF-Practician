@@ -35,7 +35,7 @@ export class ResponseInterceptor implements HttpInterceptor {
             this.router.navigate(["/forbidden"]);
             break;
           case 500:
-            this.setNotif("Une erreur s’est produite et l'équipe travail dessus.", "error");
+            this.setNotif("Une erreur s'est produite veuillez réessayer ultérieurement", "error");
             break;
           default:
             return throwError(error);

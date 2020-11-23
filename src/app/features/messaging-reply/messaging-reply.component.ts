@@ -230,10 +230,11 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         requestDto = {
           patientId: message.sender.sendedForId,
           patientForId: null,
+          patientFileId: message.sender.concernsId,
           practicianId: practicianId,
           requestId: message.requestTypeId,
           titleId: message.requestTitleId,
-          websiteOrigin: "TLS"
+          websiteOrigin: this.refuseResponse ? "TLS" : "PRACTICIAN_TLS"
         };
       }
       if (this.refuseResponse) {
@@ -321,33 +322,14 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       sendedForId: sendedFor,
       forwarded: this.forwardedResponse
     };
-    // sending to patient file without account
-    if (replyMessage.toReceivers[0].receiverId == null) {
-      this.messageService
-        .replyMessageToContact(
-          replyMessage,
-          this.messagingDetail.sender.concernsId
-        )
-        .subscribe(
-          message => {
-            if (this.forwardedResponse) {
-              this.featureService.numberOfForwarded =
-                this.featureService.numberOfForwarded + 1;
-            }
-            this.spinner.hide();
-            this.featureComp.setNotif(
-              this.globalService.toastrMessages.send_message_success
-            );
-            this.router.navigate(["/messagerie"]);
-          },
-          error => {
-            this.spinner.hide();
-            this.featureComp.setNotif(
-              this.globalService.toastrMessages.send_message_error
-            );
-          }
-        );
-    } else {
+    // Response to TLS Group or TLS supervisors concerning a patient file
+    if ((this.acceptResponse || this.refuseResponse) && message.sender.concernsId !=null && message.sender.concernsType == "PATIENT_FILE" && (message.sender.role =="TELESECRETARYGROUP" || message.sender.role =="SUPER_SUPERVISOR" || message.sender.role =="SUPERVISOR" )) {
+      replyMessage.sender.concernsId = message.sender.concernsId;
+          replyMessage.sender.concernsCivility = message.sender.concernsCivility ?  message.sender.concernsCivility : null ;
+          replyMessage.sender.concernsPhotoId = message.sender.concernsPhotoId ?  message.sender.concernsPhotoId : null;
+          replyMessage.sender.concernsFullName = message.sender.concernsFullName ?  message.sender.concernsFullName : null;
+          replyMessage.sender.concernsType = message.sender.concernsType ?  message.sender.concernsType : null;
+    }
       if (message.file !== undefined) {
         this.selectedFiles = message.file;
 
@@ -402,7 +384,6 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
           }
         );
       }
-    }
   }
   goToBack() {
     this._location.back();
