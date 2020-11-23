@@ -235,6 +235,10 @@ hr {
     left: 51%;
     right: 48%;
   }
+  .principle-phone {
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+  }
 }
 .alert.alert-danger {
   font-family: Montserrat-Medium;
@@ -366,5 +370,10 @@ button.close {
   }
   .phone-btn {
     padding-left: 0px;
+  }
+}
+@media (min-width: 575px) {
+  #add-phone-button {
+    margin-left: -8px;
   }
 }
