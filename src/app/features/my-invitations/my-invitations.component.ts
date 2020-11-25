@@ -59,6 +59,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.scroll = true;
     this.initPendingPatients();
     // update list after detail view
     this.router.events
@@ -106,6 +107,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
       .getPendingInvitations(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
+        this.scroll = false;
         this.number = myPatients.length;
         this.myPatients = [];
         myPatients.forEach(elm => {

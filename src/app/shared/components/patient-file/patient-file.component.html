@@ -215,7 +215,7 @@
             </div>
             <!-- Phone number -->
             <div class="row" *ngIf="!disabled">
-              <div class="col col-12 pr-0 pl-0">
+              <div class="col col-12 pr-2 pl-0">
                 <div class="col-12 col-form-label">{{ labels.phone }}</div>
                 <div class="col-12 row">
                   <div class="col-10 col-sm-11">
@@ -260,7 +260,7 @@
                       {{ errors.invalid_phone }}
                     </div>
                   </div>
-                  <div class="col-1 col-sm-1">
+                  <div class="col-1 col-sm-1 add-phone">
                     <button
                       (click)="addPhone()"
                       class="btn btn-xs btn-icon"
@@ -764,7 +764,7 @@
                         <div class="col-12 col-form-label">
                           {{ labels._phone }}
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 principle-phone">
                           <international-phone-number
                             class="form-control"
                             formControlName="phoneNumber"

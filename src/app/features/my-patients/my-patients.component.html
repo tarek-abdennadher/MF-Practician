@@ -12,6 +12,7 @@
     >
     </lib-hls-generic-list-links>
     <lib-hls-generic-list
+      *ngIf="!scroll"
       [caller]="'my-patients'"
       [isCheckbox]="false"
       [list]="filtredPatients"
