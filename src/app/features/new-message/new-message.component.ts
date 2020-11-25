@@ -813,6 +813,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onTypeChanged() {
     this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
+    this.sendMessageForm.get('cc').reset();
   }
 
   ///
