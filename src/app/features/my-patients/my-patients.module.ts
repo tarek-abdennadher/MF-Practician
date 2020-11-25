@@ -10,6 +10,7 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { SharedModule } from "@app/shared/shared.module";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
+import { NgxSpinnerModule } from "ngx-spinner";
 
 const notifierOptions: NotifierOptions = {
   position: {
@@ -61,7 +62,8 @@ const notifierOptions: NotifierOptions = {
     InfiniteScrollModule,
     SharedModule,
     MyPatientsRoutingModule,
-    NotifierModule.withConfig(notifierOptions)
+    NotifierModule.withConfig(notifierOptions),
+    NgxSpinnerModule
   ]
 })
 export class MyPatientsModule {}

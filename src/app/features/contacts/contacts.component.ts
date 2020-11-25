@@ -50,6 +50,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     user: string;
   };
   ALL_TYPES: string = "Tout";
+  loading: boolean = false;
   constructor(
     public accountService: AccountService,
     private location: Location,
@@ -77,6 +78,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
   userRole = this.localSt.retrieve("role");
   ngOnInit(): void {
+    this.loading = true;
     this.initComponent();
     this.route.queryParams.subscribe(params => {
       if (params["refresh"]) {
@@ -161,9 +163,11 @@ export class ContactsComponent implements OnInit, OnDestroy {
                 );
             });
           });
+          this.loading = false;
         },
         error => {
           //en attendant un model de popup à afficher
+          this.loading = false;
         }
       );
   }
@@ -229,9 +233,11 @@ export class ContactsComponent implements OnInit, OnDestroy {
                 );
             });
           });
+          this.loading = false;
         },
         error => {
           //en attendant un model de popup à afficher
+          this.loading = false;
         }
       );
   }

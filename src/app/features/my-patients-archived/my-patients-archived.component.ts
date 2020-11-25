@@ -59,6 +59,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.scroll = true;
     this.initArchivedPatients();
     // update list after detail view
     this.router.events
@@ -93,6 +94,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
           this.myPatients.push(this.mappingMyPatients(elm, false, true));
         });
         this.filtredPatients = this.myPatients;
+        this.scroll = false;
       });
   }
 
