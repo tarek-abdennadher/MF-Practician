@@ -58,6 +58,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.scroll = true;
     this.initProhibitedPatients();
     // update list after detail view
     this.router.events
@@ -94,6 +95,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
           );
         });
         this.filtredPatients = this.myPatients;
+        this.scroll = false;
       });
   }
 
