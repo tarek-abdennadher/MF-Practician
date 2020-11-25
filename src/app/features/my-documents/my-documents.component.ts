@@ -57,6 +57,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   linkedPatients: any;
   imageObs: any;
   number: number = 0;
+  loading: boolean = false;
   constructor(
     private mydocumentsService: MyDocumentsService,
     private globalService: GlobalService,
@@ -84,6 +85,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.featureService.setActiveChild("document");
     this.getMySendersAndReceivers();
     this.getAllObjects();
@@ -132,6 +134,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
               );
           });
         });
+        this.loading = false;
       });
   }
   getDetailSwitchRole(senderDetail) {
