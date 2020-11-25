@@ -983,7 +983,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           item =>
             item.destination == "PRACTICIAN" || item.destination == "OTHER"
         );
-      } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
+      } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY" || ["SUPERVISOR", "SUPER_SUPERVISOR","TELESECRETARY"].includes(type)) {
         if (this.isInstruction) {
           this.objectsList = this.instructionObjectsList;
         } else {
