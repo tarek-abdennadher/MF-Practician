@@ -221,7 +221,7 @@
                   <div class="col-10 col-sm-11">
                     <international-phone-number
                       *ngIf="!isAdd"
-                      class="form-control"
+                      class="form-control phone"
                       id="phoneNumber"
                       formControlName="phoneNumber"
                       placeholder="Téléphone ou fixe *"
@@ -229,13 +229,13 @@
                       name="phoneNumber"
                       [defaultCountry]="''"
                       [ngClass]="{
-                        'is-invalid': submitted && personalInfoForm.errors
+                        'is-invalid': submitted && ctr.phoneNumber.errors
                       }"
                     >
                     </international-phone-number>
                     <international-phone-number
                       *ngIf="isAdd"
-                      class="form-control"
+                      class="form-control phone"
                       id="phoneNumber"
                       formControlName="phoneNumber"
                       placeholder="Téléphone ou fixe *"
@@ -243,18 +243,18 @@
                       name="phoneNumber"
                       [defaultCountry]="'fr'"
                       [ngClass]="{
-                        'is-invalid': submitted && personalInfoForm.errors
+                        'is-invalid': submitted && ctr.phoneNumber.errors
                       }"
                     >
                     </international-phone-number>
                     <div
-                      *ngIf="personalInfoForm.errors?.requiredValidator"
+                      *ngIf="submitted && ctr.phoneNumber.errors?.required"
                       class="invalid-feedback"
                     >
                       {{ errors.required }}
                     </div>
                     <div
-                      *ngIf="ctr.phoneNumber.invalid && ctr.phoneNumber.touched"
+                      *ngIf="ctr.phoneNumber.invalid && !ctr.phoneNumber.errors?.required"
                       class="invalid-feedback"
                     >
                       {{ errors.invalid_phone }}

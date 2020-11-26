@@ -232,7 +232,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       lastName: new FormControl(null, Validators.required),
       firstName: new FormControl(null, Validators.required),
       maidenName: new FormControl(null),
-      phoneNumber: new FormControl(null),
+      phoneNumber: new FormControl(null, Validators.required),
       email: new FormControl(null, emailValidator),
       address: new FormControl(null),
       zipCode: new FormControl(null),
