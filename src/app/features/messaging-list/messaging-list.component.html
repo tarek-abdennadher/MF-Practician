@@ -40,7 +40,7 @@
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
           <span>Tous mes messages</span>
-          <span class="number">{{ inboxPracticianNumber }}</span>
+          <span class="number" *ngIf="inboxPracticianNumber > 0">{{ inboxPracticianNumber }}</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
