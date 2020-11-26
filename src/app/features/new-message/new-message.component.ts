@@ -814,6 +814,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
     this.sendMessageForm.get('cc').reset();
+    this.sendMessageForm.get('for').reset();
+
   }
 
   ///
