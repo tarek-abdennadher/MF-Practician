@@ -30,6 +30,8 @@ import { resolveMx } from "dns";
 export class MessagingListComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   public selectedTabIndex = 0;
+  messagesNumber: number = 0;
+
   person;
   showAcceptRefuse = true;
   isMyInbox = true;
@@ -372,6 +374,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                   elm => !messagesId.includes(elm.id)
                 );
                 this.deleteElementsFromInbox(messagesId.slice(0));
+
                 this.featureService.archiveState.next(true);
                 this.messagesServ.uncheckMessages(checkedMessages);
               },
@@ -381,6 +384,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             );
           }
         }
+        this.messagesNumber--;
+        this.pagination.init(this.messagesNumber );
       });
   }
   filterActionClicked(event) {
@@ -429,6 +434,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(num => {
         this.pagination.init(num);
+        this.messagesNumber = num ;
         this.messagesServ
           .getInboxByAccountId(
             accountId,
@@ -745,7 +751,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 }
               );
             this.filtredItemList.unshift(message);
-
+            this.messagesNumber++;
+            this.pagination.init(this.messagesNumber);
             this.bottomText =
               this.number > 1
                 ? this.globalService.messagesDisplayScreen.newMessages

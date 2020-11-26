@@ -21,6 +21,8 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   imageSource: string;
+  messagesNumber: number = 0;
+
   links = {
     isAllSelect: true,
     isFilter: true,
@@ -90,6 +92,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .countSentMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(messages => {
+        this.messagesNumber = messages ;
         this.pagination.init(messages);
         this.loadPage();
       });
@@ -263,6 +266,8 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
               }
             );
           }
+          this.messagesNumber--;
+          this.pagination.init(this.messagesNumber );
         });
     }
   }
@@ -353,7 +358,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       this.loadPage();
     }
   }
-
   loadPage() {
     this.itemsList = [];
     this.filtredItemList = [];
