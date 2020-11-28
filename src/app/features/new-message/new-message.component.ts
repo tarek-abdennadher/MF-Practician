@@ -1261,10 +1261,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         mess => {
           this.featureService.sentState.next(true);
           this.spinner.hide();
-          this.router.navigate(["/messagerie-envoyes"], {
-            queryParams: {
-              status: "sentSuccess"
-            }
+          this.notifier.show({
+            message: this.globalService.toastrMessages.send_message_success,
+            type: "success",
+            template: this.customNotificationTmpl
           });
           this.messageWidgetService.toggleObs.next();
         },
