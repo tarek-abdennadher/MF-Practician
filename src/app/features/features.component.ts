@@ -46,6 +46,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   patients: any;
   secretaryIds: any = [];
   public messaging: boolean = true;
+
   private readonly notifier: NotifierService;
   constructor(
     public router: Router,
@@ -489,8 +490,16 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
                   .includes(event.toLowerCase()) ||
                 x.object.name.toLowerCase().includes(event.toLowerCase())
             );
+
           result = result.length > 0 ? result : null;
+          console.log(result);
           this.featuresService.setFilteredInboxSearch(result);
+          // if (result.length > 0) {
+          //   result.forEach(elm => {
+          //     elm.users[0].img = this.featuresService.photosArray.get(elm.users[0].id);
+          //   });
+          // }
+          // this.featuresService.setFilteredInboxSearch(result);
         } else {
           this.featuresService.setFilteredInboxSearch([]);
         }
@@ -507,6 +516,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
                 x.object.name.toLowerCase().includes(event.toLowerCase())
             );
           result = result.length > 0 ? result : null;
+          // if (result.length > 0) {
+          //   result.forEach(elm => {
+          //     elm.users[0].img = this.featuresService.photosArray.get(elm.id);
+          //   });
+          // }
           this.featuresService.searchPracticianInboxFiltered
             .get(practicianId)
             .next(result);
@@ -745,7 +759,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isSeen: message.seenAsReceiver,
       users: [
         {
-          id: message.sender.id,
+          id: message.sender.senderId,
           fullName: message.sender.fullName,
           img: this.avatars.user,
           title: message.sender.jobTitle,
@@ -768,21 +782,33 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isArchieve: true,
       photoId: message.sender.photoId
     };
-    this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
-      response => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
-          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      error => {
-        parsedMessage.users[0].img = this.avatars.user;
-      }
-    );
-
+    if (!this.featuresService.photosArray.has(message?.sender?.senderId)) {
+      this.featuresService.photosArray.set(message?.sender?.senderId, null);
+      this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+            // console.log(parsedMessage.users[0].id);
+            this.featuresService.photosArray.set(
+              parsedMessage.users[0].id,
+              parsedMessage.users[0].img
+            );
+            this.updateImageOfParsedMessages(parsedMessage.users[0].id);
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
+    } else {
+      parsedMessage.users[0].img = this.featuresService.photosArray.get(
+        message?.sender?.senderId
+      );
+    }
     return parsedMessage;
   }
 
@@ -838,24 +864,65 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
       messageSent.users.forEach(user => {
-        this.documentService.getDefaultImage(user.id).subscribe(
-          response => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              user.img = this.sanitizer.bypassSecurityTrustUrl(
-                myReader.result as string
-              );
-            };
-            let ok = myReader.readAsDataURL(response);
-          },
-          error => {
-            user.img = "assets/imgs/user.png";
-          }
-        );
+        if (!this.featuresService.photosArray.has(user.id)) {
+          this.featuresService.photosArray.set(user.id, null);
+          this.documentService.getDefaultImage(user.id).subscribe(
+            response => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = e => {
+                user.img = this.sanitizer.bypassSecurityTrustUrl(
+                  myReader.result as string
+                );
+                // console.log(user.id);
+                this.updateImageOfParsedMessages(user.id);
+                this.featuresService.photosArray.set(user.id, user.img);
+              };
+              let ok = myReader.readAsDataURL(response);
+            },
+            error => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        } else {
+          user.img = this.featuresService.photosArray.get(user.id);
+        }
       });
       parsedMessages.push(messageSent);
     });
     return parsedMessages;
+  }
+  updateImageOfParsedMessages(id) {
+    // this.featuresService
+    //   .getSearchSentValue()
+    //   .filter(e => e.users[0].id == id)
+    //   .forEach(e => {
+    //     e.users[0].img = this.featuresService.photosArray.get(id);
+    //   });
+    // this.featuresService
+    //   .getSearchForwardedValue()
+    //   .filter(e => e.users[0].id == id)
+    //   .forEach(e => {
+    //     e.users[0].img = this.featuresService.photosArray.get(id);
+    //   });
+    // this.featuresService
+    //   .getSearchArchiveValue()
+    //   .filter(e => e.users[0].id == id)
+    //   .forEach(e => {
+    //     e.users[0].img = this.featuresService.photosArray.get(id);
+    //   });
+    // this.featuresService
+    //   .getSearchInboxValue()
+    //   .filter(e => e.users[0].id == id)
+    //   .forEach(e => {
+    //     e.users[0].img = this.featuresService.photosArray.get(id);
+    //   });
+    this.featuresService
+      .getSearchInboxValue()
+      .filter(e => e.users[0].id == id)
+      .forEach(e => {
+        console.log(id);
+        e.users[0].img = this.featuresService.photosArray.get(id);
+      });
   }
 
   // parse archive message
@@ -917,6 +984,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           user.img = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
+          this.featuresService.photosArray.set(user.id, user.img);
+          this.updateImageOfParsedMessages(user.id);
         };
         let ok = myReader.readAsDataURL(response);
       },
@@ -946,7 +1015,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   mapArchiveMessages(message) {
     const archivedMessage = this.mappingMessageArchived(message);
     archivedMessage.users.forEach(user => {
-      this.loadPhoto(user);
+      if (!this.featuresService.photosArray.has(user.id)) {
+        this.featuresService.photosArray.set(user.id, null);
+        this.loadPhoto(user);
+      } else {
+        user.img = this.featuresService.photosArray.get(user.id);
+      }
     });
     return archivedMessage;
   }

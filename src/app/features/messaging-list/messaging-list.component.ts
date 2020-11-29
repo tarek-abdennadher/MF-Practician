@@ -817,6 +817,12 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         this.searchContext = true;
       } else if (res?.length > 0) {
         this.filtredItemList = res;
+
+        // this.filtredItemList.forEach(elm => {
+        //   elm.users[0].img = this.featureService.photosArray.get(
+        //     elm.users[0].id
+        //   );
+        // });
         this.searchContext = true;
       } else {
         this.filtredItemList = this.itemsList;

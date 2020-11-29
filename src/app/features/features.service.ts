@@ -12,6 +12,7 @@ import { HttpUrlEncodingCodec } from "@angular/common/http";
   providedIn: "root"
 })
 export class FeaturesService {
+  public photosArray = new Map();
   encode = new HttpUrlEncodingCodec();
   public listNotifications = [];
   public selectedPracticianId = 0;
