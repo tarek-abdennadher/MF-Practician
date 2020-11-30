@@ -305,9 +305,13 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                       elm.isSeen = true;
                       this.featureService.updateNumberOfInboxForPractician(
                         this.featureService.selectedPracticianId,
-                        this.inboxPracticianNumber - 1
+                        this.inboxPracticianNumber - 1 <= 0
+                          ? 0
+                          : this.inboxPracticianNumber - 1
                       );
-                      this.inboxPracticianNumber--;
+                      this.inboxPracticianNumber-- <= 0
+                        ? (this.inboxPracticianNumber = 0)
+                        : this.inboxPracticianNumber--;
                     }
                   });
                 }
@@ -385,7 +389,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           }
         }
         this.messagesNumber--;
-        this.pagination.init(this.messagesNumber );
+        this.pagination.init(this.messagesNumber);
       });
   }
   filterActionClicked(event) {
@@ -434,7 +438,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(num => {
         this.pagination.init(num);
-        this.messagesNumber = num ;
+        this.messagesNumber = num;
         this.messagesServ
           .getInboxByAccountId(
             accountId,
