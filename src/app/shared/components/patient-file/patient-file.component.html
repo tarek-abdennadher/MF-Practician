@@ -224,7 +224,7 @@
                       [defaultCountry]="''"
                       [maxlength]="20"
                       [ngClass]="{
-                        'is-invalid':  ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator
+                        'is-invalid':  (ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
                       }"
                       class="form-control phone"
                       formControlName="phoneNumber"
@@ -238,7 +238,7 @@
                       [defaultCountry]="'fr'"
                       [maxlength]="20"
                       [ngClass]="{
-                        'is-invalid': ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator
+                        'is-invalid': (ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
                       }"
                       class="form-control phone"
                       formControlName="phoneNumber"
