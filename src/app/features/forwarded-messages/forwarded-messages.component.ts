@@ -29,6 +29,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
     isRefresh: true
   };
   page = "INBOX";
+  messagesNumber: number = 0;
   number = 0;
   topText = "Messages transférés";
   bottomText = "";
@@ -70,6 +71,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
     this.featureService.setActiveChild("forwarded");
     this.countAllMyForwardedMessages();
     this.searchForwarded();
+
   }
 
   countAllMyForwardedMessages() {
@@ -77,6 +79,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
       .countForwardedMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(messages => {
+        this.messagesNumber = messages ;
         this.pagination.init(messages);
         this.loadPage();
       });
@@ -252,6 +255,8 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
               }
             );
           }
+          this.messagesNumber--;
+          this.pagination.init(this.messagesNumber );
         });
     }
   }
