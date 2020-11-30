@@ -13,6 +13,7 @@
     >
     </lib-hls-generic-list-links>
     <lib-hls-generic-list
+      *ngIf="!loading"
       [isCheckbox]="isCheckbox"
       [list]="itemsList"
       emptyList="Vous n'avez aucun document attaché actuellement."
@@ -21,6 +22,13 @@
       [caller]="'myDocuments'"
       [imageSource]="imageSource"
     ></lib-hls-generic-list>
+    <mat-progress-spinner
+      *ngIf="loading"
+      diameter="20"
+      mode="indeterminate"
+      value="100"
+    >
+    </mat-progress-spinner>
   </div>
   <div id="documentRecu" class="col-md-7 list">
     <router-outlet></router-outlet>

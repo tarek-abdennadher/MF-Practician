@@ -465,6 +465,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   archieveActionClicked() {}
   filterActionClicked(event) {}
   logoClicked() {
+    jQuery('a').removeClass('active');
+    jQuery('#inbox').addClass('active');
     jQuery("#sidebar").addClass("hidden-side-bar");
     this.scrolToTop();
     this.router.navigate(["/messagerie"]);

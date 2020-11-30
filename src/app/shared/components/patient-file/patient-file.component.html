@@ -101,7 +101,7 @@
                   </div>
                 </div>
               </div>
-              
+
             </div>
             <br />
             <!-- maidenName  Field -->
@@ -201,7 +201,7 @@
                 <div class="col-12 col-form-label">{{ labels.phone }}</div>
                 <div class="col-12">
                   <international-phone-number
-                    class="form-control disabled"
+                    class="form-control "
                     id="phoneNumber"
                     formControlName="phoneNumber"
                     placeholder="Téléphone ou fixe *"
@@ -221,7 +221,7 @@
                   <div class="col-10 col-sm-11">
                     <international-phone-number
                       *ngIf="!isAdd"
-                      class="form-control"
+                      class="form-control phone"
                       id="phoneNumber"
                       formControlName="phoneNumber"
                       placeholder="Téléphone ou fixe *"
@@ -229,13 +229,13 @@
                       name="phoneNumber"
                       [defaultCountry]="''"
                       [ngClass]="{
-                        'is-invalid': submitted && personalInfoForm.errors
+                        'is-invalid': submitted && (personalInfoForm.errors || ctr.phoneNumber.errors)
                       }"
                     >
                     </international-phone-number>
                     <international-phone-number
                       *ngIf="isAdd"
-                      class="form-control"
+                      class="form-control phone"
                       id="phoneNumber"
                       formControlName="phoneNumber"
                       placeholder="Téléphone ou fixe *"
@@ -243,18 +243,18 @@
                       name="phoneNumber"
                       [defaultCountry]="'fr'"
                       [ngClass]="{
-                        'is-invalid': submitted && personalInfoForm.errors
+                        'is-invalid': submitted && (this.personalInfoForm.errors?.requiredValidator || ctr.phoneNumber.errors)
                       }"
                     >
                     </international-phone-number>
                     <div
-                      *ngIf="personalInfoForm.errors?.requiredValidator"
+                                           *ngIf="submitted && this.personalInfoForm.errors?.requiredValidator"
                       class="invalid-feedback"
                     >
                       {{ errors.required }}
                     </div>
                     <div
-                      *ngIf="ctr.phoneNumber.invalid && ctr.phoneNumber.touched"
+                                            *ngIf="!this.ctr.phoneNumber.errors?.phoneEmptyError.valid && !this.personalInfoForm.errors?.requiredValidator"
                       class="invalid-feedback"
                     >
                       {{ errors.invalid_phone }}
@@ -523,7 +523,7 @@
                           </div>
                         </div>
                       </div>
-                      
+
                     </div>
                     <br />
                     <div class="row">
@@ -894,7 +894,7 @@
                           </div>
                         </div>
                       </div>
-                      
+
                     </div>
                     <br />
                     <div class="row">

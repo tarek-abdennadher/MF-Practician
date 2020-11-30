@@ -10,6 +10,8 @@ import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { PipesModule } from "@app/shared/pipes/pipes.module";
 import { InternationalPhoneNumberModule } from "ngx-international-phone-number";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
+import { NgxSpinnerModule } from "ngx-spinner";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -62,7 +64,9 @@ const notifierOptions: NotifierOptions = {
     HlsGenericListLinksModule,
     PipesModule,
     InternationalPhoneNumberModule,
-    NotifierModule.withConfig(notifierOptions)
+    NotifierModule.withConfig(notifierOptions),
+    NgxSpinnerModule,
+    MatProgressSpinnerModule
   ]
 })
 export class ContactsModule {}

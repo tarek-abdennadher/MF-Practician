@@ -13,6 +13,7 @@ import { HlsMessagingListModule } from "hls-messaging-list";
 import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { HlsGenericListModule } from "hls-generic-list";
 import { HlsDocumentGridModule } from "hls-document-grid";
+import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
   declarations: [MyDocumentsComponent, DocumentsListComponent],
   imports: [
@@ -27,7 +28,8 @@ import { HlsDocumentGridModule } from "hls-document-grid";
     MatProgressSpinnerModule,
     HlsGenericListLinksModule,
     HlsGenericListModule,
-    HlsDocumentGridModule
+    HlsDocumentGridModule,
+    NgxSpinnerModule
   ],
   providers: [CivilityPipe]
 })

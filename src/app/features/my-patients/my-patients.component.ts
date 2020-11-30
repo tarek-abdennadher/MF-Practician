@@ -75,6 +75,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.scroll = true;
     this.initPatients();
     this.myPatientsService.refreshPatientFileListObs
       .pipe(takeUntil(this._destroyed$))
@@ -138,6 +139,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           );
         });
         this.filtredPatients = this.myPatients;
+        this.scroll = false;
       });
   }
   searchPatients() {

@@ -813,6 +813,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onTypeChanged() {
     this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
+    this.sendMessageForm.get('cc').reset();
+    this.sendMessageForm.get('for').reset();
+
   }
 
   ///
@@ -983,7 +986,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           item =>
             item.destination == "PRACTICIAN" || item.destination == "OTHER"
         );
-      } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY") {
+      } else if (type == "TELESECRETARYGROUP" || type == "SECRETARY" || ["SUPERVISOR", "SUPER_SUPERVISOR","TELESECRETARY"].includes(type)) {
         if (this.isInstruction) {
           this.objectsList = this.instructionObjectsList;
         } else {
@@ -1258,10 +1261,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         mess => {
           this.featureService.sentState.next(true);
           this.spinner.hide();
-          this.router.navigate(["/messagerie-envoyes"], {
-            queryParams: {
-              status: "sentSuccess"
-            }
+          this.notifier.show({
+            message: this.globalService.toastrMessages.send_message_success,
+            type: "success",
+            template: this.customNotificationTmpl
           });
           this.messageWidgetService.toggleObs.next();
         },

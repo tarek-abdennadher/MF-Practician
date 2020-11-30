@@ -8,6 +8,7 @@
     >
     </lib-hls-generic-list-links>
     <lib-hls-generic-list
+      *ngIf="!scroll"
       [isCheckbox]="false"
       [list]="filtredPatients"
       [imageSource]="imageSource"

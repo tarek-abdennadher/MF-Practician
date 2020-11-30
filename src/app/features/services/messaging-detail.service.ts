@@ -34,7 +34,7 @@ export class MessagingDetailService {
   getMessageArchivedById(id): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.archived_messages + id
+      this.globalService.url.archived_messages + "v2/" + id
     );
   }
 
@@ -86,7 +86,7 @@ export class MessagingDetailService {
   public getTlsSecretaryListByPracticianId(id): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.contact_pro + "/allSecretaries/"+id
+      this.globalService.url.contact_pro + "/allSecretaries/" + id
     );
   }
 }

@@ -56,8 +56,8 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     private featureService: FeaturesService
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
-      documentType: [""],
-      destination: [""]
+      documentType: [''],
+      destination: ['']
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -70,23 +70,29 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
   realTime() {
     this.documentsService.getIdObs().subscribe(resp => {
-      this.idSenderReceiver = resp;
+      if (resp) {
+        this.idSenderReceiver = resp;
+      }
       this.filter();
     });
   }
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.idSenderReceiver = this.featureService.decrypt(params["id"]);
+
+      this.idSenderReceiver = this.featureService.decrypt(params.id);
+
     });
     this.route.queryParams.subscribe(params => {
       this.filterDocumentsForm.patchValue({
-        documentType: params["type"]
+        documentType:  params["type"]
       });
     });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);
     this.realTime();
   }
+
   getPersonalInfo() {
     this.accountService
       .getCurrentAccount()
@@ -107,16 +113,16 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getAccountDetails(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(account => {
-        let details = this.getDetailSwitchRole(account);
+        const details = this.getDetailSwitchRole(account);
         if (details.photoId) {
           this.documentsService
             .downloadFile(details.photoId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(
               response => {
-                let myReader: FileReader = new FileReader();
+                const myReader: FileReader = new FileReader();
                 myReader.onloadend = e => {
-                  if (account.role == "PRACTICIAN") {
+                  if (account.role == 'PRACTICIAN') {
                     this.documentsService.person = {
                       fullName: `${details.jobTitle} ${details.fullName}`,
                       picture: myReader.result
@@ -130,25 +136,25 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                     };
                   }
                 };
-                let ok = myReader.readAsDataURL(response.body);
+                const ok = myReader.readAsDataURL(response.body);
               },
               error => {
-                if (account.role == "PATIENT") {
-                  if (details.civility == "M") {
+                if (account.role == 'PATIENT') {
+                  if (details.civility == 'M') {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
                       picture: this.avatars.man
                     };
-                  } else if (details.civility == "MME") {
+                  } else if (details.civility == 'MME') {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
                       picture: this.avatars.women
                     };
-                  } else if (details.civility == "CHILD") {
+                  } else if (details.civility == 'CHILD') {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
@@ -156,12 +162,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                       picture: this.avatars.child
                     };
                   }
-                } else if (account.role == "PRACTICIAN") {
+                } else if (account.role == 'PRACTICIAN') {
                   this.documentsService.person = {
                     fullName: `${details.jobTitle} ${details.fullName}`,
                     picture: this.avatars.doctor
                   };
-                } else if (account.role == "SECRETARY") {
+                } else if (account.role == 'SECRETARY') {
                   this.documentsService.person = {
                     fullName: `${this.civilityPipe.transform(
                       details.civility
@@ -172,22 +178,22 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
               }
             );
         } else {
-          if (account.role == "PATIENT") {
-            if (details.civility == "M") {
+          if (account.role == 'PATIENT') {
+            if (details.civility == 'M') {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
                 picture: this.avatars.man
               };
-            } else if (details.civility == "MME") {
+            } else if (details.civility == 'MME') {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
                 picture: this.avatars.women
               };
-            } else if (details.civility == "CHILD") {
+            } else if (details.civility == 'CHILD') {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
@@ -195,12 +201,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 picture: this.avatars.child
               };
             }
-          } else if (account.role == "PRACTICIAN") {
+          } else if (account.role == 'PRACTICIAN') {
             this.documentsService.person = {
               fullName: `${details.jobTitle} ${details.fullName}`,
               picture: this.avatars.doctor
             };
-          } else if (account.role == "SECRETARY") {
+          } else if (account.role == 'SECRETARY') {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${
                 details.fullName
@@ -239,21 +245,23 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
             this.scroll = false;
             nodes.forEach((node: any) => {
               if (node.entry) {
-                const splitName = node.entry.name.split(".");
+                const splitName = node.entry.name.split('.');
                 const extention = splitName[splitName.length - 1];
 
                 const attachement = this.attachementsList.find(
                   x => x.nodeId == node.entry.id
                 );
-
-                this.itemList.push(this.parseMessage(attachement, node.entry));
+                if(attachement) {
+                  this.itemList.push(this.parseMessage(attachement, node.entry));
+                }
               }
             });
           });
       });
   }
+
   parseMessage(attachement, node): any {
-    const dotIndex = node.name.lastIndexOf(".");
+    const dotIndex = node.name.lastIndexOf('.');
     return {
       id: attachement.id,
       isSeen: true,
@@ -265,7 +273,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
             node.name.substring(dotIndex + 1, node.name.length)
           ),
           title: attachement.senderForId
-            ? "Pour " + attachement.senderForDetails.fullName
+            ? 'Pour ' + attachement.senderForDetails.fullName
             : null
         }
       ],
@@ -273,7 +281,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         name:
           node.name.length < 30
             ? node.name
-            : node.name.substring(0, 30) + "...",
+            : node.name.substring(0, 30) + '...',
         isImportant: false
       },
       nodeId: attachement.nodeId,
@@ -286,12 +294,16 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
   getDetailSwitchRole(senderDetail) {
     switch (senderDetail.role) {
-      case "PATIENT":
+      case 'PATIENT':
         return senderDetail.patient;
-      case "PRACTICIAN":
+      case 'PRACTICIAN':
         return senderDetail.practician;
-      case "SECRETARY":
+      case 'SECRETARY':
         return senderDetail.secretary;
+      case 'TELESECRETARYGROUP':
+        return senderDetail.telesecretaryGroup;
+      case 'SUPERVISOR' || 'SUPER_SUPERVISOR' || 'OPERATOR':
+        return senderDetail.telesecretary;
       default:
         return null;
     }
@@ -360,7 +372,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         const filename = attachement.realName;
         const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
+        const dotIndex = filename.lastIndexOf('.');
         const extension = filename.substring(dotIndex + 1, filename.length);
 
         const blob = new Blob([response.body], {
@@ -368,34 +380,35 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         });
 
         let resultname: string;
-        if (filenameDisplay !== "") {
+        if (filenameDisplay !== '') {
           resultname = filenameDisplay.includes(extension)
             ? filenameDisplay
-            : filenameDisplay + "." + extension;
+            : filenameDisplay + '.' + extension;
         } else {
           resultname = filename;
         }
-        this.openFile("", filename, blob);
+        this.openFile('', filename, blob);
       });
   }
 
   openFile(resData, fileName, blob) {
-    var ieEDGE = navigator.userAgent.match(/Edge/g);
-    var ie = navigator.userAgent.match(/.NET/g); // IE 11+
-    var oldIE = navigator.userAgent.match(/MSIE/g);
+    const ieEDGE = navigator.userAgent.match(/Edge/g);
+    const ie = navigator.userAgent.match(/.NET/g); // IE 11+
+    const oldIE = navigator.userAgent.match(/MSIE/g);
 
     if (ie || oldIE || ieEDGE) {
       window.navigator.msSaveBlob(blob, fileName);
     } else {
-      var fileURL = URL.createObjectURL(blob);
-      var win = window.open();
+      const fileURL = URL.createObjectURL(blob);
+      const win = window.open();
       win.document.write(
         '<iframe src="' +
-          fileURL +
-          '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+        fileURL +
+        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
       );
     }
   }
+
   goBack() {
     this._location.back();
   }
