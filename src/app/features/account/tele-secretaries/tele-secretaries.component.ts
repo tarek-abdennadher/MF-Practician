@@ -72,9 +72,7 @@ export class TeleSecretariesComponent implements OnInit, OnDestroy {
           phoneNumber: this.tls.phoneNumber,
           website: this.tls.website,
           photoId: this.tls.photoId,
-          resp: this.tls.supervisor
-            ? this.tls.supervisor.civility + " " + this.tls.supervisor.fullName
-            : "",
+          resp: this.tls.supervisor ? this.tls.supervisor.fullName : "",
         });
 
         this.hasImage = true;
