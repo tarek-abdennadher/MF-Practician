@@ -106,7 +106,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         " " +
         lastNameRefactored;
     }
-
     this.fullname = this.featuresService.fullName;
     this.featuresService.getNumberOfInbox().subscribe((val) => {
       this.inboxNumber = val;
