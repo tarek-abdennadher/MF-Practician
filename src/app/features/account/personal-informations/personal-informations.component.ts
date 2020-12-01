@@ -145,7 +145,7 @@ export class PersonalInformationsComponent
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null, emailValidator )
+        additionalEmail: new FormControl(null, emailValidator)
       });
     } else {
       this.infoForm = new FormGroup({
@@ -213,7 +213,7 @@ export class PersonalInformationsComponent
         if (account && account.practician) {
           this.accountId = account.id;
           this.account = account.practician;
-          this.otherPhones= account.otherPhones;
+          this.otherPhones = account.otherPhones;
           this.hasImage = true;
           this.getPictureProfile(account.id);
           this.infoForm.patchValue({
@@ -422,7 +422,9 @@ export class PersonalInformationsComponent
             const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              this.image = myReader.result;
+              this.image = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
             };
             myReader.readAsDataURL(file);
             selectedFiles = undefined;
