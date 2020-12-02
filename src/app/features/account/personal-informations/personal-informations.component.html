@@ -356,6 +356,7 @@
                     autocomplete="new-password"
                     formControlName="new_password"
                     class="form-control"
+                    type="password"
                     id="pass"
                     [ngClass]="{
                       'is-invalid': passwordSubmitted && f2.new_password.errors
@@ -392,9 +393,10 @@
                   <input
                     [type]="fieldTextType2 ? 'text' : 'password'"
                     autocomplete="new-password"
-                    class="form-control"
+                    class="form-control password"
                     formControlName="confirm_password"
                     id="confirmpass"
+                    type="password"
                     [ngClass]="{
                       'is-invalid':
                         passwordSubmitted && f2.confirm_password.errors
@@ -935,8 +937,10 @@
                     [type]="fieldTextType ? 'text' : 'password'"
                     autocomplete="new-password"
                     formControlName="new_password"
-                    class="form-control"
+                    class="form-control password"
                     id="pass"
+                    type ='password'
+
                     [ngClass]="{
                       'is-invalid': passwordSubmitted && f2.new_password.errors
                     }"
@@ -974,9 +978,10 @@
                   <input
                     [type]="fieldTextType2 ? 'text' : 'password'"
                     autocomplete="new-password"
-                    class="form-control"
+                    class="form-control password"
                     formControlName="confirm_password"
                     id="confirmpass"
+                    type ='password'
                     [ngClass]="{
                       'is-invalid':
                         passwordSubmitted && f2.confirm_password.errors
