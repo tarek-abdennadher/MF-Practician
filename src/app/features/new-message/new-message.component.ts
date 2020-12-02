@@ -127,6 +127,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   isMessageTypesVisible: boolean;
   emergencyText: string = "";
   dropdownSettings: any;
+  dropdownSettingsCc: any;
   dropdownSettingsListObject: any;
   dropdownSettingsPatientToList: any;
   dropdownSettingsForList: any = {};
@@ -317,6 +318,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       enableCheckAll: false,
       limitSelection: 100,
     };
+    this.dropdownSettingsCc = {...this.dropdownSettings};
     this.dropdownSettingsPatientToList = {
       singleSelection: true,
       text: "Sélectionner un contact ",
@@ -1005,7 +1007,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         ["SUPERVISOR", "SUPER_SUPERVISOR", "TELESECRETARY"].includes(type)
       ) {
         if (this.isInstruction) {
-          this.objectsList = this.instructionObjectsList;
+          this.objectsList = this.instructionObjectsList.filter(elm => elm.groupId == event.to[0].id);
         } else {
           this.objectsList = this.practicianObjectList.filter(
             (item) =>
@@ -1156,7 +1158,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           ];
           this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
           const groupValue = group.group;
-          this.getInstructionObjectListByTLSGroupId(groupValue.id);
+          const secretaryGroupList = group.secretaries;
+          this.getInstructionObjectListByTLSGroupId();
+          let itemList = [];
           let item = {
             id: groupValue.accountId,
             fullName: groupValue.title,
@@ -1164,18 +1168,29 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             img: null,
             type: "TELESECRETARYGROUP",
           };
+          itemList.push(item);
+          itemList.push(...secretaryGroupList.map(sec => {
+            let elm = {
+              id: sec.accountId,
+              fullName: sec.title,
+              isSelected: false,
+              img: null,
+              type: "TELESECRETARYGROUP",
+            };
+            return elm;
+          }));
 
-          this.practicianTLSGroup = item;
+          this.practicianTLSGroup = itemList;
         }
       });
   }
-  getInstructionObjectListByTLSGroupId(id: any) {
+  getInstructionObjectListByTLSGroupId() {
     this.objectsService
-      .getAllByTLS(id)
+      .getAllTLSInstructionObject()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((objects) => {
         this.instructionObjectsList = objects.map((e) => {
-          return { id: e.id, title: e.name, name: e.name, destination: "TLS" };
+          return { id: e.id, title: e.name, name: e.name, destination: "TLS", groupId : e.telesecretaryGroup.accountId };
         });
       });
   }
@@ -1191,6 +1206,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         this.lastSendType = item.type[0].id;
         switch (item.type[0].id) {
           case SendType.MESSAGING:
+            this.dropdownSettings = {
+              ...this.dropdownSettings,
+              text: "Sélectionner le type d'envoi",
+              singleSelection : false
+            };
             this.isTypesVisible = true;
             this.isCCListVisible = true;
             this.isForListVisible = true;
@@ -1201,6 +1221,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.toList.next(this.practicianFullToList);
             break;
           case SendType.SEND_POSTAL:
+            this.dropdownSettings = {
+              ...this.dropdownSettings,
+              text: "Sélectionner le type d'envoi",
+              singleSelection : false
+            };
             this.isTypesVisible = true;
             this.isCCListVisible = false;
             this.isForListVisible = true;
@@ -1211,18 +1236,23 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.toList.next(this.practicianFullToList);
             break;
           case SendType.INSTRUCTION:
+            this.dropdownSettings = {
+              ...this.dropdownSettings,
+              text: "Sélectionner le type d'envoi",
+              singleSelection : true
+            };
             this.isTypesVisible = true;
             this.isCCListVisible = true;
             this.isForListVisible = false;
             this.isFreeObjectVisible = false;
             this.isObjectSelectVisible = true;
             this.isInstruction = this.isSecretary() ? false : true;
-            this.objectsList = this.instructionObjectsList;
-            this.toList.next([this.practicianTLSGroup]);
+            this.objectsList = [];
+            this.toList.next(this.practicianTLSGroup);
             this.ccList.next(
               this.practicianFullToList.filter(
                 (e) =>
-                  e.id !== this.practicianTLSGroup.id && e.type !== "PATIENT"
+                  e.id !== this.practicianTLSGroup[0].id && e.type !== "PATIENT"
               )
             );
             break;
