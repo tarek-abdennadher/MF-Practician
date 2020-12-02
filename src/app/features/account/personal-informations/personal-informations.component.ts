@@ -141,7 +141,7 @@ export class PersonalInformationsComponent
         speciality: new FormControl(null, Validators.required),
         address: new FormControl(null, Validators.required),
         additional_address: new FormControl(null),
-        phone: new FormControl(null, Validators.required),
+        phone: new FormControl("+33", Validators.required),
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
@@ -159,7 +159,7 @@ export class PersonalInformationsComponent
         birthday: new FormControl(null),
         address: new FormControl(null),
         additional_address: new FormControl(null),
-        phone: new FormControl(null, Validators.required),
+        phone: new FormControl("+33", Validators.required),
         picture: new FormControl(null),
         category: new FormControl(null)
       });
@@ -525,5 +525,12 @@ export class PersonalInformationsComponent
   }
   toggleFieldTextType2() {
     this.fieldTextType2 = !this.fieldTextType2;
+  }
+  onPhoneChange() {
+    if (this.infoForm.value.phone.substr(0, 1) != "+") {
+      this.infoForm.patchValue({
+        phone: "+33" + this.infoForm.value.phone
+      });
+    }
   }
 }
