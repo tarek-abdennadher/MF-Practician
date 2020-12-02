@@ -224,7 +224,7 @@
                       [defaultCountry]="''"
                       [maxlength]="20"
                       [ngClass]="{
-                        'is-invalid':  (ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
+                        'is-invalid': ( ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
                       }"
                       class="form-control phone"
                       formControlName="phoneNumber"
@@ -238,7 +238,7 @@
                       [defaultCountry]="'fr'"
                       [maxlength]="20"
                       [ngClass]="{
-                        'is-invalid': (ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
+                        'is-invalid': ( ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
                       }"
                       class="form-control phone"
                       formControlName="phoneNumber"
@@ -250,14 +250,14 @@
                     <div *ngIf="
                       this.personalInfoForm.errors?.requiredValidator
                       && submitted
-                      " class="invalid-feedback">
+                      " class="phone-invalid">
                       {{ errors.required}}
                     </div>
                     <div *ngIf="
                         ctr.phoneNumber.invalid &&
-                        ctr.phoneNumber.touched  &&
+                        (ctr.phoneNumber.touched|| submitted)  &&
                         ctr.phoneNumber.value.length !== 0
-                      " class="invalid-feedback">
+                         "  class="phone-invalid">
                       {{ errors.invalid_phone}}
                     </div>
                   </div>
