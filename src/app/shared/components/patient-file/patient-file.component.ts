@@ -403,9 +403,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   }
   patientSubmit() {
     this.submitted = true;
-    if (this.personalInfoForm.controls["phoneNumber"].errors?.phoneEmptyError) {
-      this.personalInfoForm.controls["phoneNumber"].setErrors(null);
-    }
     if (this.personalInfoForm.invalid) {
       return;
     }
