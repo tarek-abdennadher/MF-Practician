@@ -92,85 +92,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.itemsList = new Array();
     this.filtredItemsList = new Array();
     this.types = new Array();
-    if (this.userRole == "PRACTICIAN") {
-      this.getAllContacts();
-    } else if (this.userRole == "SECRETARY") {
-      this.getAllContactsForSecretary();
-    }
+    this.getAllContacts();
 
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
   }
-  getAllContactsForSecretary() {
-    this.contactsService
-      .getContactsProForSecretary()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        contacts => {
-          this.users = contacts;
-          this.itemsList = this.users.map(elm => {
-            return {
-              id: elm.id,
-              practicianId: elm.entityId,
-              isSeen: true,
-              users: [
-                {
-                  id: elm.id,
-                  fullName:
-                    elm.fullName.substring(elm.fullName.indexOf(" ") + 1) +
-                    " (" +
-                    elm.fullName.substring(0, elm.fullName.indexOf(" ")) +
-                    ")",
-                  img: this.avatars.user,
-                  title: elm.speciality ? elm.speciality : elm.title,
-                  type: "CONTACT-BOOK",
-                  civility: null,
-                  fonction: elm.speciality ? elm.speciality : elm.title,
-                  speciality: elm.speciality ? elm.speciality : "Tout"
-                }
-              ],
-              isArchieve: false,
-              isImportant: false,
-              hasFiles: false,
-              isViewDetail: false,
-              isMarkAsSeen: false,
-              isChecked: false,
-              photoId: elm.photoId
-            };
-          });
-          this.getSpecialities();
-          this.number = this.itemsList.length;
-          this.filtredItemsList = this.itemsList;
-          this.itemsList.forEach(item => {
-            item.users.forEach(user => {
-              this.documentService
-                .getDefaultImageEntity(user.id, "ACCOUNT")
-                .pipe(takeUntil(this._destroyed$))
-                .subscribe(
-                  response => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = e => {
-                      user.img = this.sanitizer.bypassSecurityTrustUrl(
-                        myReader.result as string
-                      );
-                    };
-                    let ok = myReader.readAsDataURL(response);
-                  },
-                  error => {
-                    user.img = this.avatars.user;
-                  }
-                );
-            });
-          });
-          this.loading = false;
-        },
-        error => {
-          //en attendant un model de popup à afficher
-          this.loading = false;
-        }
-      );
-  }
+
   getAllContacts() {
     this.contactsService
       .getContactsPro()

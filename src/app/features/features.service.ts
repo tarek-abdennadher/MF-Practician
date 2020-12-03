@@ -327,18 +327,7 @@ export class FeaturesService {
       this.globalService.url.archived_messages + "countMine"
     );
   }
-  getSecretaryPracticians() {
-    return this.globalService.call(
-      RequestType.GET,
-      this.globalService.url.secretary + "/my-practicians"
-    );
-  }
-  getSecretaryPracticiansId() {
-    return this.globalService.call(
-      RequestType.GET,
-      this.globalService.url.secretary + "/my-practicians-id"
-    );
-  }
+
   changeSearch(search: search) {
     this.searchSource.next(search);
   }

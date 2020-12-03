@@ -69,7 +69,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.initializeWebSocketConnection();
-    this.getPracticiansRealTimeMessage();
   }
 
   ngAfterViewInit(): void {
@@ -105,12 +104,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     });
-    if (this.userRole && this.userRole == "SECRETARY") {
-      this.featuresService.getSecretaryPracticians().subscribe(value => {
-        this.featuresService.myPracticians.next(value);
-        this.myPracticians = this.featuresService.myPracticians.getValue();
-      });
-    }
+
     this.featuresService.currentSearch.subscribe((data: search) => {
       this.text = data.text;
       this.city = data.city;
@@ -269,36 +263,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           }
         }
       );
-    });
-  }
-
-  getPracticiansRealTimeMessage() {
-    this.featuresService.getSecretaryPracticiansId().subscribe(ids => {
-      this.secretaryIds = ids;
-      this.secretaryIds.forEach(id => {
-        this.getAllInboxByAccountId(id);
-      });
-      for (var i = 0; i < ids.length; i++) {
-        let id = ids[i];
-        const ws = new SockJS(this.globalService.BASE_URL + "/socket");
-        this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => {};
-        const that = this;
-        this.stompClientList[i].connect({}, function(frame) {
-          this.subscribe("/topic/notification/" + id, message => {
-            if (message.body) {
-              let notification = JSON.parse(message.body);
-              if (
-                notification.type == "MESSAGE" ||
-                notification.type == "MESSAGE_IN_PROGRESS" ||
-                notification.type == "MESSAGE_TREATED"
-              ) {
-                that.messageListService.setPracticianNotifObs(notification);
-              }
-            }
-          });
-        });
-      }
     });
   }
 

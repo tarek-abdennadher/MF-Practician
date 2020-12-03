@@ -257,20 +257,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
-    if (this.localSt.retrieve("role") == "SECRETARY") {
-      this.connectedUserType = "SECRETARY";
-      this.featureService
-        .getSecretaryPracticians()
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((value) => {
-          value.forEach((item) => {
-            item.type = "CONTACT_PRO";
-
-            this.forFieldList.push(item);
-          });
-          this.forList.next(this.forFieldList);
-        });
-    }
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
