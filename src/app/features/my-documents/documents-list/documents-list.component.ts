@@ -230,6 +230,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
           this.scroll = false;
         }
         this.attachementsList = attachements;
+        if(attachements){
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
           this.observables.push(
@@ -237,7 +238,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
               .getNodeDetailsFromAlfresco(attachement.nodeId)
               .pipe(catchError(error => of(error)))
           );
-        });
+        });}
 
         forkJoin(this.observables)
           .pipe(takeUntil(this._destroyed$))
@@ -262,6 +263,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
   parseMessage(attachement, node): any {
     const dotIndex = node.name.lastIndexOf('.');
+  if(attachement ){
     return {
       id: attachement.id,
       isSeen: true,
@@ -273,7 +275,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
             node.name.substring(dotIndex + 1, node.name.length)
           ),
           title: attachement.senderForId
-            ? 'Pour ' + attachement.senderForDetails.fullName
+            ? 'Pour ' + attachement.senderForDetails?.fullName
             : null
         }
       ],
@@ -291,7 +293,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       realName: node.name
     };
   }
-
+  }
   getDetailSwitchRole(senderDetail) {
     switch (senderDetail.role) {
       case 'PATIENT':
