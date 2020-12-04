@@ -9,7 +9,6 @@ export class GlobalService {
   constructor(private httpClient: HttpClient) {}
   public BASE_URL: string = environment.BASE_END_POINT;
   public PATIENT_SITE: string = environment.PATIENT_SITE;
-  public SOCKET_BASE_URL: string = environment.SOCKET_END_POINT;
   public SHOWCASE_SITE: string = environment.SHOWCASE_SITE;
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
@@ -83,7 +82,7 @@ export class GlobalService {
     instruction: this.BASE_URL_MA + "/instruction",
     instruction_object: this.BASE_URL_CA + "/instruction-object",
     instruction_category: this.BASE_URL_CA + "/instruction-category",
-    photo: this.BASE_URL_CA + "/photo/generate",
+    photo: this.BASE_URL_CA + "/photo/generate"
   };
   public toastrMessages = {
     send_message_success: "Message envoyé !",
@@ -97,7 +96,7 @@ export class GlobalService {
     mark_not_important_message_error:
       "Votre message n'a pas pu être marqué comme non important",
     send_message_to_myself:
-      "Vous ne pouvez pas répondre à un message que vous avez envoyé",
+      "Vous ne pouvez pas répondre à un message que vous avez envoyé"
   };
 
   public messagesDisplayScreen = {
@@ -130,7 +129,7 @@ export class GlobalService {
     free_object: "Objet libre",
     invitations: "Mes invitations",
     blocked_patients: "Patients Bloqués",
-    archived_patients: "Patients Archivés",
+    archived_patients: "Patients Archivés"
   };
 
   public avatars = {
@@ -141,7 +140,7 @@ export class GlobalService {
     secretary: "assets/imgs/avatar_secrétaire.svg",
     tls: "assets/imgs/avatar_tls.svg",
     user: "assets/imgs/user.png",
-    telesecretary: "assets/imgs/etablissement.svg",
+    telesecretary: "assets/imgs/etablissement.svg"
   };
 
   public excludedExceptions = ["Le mot de passe saisi est invalide"];
@@ -162,7 +161,7 @@ export class GlobalService {
       }
       case RequestType.DELETE: {
         args[0] = {
-          responseType: "text",
+          responseType: "text"
         };
         return this.httpClient.delete<any>(url, args[0]);
       }
@@ -195,6 +194,6 @@ export class GlobalService {
     "(3)",
     "(3)",
     "(3)",
-    "(3)",
+    "(3)"
   ];
 }
