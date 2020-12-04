@@ -7,8 +7,7 @@ export const environment = {
   BASE_END_POINT: "http://localhost:8765",
   PATIENT_SITE: "http://localhost:4200",
   SHOWCASE_SITE: "https://helssy.aymax.fr/contact/",
-  encryptKey: "q4t7w!z%",
-  BASE_SOCKET_END_POINT: "http://localhost:8765",
+  encryptKey: "q4t7w!z%"
 };
 
 /*
