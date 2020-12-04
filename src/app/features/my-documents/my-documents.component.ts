@@ -328,9 +328,10 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
       .getAllObjects()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(objects => {
+        if(objects){
         this.documentTypes.add("Tout");
         objects.forEach(this.documentTypes.add, this.documentTypes);
-      });
+      }});
   }
   getPersonalInfo() {
     this.accountService
