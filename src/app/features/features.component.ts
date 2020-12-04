@@ -238,7 +238,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     }
   }
   initializeWebSocketConnection() {
-    const ws = new SockJS(this.globalService.SOCKET_BASE_URL + "/socket");
+    const ws = new SockJS(this.globalService.BASE_URL + "/socket");
     this.stompClient = Stomp.over(ws);
     this.stompClient.debug = () => {};
 
