@@ -141,11 +141,11 @@ export class PersonalInformationsComponent
         speciality: new FormControl(null, Validators.required),
         address: new FormControl(null, Validators.required),
         additional_address: new FormControl(null),
-        phone: new FormControl(null, Validators.required),
+        phone: new FormControl("+33", Validators.required),
         picture: new FormControl(null),
         city: new FormControl(null),
         zipCode: new FormControl(null),
-        additionalEmail: new FormControl(null, emailValidator )
+        additionalEmail: new FormControl(null, emailValidator)
       });
     } else {
       this.infoForm = new FormGroup({
@@ -159,7 +159,7 @@ export class PersonalInformationsComponent
         birthday: new FormControl(null),
         address: new FormControl(null),
         additional_address: new FormControl(null),
-        phone: new FormControl(null, Validators.required),
+        phone: new FormControl("+33", Validators.required),
         picture: new FormControl(null),
         category: new FormControl(null)
       });
@@ -213,7 +213,7 @@ export class PersonalInformationsComponent
         if (account && account.practician) {
           this.accountId = account.id;
           this.account = account.practician;
-          this.otherPhones= account.otherPhones;
+          this.otherPhones = account.otherPhones;
           this.hasImage = true;
           this.getPictureProfile(account.id);
           this.infoForm.patchValue({
@@ -422,7 +422,9 @@ export class PersonalInformationsComponent
             const file = selectedFiles[0];
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              this.image = myReader.result;
+              this.image = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
             };
             myReader.readAsDataURL(file);
             selectedFiles = undefined;
@@ -523,5 +525,12 @@ export class PersonalInformationsComponent
   }
   toggleFieldTextType2() {
     this.fieldTextType2 = !this.fieldTextType2;
+  }
+  onPhoneChange() {
+    if (this.infoForm.value.phone.substr(0, 1) != "+") {
+      this.infoForm.patchValue({
+        phone: "+33" + this.infoForm.value.phone
+      });
+    }
   }
 }
