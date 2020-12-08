@@ -258,6 +258,10 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
                 this.filtredItemList = this.filtredItemList.filter(
                   elm => !messagesId.includes(elm.id)
                 );
+                if (this.filtredItemList.length - 1 == 0 ) {
+                                    this.loading = true;
+                                    this.refreshMessagingList();
+                                 }
                 this.deleteElementsFromInbox(messagesId.slice(0));
                 this.featureService.archiveState.next(true);
               },
@@ -268,6 +272,8 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           }
           this.messagesNumber--;
           this.pagination.init(this.messagesNumber );
+          this.loading=false;
+
         });
     }
   }
