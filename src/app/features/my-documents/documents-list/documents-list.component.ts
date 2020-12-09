@@ -56,8 +56,8 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     private featureService: FeaturesService
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
-      documentType: [''],
-      destination: ['']
+      documentType: [""],
+      destination: [""]
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -79,13 +79,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-
       this.idSenderReceiver = this.featureService.decrypt(params.id);
-
     });
     this.route.queryParams.subscribe(params => {
       this.filterDocumentsForm.patchValue({
-        documentType:  params["type"]
+        documentType: params["type"]
       });
     });
     this.getPersonalInfo();
@@ -122,7 +120,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
               response => {
                 const myReader: FileReader = new FileReader();
                 myReader.onloadend = e => {
-                  if (account.role == 'PRACTICIAN') {
+                  if (account.role == "PRACTICIAN") {
                     this.documentsService.person = {
                       fullName: `${details.jobTitle} ${details.fullName}`,
                       picture: myReader.result
@@ -139,22 +137,22 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 const ok = myReader.readAsDataURL(response.body);
               },
               error => {
-                if (account.role == 'PATIENT') {
-                  if (details.civility == 'M') {
+                if (account.role == "PATIENT") {
+                  if (details.civility == "M") {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
                       picture: this.avatars.man
                     };
-                  } else if (details.civility == 'MME') {
+                  } else if (details.civility == "MME") {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
                       )} ${details.fullName}`,
                       picture: this.avatars.women
                     };
-                  } else if (details.civility == 'CHILD') {
+                  } else if (details.civility == "CHILD") {
                     this.documentsService.person = {
                       fullName: `${this.civilityPipe.transform(
                         details.civility
@@ -162,12 +160,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                       picture: this.avatars.child
                     };
                   }
-                } else if (account.role == 'PRACTICIAN') {
+                } else if (account.role == "PRACTICIAN") {
                   this.documentsService.person = {
                     fullName: `${details.jobTitle} ${details.fullName}`,
                     picture: this.avatars.doctor
                   };
-                } else if (account.role == 'SECRETARY') {
+                } else if (account.role == "SECRETARY") {
                   this.documentsService.person = {
                     fullName: `${this.civilityPipe.transform(
                       details.civility
@@ -178,22 +176,22 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
               }
             );
         } else {
-          if (account.role == 'PATIENT') {
-            if (details.civility == 'M') {
+          if (account.role == "PATIENT") {
+            if (details.civility == "M") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
                 picture: this.avatars.man
               };
-            } else if (details.civility == 'MME') {
+            } else if (details.civility == "MME") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
                 }`,
                 picture: this.avatars.women
               };
-            } else if (details.civility == 'CHILD') {
+            } else if (details.civility == "CHILD") {
               this.documentsService.person = {
                 fullName: `${this.civilityPipe.transform(details.civility)} ${
                   details.fullName
@@ -201,12 +199,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                 picture: this.avatars.child
               };
             }
-          } else if (account.role == 'PRACTICIAN') {
+          } else if (account.role == "PRACTICIAN") {
             this.documentsService.person = {
               fullName: `${details.jobTitle} ${details.fullName}`,
               picture: this.avatars.doctor
             };
-          } else if (account.role == 'SECRETARY') {
+          } else if (account.role == "SECRETARY") {
             this.documentsService.person = {
               fullName: `${this.civilityPipe.transform(details.civility)} ${
                 details.fullName
@@ -230,81 +228,59 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
           this.scroll = false;
         }
         this.attachementsList = attachements;
-        if(attachements){
-        attachements.forEach(attachement => {
-          this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
-        });}
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split('.');
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-                if(attachement) {
-                  this.itemList.push(this.parseMessage(attachement, node.entry));
-                }
-              }
-            });
+        if (attachements) {
+          attachements.forEach(attachement => {
+            this.documentTypes.add(attachement.object);
+            this.itemList.push(this.parseMessage(attachement, attachement));
           });
+        }
       });
   }
 
   parseMessage(attachement, node): any {
-    const dotIndex = node.name.lastIndexOf('.');
-  if(attachement ){
-    return {
-      id: attachement.id,
-      isSeen: true,
-      users: [
-        {
-          id: attachement.senderId,
-          fullName: null,
-          img: this.getImageSwitchExtention(
-            node.name.substring(dotIndex + 1, node.name.length)
-          ),
-          title: attachement.senderForId
-            ? 'Pour ' + attachement.senderForDetails?.fullName
-            : null
-        }
-      ],
-      object: {
-        name:
-          node.name.length < 30
-            ? node.name
-            : node.name.substring(0, 30) + '...',
-        isImportant: false
-      },
-      nodeId: attachement.nodeId,
-      time: attachement.updatedAt,
-      download: true,
-      visualize: true,
-      realName: node.name
-    };
-  }
+    const dotIndex = node.name.lastIndexOf(".");
+    if (attachement) {
+      return {
+        id: attachement.id,
+        isSeen: true,
+        users: [
+          {
+            id: attachement.senderId,
+            fullName: null,
+            img: this.getImageSwitchExtention(
+              node.name.substring(dotIndex + 1, node.name.length)
+            ),
+            title: attachement.senderForId
+              ? "Pour " + attachement.senderForDetails?.fullName
+              : null
+          }
+        ],
+        object: {
+          name:
+            node.name.length < 30
+              ? node.name
+              : node.name.substring(0, 30) + "...",
+          isImportant: false
+        },
+        nodeId: attachement.nodeId,
+        time: attachement.updatedAt,
+        download: true,
+        visualize: true,
+        realName: node.name
+      };
+    }
   }
   getDetailSwitchRole(senderDetail) {
     switch (senderDetail.role) {
-      case 'PATIENT':
+      case "PATIENT":
         return senderDetail.patient;
-      case 'PRACTICIAN':
+      case "PRACTICIAN":
         return senderDetail.practician;
-      case 'SECRETARY':
+      case "SECRETARY":
         return senderDetail.secretary;
-      case 'TELESECRETARYGROUP':
+      case "TELESECRETARYGROUP":
         return senderDetail.telesecretaryGroup;
-      case 'SUPERVISOR' || 'SUPER_SUPERVISOR' || 'OPERATOR':
+      case "SUPERVISOR" || "SUPER_SUPERVISOR" || "OPERATOR":
         return senderDetail.telesecretary;
       default:
         return null;
@@ -374,7 +350,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         const filename = attachement.realName;
         const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf('.');
+        const dotIndex = filename.lastIndexOf(".");
         const extension = filename.substring(dotIndex + 1, filename.length);
 
         const blob = new Blob([response.body], {
@@ -382,14 +358,14 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         });
 
         let resultname: string;
-        if (filenameDisplay !== '') {
+        if (filenameDisplay !== "") {
           resultname = filenameDisplay.includes(extension)
             ? filenameDisplay
-            : filenameDisplay + '.' + extension;
+            : filenameDisplay + "." + extension;
         } else {
           resultname = filename;
         }
-        this.openFile('', filename, blob);
+        this.openFile("", filename, blob);
       });
   }
 
@@ -405,8 +381,8 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       const win = window.open();
       win.document.write(
         '<iframe src="' +
-        fileURL +
-        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+          fileURL +
+          '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
       );
     }
   }
