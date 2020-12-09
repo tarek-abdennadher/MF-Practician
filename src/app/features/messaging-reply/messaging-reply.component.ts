@@ -294,6 +294,9 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     replyMessage.documentFooter = message.documentFooter
       ? message.documentFooter
       : null;
+      replyMessage.signature = message.signature
+      ? message.signature
+      : null;
     replyMessage.object = message.object;
     if (message.requestTypeId && message.requestTitleId) {
       replyMessage.requestTypeId = message.requestTypeId;

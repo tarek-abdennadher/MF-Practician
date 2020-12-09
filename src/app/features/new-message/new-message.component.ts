@@ -218,6 +218,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       documentHeader: null,
       documentBody: "",
       documentFooter: null,
+      signature: null,
     });
     this.isPatient = false;
     this.isMedical = false;
@@ -462,6 +463,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               documentHeader: res.documentHeader,
               documentBody: res.documentBody ? res.documentBody : "",
               documentFooter: res.documentFooter,
+              signature: res.signature
             });
           }
         } else {
@@ -482,6 +484,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               documentHeader: res.documentHeader,
               documentBody: res.documentBody ? res.documentBody : "",
               documentFooter: res.documentFooter,
+              signature: res.signature
             });
           }
         }
@@ -712,6 +715,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         documentHeader: null,
         documentBody: "",
         documentFooter: null,
+        signature: null
       });
 
       this.selectContext = false;
@@ -1081,6 +1085,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         documentHeader: null,
         documentBody: "",
         documentFooter: null,
+        signature: null,
       };
       const body = this.requestTypeService
         .getObjectBody(objectDto)
@@ -1129,6 +1134,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           newData.documentHeader = response.header;
           newData.documentBody = response.body ? response.body : "";
           newData.documentFooter = response.footer;
+          newData.signature = response.signature;
         })
       );
   }
@@ -1440,6 +1446,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     newMessage.documentHeader = message.documentHeader;
     newMessage.documentBody = message.documentBody ? message.documentBody : "";
     newMessage.documentFooter = message.documentFooter;
+    newMessage.signature = message.signature;
     if (message.file !== undefined && message.file !== null) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;

@@ -373,9 +373,12 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 this.filtredItemList = this.filtredItemList.filter(
                   elm => !messagesId.includes(elm.id)
                 );
-                if (this.filtredItemList.length - 1 == 0 ) {
+                if (this.filtredItemList.length == 0 ) {
+
                   this.loading = true;
+
                   this.refreshMessagingList();
+
                 }
                 this.deleteElementsFromInbox(messagesId.slice(0));
 
@@ -390,8 +393,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         }
         this.messagesNumber--;
         this.pagination.init(this.messagesNumber );
+        this.loading=false;
+
       });
-    this.loading=false;
   }
   filterActionClicked(event) {
     this.filtredItemList =
