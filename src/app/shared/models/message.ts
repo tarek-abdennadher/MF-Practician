@@ -7,6 +7,7 @@ export class Message {
   public documentHeader?: string;
   public documentBody?: string;
   public documentFooter?: string;
+  public signature?: string;
   public object?: any;
   public toReceivers?: any;
   public ccReceivers?: any;
@@ -27,6 +28,7 @@ export class Message {
     this.documentHeader = (message && message.documentHeader) || null;
     this.documentBody = (message && message.documentBody) || null;
     this.documentFooter = (message && message.documentFooter) || null;
+    this.signature = (message && message.signature) || null;
     this.toReceivers = (message && message.toReceivers) || [];
     this.ccReceivers = (message && message.ccReceivers) || [];
     this.sender = (message && message.sender) || "";
