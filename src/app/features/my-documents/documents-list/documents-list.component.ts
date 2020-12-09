@@ -224,15 +224,13 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsBySenderOrReceiverId(id, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         if (attachements) {
           attachements.forEach(attachement => {
             this.documentTypes.add(attachement.object);
             this.itemList.push(this.parseMessage(attachement, attachement));
           });
+          this.scroll = false;
         }
       });
   }
@@ -399,36 +397,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsByObject(id, object, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
+          this.itemList.push(this.parseMessage(attachement, attachement));
         });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
+        this.scroll = false;
       });
   }
   getAttachementBySenderFor(id, senderForId, pageNo) {
@@ -439,36 +413,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsBySenderForId(id, senderForId, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
+          this.itemList.push(this.parseMessage(attachement, attachement));
         });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
+        this.scroll = false;
       });
   }
 
@@ -480,35 +430,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsBySenderForIdAndObject(id, senderForId, object, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
+          this.itemList.push(this.parseMessage(attachement, attachement));
         });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
+        this.scroll = false;
       });
   }
   filter() {
