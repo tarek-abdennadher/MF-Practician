@@ -10,6 +10,11 @@ export class GlobalService {
   public BASE_URL: string = environment.BASE_END_POINT;
   public PATIENT_SITE: string = environment.PATIENT_SITE;
   public SHOWCASE_SITE: string = environment.SHOWCASE_SITE;
+  public SITE_MAP: string = environment.site_Map;
+  public WHO_ARE_WE_SITE: string = environment.WHOAREWE_SITE;
+  public OUR_SOLUTION_SITE: string = environment.OURSOLUTION_SITE;
+  public OUR_BLOG_SITE: string = environment.OURBLOG_SITE;
+  public CONTACT_SITE: string = environment.CONTACT_SITE;
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
   public BASE_URL_MA: string = this.BASE_URL + "/ms-messagingapplication";
