@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   BASE_END_POINT: "http://localhost:8765",
-  PATIENT_SITE: "https://patient.helssy.io/",
+  PATIENT_SITE: "http://localhost:4200",
   site_Map:"https://www.helssy.io/plan-du-site/",
   WHOAREWE_SITE:"https://www.helssy.io/qui-sommes-nous/",
   OURSOLUTION_SITE:"https://www.helssy.io/notre-solution/",
