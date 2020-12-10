@@ -1,0 +1,13 @@
+.unstyled {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  .menu-item{
+    margin: 0 15px;
+    display: inline-block;
+    .link-footer{
+      color: #203c66;
+    }
+  }
+
+}

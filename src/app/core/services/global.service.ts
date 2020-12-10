@@ -15,6 +15,10 @@ export class GlobalService {
   public OUR_SOLUTION_SITE: string = environment.OURSOLUTION_SITE;
   public OUR_BLOG_SITE: string = environment.OURBLOG_SITE;
   public CONTACT_SITE: string = environment.CONTACT_SITE;
+  public HELSSY_SITE: string = environment.HELSSY_SITE;
+  public CGU_SITE: string = environment.CGU_SITE;
+  public RGPD_SITE: string = environment.RGPD_SITE;
+  public COOKIES_SITE: string = environment.COOKIES_SITE;
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
   public BASE_URL_MA: string = this.BASE_URL + "/ms-messagingapplication";
