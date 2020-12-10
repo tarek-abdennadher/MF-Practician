@@ -8,5 +8,6 @@ export const environment = {
   OURBLOG_SITE:"https://www.helssy.io/category/blog/",
   CONTACT_SITE:"https://www.helssy.io/contact/",
   SHOWCASE_SITE: "https://helssy.aymax.fr/contact/",
+  
   encryptKey: "q4t7w!z%"
 };
