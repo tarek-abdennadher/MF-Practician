@@ -78,7 +78,7 @@ $helssy-grey: #5f5f5f;
 html,
 body {
   margin: 0;
-  @media (min-width: 400px) {
+  @media (min-width: 375px) {
     zoom: 90%;
   }
   @media (min-width: 1920px) {
