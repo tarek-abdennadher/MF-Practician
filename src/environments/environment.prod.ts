@@ -7,6 +7,10 @@ export const environment = {
   OURSOLUTION_SITE:"https://www.helssy.io/notre-solution/",
   OURBLOG_SITE:"https://www.helssy.io/category/blog/",
   CONTACT_SITE:"https://www.helssy.io/contact/",
+  HELSSY_SITE:"https://www.helssy.io/",
+  CGU_SITE:"https://www.helssy.io/cgu/",
+  RGPD_SITE:"https://www.helssy.io/rgpd/",
+  COOKIES_SITE:"https://www.helssy.io/cookies/",
   SHOWCASE_SITE: "https://helssy.aymax.fr/contact/",
   encryptKey: "VmYq3t6w"
 };
