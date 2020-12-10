@@ -8,6 +8,20 @@
     .link-footer{
       color: #203c66;
     }
+
   }
 
+}
+@media screen and (max-width: 959px){
+  .unstyled {
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    a {
+      font-size: 0.9em;
+    }
+    li{
+      padding-top: 10px;
+    }
+  }
 }
