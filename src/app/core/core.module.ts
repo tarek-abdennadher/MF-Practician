@@ -4,6 +4,7 @@ import { HlsConnexionModule } from "hls-connexion";
 import { LoginComponent } from "./components/login/login.component";
 import { ResetPasswordComponent } from "./components/reset-password/reset-password.component";
 import { ChangePasswordComponent } from "./components/change-password/change-password.component";
+import { FooterComponent } from './components/footer/footer.component';
 
 /*** The CoreModule takes on the role of the root AppModule ,
  * but is not the module which gets bootstrapped by Angular at run-time.
@@ -14,6 +15,7 @@ import { ChangePasswordComponent } from "./components/change-password/change-pas
     LoginComponent,
     ResetPasswordComponent,
     ChangePasswordComponent,
+    FooterComponent,
   ],
   imports: [CommonModule, HlsConnexionModule],
   providers: [],

@@ -72,7 +72,7 @@ export class ContactDetailComponent
     });
     setTimeout(() => {
       $(".selectpicker").selectpicker("refresh");
-    }, 500);
+    }, 3000);
   }
   initForm() {
     this.infoForm = new FormGroup({
