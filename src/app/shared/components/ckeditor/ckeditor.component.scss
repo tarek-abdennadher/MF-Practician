@@ -1,6 +1,6 @@
-.ck.ck-list {
-  overflow: scroll;
-  overflow-x: hidden;
-  min-height: 10em;
-  max-height: 30em;
+::ng-deep .ck.ck-list {
+  overflow: scroll !important;
+  overflow-x: hidden !important;
+  min-height: 10em !important;
+  max-height: 30em !important;
 }
