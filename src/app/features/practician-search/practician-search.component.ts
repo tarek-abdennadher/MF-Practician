@@ -44,6 +44,7 @@ export class PracticianSearchComponent implements OnInit {
   page = "MY_PRACTICIANS";
   backButton = true;
   number = 0;
+  itemsType: string = "BIG";
   constructor(
     public router: Router,
     private route: ActivatedRoute,

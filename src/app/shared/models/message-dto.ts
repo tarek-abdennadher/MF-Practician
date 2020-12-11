@@ -4,6 +4,7 @@ export class MessageDto {
   public documentHeader?: string;
   public documentBody?: string;
   public documentFooter?: string;
+  public signature?: string;
   public object?: any;
   public toReceivers?: any;
   public ccReceivers?: any;
@@ -21,6 +22,7 @@ export class MessageDto {
     this.documentHeader = (message && message.documentHeader) || "";
     this.documentBody = (message && message.documentBody) || "";
     this.documentFooter = (message && message.documentFooter) || "";
+    this.signature = (message && message.signature) || "";
     this.toReceivers = (message && message.toReceivers) || [];
     this.ccReceivers = (message && message.ccReceivers) || [];
     this.sender = (message && message.sender) || "";

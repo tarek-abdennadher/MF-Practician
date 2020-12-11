@@ -1,0 +1,27 @@
+.unstyled {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  .menu-item{
+    margin: 0 15px;
+    display: inline-block;
+    .link-footer{
+      color: #203c66;
+    }
+
+  }
+
+}
+@media screen and (max-width: 959px){
+  .unstyled {
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    a {
+      font-size: 0.9em;
+    }
+    li{
+      padding-top: 10px;
+    }
+  }
+}

@@ -245,6 +245,12 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
                 this.filtredItemList = this.filtredItemList.filter(
                   elm => !messagesId.includes(elm.id)
                 );
+                if (this.filtredItemList.length == 0 ) {
+
+                  this.loading = true;
+                  this.refreshMessagingList();
+
+                }
                 this.deleteElementsFromInbox(messagesId.slice(0));
                 this.featureService.archiveState.next(true);
                 this.featureService.numberOfForwarded =
@@ -254,9 +260,12 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
                 //We have to find a way to notify user by this error
               }
             );
+            this.messagesNumber--;
+            this.pagination.init(this.messagesNumber );
+            this.loading=false;
           }
-          this.messagesNumber--;
-          this.pagination.init(this.messagesNumber );
+
+
         });
     }
   }
