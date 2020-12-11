@@ -11,7 +11,7 @@ import { SenderRole } from "@app/shared/enmus/sender-role";
 import { Mutex } from "async-mutex";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class MessagingListService {
   private notificationObs = new BehaviorSubject<Object>("");
@@ -47,149 +47,18 @@ export class MessagingListService {
       if (!_.isEqual(notification, this.notificationObs.getValue())) {
         this.notificationObs.next(notification);
         this.mutex.release();
-        if (notification.message.sender.photoId) {
-          this.documentService
-            .downloadFile(notification.message.sender.photoId)
-            .subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  this.featuresService.listNotifications.unshift({
-                    id: notification.id,
-                    sender: notification.jobTitle
-                      ? this.jobTitlePipe.transform(notification.jobTitle) +
-                        " " +
-                        notification.senderFullName
-                      : notification.senderFullName,
-                    senderId: notification.senderId,
-                    picture: myReader.result,
-                    messageId: notification.messageId,
-                    type: notification.type,
-                  });
-                };
-                let ok = myReader.readAsDataURL(response.body);
-              },
-              (error) => {
-                this.featuresService.listNotifications.unshift({
-                  id: notification.id,
-                  sender: notification.jobTitle
-                    ? this.jobTitlePipe.transform(notification.jobTitle) +
-                      " " +
-                      notification.senderFullName
-                    : notification.senderFullName,
-                  senderId: notification.senderId,
-                  picture: this.avatars.user,
-                  messageId: notification.messageId,
-                  type: notification.type,
-                });
-              }
-            );
-        } else {
-          if (notification.message.sender.role == "PRACTICIAN") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.doctor,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.message.sender.role == "SECRETARY") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.secretary,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.message.sender.role == "TELESECRETARYGROUP") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.tls,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.message.sender.role == "TELESECRETARY") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.tls,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.message.sender.role == "PATIENT") {
-            if (notification.message.sender.civility == "M") {
-              this.featuresService.listNotifications.unshift({
-                id: notification.id,
-                sender: notification.jobTitle
-                  ? this.jobTitlePipe.transform(notification.jobTitle) +
-                    " " +
-                    notification.senderFullName
-                  : notification.senderFullName,
-                senderId: notification.senderId,
-                picture: this.avatars.man,
-                messageId: notification.messageId,
-                type: notification.type,
-              });
-            } else if (notification.message.sender.civility == "MME") {
-              this.featuresService.listNotifications.unshift({
-                id: notification.id,
-                sender: notification.jobTitle
-                  ? this.jobTitlePipe.transform(notification.jobTitle) +
-                    " " +
-                    notification.senderFullName
-                  : notification.senderFullName,
-                senderId: notification.senderId,
-                picture: this.avatars.women,
-                messageId: notification.messageId,
-                type: notification.type,
-              });
-            } else if (notification.message.sender.civility == "CHILD") {
-              this.featuresService.listNotifications.unshift({
-                id: notification.id,
-                sender: notification.jobTitle
-                  ? this.jobTitlePipe.transform(notification.jobTitle) +
-                    " " +
-                    notification.senderFullName
-                  : notification.senderFullName,
-                senderId: notification.senderId,
-                picture: this.avatars.child,
-                messageId: notification.messageId,
-                type: notification.type,
-              });
-            }
-          } else if (notification.message.sender.role == "SYSTEM") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.senderFullName,
-              senderId: notification.senderId,
-              picture: null,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          }
-        }
-
+        this.featuresService.listNotifications.unshift({
+          id: notification.id,
+          sender: notification.jobTitle
+            ? this.jobTitlePipe.transform(notification.jobTitle) +
+              " " +
+              notification.senderFullName
+            : notification.senderFullName,
+          senderId: notification.senderId,
+          picture: null,
+          messageId: notification.messageId,
+          type: notification.type
+        });
         this.featuresService.setNumberOfInbox(
           this.featuresService.getNumberOfInboxValue() + 1
         );
@@ -204,123 +73,17 @@ export class MessagingListService {
   setInvitationNotificationObs(notification) {
     if (!_.isEqual(notification, this.notificationObs.getValue())) {
       this.notificationObs.next(notification);
-      if (notification.senderPhotoId) {
-        this.documentService.downloadFile(notification.senderPhotoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              this.featuresService.listNotifications.unshift({
-                id: notification.id,
-                sender: notification.jobTitle
-                  ? this.jobTitlePipe.transform(notification.jobTitle) +
-                    " " +
-                    notification.senderFullName
-                  : notification.senderFullName,
-                senderId: notification.senderId,
-                picture: myReader.result,
-                type: notification.type,
-              });
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.user,
-              type: notification.type,
-            });
-          }
-        );
-      } else {
-        if (notification.role == "PRACTICIAN") {
-          this.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.jobTitle
-              ? this.jobTitlePipe.transform(notification.jobTitle) +
-                " " +
-                notification.senderFullName
-              : notification.senderFullName,
-            senderId: notification.senderId,
-            picture: this.avatars.doctor,
-            messageId: notification.messageId,
-            type: notification.type,
-          });
-        } else if (notification.role == "SECRETARY") {
-          this.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.jobTitle
-              ? this.jobTitlePipe.transform(notification.jobTitle) +
-                " " +
-                notification.senderFullName
-              : notification.senderFullName,
-            senderId: notification.senderId,
-            picture: this.avatars.secretary,
-            messageId: notification.messageId,
-            type: notification.type,
-          });
-        } else if (notification.role == "TELESECRETARYGROUP") {
-          this.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.jobTitle
-              ? this.jobTitlePipe.transform(notification.jobTitle) +
-                " " +
-                notification.senderFullName
-              : notification.senderFullName,
-            senderId: notification.senderId,
-            picture: this.avatars.tls,
-            messageId: notification.messageId,
-            type: notification.type,
-          });
-        } else if (notification.role == "PATIENT") {
-          if (notification.civility == "M") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.man,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.civility == "MME") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.women,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.civility == "CHILD") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.child,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          }
-        }
-      }
-
+      this.featuresService.listNotifications.unshift({
+        id: notification.id,
+        sender: notification.jobTitle
+          ? this.jobTitlePipe.transform(notification.jobTitle) +
+            " " +
+            notification.senderFullName
+          : notification.senderFullName,
+        senderId: notification.senderId,
+        picture: null,
+        type: notification.type
+      });
       this.featuresService.setNumberOfPending(
         this.featuresService.getNumberOfPendingValue() + 1
       );
@@ -330,135 +93,30 @@ export class MessagingListService {
   setNotificationMessageStateObs(notification) {
     if (!_.isEqual(notification, this.notificationObs.getValue())) {
       this.notificationObs.next(notification);
-      if (notification.senderPhotoId) {
-        this.documentService.downloadFile(notification.senderPhotoId).subscribe(
-          (response) => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              this.featuresService.listNotifications.unshift({
-                id: notification.id,
-                sender: notification.jobTitle
-                  ? this.jobTitlePipe.transform(notification.jobTitle) +
-                    " " +
-                    notification.senderFullName
-                  : notification.senderFullName,
-                senderId: notification.senderId,
-                picture: myReader.result,
-                messageId: notification.messageId,
-                type: notification.type,
-              });
-            };
-            let ok = myReader.readAsDataURL(response.body);
-          },
-          (error) => {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.user,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          }
-        );
-      } else {
-        if (notification.role == "PRACTICIAN") {
-          this.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.jobTitle
-              ? this.jobTitlePipe.transform(notification.jobTitle) +
-                " " +
-                notification.senderFullName
-              : notification.senderFullName,
-            senderId: notification.senderId,
-            picture: this.avatars.doctor,
-            messageId: notification.messageId,
-            type: notification.type,
-          });
-        } else if (notification.role == "SECRETARY") {
-          this.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.jobTitle
-              ? this.jobTitlePipe.transform(notification.jobTitle) +
-                " " +
-                notification.senderFullName
-              : notification.senderFullName,
-            senderId: notification.senderId,
-            picture: this.avatars.secretary,
-            messageId: notification.messageId,
-            type: notification.type,
-          });
-        } else if (notification.role == "TELESECRETARYGROUP") {
-          this.featuresService.listNotifications.unshift({
-            id: notification.id,
-            sender: notification.jobTitle
-              ? this.jobTitlePipe.transform(notification.jobTitle) +
-                " " +
-                notification.senderFullName
-              : notification.senderFullName,
-            senderId: notification.senderId,
-            picture: this.avatars.tls,
-            messageId: notification.messageId,
-            type: notification.type,
-          });
-        } else if (notification.role == "PATIENT") {
-          if (notification.message.sender.civility == "M") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.man,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.civility == "MME") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.women,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          } else if (notification.civility == "CHILD") {
-            this.featuresService.listNotifications.unshift({
-              id: notification.id,
-              sender: notification.jobTitle
-                ? this.jobTitlePipe.transform(notification.jobTitle) +
-                  " " +
-                  notification.senderFullName
-                : notification.senderFullName,
-              senderId: notification.senderId,
-              picture: this.avatars.child,
-              messageId: notification.messageId,
-              type: notification.type,
-            });
-          }
-        }
-      }
+
+      this.featuresService.listNotifications.unshift({
+        id: notification.id,
+        sender: notification.jobTitle
+          ? this.jobTitlePipe.transform(notification.jobTitle) +
+            " " +
+            notification.senderFullName
+          : notification.senderFullName,
+        senderId: notification.senderId,
+        picture: null,
+        messageId: notification.messageId,
+        type: notification.type
+      });
     }
   }
 
   removeInvitationNotificationObs(notification) {
     if (
       this.featuresService.listNotifications.findIndex(
-        (notif) => notif.id == notification.id
+        notif => notif.id == notification.id
       ) != -1
     ) {
       this.featuresService.listNotifications = this.featuresService.listNotifications.filter(
-        (notif) => notif.id != notification.id
+        notif => notif.id != notification.id
       );
       this.featuresService.setNumberOfPending(
         this.featuresService.getNumberOfPendingValue() - 1
@@ -507,7 +165,7 @@ export class MessagingListService {
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id,
       {
-        params: { pageNo: pageNo, order: order, senderRole: filter },
+        params: { pageNo: pageNo, order: order, senderRole: filter }
       }
     );
   }
@@ -527,7 +185,7 @@ export class MessagingListService {
         "/listSize/" +
         size,
       {
-        params: { pageNo: pageNo, order: order, senderRole: filter },
+        params: { pageNo: pageNo, order: order, senderRole: filter }
       }
     );
   }
@@ -541,8 +199,8 @@ export class MessagingListService {
       this.globalService.url.messages + "inbox-by-account/" + id + "/count",
       {
         params: {
-          senderRole: filter,
-        },
+          senderRole: filter
+        }
       }
     );
   }
@@ -617,7 +275,7 @@ export class MessagingListService {
   }
 
   changeFlagImportant(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id)) {
         elm.isImportant = true;
       }
@@ -625,7 +283,7 @@ export class MessagingListService {
   }
 
   changeFlagNotImportant(obsList, ids) {
-    obsList.forEach((elm) => {
+    obsList.forEach(elm => {
       if (ids.includes(elm.id)) {
         elm.isImportant = false;
       }
@@ -641,7 +299,7 @@ export class MessagingListService {
       RequestType.GET,
       this.globalService.url.messages + "ByPatientFile/" + patientFileId,
       {
-        params: { pageNo: pageNo, order: order },
+        params: { pageNo: pageNo, order: order }
       }
     );
   }
