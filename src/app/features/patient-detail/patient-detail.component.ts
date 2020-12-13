@@ -120,8 +120,10 @@ export class PatientDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroyed$))
       .pipe(
         tap((patientFile) => {
+          setTimeout(() => {
+            this.showPatientFile = true;
+          });
           this.patientFile.next(patientFile);
-          this.showPatientFile = true;
           if (patientFile.notes && patientFile.notes.length > 0) {
             patientFile.notes.forEach((elm) => {
               this.notesList.push(this.mappingNote(elm));

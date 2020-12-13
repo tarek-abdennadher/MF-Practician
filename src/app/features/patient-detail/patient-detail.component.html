@@ -4,7 +4,7 @@
   </div>
 </ngx-spinner>
 <app-patient-file
-  *ngIf="showPatientFile"
+  [hidden]="!showPatientFile"
   [imageSource]="imageSource"
   [practicianImage]="practicianImage"
   [noteimageSource]="noteimageSource"
