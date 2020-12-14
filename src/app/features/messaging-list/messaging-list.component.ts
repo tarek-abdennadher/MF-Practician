@@ -373,6 +373,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 this.filtredItemList = this.filtredItemList.filter(
                   elm => !messagesId.includes(elm.id)
                 );
+                if (this.filtredItemList.length == 0) {
+                  this.loading = true;
+
+                  this.refreshMessagingList();
+                }
                 this.deleteElementsFromInbox(messagesId.slice(0));
 
                 this.featureService.archiveState.next(true);
@@ -385,7 +390,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           }
         }
         this.messagesNumber--;
-        this.pagination.init(this.messagesNumber );
+        this.pagination.init(this.messagesNumber);
+        this.loading = false;
       });
   }
   filterActionClicked(event) {
@@ -434,7 +440,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(num => {
         this.pagination.init(num);
-        this.messagesNumber = num ;
+        this.messagesNumber = num;
         this.messagesServ
           .getInboxByAccountId(
             accountId,
@@ -942,7 +948,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     const checkedMessages = this.filtredItemList.filter(
       e => e.isChecked == true
     );
-    console.log(checkedMessages);
     const messagesId = checkedMessages.map(e => e.id);
     if (messagesId.length > 0) {
       this.messagesServ.markMessagesListAsNotSeen(messagesId).subscribe(

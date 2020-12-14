@@ -23,7 +23,7 @@ export class IntPhoneComponent implements OnInit {
     });
     if (list && list.length > 0) {
       list.forEach(p => this.phoneList.push(this.updatePhone(p)));
-    } 
+    }
   }
   /* Action to add a new phone*/
   @Input("addnewPhone") addnewPhone = new Subject();
@@ -117,6 +117,19 @@ export class IntPhoneComponent implements OnInit {
   }
   /* Method to emit changes constantly to main component */
   onValueChange(): void {
+    let condition = false;
+    let e = this.phoneForm.value.phoneList;
+    this.phoneList.value.forEach(e => {
+      if (e.phoneNumber.substr(0, 1) != "+") {
+        condition = true;
+        e.phoneNumber = "+33" + e.phoneNumber;
+      }
+    });
+    if (condition) {
+      this.phoneForm.patchValue({
+        phoneList: this.phoneList.value
+      });
+    }
     if (this.phoneForm.invalid) {
       this.validPhones.emit(false);
     } else {

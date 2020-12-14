@@ -17,7 +17,7 @@ declare var $: any;
 @Component({
   selector: "app-contact-detail",
   templateUrl: "./contact-detail.component.html",
-  styleUrls: ["./contact-detail.component.scss"]
+  styleUrls: ["./contact-detail.component.scss"],
 })
 export class ContactDetailComponent
   implements OnInit, ComponentCanDeactivate, OnDestroy {
@@ -55,27 +55,24 @@ export class ContactDetailComponent
     this.failureAlert = false;
     this.isLabelShow = false;
   }
-  ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.unsubscribe();
-  }
+
   canDeactivate(): boolean {
     return !this.infoForm.dirty;
   }
   ngOnInit(): void {
+    this.getAllSpeciality();
     this.infoText =
       this.localSt.retrieve("role") == "PRACTICIAN"
         ? this.labels.parrainer_practician
         : this.labels.parrainer_secretary;
     this.getjobTitles();
-    this.getAllSpeciality();
     this.initForm();
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
     setTimeout(() => {
       $(".selectpicker").selectpicker("refresh");
-    }, 1000);
+    }, 3000);
   }
   initForm() {
     this.infoForm = new FormGroup({
@@ -83,10 +80,10 @@ export class ContactDetailComponent
       last_name: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       email: new FormControl(null, {
-        validators: [Validators.required, emailValidator]
+        validators: [Validators.required, emailValidator],
       }),
       title: new FormControl(null, Validators.required),
-      speciality: new FormControl(null)
+      speciality: new FormControl(null),
     });
     this.ctr.email.setAsyncValidators([this.emailUnique.emailExist()]);
   }
@@ -98,17 +95,17 @@ export class ContactDetailComponent
     this.contactsService
       .getAllSpecialities()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(specialitiesList => {
+      .subscribe((specialitiesList) => {
         this.specialities.next(specialitiesList);
-        this.mySpecialities = specialitiesList;
         $(".selectpicker").selectpicker("refresh");
+        this.mySpecialities = specialitiesList;
       });
   }
   getjobTitles() {
     this.accountService
       .getJobTiles()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(resp => {
+      .subscribe((resp) => {
         this.jobTitlesList = resp;
       });
   }
@@ -128,18 +125,18 @@ export class ContactDetailComponent
         speciality:
           this.infoForm.value.speciality != null
             ? this.mySpecialities.find(
-                s => s.id == this.infoForm.value.speciality
+                (s) => s.id == this.infoForm.value.speciality
               )
             : null,
-        address: this.infoForm.value.address
-      }
+        address: this.infoForm.value.address,
+      },
     };
     this.service
       .invitePractician(model)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(this.handleResponseInvitation, this.handleError);
   }
-  handleError = err => {
+  handleError = (err) => {
     if (err && err.error && err.error.apierror) {
       this.errorMessage = err.error.apierror.message;
       this.alertMessage = this.errorMessage;
@@ -148,7 +145,7 @@ export class ContactDetailComponent
       throw err;
     }
   };
-  handleResponseInvitation = response => {
+  handleResponseInvitation = (response) => {
     if (response) {
       this.submitted = false;
       this.featureComp.setNotif(this.service.texts.invite_success);
@@ -164,5 +161,9 @@ export class ContactDetailComponent
 
   close() {
     this.failureAlert = false;
+  }
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.unsubscribe();
   }
 }

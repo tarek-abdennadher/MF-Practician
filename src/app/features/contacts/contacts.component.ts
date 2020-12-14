@@ -51,6 +51,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   };
   ALL_TYPES: string = "Tout";
   loading: boolean = false;
+  itemsType: string = "BIG";
   constructor(
     public accountService: AccountService,
     private location: Location,

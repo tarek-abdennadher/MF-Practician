@@ -94,12 +94,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.user?.firstName
     );
     let lastNameRefactored = this.user?.lastName.toUpperCase();
-    this.featuresService.fullName =
-      this.jobTitlePipe.transform(this.user.jobTitle) +
-      " " +
-      firstNameRefactored +
-      " " +
-      lastNameRefactored;
+    if (
+      !this.featuresService.fullName ||
+      this.featuresService.fullName == null
+    ) {
+      this.featuresService.fullName =
+        this.jobTitlePipe.transform(this.user.jobTitle) +
+        " " +
+        firstNameRefactored +
+        " " +
+        lastNameRefactored;
+    }
     this.fullname = this.featuresService.fullName;
     this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
@@ -288,34 +293,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
             civility: notif.civility
           });
         });
-
-        let photoIds: Set<string> = new Set();
-        notifications.forEach(notif => {
-          photoIds.add(notif.senderId);
-        });
-        let photosMap: Map<string, string | ArrayBuffer | SafeUrl> = new Map();
-        let arrayOfObservables = [];
-        photoIds.forEach(id => {
-          arrayOfObservables.push(this.documentService.getDefaultImage(id));
-        });
-        forkJoin(arrayOfObservables).subscribe((result: any[]) => {
-          for (let i = 0; i < photoIds.size; i++) {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              photosMap.set(
-                Array.from(photoIds)[i],
-                this.sanitizer.bypassSecurityTrustUrl(myReader.result as string)
-              );
-              if (photosMap.size == photoIds.size) {
-                notificationsFormated.forEach(notif => {
-                  notif.picture = photosMap.get(notif.senderId);
-                });
-              }
-            };
-            let ok = myReader.readAsDataURL(result[i]);
-          }
-        });
-
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
@@ -429,8 +406,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   archieveActionClicked() {}
   filterActionClicked(event) {}
   logoClicked() {
-    jQuery('a').removeClass('active');
-    jQuery('#inbox').addClass('active');
+    jQuery("a").removeClass("active");
+    jQuery("#inbox").addClass("active");
     jQuery("#sidebar").addClass("hidden-side-bar");
     this.scrolToTop();
     this.router.navigate(["/messagerie"]);
