@@ -16,6 +16,8 @@ export class GlobalService {
   public OUR_BLOG_SITE: string = environment.OURBLOG_SITE;
   public CONTACT_SITE: string = environment.CONTACT_SITE;
   public HELSSY_SITE: string = environment.HELSSY_SITE;
+  public APPSTORE_SITE: string = environment.APPSTORE_SITE;
+  public PLAYSTORE_SITE: string = environment.PLAYSTORE_SITE;
   public CGU_SITE: string = environment.CGU_SITE;
   public RGPD_SITE: string = environment.RGPD_SITE;
   public COOKIES_SITE: string = environment.COOKIES_SITE;

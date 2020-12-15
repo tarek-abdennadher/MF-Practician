@@ -11,6 +11,8 @@ export const environment = {
   CGU_SITE:"https://www.helssy.io/cgu/",
   RGPD_SITE:"https://www.helssy.io/rgpd/",
   COOKIES_SITE:"https://www.helssy.io/cookies/",
+  APPSTORE_SITE:'https://apps.apple.com/us/app/helssy/id1541125435',
+  PLAYSTORE_SITE:'https://play.google.com/store/apps/details?id=helssy.io',
   SHOWCASE_SITE: "https://helssy.aymax.fr/contact/",
   encryptKey: "dSgVkYp3"
 };
