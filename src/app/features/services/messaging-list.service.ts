@@ -124,16 +124,6 @@ export class MessagingListService {
     }
   }
 
-  getPracticianNotifObs(): Observable<any> {
-    return this.practicianNotifObs.asObservable();
-  }
-
-  setPracticianNotifObs(notification) {
-    if (notification.id != this.practicianNotifObs.getValue().id) {
-      this.practicianNotifObs.next(notification);
-    }
-  }
-
   public getMyInbox(): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
