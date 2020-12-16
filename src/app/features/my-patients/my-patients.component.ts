@@ -329,12 +329,11 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         .getMyCategories()
         .pipe(takeUntil(this._destroyed$))
         .subscribe((categories) => {
-          setTimeout(() => {
+          if (categories)
             this.getPatientsOfCurrentParacticianByCategory(
               this.pageNo,
               categories.find((e) => e.name == value).id
             );
-          });
         });
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
