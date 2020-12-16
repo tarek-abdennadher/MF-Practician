@@ -325,8 +325,12 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.filtredPatients = [];
     this.myPatients = [];
     if (value != "Tout") {
-      const id = this.categs.find((e) => e.name == value)?.id;
-      this.getPatientsOfCurrentParacticianByCategory(this.pageNo, id);
+      this.categoryService.getMyCategories().subscribe((categories) => {
+        this.getPatientsOfCurrentParacticianByCategory(
+          this.pageNo,
+          categories.find((e) => e.name == value).id
+        );
+      });
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
     }
