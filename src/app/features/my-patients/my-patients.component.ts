@@ -325,12 +325,17 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.filtredPatients = [];
     this.myPatients = [];
     if (value != "Tout") {
-      this.categoryService.getMyCategories().subscribe((categories) => {
-        this.getPatientsOfCurrentParacticianByCategory(
-          this.pageNo,
-          categories.find((e) => e.name == value).id
-        );
-      });
+      this.categoryService
+        .getMyCategories()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((categories) => {
+          setTimeout(() => {
+            this.getPatientsOfCurrentParacticianByCategory(
+              this.pageNo,
+              categories.find((e) => e.name == value).id
+            );
+          });
+        });
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
     }
