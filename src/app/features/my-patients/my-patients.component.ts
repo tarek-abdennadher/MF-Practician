@@ -165,22 +165,26 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
-    this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(
-        pageNo,
-        this.categs.find((e) => e.name == categoryId).id,
-        this.direction
-      )
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
-        this.number = myPatients.length;
-        myPatients.forEach((elm) => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
+    let category = new Category();
+    category = this.categs.find((e) => e.name == categoryId);
+    if (category) {
+      this.myPatientsService
+        .getPatientsOfCurrentParacticianByCategory(
+          pageNo,
+          category.id,
+          this.direction
+        )
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((myPatients) => {
+          this.number = myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+          this.filtredPatients = this.myPatients;
         });
-        this.filtredPatients = this.myPatients;
-      });
+    }
   }
 
   mappingMyPatients(patient, prohibited, archived) {
