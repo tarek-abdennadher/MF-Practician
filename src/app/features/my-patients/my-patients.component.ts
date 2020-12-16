@@ -14,6 +14,7 @@ import { DomSanitizer, Title } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { Subject } from "rxjs";
 import { NotifierService } from "angular-notifier";
+import { Category } from "@app/shared/models/category";
 declare var $: any;
 @Component({
   selector: "app-my-patients",
@@ -37,7 +38,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   scroll = false;
   public searchForm: FormGroup;
   mesCategories = [];
-  categs = [];
+  categs: Array<Category>;
   public filterPatientsForm: FormGroup;
   avatars: {
     doctor: string;
@@ -167,7 +168,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .getPatientsOfCurrentParacticianByCategory(
         pageNo,
-        categoryId,
+        this.categs.find((e) => e.name == categoryId).id,
         this.direction
       )
       .pipe(takeUntil(this._destroyed$))
@@ -325,16 +326,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.filtredPatients = [];
     this.myPatients = [];
     if (value != "Tout") {
-      this.categoryService
-        .getMyCategories()
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((categories) => {
-          if (categories)
-            this.getPatientsOfCurrentParacticianByCategory(
-              this.pageNo,
-              categories.find((e) => e.name == value).id
-            );
-        });
+      this.getPatientsOfCurrentParacticianByCategory(this.pageNo, value);
     } else {
       this.getPatientsOfCurrentParactician(this.pageNo);
     }
