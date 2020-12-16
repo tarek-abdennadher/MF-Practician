@@ -95,7 +95,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     public featureService: FeaturesService,
     private globalService: GlobalService,
     private documentService: MyDocumentsService,
-    private patientService: MyPatientsService,
     private sanitizer: DomSanitizer,
     public pagination: PaginationService,
     private localSt: LocalStorageService,
@@ -118,97 +117,34 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       this.filtredItemList = new Array();
       this.messages = [];
       this.getRealTimeMessage();
-      this.getPracticianRealTimeMessage();
-      if (params["id"]) {
-        this.isMyInbox = false;
-        this.featureService.selectedPracticianId = params["id"]
-          ? this.featureService.decrypt(params["id"])
-          : this.featureService.selectedPracticianId;
-        this.myPracticians = this.featureService.myPracticians.getValue();
-
-        if (this.myPracticians && this.myPracticians.length > 0) {
-          this.person = {
-            fullName: this.myPracticians.find(
-              (p) => p.id == this.featureService.selectedPracticianId
-            ).fullName,
-            picture: this.practicianImage,
-          };
-
-          this.inboxPracticianNumber = this.myPracticians.find(
-            (practician) =>
-              practician.id == this.featureService.selectedPracticianId
-          ).number;
-
-          this.documentService
-            .getDefaultImage(
-              this.myPracticians.find(
-                (p) => p.id == this.featureService.selectedPracticianId
-              ).id
-            )
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe(
-              (response) => {
-                let myReader: FileReader = new FileReader();
-                myReader.onloadend = (e) => {
-                  this.person.picture = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                };
-                let ok = myReader.readAsDataURL(response);
-              },
-              (error) => {
-                this.person.picture = this.practicianImage;
-              }
-            );
-        }
-
-        this.links = {
-          isAllSelect: true,
-          isAllSeen: true,
-          isSeen: false,
-          isArchieve: false,
-          isImportant: false,
-          isFilter: true,
-          isMenuDisplay: true,
-          isAllSelectCarret: true,
-          isRefresh: true,
-          isPagination: true,
-          isMenuImportant: false,
-          isMenuNotSeen: false,
-        };
-        this.paramsId = this.featureService.selectedPracticianId;
-        this.getMyInbox(this.featureService.selectedPracticianId);
-        this.searchInboxPractician(this.featureService.selectedPracticianId);
-      } else {
-        this.featureService.selectedPracticianId = 0;
-        this.featureService.getNumberOfInbox().subscribe((val) => {
-          this.inboxPracticianNumber = val;
-          this.number = val;
-          this.bottomText =
-            this.number > 1
-              ? this.globalService.messagesDisplayScreen.newMessages
-              : this.globalService.messagesDisplayScreen.newMessage;
-        });
-        this.links = {
-          isAllSelect: true,
-          isAllSeen: true,
-          isSeen: false,
-          isArchieve: true,
-          isImportant: false,
-          isFilter: true,
-          isMenuDisplay: true,
-          isAllSelectCarret: true,
-          isRefresh: true,
-          isPagination: true,
-          isMenuImportant: false,
-          isMenuNotSeen: false,
-        };
-        this.featureService.selectedPracticianId = 0;
-        this.isMyInbox = true;
-        this.paramsId = this.featureService.getUserId();
-        this.getMyInbox(this.featureService.getUserId());
-        this.searchInbox();
-      }
+      this.featureService.selectedPracticianId = 0;
+      this.featureService.getNumberOfInbox().subscribe((val) => {
+        this.inboxPracticianNumber = val;
+        this.number = val;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newMessages
+            : this.globalService.messagesDisplayScreen.newMessage;
+      });
+      this.links = {
+        isAllSelect: true,
+        isAllSeen: true,
+        isSeen: false,
+        isArchieve: true,
+        isImportant: false,
+        isFilter: true,
+        isMenuDisplay: true,
+        isAllSelectCarret: true,
+        isRefresh: true,
+        isPagination: true,
+        isMenuImportant: false,
+        isMenuNotSeen: false,
+      };
+      this.featureService.selectedPracticianId = 0;
+      this.isMyInbox = true;
+      this.paramsId = this.featureService.getUserId();
+      this.getMyInbox(this.featureService.getUserId());
+      this.searchInbox();
       this.inboxNumber = this.featureService.getNumberOfInboxValue();
     });
 
@@ -221,17 +157,11 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               .send_message_success;
             break;
           }
-          case "archiveSuccess":
-            {
-              notifMessage = this.globalService.toastrMessages
-                .archived_message_success;
-              break;
-            }
-            this.notifier.show({
-              message: notifMessage,
-              type: "info",
-              template: this.customNotificationTmpl,
-            });
+          case "archiveSuccess": {
+            notifMessage = this.globalService.toastrMessages
+              .archived_message_success;
+            break;
+          }
         }
         this.notifier.show({
           message: notifMessage,
@@ -252,7 +182,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
       {
         queryParams: {
-          context: this.isMyInbox ? "inbox" : "inboxPraticien",
+          context: "inbox",
         },
       }
     );
@@ -275,53 +205,21 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     );
     const messagesId = checkedMessages.map((e) => e.id);
     if (messagesId.length > 0) {
-      if (this.isMyInbox) {
-        this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
-          (resp) => {
-            if (resp == true) {
-              this.featureService.markAsSeenById(
-                this.filtredItemList,
-                messagesId
-              );
-              this.featureService.removeNotificationByIdMessage(messagesId);
-              this.messagesServ.uncheckMessages(checkedMessages);
-            }
-          },
-          (error) => {
-            //We have to find a way to notify user by this error
+      this.messagesServ.markMessageListAsSeen(messagesId).subscribe(
+        (resp) => {
+          if (resp == true) {
+            this.featureService.markAsSeenById(
+              this.filtredItemList,
+              messagesId
+            );
+            this.featureService.removeNotificationByIdMessage(messagesId);
+            this.messagesServ.uncheckMessages(checkedMessages);
           }
-        );
-      } else {
-        this.messagesServ
-          .markMessageListAsSeenByReceiverId(
-            messagesId,
-            this.featureService.selectedPracticianId
-          )
-          .subscribe(
-            (resp) => {
-              if (resp == true) {
-                let list: any[] = this.featureService.myPracticians.getValue();
-                if (list && list.length > 0) {
-                  this.filtredItemList.forEach((elm) => {
-                    if (messagesId.includes(elm.id) && !elm.isSeen) {
-                      elm.isSeen = true;
-                      this.featureService.updateNumberOfInboxForPractician(
-                        this.featureService.selectedPracticianId,
-                        this.inboxPracticianNumber - 1
-                      );
-                      this.inboxPracticianNumber--;
-                    }
-                  });
-                }
-                this.bottomText = this.globalService.messagesDisplayScreen.newMessage;
-                this.messagesServ.uncheckMessages(checkedMessages);
-              }
-            },
-            (error) => {
-              //We have to find a way to notify user by this error
-            }
-          );
-      }
+        },
+        (error) => {
+          //We have to find a way to notify user by this error
+        }
+      );
       this.featureService.markAsSeen(
         this.featureService.searchInbox,
         messagesId
@@ -453,19 +351,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this._destroyed$))
           .subscribe((retrievedMess) => {
             this.loading = false;
-            if (!this.isMyInbox) {
-              this.featureService.myPracticians
-                .asObservable()
-                .subscribe((list) => {
-                  this.number = list.find(
-                    (p) => p.id == this.featureService.selectedPracticianId
-                  ).number;
-                  this.bottomText =
-                    this.number > 1
-                      ? this.globalService.messagesDisplayScreen.newMessages
-                      : this.globalService.messagesDisplayScreen.newMessage;
-                });
-            }
             retrievedMess.sort(
               (m1, m2) =>
                 new Date(m2.updatedAt).getTime() -
@@ -555,89 +440,42 @@ export class MessagingListComponent implements OnInit, OnDestroy {
 
   markMessageAsSeen(event) {
     let messageId = event.id;
-    if (this.isMyInbox) {
-      this.messagesServ.markMessageAsSeen(messageId).subscribe(
-        (resp) => {
-          if (resp == true) {
-            if (!event.isSeen) {
-              this.bottomText =
-                this.number > 1
-                  ? this.globalService.messagesDisplayScreen.newMessages
-                  : this.globalService.messagesDisplayScreen.newMessage;
-              let notifLength = this.featureService.listNotifications.length;
-              this.featureService.listNotifications = this.featureService.listNotifications.filter(
-                (notif) => notif.messageId != event.id
-              );
-              this.featureService.setNumberOfInbox(
-                this.featureService.getNumberOfInboxValue() - 1
-              );
-              this.inboxNumber -= 1;
-
-              this.featureService.markAsSeen(this.featureService.searchInbox, [
-                messageId,
-              ]);
-            }
-
-            let filtredIndex = this.filtredItemList.findIndex(
-              (item) => item.id == messageId
+    this.messagesServ.markMessageAsSeen(messageId).subscribe(
+      (resp) => {
+        if (resp == true) {
+          if (!event.isSeen) {
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
+            this.featureService.listNotifications = this.featureService.listNotifications.filter(
+              (notif) => notif.messageId != event.id
             );
-            if (filtredIndex != -1) {
-              this.filtredItemList[filtredIndex].isSeen = true;
-            }
+            this.featureService.setNumberOfInbox(
+              this.featureService.getNumberOfInboxValue() - 1
+            );
+            this.inboxNumber -= 1;
+
+            this.featureService.markAsSeen(this.featureService.searchInbox, [
+              messageId,
+            ]);
           }
-          (error) => {
-            //We have to find a way to notify user by this error
-          };
-        },
+
+          let filtredIndex = this.filtredItemList.findIndex(
+            (item) => item.id == messageId
+          );
+          if (filtredIndex != -1) {
+            this.filtredItemList[filtredIndex].isSeen = true;
+          }
+        }
         (error) => {
           //We have to find a way to notify user by this error
-        }
-      );
-    } else {
-      this.messagesServ
-        .markMessageAsSeenByReveiverId(
-          messageId,
-          this.featureService.selectedPracticianId
-        )
-        .subscribe(
-          (resp) => {
-            if (!event.isSeen) {
-              let list: any[] = this.featureService.myPracticians.getValue();
-              let selectedInboxNumber;
-              if (list && list.length > 0) {
-                selectedInboxNumber = list.find(
-                  (p) => p.id == this.featureService.selectedPracticianId
-                ).number;
-                this.featureService.updateNumberOfInboxForPractician(
-                  this.featureService.selectedPracticianId,
-                  selectedInboxNumber - 1
-                );
-              }
-              this.bottomText =
-                this.number > 1
-                  ? this.globalService.messagesDisplayScreen.newMessages
-                  : this.globalService.messagesDisplayScreen.newMessage;
-            }
-            if (resp == true) {
-              let index = this.itemsList.findIndex(
-                (item) => item.id == messageId
-              );
-              if (index != -1) {
-                this.itemsList[index].isSeen = true;
-              }
-              let filtredIndex = this.filtredItemList.findIndex(
-                (item) => item.id == messageId
-              );
-              if (index != -1) {
-                this.filtredItemList[filtredIndex].isSeen = true;
-              }
-            }
-          },
-          (error) => {
-            //We have to find a way to notify user by this error
-          }
-        );
-    }
+        };
+      },
+      (error) => {
+        //We have to find a way to notify user by this error
+      }
+    );
   }
 
   archieveMessage(event) {
@@ -732,94 +570,44 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((notif) => {
         if (notif != "") {
-          if (this.isMyInbox) {
-            this.messagesServ.practicianNotifPreviousValue = notif.id;
-            const exist =
-              this.filtredItemList &&
-              this.filtredItemList.length > 0 &&
-              notif.message.id == this.filtredItemList[0].id;
-            if (!exist) {
-              let message = this.parseMessage(notif.message);
-              this.documentService
-                .getDefaultImage(notif.message.sender.senderId)
-                .pipe(takeUntil(this._destroyed$))
-                .subscribe(
-                  (response) => {
-                    let myReader: FileReader = new FileReader();
-                    myReader.onloadend = (e) => {
-                      message.users.forEach((user) => {
-                        user.img = this.sanitizer.bypassSecurityTrustUrl(
-                          myReader.result as string
-                        );
-                      });
-                    };
-                    let ok = myReader.readAsDataURL(response);
-                  },
-                  (error) => {
+          this.messagesServ.practicianNotifPreviousValue = notif.id;
+          const exist =
+            this.filtredItemList &&
+            this.filtredItemList.length > 0 &&
+            notif.message.id == this.filtredItemList[0].id;
+          if (!exist) {
+            let message = this.parseMessage(notif.message);
+            this.documentService
+              .getDefaultImage(notif.message.sender.senderId)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe(
+                (response) => {
+                  let myReader: FileReader = new FileReader();
+                  myReader.onloadend = (e) => {
                     message.users.forEach((user) => {
-                      user.img = this.avatars.user;
+                      user.img = this.sanitizer.bypassSecurityTrustUrl(
+                        myReader.result as string
+                      );
                     });
-                  }
-                );
-              this.filtredItemList.unshift(message);
-              this.messagesNumber++;
-              this.pagination.init(this.messagesNumber);
-              this.bottomText =
-                this.number > 1
-                  ? this.globalService.messagesDisplayScreen.newMessages
-                  : this.globalService.messagesDisplayScreen.newMessage;
-            }
+                  };
+                  let ok = myReader.readAsDataURL(response);
+                },
+                (error) => {
+                  message.users.forEach((user) => {
+                    user.img = this.avatars.user;
+                  });
+                }
+              );
+            this.filtredItemList.unshift(message);
+            this.messagesNumber++;
+            this.pagination.init(this.messagesNumber);
+            this.bottomText =
+              this.number > 1
+                ? this.globalService.messagesDisplayScreen.newMessages
+                : this.globalService.messagesDisplayScreen.newMessage;
           }
         }
       });
-  }
-
-  getPracticianRealTimeMessage() {
-    this.messagesServ.getPracticianNotifObs().subscribe((notif) => {
-      if (
-        notif != "" &&
-        this.messagesServ.practicianNotifPreviousValue != notif.id
-      ) {
-        let num = this.featureService.myPracticians
-          .getValue()
-          .find((elm) => elm.id == notif.receiverId).number;
-        this.featureService.updateNumberOfInboxForPractician(
-          notif.receiverId,
-          num + 1
-        );
-        this.messagesServ.practicianNotifPreviousValue = notif.id;
-        let message = this.parseMessage(notif.message);
-        this.documentService
-          .getDefaultImage(notif.message.sender.senderId)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(
-            (response) => {
-              let myReader: FileReader = new FileReader();
-              myReader.onloadend = (e) => {
-                message.users.forEach((user) => {
-                  user.img = this.sanitizer.bypassSecurityTrustUrl(
-                    myReader.result as string
-                  );
-                });
-              };
-              let ok = myReader.readAsDataURL(response);
-            },
-            (error) => {
-              message.users.forEach((user) => {
-                user.img = this.avatars.user;
-              });
-            }
-          );
-        let messagesList = this.filtredItemList.slice(0);
-        this.filtredItemList = [];
-        messagesList.unshift(message);
-        this.filtredItemList = messagesList;
-        this.bottomText =
-          this.number > 1
-            ? this.globalService.messagesDisplayScreen.newMessages
-            : this.globalService.messagesDisplayScreen.newMessage;
-      }
-    });
   }
 
   deleteElementsFromInbox(ids) {
@@ -953,7 +741,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     const checkedMessages = this.filtredItemList.filter(
       (e) => e.isChecked == true
     );
-    console.log(checkedMessages);
     const messagesId = checkedMessages.map((e) => e.id);
     if (messagesId.length > 0) {
       this.messagesServ.markMessagesListAsNotSeen(messagesId).subscribe(

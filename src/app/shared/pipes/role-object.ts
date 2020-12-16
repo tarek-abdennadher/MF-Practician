@@ -13,11 +13,17 @@ export class RoleObjectPipe implements PipeTransform {
       case "SUPERVISOR":
         res = "telesecretary"
         break;
+      case "SUPER_SUPERVISOR":
+      res = "telesecretary"
+      break;
       case "TELESECRETARYGROUP":
         res = "telesecretaryGroup"
         break;
       case "SYSTEM":
       res = "systemUser"
+      break;
+      case "PATIENT_FILE":
+      res = "patientFile"
       break;
       default:
         res = value && value.toLowerCase() || "";

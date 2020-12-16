@@ -3,7 +3,7 @@ import {
   OnInit,
   AfterViewInit,
   ChangeDetectorRef,
-  ViewChild,
+  ViewChild
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { FeaturesService } from "./features.service";
@@ -30,7 +30,7 @@ import { RoleObjectPipe } from "@app/shared/pipes/role-object";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
-  styleUrls: ["./features.component.scss"],
+  styleUrls: ["./features.component.scss"]
 })
 export class FeaturesComponent implements OnInit, AfterViewInit {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -69,7 +69,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.initializeWebSocketConnection();
-    this.getPracticiansRealTimeMessage();
   }
 
   ngAfterViewInit(): void {
@@ -85,7 +84,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   links = {
     isArchieve: true,
     isImportant: true,
-    isFilter: true,
+    isFilter: true
   };
   private stompClient;
   private stompClientList = [];
@@ -107,15 +106,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         lastNameRefactored;
     }
     this.fullname = this.featuresService.fullName;
-    this.featuresService.getNumberOfInbox().subscribe((val) => {
+    this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     });
-    if (this.userRole && this.userRole == "SECRETARY") {
-      this.featuresService.getSecretaryPracticians().subscribe((value) => {
-        this.featuresService.myPracticians.next(value);
-        this.myPracticians = this.featuresService.myPracticians.getValue();
-      });
-    }
+
     this.featuresService.currentSearch.subscribe((data: search) => {
       this.text = data.text;
       this.city = data.city;
@@ -137,7 +131,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.getPatients();
     }
-    $("#main-container").on("click", function (e) {
+    $("#main-container").on("click", function(e) {
       if (e.target.parentElement.id != "sideBar") {
         jQuery("#sidebar").addClass("hidden-side-bar");
       }
@@ -147,23 +141,23 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.notifier.show({
       message: msg,
       type: "error",
-      template: this.customNotificationTmpl,
+      template: this.customNotificationTmpl
     });
   }
   observeState() {
-    this.featuresService.inboxState.subscribe((state) => {
+    this.featuresService.inboxState.subscribe(state => {
       if (state) {
         this.getAllInbox();
         this.featuresService.inboxState.next(false);
       }
     });
-    this.featuresService.sentState.subscribe((state) => {
+    this.featuresService.sentState.subscribe(state => {
       if (state) {
         this.sentMessage();
         this.featuresService.sentState.next(false);
       }
     });
-    this.featuresService.archiveState.subscribe((state) => {
+    this.featuresService.archiveState.subscribe(state => {
       if (state) {
         this.getAllArchive();
         this.featuresService.archiveState.next(false);
@@ -172,14 +166,14 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   private subscribeIsMessaging() {
-    this.featuresService.getIsMessaging().subscribe((isMessaging) => {
+    this.featuresService.getIsMessaging().subscribe(isMessaging => {
       this.messaging = isMessaging;
     });
   }
 
   getAllInbox() {
-    this.messageListService.getAllInboxMessages(1000000).subscribe((res) => {
-      let result = res.map((elm) => this.parseMessage(elm));
+    this.messageListService.getAllInboxMessages(1000000).subscribe(res => {
+      let result = res.map(elm => this.parseMessage(elm));
       this.featuresService.setSearchInbox(result);
     });
   }
@@ -187,8 +181,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   getAllInboxByAccountId(id) {
     this.messageListService
       .getAllInboxByAccountId(id, 1000000)
-      .subscribe((res) => {
-        let result = res.map((elm) => this.parseMessage(elm));
+      .subscribe(res => {
+        let result = res.map(elm => this.parseMessage(elm));
         let inboxObs = new BehaviorSubject(result);
         this.featuresService.searchPracticianInbox.set(id, inboxObs);
         this.featuresService.searchPracticianInboxFiltered.set(
@@ -199,28 +193,28 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   getAllArchive() {
-    this.messageArchiveService.getAllMyArchivedMessages().subscribe((res) => {
-      let list = res.map((item) => this.mapArchiveMessages(item));
+    this.messageArchiveService.getAllMyArchivedMessages().subscribe(res => {
+      let list = res.map(item => this.mapArchiveMessages(item));
       this.featuresService.setSearchArchive(list);
     });
   }
 
   sentMessage() {
-    this.messageService.sentMessageFullSize().subscribe((res) => {
+    this.messageService.sentMessageFullSize().subscribe(res => {
       this.featuresService.setSearchSent(this.parseMessages(res));
     });
   }
   forwardedMessage() {
-    this.messageService.forwardedMessage().subscribe((res) => {
+    this.messageService.forwardedMessage().subscribe(res => {
       this.featuresService.setSearchForwarded(this.parseMessages(res));
     });
   }
 
   getPracticians() {
-    this.practicianSearchService.getSearchListPractician().subscribe((list) => {
+    this.practicianSearchService.getSearchListPractician().subscribe(list => {
       if (this.localSt.retrieve("role") == "PRACTICIAN") {
         list = list.filter(
-          (a) => a.accountId != this.featuresService.getUserId()
+          a => a.accountId != this.featuresService.getUserId()
         );
       }
       this.featuresService.setSearchFiltredPractician(list);
@@ -231,7 +225,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.patientService
         .getAllPatientFilesByPracticianId(this.featuresService.getUserId())
-        .subscribe((list) => {
+        .subscribe(list => {
           this.featuresService.setFilteredPatientsSearch(list);
           this.patients = list;
         });
@@ -243,10 +237,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.stompClient.debug = () => {};
 
     const that = this;
-    this.stompClient.connect({}, function (frame) {
+    this.stompClient.connect({}, function(frame) {
       that.stompClient.subscribe(
         "/topic/notification/" + that.featuresService.getUserId(),
-        (message) => {
+        message => {
           if (message.body) {
             let notification = JSON.parse(message.body);
             if (
@@ -277,42 +271,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getPracticiansRealTimeMessage() {
-    this.featuresService.getSecretaryPracticiansId().subscribe((ids) => {
-      this.secretaryIds = ids;
-      this.secretaryIds.forEach((id) => {
-        this.getAllInboxByAccountId(id);
-      });
-      for (var i = 0; i < ids.length; i++) {
-        let id = ids[i];
-        const ws = new SockJS(this.globalService.BASE_URL + "/socket");
-        this.stompClientList[i] = Stomp.over(ws);
-        this.stompClientList[i].debug = () => {};
-        const that = this;
-        this.stompClientList[i].connect({}, function (frame) {
-          this.subscribe("/topic/notification/" + id, (message) => {
-            if (message.body) {
-              let notification = JSON.parse(message.body);
-              if (
-                notification.type == "MESSAGE" ||
-                notification.type == "MESSAGE_IN_PROGRESS" ||
-                notification.type == "MESSAGE_TREATED"
-              ) {
-                that.messageListService.setPracticianNotifObs(notification);
-              }
-            }
-          });
-        });
-      }
-    });
-  }
-
   getMyNotificationsNotSeen() {
     let notificationsFormated = [];
     this.featuresService
       .getMyNotificationsByMessagesNotSeen(false)
-      .subscribe((notifications) => {
-        notifications.forEach((notif) => {
+      .subscribe(notifications => {
+        notifications.forEach(notif => {
           notificationsFormated.push({
             id: notif.id,
             sender: notif.jobTitle
@@ -326,67 +290,39 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
             type: notif.type,
             photoId: notif.senderPhotoId,
             role: notif.role,
-            civility: notif.civility,
+            civility: notif.civility
           });
         });
-
-        let photoIds: Set<string> = new Set();
-        notifications.forEach((notif) => {
-          photoIds.add(notif.senderId);
-        });
-        let photosMap: Map<string, string | ArrayBuffer | SafeUrl> = new Map();
-        let arrayOfObservables = [];
-        photoIds.forEach((id) => {
-          arrayOfObservables.push(this.documentService.getDefaultImage(id));
-        });
-        forkJoin(arrayOfObservables).subscribe((result: any[]) => {
-          for (let i = 0; i < photoIds.size; i++) {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
-              photosMap.set(
-                Array.from(photoIds)[i],
-                this.sanitizer.bypassSecurityTrustUrl(myReader.result as string)
-              );
-              if (photosMap.size == photoIds.size) {
-                notificationsFormated.forEach((notif) => {
-                  notif.picture = photosMap.get(notif.senderId);
-                });
-              }
-            };
-            let ok = myReader.readAsDataURL(result[i]);
-          }
-        });
-
         this.featuresService.listNotifications = notificationsFormated;
       });
   }
 
   countMyInboxNotSeen() {
-    this.messageListService.countMyInboxNotSeen().subscribe((num) => {
+    this.messageListService.countMyInboxNotSeen().subscribe(num => {
       this.featuresService.setNumberOfInbox(num);
     });
   }
 
   countForwarded() {
-    this.featuresService.getCountOfForwarded().subscribe((resp) => {
+    this.featuresService.getCountOfForwarded().subscribe(resp => {
       this.featuresService.numberOfForwarded = resp;
     });
   }
 
   countMyArchive() {
-    this.featuresService.getCountOfMyArchieve().subscribe((resp) => {
+    this.featuresService.getCountOfMyArchieve().subscribe(resp => {
       this.featuresService.numberOfArchieve = resp;
     });
   }
 
   countMyPatientPending() {
-    this.featuresService.countPendingInvitations().subscribe((num) => {
+    this.featuresService.countPendingInvitations().subscribe(num => {
       this.featuresService.setNumberOfPending(num);
     });
   }
 
   setNumberOfPending() {
-    this.featuresService.getNumberOfPendingObs().subscribe((num) => {
+    this.featuresService.getNumberOfPendingObs().subscribe(num => {
       this.numberOfPending = num;
     });
   }
@@ -490,7 +426,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           let result = this.featuresService
             .getSearchInboxValue()
             .filter(
-              (x) =>
+              x =>
                 x.users[0].fullName
                   .toLowerCase()
                   .includes(event.toLowerCase()) ||
@@ -507,7 +443,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
             .get(practicianId)
             .getValue()
             .filter(
-              (x) =>
+              x =>
                 x.users[0].fullName
                   .toLowerCase()
                   .includes(event.toLowerCase()) ||
@@ -528,7 +464,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         let result = this.featuresService
           .getSearchSentValue()
           .filter(
-            (x) =>
+            x =>
               (x.users[0].fullName
                 ? x.users[0].fullName
                     .toLowerCase()
@@ -546,7 +482,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         let result = this.featuresService
           .getSearchForwardedValue()
           .filter(
-            (x) =>
+            x =>
               x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
               x.object.name.toLowerCase().includes(event.toLowerCase())
           );
@@ -560,7 +496,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         let result = this.featuresService
           .getSearchArchiveValue()
           .filter(
-            (x) =>
+            x =>
               x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
               x.object.name.toLowerCase().includes(event.toLowerCase())
           );
@@ -571,7 +507,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "practician") {
       if (event) {
-        let result = this.practicians.filter((x) =>
+        let result = this.practicians.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
         result = result.length > 0 ? result : null;
@@ -585,7 +521,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     ) {
       if (event) {
         let result = this.practicians.filter(
-          (x) =>
+          x =>
             x.fullName.toLowerCase().includes(event.toLowerCase()) ||
             x.title.toLowerCase().includes(event.toLowerCase())
         );
@@ -598,7 +534,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       }
     } else if (this.featuresService.activeChild.getValue() == "patient") {
       if (event) {
-        let result = this.patients.filter((x) =>
+        let result = this.patients.filter(x =>
           x.fullName.toLowerCase().includes(event.toLowerCase())
         );
         result = result.length > 0 ? result : null;
@@ -609,7 +545,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     }
   }
   markNotificationsAsViewed(notifications) {
-    notifications.forEach((notification) => {
+    notifications.forEach(notification => {
       if (
         notification.type == "MESSAGE_IN_PROGRESS" ||
         notification.type == "MESSAGE_TREATED" ||
@@ -620,7 +556,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       ) {
         this.featuresService
           .markNotificationAsSeen(notification.id)
-          .subscribe((resp) => {});
+          .subscribe(resp => {});
       }
     });
   }
@@ -635,12 +571,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           this.router.navigate(
             [
               "/messagerie-lire/" +
-                this.featuresService.encrypt(notification.messageId),
+                this.featuresService.encrypt(notification.messageId)
             ],
             {
               queryParams: {
-                context: "inbox",
-              },
+                context: "inbox"
+              }
             }
           );
           this.featuresService.setNumberOfInbox(
@@ -654,17 +590,17 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.featuresService
         .markNotificationAsSeen(notification.id)
 
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(
             [
               "/messagerie-lire/" +
-                this.featuresService.encrypt(notification.messageId),
+                this.featuresService.encrypt(notification.messageId)
             ],
             {
               queryParams: {
-                context: "sent",
-              },
+                context: "sent"
+              }
             }
           );
         });
@@ -672,24 +608,24 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.featuresService
         .markNotificationAsSeen(notification.id)
 
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(["/mes-invitations"]);
         });
     } else if (notification.type == "INSTRUCTION_TREATED") {
       this.featuresService
         .markNotificationAsSeen(notification.id)
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.getMyNotificationsNotSeen();
           this.router.navigate(
             [
               "/messagerie-lire/" +
-                this.featuresService.encrypt(notification.messageId),
+                this.featuresService.encrypt(notification.messageId)
             ],
             {
               queryParams: {
-                section: "sent",
-              },
+                section: "sent"
+              }
             }
           );
         });
@@ -697,7 +633,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.featuresService
         .markNotificationAsSeen(notification.id)
 
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.getMyNotificationsNotSeen();
         });
     }
@@ -707,12 +643,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.localSt.store("practicianId", event);
     this.scrolToTop();
     this.router.navigate([
-      "/messagerie/" + this.featuresService.encrypt(event),
+      "/messagerie/" + this.featuresService.encrypt(event)
     ]);
   }
 
   getPersonalInfo() {
-    this.accountService.getCurrentAccount().subscribe((account) => {
+    this.accountService.getCurrentAccount().subscribe(account => {
       if (account && account.practician) {
         this.account = account.practician;
         this.hasImage = true;
@@ -727,16 +663,16 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   // initialise profile picture
   getPictureProfile(id) {
     this.documentService.getDefaultImage(id).subscribe(
-      (response) => {
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
+        myReader.onloadend = e => {
           this.featuresService.imageSource = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         this.featuresService.imageSource = this.avatars.user;
       }
     );
@@ -760,12 +696,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
-              : message.sender.role,
-        },
+              : message.sender.role
+        }
       ],
       object: {
         name: message.object,
-        isImportant: message.importantObject,
+        isImportant: message.importantObject
       },
       time: message.updatedAt,
       isImportant: message.important,
@@ -773,19 +709,19 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isViewDetail: message.hasViewDetail,
       isMarkAsSeen: true,
       isArchieve: true,
-      photoId: message.sender.photoId,
+      photoId: message.sender.photoId
     };
     this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
-      (response) => {
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
+        myReader.onloadend = e => {
           parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         parsedMessage.users[0].img = this.avatars.user;
       }
     );
@@ -813,10 +749,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           ? 100
           : message.toReceivers[0] && message.toReceivers[0].seen
           ? 50
-          : 20,
+          : 20
     };
     messageSent.users = [];
-    message.toReceivers.forEach((r) => {
+    message.toReceivers.forEach(r => {
       messageSent.users.push({
         fullName: r.fullName,
         img: this.avatars.user,
@@ -824,12 +760,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         type: r.role,
         photoId: r.photoId,
         civility: r.civility,
-        id: r.receiverId ? r.receiverId : null,
+        id: r.receiverId ? r.receiverId : null
       });
     });
     messageSent.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageSent.time = message.createdAt;
     messageSent.isImportant = message.important;
@@ -841,21 +777,21 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   parseMessages(messages) {
     let parsedMessages = [];
-    messages.forEach((message) => {
+    messages.forEach(message => {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
-      messageSent.users.forEach((user) => {
+      messageSent.users.forEach(user => {
         this.documentService.getDefaultImage(user.id).subscribe(
-          (response) => {
+          response => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = (e) => {
+            myReader.onloadend = e => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          (error) => {
+          error => {
             user.img = "assets/imgs/user.png";
           }
         );
@@ -886,8 +822,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           senderRole == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
-        id: message.senderDetail.id,
-      },
+        id: message.senderDetail.id
+      }
     ];
     messageArchived.progress = {
       name:
@@ -901,11 +837,11 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           ? 100
           : message.toReceiversArchived[0].seen
           ? 50
-          : 20,
+          : 20
     };
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject,
+      isImportant: message.importantObject
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
@@ -918,16 +854,16 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   loadPhoto(user) {
     this.documentService.getDefaultImage(user.id).subscribe(
-      (response) => {
+      response => {
         let myReader: FileReader = new FileReader();
-        myReader.onloadend = (e) => {
+        myReader.onloadend = e => {
           user.img = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
         };
         let ok = myReader.readAsDataURL(response);
       },
-      (error) => {
+      error => {
         user.img = "assets/imgs/user.png";
       }
     );
@@ -952,7 +888,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   mapArchiveMessages(message) {
     const archivedMessage = this.mappingMessageArchived(message);
-    archivedMessage.users.forEach((user) => {
+    archivedMessage.users.forEach(user => {
       this.loadPhoto(user);
     });
     return archivedMessage;
@@ -971,7 +907,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   scrolToTop() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#main-container").offset().top - 100,
+        scrollTop: $("#main-container").offset().top - 100
       },
       1000
     );
