@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input, OnDestroy } from "@angular/core";
-import { ChartComponent, ApexLegend } from "ng-apexcharts";
+import { ChartComponent, ApexLegend, ApexDataLabels } from "ng-apexcharts";
 import {
   ApexNonAxisChartSeries,
   ApexResponsive,
@@ -19,6 +19,7 @@ export type ChartOptions = {
   labels: any;
   legend: ApexLegend;
   colors: string[];
+  dataLabels: ApexDataLabels;
 };
 
 @Component({
@@ -53,6 +54,11 @@ export class ApxPieComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.chartOptions = {
       series: [0, 0],
+      dataLabels: {
+        formatter: function (val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        },
+      },
       chart: {
         width: 200,
         type: "donut",
@@ -81,6 +87,11 @@ export class ApxPieComponent implements OnInit, OnDestroy {
       const map: Map<string, number> = new Map(Object.entries(myMap));
       this.chartOptions = {
         series: [...map.values()],
+        dataLabels: {
+          formatter: function (val, opts) {
+            return opts.w.config.series[opts.seriesIndex];
+          },
+        },
         chart: {
           width: 450,
           type: "donut",
