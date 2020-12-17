@@ -403,10 +403,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               case "doctor":
                 return item.users[0].type.toLowerCase() == "medical";
               case "secretary":
-                return (
-                  item.users[0].type.toLowerCase() == "secretary" ||
-                  item.users[0].type.toLowerCase() == "telesecretarygroup"
-                );
+                return item.users[0].type.toLowerCase() == "secretary";
               default:
                 return item.users[0].type.toLowerCase() == event;
             }
