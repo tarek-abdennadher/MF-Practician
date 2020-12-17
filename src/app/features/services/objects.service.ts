@@ -24,4 +24,11 @@ export class ObjectsService {
       this.globalService.url.instruction_object + "/tls/" + tlsgroupId
     );
   }
+
+  getAllTLSInstructionObject() {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.instruction_object + "/tls"
+    );
+  }
 }

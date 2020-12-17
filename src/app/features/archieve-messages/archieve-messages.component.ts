@@ -23,6 +23,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   imageSource: string;
   page = "ARCHIVE";
   number = 0;
+  messagesNumber: number = 0;
   topText = "Messages archivés";
   bottomText =
     this.number > 1
@@ -53,7 +54,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     public router: Router,
     private archivedService: ArchieveMessagesService,
     private _location: Location,
-    private featureService: FeaturesService,
+    public featureService: FeaturesService,
     private documentService: MyDocumentsService,
     private globalService: GlobalService,
     private sanitizer: DomSanitizer,
@@ -78,6 +79,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     });
     this.countAllMyArchivedMessages();
     this.searchArchive();
+
   }
 
   countAllMyArchivedMessages() {
@@ -85,6 +87,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       .countAllMyArchivedMessages()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(messages => {
+        this.messagesNumber = messages ;
         this.pagination.init(messages);
         this.loadPage();
       });

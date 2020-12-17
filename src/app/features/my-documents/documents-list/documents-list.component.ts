@@ -70,13 +70,16 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
   realTime() {
     this.documentsService.getIdObs().subscribe(resp => {
-      this.idSenderReceiver = resp;
+      if (resp) {
+        this.idSenderReceiver = resp;
+      }
       this.filter();
     });
   }
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.idSenderReceiver = this.featureService.decrypt(params["id"]);
+      this.idSenderReceiver = this.featureService.decrypt(params.id);
     });
     this.route.queryParams.subscribe(params => {
       this.filterDocumentsForm.patchValue({
@@ -87,6 +90,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.getAccountDetails(this.idSenderReceiver);
     this.realTime();
   }
+
   getPersonalInfo() {
     this.accountService
       .getCurrentAccount()
@@ -107,14 +111,14 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getAccountDetails(id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(account => {
-        let details = this.getDetailSwitchRole(account);
+        const details = this.getDetailSwitchRole(account);
         if (details.photoId) {
           this.documentsService
             .downloadFile(details.photoId)
             .pipe(takeUntil(this._destroyed$))
             .subscribe(
               response => {
-                let myReader: FileReader = new FileReader();
+                const myReader: FileReader = new FileReader();
                 myReader.onloadend = e => {
                   if (account.role == "PRACTICIAN") {
                     this.documentsService.person = {
@@ -130,7 +134,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
                     };
                   }
                 };
-                let ok = myReader.readAsDataURL(response.body);
+                const ok = myReader.readAsDataURL(response.body);
               },
               error => {
                 if (account.role == "PATIENT") {
@@ -220,70 +224,50 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsBySenderOrReceiverId(id, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
+        this.attachementsList = attachements;
+        if (attachements) {
+          attachements.forEach(attachement => {
+            this.documentTypes.add(attachement.object);
+            this.itemList.push(this.parseMessage(attachement, attachement));
+          });
           this.scroll = false;
         }
-        this.attachementsList = attachements;
-        attachements.forEach(attachement => {
-          this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
-        });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
       });
   }
+
   parseMessage(attachement, node): any {
     const dotIndex = node.name.lastIndexOf(".");
-    return {
-      id: attachement.id,
-      isSeen: true,
-      users: [
-        {
-          id: attachement.senderId,
-          fullName: null,
-          img: this.getImageSwitchExtention(
-            node.name.substring(dotIndex + 1, node.name.length)
-          ),
-          title: attachement.senderForId
-            ? "Pour " + attachement.senderForDetails.fullName
-            : null
-        }
-      ],
-      object: {
-        name:
-          node.name.length < 30
-            ? node.name
-            : node.name.substring(0, 30) + "...",
-        isImportant: false
-      },
-      nodeId: attachement.nodeId,
-      time: attachement.updatedAt,
-      download: true,
-      visualize: true,
-      realName: node.name
-    };
+    if (attachement) {
+      return {
+        id: attachement.id,
+        isSeen: true,
+        users: [
+          {
+            id: attachement.senderId,
+            fullName: null,
+            img: this.getImageSwitchExtention(
+              node.name.substring(dotIndex + 1, node.name.length)
+            ),
+            title: attachement.senderForId
+              ? "Pour " + attachement.senderForDetails?.fullName
+              : null
+          }
+        ],
+        object: {
+          name:
+            node.name.length < 30
+              ? node.name
+              : node.name.substring(0, 30) + "...",
+          isImportant: false
+        },
+        nodeId: attachement.nodeId,
+        time: attachement.updatedAt,
+        download: true,
+        visualize: true,
+        realName: node.name
+      };
+    }
   }
-
   getDetailSwitchRole(senderDetail) {
     switch (senderDetail.role) {
       case "PATIENT":
@@ -292,6 +276,10 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         return senderDetail.practician;
       case "SECRETARY":
         return senderDetail.secretary;
+      case "TELESECRETARYGROUP":
+        return senderDetail.telesecretaryGroup;
+      case "SUPERVISOR" || "SUPER_SUPERVISOR" || "OPERATOR":
+        return senderDetail.telesecretary;
       default:
         return null;
     }
@@ -380,15 +368,15 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   }
 
   openFile(resData, fileName, blob) {
-    var ieEDGE = navigator.userAgent.match(/Edge/g);
-    var ie = navigator.userAgent.match(/.NET/g); // IE 11+
-    var oldIE = navigator.userAgent.match(/MSIE/g);
+    const ieEDGE = navigator.userAgent.match(/Edge/g);
+    const ie = navigator.userAgent.match(/.NET/g); // IE 11+
+    const oldIE = navigator.userAgent.match(/MSIE/g);
 
     if (ie || oldIE || ieEDGE) {
       window.navigator.msSaveBlob(blob, fileName);
     } else {
-      var fileURL = URL.createObjectURL(blob);
-      var win = window.open();
+      const fileURL = URL.createObjectURL(blob);
+      const win = window.open();
       win.document.write(
         '<iframe src="' +
           fileURL +
@@ -396,6 +384,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   goBack() {
     this._location.back();
   }
@@ -408,36 +397,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsByObject(id, object, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
+          this.itemList.push(this.parseMessage(attachement, attachement));
         });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
+        this.scroll = false;
       });
   }
   getAttachementBySenderFor(id, senderForId, pageNo) {
@@ -448,36 +413,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsBySenderForId(id, senderForId, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
+          this.itemList.push(this.parseMessage(attachement, attachement));
         });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
+        this.scroll = false;
       });
   }
 
@@ -489,35 +430,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       .getMyAttachementsBySenderForIdAndObject(id, senderForId, object, pageNo)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(attachements => {
-        if (attachements.length == 0) {
-          this.scroll = false;
-        }
         this.attachementsList = attachements;
         attachements.forEach(attachement => {
           this.documentTypes.add(attachement.object);
-          this.observables.push(
-            this.documentsService
-              .getNodeDetailsFromAlfresco(attachement.nodeId)
-              .pipe(catchError(error => of(error)))
-          );
+          this.itemList.push(this.parseMessage(attachement, attachement));
         });
-
-        forkJoin(this.observables)
-          .pipe(takeUntil(this._destroyed$))
-          .subscribe(nodes => {
-            this.scroll = false;
-            nodes.forEach((node: any) => {
-              if (node.entry) {
-                const splitName = node.entry.name.split(".");
-                const extention = splitName[splitName.length - 1];
-
-                const attachement = this.attachementsList.find(
-                  x => x.nodeId == node.entry.id
-                );
-                this.itemList.push(this.parseMessage(attachement, node.entry));
-              }
-            });
-          });
+        this.scroll = false;
       });
   }
   filter() {

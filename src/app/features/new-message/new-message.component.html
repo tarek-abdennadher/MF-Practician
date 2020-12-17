@@ -105,7 +105,7 @@
         id="cc-dropdown"
         [data]="ccParsedList"
         formControlName="cc"
-        [settings]="dropdownSettings"
+        [settings]="dropdownSettingsCc"
         [ngClass]="{
           'is-invalid': submited && ctr.cc.errors,
           invalid: submited && ctr.cc.errors
@@ -278,6 +278,7 @@
       <input
         formControlName="freeObject"
         class="form-control"
+        [readonly]="this.sendMessageForm.controls.to.value.length == 0"
         type="text"
         id="input-free-object"
         [ngClass]="{
@@ -285,6 +286,7 @@
           invalid: submited && ctr.freeObject.errors
         }"
       />
+
       <div *ngIf="ctr.freeObject.errors" class="invalid-feedback">
         <div *ngIf="ctr.freeObject.errors.required">
           {{ texts.required }}

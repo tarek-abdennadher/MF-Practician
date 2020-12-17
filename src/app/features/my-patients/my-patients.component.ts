@@ -14,11 +14,12 @@ import { DomSanitizer, Title } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { Subject } from "rxjs";
 import { NotifierService } from "angular-notifier";
+import { Category } from "@app/shared/models/category";
 declare var $: any;
 @Component({
   selector: "app-my-patients",
   templateUrl: "./my-patients.component.html",
-  styleUrls: ["./my-patients.component.scss"]
+  styleUrls: ["./my-patients.component.scss"],
 })
 export class MyPatientsComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
@@ -37,7 +38,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   scroll = false;
   public searchForm: FormGroup;
   mesCategories = [];
-  categs = [];
+  categs: Array<Category>;
   public filterPatientsForm: FormGroup;
   avatars: {
     doctor: string;
@@ -68,7 +69,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.title.setTitle(this.topText);
     this.notifier = notifierService;
     this.filterPatientsForm = this.formBuilder.group({
-      category: [""]
+      category: [""],
     });
     this.avatars = this.globalService.avatars;
     this.imageSource = this.avatars.user;
@@ -84,13 +85,13 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           this.notifier.show({
             message: res.message,
             type: res.type,
-            template: this.customNotificationTmpl
+            template: this.customNotificationTmpl,
           });
         }
       });
     // update list after detail view
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-patients?loading=true") {
           let currentRoute = this.route;
@@ -115,9 +116,9 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   markNotificationsAsSeen() {
-    this.featureService.markReceivedNotifAsSeen().subscribe(resp => {
+    this.featureService.markReceivedNotifAsSeen().subscribe((resp) => {
       this.featureService.listNotifications = this.featureService.listNotifications.filter(
-        notif => notif.messageId != null
+        (notif) => notif.messageId != null
       );
     });
   }
@@ -131,9 +132,9 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         this.direction
       )
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
+      .subscribe((myPatients) => {
         this.number = myPatients.length;
-        myPatients.forEach(elm => {
+        myPatients.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -143,13 +144,13 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       });
   }
   searchPatients() {
-    this.featureService.getFilteredPatientsSearch().subscribe(res => {
+    this.featureService.getFilteredPatientsSearch().subscribe((res) => {
       if (res == null) {
         this.filtredPatients = [];
         this.number = this.filtredPatients.length;
       } else if (res?.length > 0) {
         let patients = [];
-        res.forEach(elm => {
+        res.forEach((elm) => {
           patients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
@@ -164,22 +165,26 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
-    this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(
-        pageNo,
-        this.categs.find(e => e.name == categoryId).id,
-        this.direction
-      )
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        this.number = myPatients.length;
-        myPatients.forEach(elm => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
+    let category = new Category();
+    category = this.categs.find((e) => e.name == categoryId);
+    if (category) {
+      this.myPatientsService
+        .getPatientsOfCurrentParacticianByCategory(
+          pageNo,
+          category.id,
+          this.direction
+        )
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((myPatients) => {
+          this.number = myPatients.length;
+          myPatients.forEach((elm) => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+          this.filtredPatients = this.myPatients;
         });
-        this.filtredPatients = this.myPatients;
-      });
+    }
   }
 
   mappingMyPatients(patient, prohibited, archived) {
@@ -191,7 +196,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      civility: patient.civility
+      civility: patient.civility,
     });
     myPatients.id = patient.id;
     myPatients.photoId = patient.photoId;
@@ -201,20 +206,20 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
     myPatients.isAddedByPatient = patient.addedByPatient;
-    myPatients.users.forEach(user => {
+    myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
         .subscribe(
-          response => {
+          (response) => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
+            myReader.onloadend = (e) => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          error => {
+          (error) => {
             user.img = this.avatars.user;
           }
         );
@@ -226,7 +231,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   performFilter(filterBy) {
     filterBy = filterBy.toLowerCase();
     return this.myPatients.filter(
-      patient =>
+      (patient) =>
         patient.users[0].fullName.toLowerCase().indexOf(filterBy) !== -1
     );
   }
@@ -238,10 +243,10 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(resp => {
+      .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            elm => elm.users[0].id != item.users[0].id
+            (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
         }
@@ -257,14 +262,14 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         "Suppression"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.myPatientsService
             .deletePatientFromMyPatients(item.users[0].id)
             .pipe(takeUntil(this._destroyed$))
-            .subscribe(resp => {
+            .subscribe((resp) => {
               this.filtredPatients = this.filtredPatients.filter(
-                elm => elm.users[0].id != item.users[0].id
+                (elm) => elm.users[0].id != item.users[0].id
               );
               this.number--;
             });
@@ -279,15 +284,15 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         "Confirmation d'archivage"
       )
       .afterClosed()
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.myPatientsService
             .deletePatientFile(item.users[0].id)
             .pipe(takeUntil(this._destroyed$))
-            .subscribe(resp => {
+            .subscribe((resp) => {
               if (resp == true) {
                 this.filtredPatients = this.filtredPatients.filter(
-                  elm => elm.users[0].id != item.users[0].id
+                  (elm) => elm.users[0].id != item.users[0].id
                 );
                 this.number--;
               }
@@ -299,24 +304,24 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100
+        scrollTop: $("#appPatientFile").offset().top - 100,
       },
       1000
     );
     this.featureService.setHistoryPatient(false);
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: this.featureService.encrypt(item.users[0].id)
+        id: this.featureService.encrypt(item.users[0].id),
       },
-      relativeTo: this.route
+      relativeTo: this.route,
     });
   }
 
   getMyCategories() {
-    this.categoryService.getMyCategories().subscribe(categories => {
+    this.categoryService.getMyCategories().subscribe((categories) => {
       this.categs = categories;
       this.mesCategories = categories;
-      this.mesCategories = this.mesCategories.map(s => s.name);
+      this.mesCategories = this.mesCategories.map((s) => s.name);
       this.mesCategories.unshift("Tout");
     });
   }
@@ -348,7 +353,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   addPatient() {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100
+        scrollTop: $("#appPatientFile").offset().top - 100,
       },
       1000
     );

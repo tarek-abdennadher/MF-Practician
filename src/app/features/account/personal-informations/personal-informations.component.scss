@@ -3,6 +3,11 @@ $hlessy-blue: #2460b4;
 $helssy_white: #ffffff;
 $color-helssy-pink: #ff0063;
 /* Title */
+input[type=password]::-ms-reveal,
+input[type=password]::-ms-clear
+{
+  display: none;
+}
 .Mon-compte {
   font-family: Montserrat-Medium;
   font-size: 28px;

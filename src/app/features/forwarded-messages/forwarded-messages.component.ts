@@ -29,6 +29,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
     isRefresh: true
   };
   page = "INBOX";
+  messagesNumber: number = 0;
   number = 0;
   topText = "Messages transférés";
   bottomText = "";
@@ -70,6 +71,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
     this.featureService.setActiveChild("forwarded");
     this.countAllMyForwardedMessages();
     this.searchForwarded();
+
   }
 
   countAllMyForwardedMessages() {
@@ -77,6 +79,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
       .countForwardedMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(messages => {
+        this.messagesNumber = messages ;
         this.pagination.init(messages);
         this.loadPage();
       });
@@ -242,6 +245,12 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
                 this.filtredItemList = this.filtredItemList.filter(
                   elm => !messagesId.includes(elm.id)
                 );
+                if (this.filtredItemList.length == 0 ) {
+
+                  this.loading = true;
+                  this.refreshMessagingList();
+
+                }
                 this.deleteElementsFromInbox(messagesId.slice(0));
                 this.featureService.archiveState.next(true);
                 this.featureService.numberOfForwarded =
@@ -251,7 +260,12 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
                 //We have to find a way to notify user by this error
               }
             );
+            this.messagesNumber--;
+            this.pagination.init(this.messagesNumber );
+            this.loading=false;
           }
+
+
         });
     }
   }
