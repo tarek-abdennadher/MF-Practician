@@ -170,7 +170,7 @@
                 <div class="col-12">
                   <input
                     [ngClass]="{
-                      'is-invalid': submitted && personalInfoForm.errors
+                      'is-invalid': submitted && ctr.email.errors
                     }"
                     class="form-control"
                     formControlName="email"
@@ -178,15 +178,12 @@
                     type="text"
                   />
                   <div
-                    *ngIf="personalInfoForm.errors?.requiredValidator"
-                    class="invalid-feedback"
-                  >
-                    {{ errors.required }}
-                  </div>
-                  <div
                     *ngIf="submitted && ctr.email.errors"
                     class="invalid-feedback"
                   >
+                  <div *ngIf="ctr.email.errors.required">
+                      {{ errors.required }}
+                    </div>
                     <div *ngIf="ctr.email.errors.email">
                       {{ errors.email_invalid_format }}
                     </div>
@@ -224,7 +221,7 @@
                       [defaultCountry]="''"
                       [maxlength]="20"
                       [ngClass]="{
-                        'is-invalid': ( ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
+                        'is-invalid': ctr.phoneNumber.errors && submitted
                       }"
                       class="form-control phone"
                       formControlName="phoneNumber"
@@ -238,7 +235,7 @@
                       [defaultCountry]="'fr'"
                       [maxlength]="20"
                       [ngClass]="{
-                        'is-invalid': ( ctr.phoneNumber.errors || this.personalInfoForm.errors?.requiredValidator) && submitted
+                        'is-invalid': ctr.phoneNumber.errors && submitted
                       }"
                       class="form-control phone"
                       formControlName="phoneNumber"
@@ -247,12 +244,6 @@
                       placeholder="Téléphone ou fixe *"
                     >
                     </international-phone-number>
-                    <div *ngIf="
-                      this.personalInfoForm.errors?.requiredValidator
-                      && submitted
-                      " class="phone-invalid">
-                      {{ errors.required}}
-                    </div>
                     <div *ngIf="
                         ctr.phoneNumber.invalid &&
                         (ctr.phoneNumber.touched|| submitted)  &&
