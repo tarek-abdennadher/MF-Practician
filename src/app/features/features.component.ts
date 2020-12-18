@@ -46,7 +46,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   patients: any;
   secretaryIds: any = [];
   public messaging: boolean = true;
-
   private readonly notifier: NotifierService;
   constructor(
     public router: Router,

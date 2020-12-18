@@ -51,14 +51,11 @@ export class FeaturesService {
   public searchArchive = new BehaviorSubject([]);
   public activeChild = new BehaviorSubject("inbox");
   public historyPatient = new BehaviorSubject(false);
-
   public searchPatientsFiltered = new BehaviorSubject([]);
   public searchPatients = new BehaviorSubject([]);
-
   public inboxState = new BehaviorSubject(false);
   public sentState = new BehaviorSubject(false);
   public archiveState = new BehaviorSubject(false);
-
   public isMessaging = new BehaviorSubject<boolean>(false);
 
   constructor(
