@@ -16,18 +16,17 @@ import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
-import { forkJoin, BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { ArchieveMessagesService } from "./archieve-messages/archieve-messages.service";
 import { MessageService } from "./services/message.service";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { MessageArchived } from "./archieve-messages/message-archived";
 import { MyPatientsService } from "./services/my-patients.service";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
-import { MyPatients } from "@app/shared/models/my-patients";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -917,46 +916,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
     return messageArchived;
   }
-  mappingMyPatients(patient, prohibited, archived) {
-    const myPatients = new MyPatients();
-    myPatients.users = [];
-    myPatients.users.push({
-      id: patient.id,
-      accountId: patient.patient ? patient.patient.accountId : null,
-      patientId: patient.patient ? patient.patient.id : null,
-      fullName: patient.fullName,
-      img: this.avatars.user,
-      civility: patient.civility
-    });
-    myPatients.id = patient.id;
-    myPatients.photoId = patient.photoId;
-    myPatients.isMarkAsSeen = false;
-    myPatients.isSeen = true;
-    myPatients.isProhibited = prohibited;
-    myPatients.isArchived = archived;
-    myPatients.isPatientFile = patient.patient ? false : true;
-    myPatients.isAddedByPatient = patient.addedByPatient;
-    myPatients.users.forEach(user => {
-      this.documentService
-        .getDefaultImageEntity(user.id, "PATIENT_FILE")
-        .subscribe(
-          response => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              user.img = this.sanitizer.bypassSecurityTrustUrl(
-                myReader.result as string
-              );
-            };
-            let ok = myReader.readAsDataURL(response);
-          },
-          error => {
-            user.img = this.avatars.user;
-          }
-        );
-    });
 
-    return myPatients;
-  }
   loadPhoto(user) {
     this.documentService.getDefaultImage(user.id).subscribe(
       response => {
