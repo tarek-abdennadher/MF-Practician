@@ -27,6 +27,7 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
+import { MyPatients } from "@app/shared/models/my-patients";
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
@@ -227,7 +228,13 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.patientService
         .getAllPatientFilesByPracticianId(this.featuresService.getUserId())
         .subscribe(list => {
-          this.featuresService.setFilteredPatientsSearch(list);
+          let patients = [];
+          list.forEach(elm => {
+            patients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+          this.featuresService.setFilteredPatientsSearch(patients);
           this.patients = list;
         });
     }
@@ -936,7 +943,46 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
     return messageArchived;
   }
+  mappingMyPatients(patient, prohibited, archived) {
+    const myPatients = new MyPatients();
+    myPatients.users = [];
+    myPatients.users.push({
+      id: patient.id,
+      accountId: patient.patient ? patient.patient.accountId : null,
+      patientId: patient.patient ? patient.patient.id : null,
+      fullName: patient.fullName,
+      img: this.avatars.user,
+      civility: patient.civility
+    });
+    myPatients.id = patient.id;
+    myPatients.photoId = patient.photoId;
+    myPatients.isMarkAsSeen = false;
+    myPatients.isSeen = true;
+    myPatients.isProhibited = prohibited;
+    myPatients.isArchived = archived;
+    myPatients.isPatientFile = patient.patient ? false : true;
+    myPatients.isAddedByPatient = patient.addedByPatient;
+    myPatients.users.forEach(user => {
+      this.documentService
+        .getDefaultImageEntity(user.id, "PATIENT_FILE")
+        .subscribe(
+          response => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = e => {
+              user.img = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
+            };
+            let ok = myReader.readAsDataURL(response);
+          },
+          error => {
+            user.img = this.avatars.user;
+          }
+        );
+    });
 
+    return myPatients;
+  }
   loadPhoto(user) {
     this.documentService.getDefaultImage(user.id).subscribe(
       response => {
