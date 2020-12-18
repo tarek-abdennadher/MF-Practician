@@ -130,9 +130,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.forwardedMessage();
     this.observeState();
     this.subscribeIsMessaging();
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.getPatients();
-    }
     $("#main-container").on("click", function(e) {
       if (e.target.parentElement.id != "sideBar") {
         jQuery("#sidebar").addClass("hidden-side-bar");
@@ -222,22 +219,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.featuresService.setSearchFiltredPractician(list);
       this.practicians = list;
     });
-  }
-  getPatients() {
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.patientService
-        .getAllPatientFilesByPracticianId(this.featuresService.getUserId())
-        .subscribe(list => {
-          let patients = [];
-          list.forEach(elm => {
-            patients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
-          });
-          this.featuresService.setFilteredPatientsSearch(patients);
-          this.patients = list;
-        });
-    }
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
@@ -460,11 +441,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
                   x.object.name.toLowerCase().includes(event.toLowerCase())
               );
             result = result.length > 0 ? result : null;
-            // if (result.length > 0) {
-            //   result.forEach(elm => {
-            //     elm.users[0].img = this.featuresService.photosArray.get(elm.id);
-            //   });
-            // }
             this.featuresService.searchPracticianInboxFiltered
               .get(practicianId)
               .next(result);
@@ -555,10 +531,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         }
       } else if (this.featuresService.activeChild.getValue() == "patient") {
         if (event) {
-          let result = this.patients.filter(x =>
-            x.fullName.toLowerCase().includes(event.toLowerCase())
-          );
-          result = result.length > 0 ? result : null;
+          let result = [];
+          result.push(event.toLowerCase());
           this.featuresService.setFilteredPatientsSearch(result);
         } else {
           this.featuresService.setFilteredPatientsSearch([]);

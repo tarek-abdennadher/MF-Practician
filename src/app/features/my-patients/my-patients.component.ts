@@ -111,9 +111,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.links.isTypeFilter = true;
     this.links.isAdd = true;
     this.featureService.setActiveChild("patient");
-    // this.getPatientsOfCurrentParactician(this.pageNo);
-    // this.myPatients = [];
-    // this.filtredPatients = [];
+    this.getPatientsOfCurrentParactician(this.pageNo);
     this.searchPatients();
   }
 
@@ -148,19 +146,12 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
   searchPatients() {
     this.featureService.getFilteredPatientsSearch().subscribe(res => {
-      if (res == null) {
-        this.filtredPatients = [];
-        this.number = this.filtredPatients.length;
-      } else if (res?.length > 0) {
-        let patients = [];
-
-        this.filtredPatients = res;
-        this.myPatients = res;
-        this.number = this.filtredPatients.length;
+      if (res.length > 0) {
+        this.filtredPatients = this.filtredPatients.filter(x =>
+          x.users[0].fullName.toLowerCase().includes(res[0])
+        );
       } else {
-        console.log(this.myPatients);
         this.filtredPatients = this.myPatients;
-        this.number = this.filtredPatients.length;
       }
       this.scroll = false;
     });
