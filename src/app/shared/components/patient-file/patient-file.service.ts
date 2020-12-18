@@ -12,7 +12,7 @@ export class PatientFileService {
   public labels = {
     info: "Informations",
     attached_info: "Personnes rattachées ",
-    phone: "Téléphone (*)",
+    phone: "Téléphone ",
     birthday: "Date de naissance (*)",
     _address: "Adresse ",
     _zip_code: "Code Postal ",

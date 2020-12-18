@@ -12,7 +12,6 @@ import {
   FormArray,
   FormControl,
   Validators,
-  AbstractControl,
 } from "@angular/forms";
 import { Subject, BehaviorSubject } from "rxjs";
 import { emailValidator } from "@app/core/Validators/email.validator";
@@ -32,14 +31,6 @@ import { takeUntil } from "rxjs/operators";
 import { DateValidator } from "./date-validator";
 import { FeaturesService } from "@app/features/features.service";
 declare var $: any;
-function requiredValidator(c: AbstractControl): { [key: string]: any } {
-  const email = c.get("email");
-  const phoneNumber = c.get("phoneNumber");
-  if (!email.value && !phoneNumber.value) {
-    return { requiredValidator: true };
-  }
-  return null;
-}
 @Component({
   selector: "app-patient-file",
   templateUrl: "./patient-file.component.html",
@@ -232,7 +223,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       firstName: new FormControl(null, Validators.required),
       maidenName: new FormControl(null),
       phoneNumber: new FormControl(null),
-      email: new FormControl(null, emailValidator),
+      email: new FormControl(null, [emailValidator, Validators.required]),
       address: new FormControl(null),
       zipCode: new FormControl(null),
       city: new FormControl(null),
@@ -241,7 +232,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       category: new FormControl(null),
       invitationStatus: new FormControl(null),
     });
-    this.personalInfoForm.setValidators(requiredValidator);
   }
 
   initAttachedInfoForm() {
