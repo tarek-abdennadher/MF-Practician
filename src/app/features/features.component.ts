@@ -821,8 +821,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
                 user.img = this.sanitizer.bypassSecurityTrustUrl(
                   myReader.result as string
                 );
-                this.updateImageOfParsedMessages(user.id);
                 this.featuresService.photosArray.set(user.id, user.img);
+                this.updateImageOfParsedMessages(user.id);
               };
               let ok = myReader.readAsDataURL(response);
             },
