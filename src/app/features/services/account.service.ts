@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 export class AccountService {
   constructor(public router: Router, public globalService: GlobalService) {}
   public messages = {
+    postal_stat: "Envoi postal",
     edit_info_success: "Informations personnelles modifiées avec succès",
     edit_password_success: "Mot de passe modifié avec succès",
     edit_password_failure: "Erreur lors de la modification du mot de passe",
@@ -109,7 +110,7 @@ export class AccountService {
     sent: "Messages envoyés",
     others: "Autres",
     leave_message: "Message automatique en cas de congés",
-    error_message: "Une erreur est survenue, veuillez réessayer plus tard"
+    error_message: "Une erreur est survenue, veuillez réessayer plus tard",
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -117,18 +118,18 @@ export class AccountService {
     min_length: "Minimun 8 caractères",
     must_match: "Mot de passe non identique",
     invalid_phone: "Le numéro de téléphone saisi est invalide",
-    invalid_date: "Date invalide"
+    invalid_date: "Date invalide",
   };
   public stats = {
     patient_title: "Patients",
     patient_m_1: "Messages reçus des patients",
-    patient_m_2: "Messages envoyés aux patients"
+    patient_m_2: "Messages envoyés aux patients",
   };
   public colors = {
     blue: "#008fff",
     light_blue: "#82f8ff",
     dark_blue: "#1a56a7",
-    light_steel_blue: "#B0C4DE"
+    light_steel_blue: "#B0C4DE",
   };
   updateAccount(account) {
     return this.globalService.call(
@@ -206,7 +207,6 @@ export class AccountService {
     );
   }
 
-
   getAccountDetails(id: number) {
     return this.globalService.call(
       RequestType.GET,
@@ -256,6 +256,12 @@ export class AccountService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.messages + "otherStat/" + id
+    );
+  }
+  getSentPostalStats(id): Observable<Map<string, number>> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "sentPostalStat/" + id
     );
   }
   getOptionById(id) {
