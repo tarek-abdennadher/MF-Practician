@@ -52,26 +52,27 @@
                   class="col-12 col-sm-12 col-form-label"
                   for="firstName"
                 >{{ labels.last_name }}</label
-                >
-                <div class="col-12 col-sm-12">
-                  <input
-                    [ngClass]="{
-                        'is-invalid': submitted && ctr.firstName.errors
+                ><div class="col-12 col-sm-12">
+                    <input
+                      [ngClass]="{
+                        'is-invalid': submitted && ctr.lastName.errors
                       }"
-                    class="form-control"
-                    formControlName="firstName"
-                    id="first-name"
-                    type="text"
-                  />
-                  <div
-                    *ngIf="submitted && ctr.firstName.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="ctr.firstName.errors.required">
-                      {{ errors.required }}
+                      class="form-control"
+                      formControlName="lastName"
+                      id="last-name"
+                      id="lastName"
+                      type="text"
+                    />
+                    <div
+                      *ngIf="submitted && ctr.lastName.errors"
+                      class="invalid-feedback"
+                    >
+                      <div *ngIf="ctr.lastName.errors.required">
+                        {{ errors.required }}
+                      </div>
                     </div>
                   </div>
-                </div>
+                
               </div>
               <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                 <!-- last name Field -->
@@ -81,25 +82,24 @@
                 >{{ labels.first_name }}</label
                 >
                 <div class="col-12 col-sm-12">
-                  <input
-                    [ngClass]="{
-                      'is-invalid': submitted && ctr.lastName.errors
-                    }"
-                    class="form-control"
-                    formControlName="lastName"
-                    id="last-name"
-                    id="lastName"
-                    type="text"
-                  />
-                  <div
-                    *ngIf="submitted && ctr.lastName.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="ctr.lastName.errors.required">
-                      {{ errors.required }}
+                    <input
+                      [ngClass]="{
+                          'is-invalid': submitted && ctr.firstName.errors
+                        }"
+                      class="form-control"
+                      formControlName="firstName"
+                      id="first-name"
+                      type="text"
+                    />
+                    <div
+                      *ngIf="submitted && ctr.firstName.errors"
+                      class="invalid-feedback"
+                    >
+                      <div *ngIf="ctr.firstName.errors.required">
+                        {{ errors.required }}
+                      </div>
                     </div>
                   </div>
-                </div>
               </div>
 
             </div>
