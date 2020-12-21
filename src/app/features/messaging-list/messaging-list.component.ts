@@ -395,7 +395,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           type:
             message.sender.role == "PRACTICIAN"
               ? "MEDICAL"
-              : message.sender.role
+              : message.sender.secretaryType ? "SECRETARY" : message.sender.role,
         }
       ],
       object: {
