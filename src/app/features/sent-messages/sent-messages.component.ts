@@ -92,7 +92,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .countSentMessage()
       .pipe(takeUntil(this._destroyed$))
       .subscribe(messages => {
-        this.messagesNumber = messages ;
+        this.messagesNumber = messages;
         this.pagination.init(messages);
         this.loadPage();
       });
@@ -258,10 +258,9 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
                 this.filtredItemList = this.filtredItemList.filter(
                   elm => !messagesId.includes(elm.id)
                 );
-                if (this.filtredItemList.length == 0 ) {
+                if (this.filtredItemList.length == 0) {
                   this.loading = true;
                   this.refreshMessagingList();
-
                 }
                 this.deleteElementsFromInbox(messagesId.slice(0));
                 this.featureService.archiveState.next(true);
@@ -271,11 +270,9 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
               }
             );
             this.messagesNumber--;
-            this.pagination.init(this.messagesNumber );
-            this.loading=false;
+            this.pagination.init(this.messagesNumber);
+            this.loading = false;
           }
-
-
         });
     }
   }
@@ -335,10 +332,13 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     this.featureService.getFilteredSentSearch().subscribe(res => {
       if (res == null) {
         this.filtredItemList = [];
+        this.searchContext = true;
       } else if (res?.length > 0) {
         this.filtredItemList = res;
+        this.searchContext = true;
       } else {
         this.filtredItemList = this.itemsList;
+        this.searchContext = false;
       }
     });
   }
