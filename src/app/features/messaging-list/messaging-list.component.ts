@@ -305,7 +305,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               case "secretary":
                 return (
                   item.users[0].type.toLowerCase() == "secretary" ||
-                  item.users[0].type.toLowerCase() == "telesecretarygroup"
+                  item.users[0].type.toLowerCase() == "telesecretarygroup" ||
+                  item.users[0].type.toLowerCase() == "supervisor" ||
+                  item.users[0].type.toLowerCase() == "super_supervisor"
                 );
               default:
                 return item.users[0].type.toLowerCase() == event;
