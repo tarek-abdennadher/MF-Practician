@@ -16,14 +16,14 @@ import { GlobalService } from "@app/core/services/global.service";
 import { MessagingListService } from "./services/messaging-list.service";
 import { MyDocumentsService } from "./my-documents/my-documents.service";
 import { AccountService } from "./services/account.service";
-import { forkJoin, BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { JobtitlePipe } from "@app/shared/pipes/jobTitle.pipe";
 import { ArchieveMessagesService } from "./archieve-messages/archieve-messages.service";
 import { MessageService } from "./services/message.service";
 import { MessageSent } from "@app/shared/models/message-sent";
 import { MessageArchived } from "./archieve-messages/message-archived";
 import { MyPatientsService } from "./services/my-patients.service";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
@@ -128,9 +128,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.forwardedMessage();
     this.observeState();
     this.subscribeIsMessaging();
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.getPatients();
-    }
     $("#main-container").on("click", function(e) {
       if (e.target.parentElement.id != "sideBar") {
         jQuery("#sidebar").addClass("hidden-side-bar");
@@ -220,16 +217,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       this.featuresService.setSearchFiltredPractician(list);
       this.practicians = list;
     });
-  }
-  getPatients() {
-    if (this.localSt.retrieve("role") == "PRACTICIAN") {
-      this.patientService
-        .getAllPatientFilesByPracticianId(this.featuresService.getUserId())
-        .subscribe(list => {
-          this.featuresService.setFilteredPatientsSearch(list);
-          this.patients = list;
-        });
-    }
   }
   initializeWebSocketConnection() {
     const ws = new SockJS(this.globalService.BASE_URL + "/socket");
@@ -419,29 +406,72 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   searchActionClicked(event) {
-    if (this.featuresService.activeChild.getValue() == "inbox") {
-      let practicianId = +this.featuresService.selectedPracticianId;
-      if (practicianId == 0) {
+    if (event.length >= 3) {
+      if (this.featuresService.activeChild.getValue() == "inbox") {
+        let practicianId = +this.featuresService.selectedPracticianId;
+        if (practicianId == 0) {
+          if (event) {
+            let result = this.featuresService
+              .getSearchInboxValue()
+              .filter(
+                x =>
+                  x.users[0].fullName
+                    .toLowerCase()
+                    .includes(event.toLowerCase()) ||
+                  x.object.name.toLowerCase().includes(event.toLowerCase())
+              );
+
+            result = result.length > 0 ? result : null;
+            this.featuresService.setFilteredInboxSearch(result);
+          } else {
+            this.featuresService.setFilteredInboxSearch([]);
+          }
+        } else {
+          if (event) {
+            let result = this.featuresService.searchPracticianInbox
+              .get(practicianId)
+              .getValue()
+              .filter(
+                x =>
+                  x.users[0].fullName
+                    .toLowerCase()
+                    .includes(event.toLowerCase()) ||
+                  x.object.name.toLowerCase().includes(event.toLowerCase())
+              );
+            result = result.length > 0 ? result : null;
+            this.featuresService.searchPracticianInboxFiltered
+              .get(practicianId)
+              .next(result);
+          } else {
+            this.featuresService.searchPracticianInboxFiltered
+              .get(practicianId)
+              .next([]);
+          }
+        }
+      } else if (this.featuresService.activeChild.getValue() == "sent") {
         if (event) {
           let result = this.featuresService
-            .getSearchInboxValue()
+            .getSearchSentValue()
             .filter(
               x =>
-                x.users[0].fullName
-                  .toLowerCase()
-                  .includes(event.toLowerCase()) ||
+                (x.users[0].fullName
+                  ? x.users[0].fullName
+                      .toLowerCase()
+                      .includes(event.toLowerCase())
+                  : x.object.name
+                      .toLowerCase()
+                      .includes(event.toLowerCase())) ||
                 x.object.name.toLowerCase().includes(event.toLowerCase())
             );
           result = result.length > 0 ? result : null;
-          this.featuresService.setFilteredInboxSearch(result);
+          this.featuresService.setFilteredSentSearch(result);
         } else {
-          this.featuresService.setFilteredInboxSearch([]);
+          this.featuresService.setFilteredSentSearch([]);
         }
-      } else {
+      } else if (this.featuresService.activeChild.getValue() == "forwarded") {
         if (event) {
-          let result = this.featuresService.searchPracticianInbox
-            .get(practicianId)
-            .getValue()
+          let result = this.featuresService
+            .getSearchForwardedValue()
             .filter(
               x =>
                 x.users[0].fullName
@@ -450,96 +480,86 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
                 x.object.name.toLowerCase().includes(event.toLowerCase())
             );
           result = result.length > 0 ? result : null;
-          this.featuresService.searchPracticianInboxFiltered
-            .get(practicianId)
-            .next(result);
+          this.featuresService.setFilteredForwardedSearch(result);
+        } else {
+          this.featuresService.setFilteredForwardedSearch([]);
+        }
+      } else if (this.featuresService.activeChild.getValue() == "archived") {
+        if (event) {
+          let result = this.featuresService
+            .getSearchArchiveValue()
+            .filter(
+              x =>
+                x.users[0].fullName
+                  .toLowerCase()
+                  .includes(event.toLowerCase()) ||
+                x.object.name.toLowerCase().includes(event.toLowerCase())
+            );
+          result = result.length > 0 ? result : null;
+          this.featuresService.setFilteredArchiveSearch(result);
+        } else {
+          this.featuresService.setFilteredArchiveSearch([]);
+        }
+      } else if (this.featuresService.activeChild.getValue() == "practician") {
+        if (event) {
+          let result = this.practicians.filter(x =>
+            x.fullName.toLowerCase().includes(event.toLowerCase())
+          );
+          result = result.length > 0 ? result : null;
+          this.featuresService.setSearchFiltredPractician(result);
+          this.router.navigate(["/praticien-recherche"]);
+        } else {
+          this.router.navigate(["/mes-contacts-pro"]);
+        }
+      } else if (
+        this.featuresService.activeChild.getValue() == "practician-search"
+      ) {
+        if (event) {
+          let result = this.practicians.filter(
+            x =>
+              x.fullName.toLowerCase().includes(event.toLowerCase()) ||
+              x.title.toLowerCase().includes(event.toLowerCase())
+          );
+          result = result && result.length > 0 ? result : null;
+          this.featuresService.setSearchFiltredPractician(result);
+          this.router.navigate(["/praticien-recherche"]);
+        } else {
+          this.featuresService.setSearchFiltredPractician([]);
+          this.router.navigate(["/mes-contacts-pro"]);
+        }
+      } else if (this.featuresService.activeChild.getValue() == "patient") {
+        if (event) {
+          let result = [];
+          result.push(event.toLowerCase());
+          this.featuresService.setFilteredPatientsSearch(result);
+        } else {
+          this.featuresService.setFilteredPatientsSearch([]);
+        }
+      }
+    } else {
+      if (this.featuresService.activeChild.getValue() == "inbox") {
+        let practicianId = +this.featuresService.selectedPracticianId;
+        if (practicianId == 0) {
+          this.featuresService.setFilteredInboxSearch([]);
         } else {
           this.featuresService.searchPracticianInboxFiltered
             .get(practicianId)
             .next([]);
         }
-      }
-    } else if (this.featuresService.activeChild.getValue() == "sent") {
-      if (event) {
-        let result = this.featuresService
-          .getSearchSentValue()
-          .filter(
-            x =>
-              (x.users[0].fullName
-                ? x.users[0].fullName
-                    .toLowerCase()
-                    .includes(event.toLowerCase())
-                : x.object.name.toLowerCase().includes(event.toLowerCase())) ||
-              x.object.name.toLowerCase().includes(event.toLowerCase())
-          );
-        result = result.length > 0 ? result : null;
-        this.featuresService.setFilteredSentSearch(result);
-      } else {
+      } else if (this.featuresService.activeChild.getValue() == "sent") {
         this.featuresService.setFilteredSentSearch([]);
-      }
-    } else if (this.featuresService.activeChild.getValue() == "forwarded") {
-      if (event) {
-        let result = this.featuresService
-          .getSearchForwardedValue()
-          .filter(
-            x =>
-              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
-              x.object.name.toLowerCase().includes(event.toLowerCase())
-          );
-        result = result.length > 0 ? result : null;
-        this.featuresService.setFilteredForwardedSearch(result);
-      } else {
+      } else if (this.featuresService.activeChild.getValue() == "forwarded") {
         this.featuresService.setFilteredForwardedSearch([]);
-      }
-    } else if (this.featuresService.activeChild.getValue() == "archived") {
-      if (event) {
-        let result = this.featuresService
-          .getSearchArchiveValue()
-          .filter(
-            x =>
-              x.users[0].fullName.toLowerCase().includes(event.toLowerCase()) ||
-              x.object.name.toLowerCase().includes(event.toLowerCase())
-          );
-        result = result.length > 0 ? result : null;
-        this.featuresService.setFilteredArchiveSearch(result);
-      } else {
+      } else if (this.featuresService.activeChild.getValue() == "archived") {
         this.featuresService.setFilteredArchiveSearch([]);
-      }
-    } else if (this.featuresService.activeChild.getValue() == "practician") {
-      if (event) {
-        let result = this.practicians.filter(x =>
-          x.fullName.toLowerCase().includes(event.toLowerCase())
-        );
-        result = result.length > 0 ? result : null;
-        this.featuresService.setSearchFiltredPractician(result);
-        this.router.navigate(["/praticien-recherche"]);
-      } else {
+      } else if (this.featuresService.activeChild.getValue() == "practician") {
         this.router.navigate(["/mes-contacts-pro"]);
-      }
-    } else if (
-      this.featuresService.activeChild.getValue() == "practician-search"
-    ) {
-      if (event) {
-        let result = this.practicians.filter(
-          x =>
-            x.fullName.toLowerCase().includes(event.toLowerCase()) ||
-            x.title.toLowerCase().includes(event.toLowerCase())
-        );
-        result = result && result.length > 0 ? result : null;
-        this.featuresService.setSearchFiltredPractician(result);
-        this.router.navigate(["/praticien-recherche"]);
-      } else {
+      } else if (
+        this.featuresService.activeChild.getValue() == "practician-search"
+      ) {
         this.featuresService.setSearchFiltredPractician([]);
         this.router.navigate(["/mes-contacts-pro"]);
-      }
-    } else if (this.featuresService.activeChild.getValue() == "patient") {
-      if (event) {
-        let result = this.patients.filter(x =>
-          x.fullName.toLowerCase().includes(event.toLowerCase())
-        );
-        result = result.length > 0 ? result : null;
-        this.featuresService.setFilteredPatientsSearch(result);
-      } else {
+      } else if (this.featuresService.activeChild.getValue() == "patient") {
         this.featuresService.setFilteredPatientsSearch([]);
       }
     }
@@ -688,7 +708,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isSeen: message.seenAsReceiver,
       users: [
         {
-          id: message.sender.id,
+          id: message.sender.senderId,
           fullName: message.sender.fullName,
           img: this.avatars.user,
           title: message.sender.jobTitle,
@@ -711,21 +731,32 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       isArchieve: true,
       photoId: message.sender.photoId
     };
-    this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
-      response => {
-        let myReader: FileReader = new FileReader();
-        myReader.onloadend = e => {
-          parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
-        };
-        let ok = myReader.readAsDataURL(response);
-      },
-      error => {
-        parsedMessage.users[0].img = this.avatars.user;
-      }
-    );
-
+    if (!this.featuresService.photosArray.has(message?.sender?.senderId)) {
+      this.featuresService.photosArray.set(message?.sender?.senderId, null);
+      this.documentService.getDefaultImage(message?.sender?.senderId).subscribe(
+        response => {
+          let myReader: FileReader = new FileReader();
+          myReader.onloadend = e => {
+            parsedMessage.users[0].img = this.sanitizer.bypassSecurityTrustUrl(
+              myReader.result as string
+            );
+            this.featuresService.photosArray.set(
+              parsedMessage.users[0].id,
+              parsedMessage.users[0].img
+            );
+            this.updateImageOfParsedMessages(parsedMessage.users[0].id);
+          };
+          let ok = myReader.readAsDataURL(response);
+        },
+        error => {
+          parsedMessage.users[0].img = this.avatars.user;
+        }
+      );
+    } else {
+      parsedMessage.users[0].img = this.featuresService.photosArray.get(
+        message?.sender?.senderId
+      );
+    }
     return parsedMessage;
   }
 
@@ -781,24 +812,57 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       const messageSent = this.mappingMessage(message);
       messageSent.id = message.id;
       messageSent.users.forEach(user => {
-        this.documentService.getDefaultImage(user.id).subscribe(
-          response => {
-            let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-              user.img = this.sanitizer.bypassSecurityTrustUrl(
-                myReader.result as string
-              );
-            };
-            let ok = myReader.readAsDataURL(response);
-          },
-          error => {
-            user.img = "assets/imgs/user.png";
-          }
-        );
+        if (!this.featuresService.photosArray.has(user.id)) {
+          this.featuresService.photosArray.set(user.id, null);
+          this.documentService.getDefaultImage(user.id).subscribe(
+            response => {
+              let myReader: FileReader = new FileReader();
+              myReader.onloadend = e => {
+                user.img = this.sanitizer.bypassSecurityTrustUrl(
+                  myReader.result as string
+                );
+                this.featuresService.photosArray.set(user.id, user.img);
+                this.updateImageOfParsedMessages(user.id);
+              };
+              let ok = myReader.readAsDataURL(response);
+            },
+            error => {
+              user.img = "assets/imgs/user.png";
+            }
+          );
+        } else {
+          user.img = this.featuresService.photosArray.get(user.id);
+        }
       });
       parsedMessages.push(messageSent);
     });
     return parsedMessages;
+  }
+  updateImageOfParsedMessages(id) {
+    this.featuresService
+      .getSearchSentValue()
+      .filter(e => e.users[0].id == id)
+      .forEach(e => {
+        e.users[0].img = this.featuresService.photosArray.get(id);
+      });
+    this.featuresService
+      .getSearchForwardedValue()
+      .filter(e => e.users.length > 0 && e.users[0].id == id)
+      .forEach(e => {
+        e.users[0].img = this.featuresService.photosArray.get(id);
+      });
+    this.featuresService
+      .getSearchArchiveValue()
+      .filter(e => e.users[0].id == id)
+      .forEach(e => {
+        e.users[0].img = this.featuresService.photosArray.get(id);
+      });
+    this.featuresService
+      .getSearchInboxValue()
+      .filter(e => e.users[0].id == id)
+      .forEach(e => {
+        e.users[0].img = this.featuresService.photosArray.get(id);
+      });
   }
 
   // parse archive message
@@ -860,6 +924,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
           user.img = this.sanitizer.bypassSecurityTrustUrl(
             myReader.result as string
           );
+          this.featuresService.photosArray.set(user.id, user.img);
+          this.updateImageOfParsedMessages(user.id);
         };
         let ok = myReader.readAsDataURL(response);
       },
@@ -889,7 +955,12 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   mapArchiveMessages(message) {
     const archivedMessage = this.mappingMessageArchived(message);
     archivedMessage.users.forEach(user => {
-      this.loadPhoto(user);
+      if (!this.featuresService.photosArray.has(user.id)) {
+        this.featuresService.photosArray.set(user.id, null);
+        this.loadPhoto(user);
+      } else {
+        user.img = this.featuresService.photosArray.get(user.id);
+      }
     });
     return archivedMessage;
   }
