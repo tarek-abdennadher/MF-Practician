@@ -1016,7 +1016,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               item.destination == "SECRETARY" || item.destination == "OTHER"
           );
         }
-      } else if (type == "PATIENT") {
+      } else if (type == "PATIENT" || type == "PATIENT_FILE") {
         this.objectsList = this.practicianObjectList.filter(
           (item) => item.destination == "PATIENT" || item.destination == "OTHER"
         );
