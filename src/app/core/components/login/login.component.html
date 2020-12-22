@@ -109,16 +109,12 @@
             <p class="link-footer"(click)="redirectToContact()">Nous contacter</p>
           </div>
           <div class="col-md-1 stores">
-            <img src="assets/imgs/appStoreLogo.png" />
-            <img src="assets/imgs/playStore.png" />
+            <a href="{{this.globalService.APPSTORE_SITE}}" target="_blank" rel="noopener"><img src="assets/imgs/appStoreLogo.png"   /></a>
+
+            <a href="{{this.globalService.PLAYSTORE_SITE}}" target="_blank" rel="noopener"><img src="assets/imgs/playStore.png" /></a>
           </div>
         </div>
-        <div class="row copyrights mt-3">
-          Copyright 2020 Helssy - Tous droits réservés -
-          <a href="https://helssy-test.aymax.fr/cgu/" target="_blank">
-            Mentions légales
-          </a>
-        </div>
+        <app-footer></app-footer>
       </div>
     </div>
   </div>

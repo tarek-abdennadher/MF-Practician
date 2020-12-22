@@ -72,12 +72,7 @@ export class ContactsService {
       this.globalService.url.contact_pro_all
     );
   }
-  getContactsProForSecretary() {
-    return this.globalService.call(
-      RequestType.GET,
-      this.globalService.url.contact_pro_all_secretary
-    );
-  }
+
   getAllSpecialities(): Observable<Array<Speciality>> {
     return this.globalService.call(
       RequestType.GET,

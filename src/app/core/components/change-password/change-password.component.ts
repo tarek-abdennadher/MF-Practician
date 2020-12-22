@@ -100,4 +100,19 @@ export class ChangePasswordComponent implements OnInit {
   public redirectToPatient() {
     this.document.location.href = this.url.patient_connexion;
   }
+  public redirectToSiteMap() {
+    this.document.location.href = this.globalService.SITE_MAP;
+  }
+  public redirectToWhoAreWe() {
+    this.document.location.href = this.globalService.WHO_ARE_WE_SITE;
+  }
+  public redirectToOurSolution() {
+    this.document.location.href = this.globalService.OUR_SOLUTION_SITE;
+  }
+  public redirectToOurBlog() {
+    this.document.location.href = this.globalService.OUR_BLOG_SITE;
+  }
+  public redirectToContact() {
+    this.document.location.href = this.globalService.CONTACT_SITE;
+  }
 }

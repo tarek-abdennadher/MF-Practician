@@ -14,6 +14,7 @@ import { DomSanitizer, Title } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "../new-message-widget/new-message-widget.service";
 import { Subject } from "rxjs";
 import { NotifierService } from "angular-notifier";
+import { Category } from "@app/shared/models/category";
 declare var $: any;
 @Component({
   selector: "app-my-patients",
@@ -37,7 +38,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   scroll = false;
   public searchForm: FormGroup;
   mesCategories = [];
-  categs = [];
+  categs: Array<Category>;
   public filterPatientsForm: FormGroup;
   avatars: {
     doctor: string;
@@ -138,48 +139,45 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
         });
+
         this.filtredPatients = this.myPatients;
         this.scroll = false;
       });
   }
   searchPatients() {
     this.featureService.getFilteredPatientsSearch().subscribe(res => {
-      if (res == null) {
-        this.filtredPatients = [];
-        this.number = this.filtredPatients.length;
-      } else if (res?.length > 0) {
-        let patients = [];
-        res.forEach(elm => {
-          patients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
-        });
-        this.filtredPatients = patients;
-        this.number = this.filtredPatients.length;
+      if (res.length > 0) {
+        this.filtredPatients = this.filtredPatients.filter(x =>
+          x.users[0].fullName.toLowerCase().includes(res[0])
+        );
       } else {
         this.filtredPatients = this.myPatients;
-        this.number = this.filtredPatients.length;
       }
+      this.scroll = false;
     });
   }
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
-    this.myPatientsService
-      .getPatientsOfCurrentParacticianByCategory(
-        pageNo,
-        this.categs.find(e => e.name == categoryId).id,
-        this.direction
-      )
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        this.number = myPatients.length;
-        myPatients.forEach(elm => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
+    let category = new Category();
+    category = this.categs.find(e => e.name == categoryId);
+    if (category) {
+      this.myPatientsService
+        .getPatientsOfCurrentParacticianByCategory(
+          pageNo,
+          category.id,
+          this.direction
+        )
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(myPatients => {
+          this.number = myPatients.length;
+          myPatients.forEach(elm => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+          this.filtredPatients = this.myPatients;
         });
-        this.filtredPatients = this.myPatients;
-      });
+    }
   }
 
   mappingMyPatients(patient, prohibited, archived) {

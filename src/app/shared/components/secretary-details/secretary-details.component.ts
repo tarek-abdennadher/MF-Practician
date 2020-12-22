@@ -99,14 +99,14 @@ export class SecretaryDetailsComponent implements OnInit {
       }
       this.infoForm.patchValue({
         id: value.id,
-        sec_id: value.secretary ? value.secretary.id : null,
-        last_name: value.secretary ? value.secretary.lastName : "",
-        first_name: value.secretary ? value.secretary.firstName : "",
+        sec_id: value.telesecretary ? value.telesecretary.id : null,
+        last_name: value.telesecretary ? value.telesecretary.lastName : "",
+        first_name: value.telesecretary ? value.telesecretary.firstName : "",
         email: value.email,
-        civility: value.secretary ? value.secretary.civility : null,
+        civility: value.telesecretary ? value.telesecretary.civility : null,
         phone: value.phoneNumber,
-        picture: value.secretary ? value.secretary.photoId : null,
-        otherPhones: value.secretary.otherPhones ? this.phoneList : []
+        picture: value.telesecretary ? value.telesecretary.photoId : null,
+        otherPhones: value.telesecretary.otherPhones ? this.phoneList : []
       });
       this.infoForm.disable();
     });

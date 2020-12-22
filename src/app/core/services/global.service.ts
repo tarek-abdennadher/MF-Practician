@@ -15,6 +15,12 @@ export class GlobalService {
   public OUR_SOLUTION_SITE: string = environment.OURSOLUTION_SITE;
   public OUR_BLOG_SITE: string = environment.OURBLOG_SITE;
   public CONTACT_SITE: string = environment.CONTACT_SITE;
+  public HELSSY_SITE: string = environment.HELSSY_SITE;
+  public APPSTORE_SITE: string = environment.APPSTORE_SITE;
+  public PLAYSTORE_SITE: string = environment.PLAYSTORE_SITE;
+  public CGU_SITE: string = environment.CGU_SITE;
+  public RGPD_SITE: string = environment.RGPD_SITE;
+  public COOKIES_SITE: string = environment.COOKIES_SITE;
   public BASE_URL_CA: string =
     environment.BASE_END_POINT + "/ms-coreapplication";
   public BASE_URL_MA: string = this.BASE_URL + "/ms-messagingapplication";
@@ -75,8 +81,6 @@ export class GlobalService {
     patientFile: this.BASE_URL_CA + "/patientFile/",
     RefuseTypes: this.BASE_URL_MA + "/refuseType",
     contact_pro_all: this.BASE_URL_CA + "/contact/contacts-practician-all",
-    contact_pro_all_secretary:
-      this.BASE_URL_CA + "/contact/contacts-secretary-all",
     practician_invitation: this.BASE_URL_CA + "/account/invitePractician",
     category: this.BASE_URL_CA + "/category",
     note: this.BASE_URL_CA + "/note",

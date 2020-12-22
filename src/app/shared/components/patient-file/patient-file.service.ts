@@ -4,7 +4,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class PatientFileService {
   constructor(public router: Router, public globalService: GlobalService) {}
@@ -12,7 +12,7 @@ export class PatientFileService {
   public labels = {
     info: "Informations",
     attached_info: "Personnes rattachées ",
-    phone: "Téléphone (*)",
+    phone: "Téléphone ",
     birthday: "Date de naissance (*)",
     _address: "Adresse ",
     _zip_code: "Code Postal ",
@@ -22,7 +22,7 @@ export class PatientFileService {
     first_name: "Prénom (*)",
     _email_address: "Adresse e-mail ",
     maiden_name: "Nom de jeune fille",
-    additional_address: "Complément d'addresse",
+    additional_address: "Complément d'adresse",
     category: "Catégorie",
     other_phone: "Autre tél",
     correspondence: "Correspondance",
@@ -39,7 +39,7 @@ export class PatientFileService {
       "Ne pas envoyer une invitation à votre patient lui permettant de vous contacter via la messagerie Helssy.",
     history: "Historique",
     invite_patient: "Inviter le patient",
-    link_patient: "Rattacher une personne",
+    link_patient: "Rattacher une personne"
   };
   public errors = {
     required: "Le champ est obligatoire",
@@ -49,7 +49,7 @@ export class PatientFileService {
     age_18: "Votre âge doit étre supérieur à 18 ans ",
     futureDate: "Vous ne pouvez pas saisir une date future",
     email_invalid_format: "Le format de l'e-mail est invalide",
-    invalid_date: "Date invalide",
+    invalid_date: "Date invalide"
   };
 
   getCorrespondence() {
