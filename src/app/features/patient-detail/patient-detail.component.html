@@ -1,9 +1,10 @@
 <ngx-spinner [fullScreen]="true" type="none" size="medium">
   <div class="card" id="card-gif">
-      <p class="loading">{{loadingMessage}}</p>
+    <p class="loading">{{ loadingMessage }}</p>
   </div>
 </ngx-spinner>
 <app-patient-file
+  [hidden]="!showPatientFile"
   [imageSource]="imageSource"
   [practicianImage]="practicianImage"
   [noteimageSource]="noteimageSource"
@@ -18,7 +19,7 @@
   [userRole]="userRole"
   (submitAttachedAction)="submitLinkedPatient($event)"
   (updateAttachedAction)="updateLinkedPatient($event)"
-  [disabled] ="disabled"
+  [disabled]="disabled"
 >
 </app-patient-file>
 <notifier-container></notifier-container>

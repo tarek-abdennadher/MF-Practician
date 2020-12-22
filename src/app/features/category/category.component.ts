@@ -50,6 +50,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild(null);
     this.getMyCategories();
     // update categories after detail view
     this.router.events

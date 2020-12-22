@@ -17,6 +17,7 @@ export class StatsComponent implements OnInit, OnDestroy {
   othersMap = new Subject<any>();
   receivedMap = new Subject<any>();
   sentMap = new Subject<any>();
+  sentPostalMap = new Subject<any>();
   public messages: any;
   constructor(
     private route: ActivatedRoute,
@@ -48,9 +49,15 @@ export class StatsComponent implements OnInit, OnDestroy {
               .getothersStats(this.selectedId)
               .pipe(takeUntil(this._destroyed$))
               .subscribe((o: Map<string, number>) => {
-                this.receivedMap.next(r);
-                this.sentMap.next(s);
-                this.othersMap.next(o);
+                this.service
+                  .getSentPostalStats(this.selectedId)
+                  .pipe(takeUntil(this._destroyed$))
+                  .subscribe((p: Map<string, number>) => {
+                    this.receivedMap.next(r);
+                    this.sentMap.next(s);
+                    this.othersMap.next(o);
+                    this.sentPostalMap.next(p);
+                  });
               });
           });
       });

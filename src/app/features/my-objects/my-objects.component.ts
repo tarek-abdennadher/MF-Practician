@@ -53,6 +53,7 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.featureService.setActiveChild(null);
     this.getMyObject();
     this.getSearchList();
     // update categories after detail view
