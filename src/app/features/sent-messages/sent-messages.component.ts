@@ -179,6 +179,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     messageSent.hasFiles = message.hasFiles;
     messageSent.hasViewDetail = message.hasViewDetail;
     messageSent.isArchieve = true;
+    messageSent.isPostal= message.sendType == "SEND_POSTAL" ? true : false;
     return messageSent;
   }
 
