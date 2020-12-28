@@ -130,6 +130,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     this.maxDate.setDate(new Date().getDate() - 1);
     this.avatars = this.globalService.avatars;
     this.click = false;
+    this.initPersonalForm();
   }
   get ctr() {
     return this.personalInfoForm.controls;
@@ -215,6 +216,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   initPersonalForm() {
     this.personalInfoForm = this.formBuilder.group({
       id: new FormControl(null),
+      phoneNumber: new FormControl(null),
       patientId: new FormControl(null),
       practicianId: new FormControl(null),
       civility: new FormControl(null, Validators.required),
@@ -222,7 +224,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       lastName: new FormControl(null, Validators.required),
       firstName: new FormControl(null, Validators.required),
       maidenName: new FormControl(null),
-      phoneNumber: new FormControl(null),
       email: new FormControl(null, [emailValidator, Validators.required]),
       address: new FormControl(null),
       zipCode: new FormControl(null),
@@ -284,6 +285,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
   }
 
   getPersonalInformation(patient) {
+    this.initPersonalForm();
     this.patientFileId = patient.id;
     if (patient.phones && patient.phones.length > 0) {
       this.isLabelShow = true;
@@ -297,8 +299,9 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     } else {
       this.displayMaidenName = false;
     }
-    this.personalInfoForm.patchValue({
+    this.personalInfoForm.setValue({
       id: patient.id ? patient.id : null,
+      phoneNumber: patient.phoneNumber ? patient.phoneNumber : null,
       patientId: patient.patientId ? patient.patientId : null,
       practicianId: patient.practicianId ? patient.practicianId : null,
       civility: patient.civility ? patient.civility : null,
@@ -306,7 +309,6 @@ export class PatientFileComponent implements OnInit, OnDestroy {
       lastName: patient.lastName ? patient.lastName : null,
       firstName: patient.firstName ? patient.firstName : null,
       maidenName: patient.maidenName ? patient.maidenName : null,
-      phoneNumber: patient.phoneNumber ? patient.phoneNumber : "+33",
       email: patient.email ? patient.email : null,
       address: patient.address ? patient.address : null,
       zipCode: patient.zipCode ? patient.zipCode : null,
@@ -409,7 +411,9 @@ export class PatientFileComponent implements OnInit, OnDestroy {
         this.personalInfoForm.value.firstName[0].toUpperCase() +
         this.personalInfoForm.value.firstName.substr(1).toLowerCase(),
       maidenName: this.personalInfoForm.value.maidenName,
-      phoneNumber: this.personalInfoForm.value.phoneNumber,
+      phoneNumber: this.personalInfoForm.value.phoneNumber
+        ? this.personalInfoForm.value.phoneNumber
+        : null,
       email: this.personalInfoForm.value.email,
       address: this.personalInfoForm.value.address,
       zipCode: this.personalInfoForm.value.zipCode,
