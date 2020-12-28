@@ -299,7 +299,7 @@ export class PatientFileComponent implements OnInit, OnDestroy {
     } else {
       this.displayMaidenName = false;
     }
-    this.personalInfoForm.setValue({
+    this.personalInfoForm.patchValue({
       id: patient.id ? patient.id : null,
       phoneNumber: patient.phoneNumber ? patient.phoneNumber : null,
       patientId: patient.patientId ? patient.patientId : null,
