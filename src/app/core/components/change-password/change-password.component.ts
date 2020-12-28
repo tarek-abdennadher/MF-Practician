@@ -103,6 +103,9 @@ export class ChangePasswordComponent implements OnInit {
   public redirectToSiteMap() {
     this.document.location.href = this.globalService.SITE_MAP;
   }
+  public redirectToHelssySite() {
+    this.document.location.href = this.globalService.HELSSY_SITE;
+  }
   public redirectToWhoAreWe() {
     this.document.location.href = this.globalService.WHO_ARE_WE_SITE;
   }
