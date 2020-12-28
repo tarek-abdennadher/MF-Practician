@@ -18,7 +18,7 @@
                 <!-- civility Field -->
                 <label class="col-12 col-sm-12 col-form-label" for="civility">{{
                   labels.civility
-                  }}</label>
+                }}</label>
                 <div class="col-12 col-sm-12">
                   <select
                     (change)="changeMaidenName()"
@@ -51,66 +51,65 @@
                 <label
                   class="col-12 col-sm-12 col-form-label"
                   for="firstName"
-                >{{ labels.last_name }}</label
-                ><div class="col-12 col-sm-12">
-                    <input
-                      [ngClass]="{
-                        'is-invalid': submitted && ctr.lastName.errors
-                      }"
-                      class="form-control"
-                      formControlName="lastName"
-                      id="last-name"
-                      id="lastName"
-                      type="text"
-                    />
-                    <div
-                      *ngIf="submitted && ctr.lastName.errors"
-                      class="invalid-feedback"
-                    >
-                      <div *ngIf="ctr.lastName.errors.required">
-                        {{ errors.required }}
-                      </div>
+                  >{{ labels.last_name }}</label
+                >
+                <div class="col-12 col-sm-12">
+                  <input
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.lastName.errors
+                    }"
+                    class="form-control"
+                    formControlName="lastName"
+                    id="last-name"
+                    id="lastName"
+                    type="text"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.lastName.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.lastName.errors.required">
+                      {{ errors.required }}
                     </div>
                   </div>
-                
+                </div>
               </div>
               <div class="col-12 col-sm-4 col-lg-4 col-md-4 col-xl-4 pr-0 pl-0">
                 <!-- last name Field -->
                 <label
                   class="col-12 col-sm-12 col-form-label"
                   for="last_name"
-                >{{ labels.first_name }}</label
+                  >{{ labels.first_name }}</label
                 >
                 <div class="col-12 col-sm-12">
-                    <input
-                      [ngClass]="{
-                          'is-invalid': submitted && ctr.firstName.errors
-                        }"
-                      class="form-control"
-                      formControlName="firstName"
-                      id="first-name"
-                      type="text"
-                    />
-                    <div
-                      *ngIf="submitted && ctr.firstName.errors"
-                      class="invalid-feedback"
-                    >
-                      <div *ngIf="ctr.firstName.errors.required">
-                        {{ errors.required }}
-                      </div>
+                  <input
+                    [ngClass]="{
+                      'is-invalid': submitted && ctr.firstName.errors
+                    }"
+                    class="form-control"
+                    formControlName="firstName"
+                    id="first-name"
+                    type="text"
+                  />
+                  <div
+                    *ngIf="submitted && ctr.firstName.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="ctr.firstName.errors.required">
+                      {{ errors.required }}
                     </div>
                   </div>
+                </div>
               </div>
-
             </div>
-            <br/>
+            <br />
             <!-- maidenName  Field -->
             <div *ngIf="displayMaidenName" class="row">
               <div class="col pr-0 pl-0">
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="maidenName"
-                >{{ labels.maiden_name }}</label
+                  >{{ labels.maiden_name }}</label
                 >
                 <div class="col-12">
                   <input
@@ -122,13 +121,13 @@
                 </div>
               </div>
             </div>
-            <br *ngIf="displayMaidenName"/>
+            <br *ngIf="displayMaidenName" />
             <div class="row">
               <div class="col-12 col-sm-5 pr-0 pl-0">
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="birthday"
-                >{{ labels.birthday }}</label
+                  >{{ labels.birthday }}</label
                 >
                 <div class="col-12">
                   <input
@@ -165,7 +164,7 @@
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="email"
-                >{{ labels._email_address }} (*)</label
+                  >{{ labels._email_address }} (*)</label
                 >
                 <div class="col-12">
                   <input
@@ -181,7 +180,7 @@
                     *ngIf="submitted && ctr.email.errors"
                     class="invalid-feedback"
                   >
-                  <div *ngIf="ctr.email.errors.required">
+                    <div *ngIf="ctr.email.errors.required">
                       {{ errors.required }}
                     </div>
                     <div *ngIf="ctr.email.errors.email">
@@ -191,7 +190,7 @@
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <!-- Phone number for popup -->
             <div *ngIf="disabled" class="row">
               <div class="col pr-0 pl-0">
@@ -200,7 +199,7 @@
                   <international-phone-number
                     [defaultCountry]="''"
                     [maxlength]="20"
-                    class="form-control "
+                    class="form-control"
                     formControlName="phoneNumber"
                     id="phoneNumber"
                     name="phoneNumber"
@@ -218,7 +217,10 @@
                   <div class="col-10 col-sm-11">
                     <international-phone-number
                       *ngIf="!isAdd"
-                      [defaultCountry]="''"
+                      [defaultCountry]="
+                        ctr.phoneNumber.value != null ? '' : 'fr'
+                      "
+                      [required]="false"
                       [maxlength]="20"
                       [ngClass]="{
                         'is-invalid': ctr.phoneNumber.errors && submitted
@@ -233,6 +235,7 @@
                     <international-phone-number
                       *ngIf="isAdd"
                       [defaultCountry]="'fr'"
+                      [required]="false"
                       [maxlength]="20"
                       [ngClass]="{
                         'is-invalid': ctr.phoneNumber.errors && submitted
@@ -244,12 +247,15 @@
                       placeholder="Téléphone ou fixe *"
                     >
                     </international-phone-number>
-                    <div *ngIf="
+                    <div
+                      *ngIf="
                         ctr.phoneNumber.invalid &&
-                        (ctr.phoneNumber.touched|| submitted)  &&
+                        (ctr.phoneNumber.touched || submitted) &&
                         ctr.phoneNumber.value.length !== 0
-                         "  class="phone-invalid">
-                      {{ errors.invalid_phone}}
+                      "
+                      class="phone-invalid"
+                    >
+                      {{ errors.invalid_phone }}
                     </div>
                   </div>
                   <div class="col-1 col-sm-1 add-phone">
@@ -264,7 +270,7 @@
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <div class="row">
               <div class="col col-12 pr-0 pl-0">
                 <!-- Other Phones -->
@@ -284,14 +290,14 @@
                 </div>
               </div>
             </div>
-            <br *ngIf="isLabelShow"/>
+            <br *ngIf="isLabelShow" />
             <!-- address Field -->
             <div class="row">
               <div class="col pr-0 pl-0">
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="address"
-                >{{ labels._address }}</label
+                  >{{ labels._address }}</label
                 >
                 <div class="col-12">
                   <input
@@ -303,14 +309,14 @@
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <!-- additional address Field -->
             <div class="row">
               <div class="col pr-0 pl-0">
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="additionalAddress"
-                >{{ labels.additional_address }}</label
+                  >{{ labels.additional_address }}</label
                 >
                 <div class="col-12 col-sm-12">
                   <input
@@ -322,14 +328,14 @@
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <div class="row">
               <div class="col-12 col-sm-5 pr-0 pl-0">
                 <!-- zipcode Field -->
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="zipCode"
-                >{{ labels._zip_code }}</label
+                  >{{ labels._zip_code }}</label
                 >
                 <div class="col-12">
                   <input
@@ -345,7 +351,7 @@
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="city"
-                >{{ labels._city }}</label
+                  >{{ labels._city }}</label
                 >
                 <div class="col-12">
                   <input
@@ -357,13 +363,13 @@
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <div class="row">
               <div class="col pr-0 pl-0">
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="category"
-                >{{ labels.category }}</label
+                  >{{ labels.category }}</label
                 >
                 <div class="col-12 col-sm-12">
                   <select
@@ -387,7 +393,7 @@
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <div *ngIf="isAdd" class="row send-invitation">
               <label class="invitation-text" for="invitationStatus">
                 <input
@@ -397,7 +403,7 @@
                 />&nbsp;&nbsp; {{ labels.send_invitation }}</label
               >
             </div>
-            <br *ngIf="isAdd"/>
+            <br *ngIf="isAdd" />
             <div
               *ngIf="!disabled"
               class="row justify-content-left"
@@ -422,14 +428,14 @@
               </div>
             </div>
           </form>
-          <br/>
+          <br />
           <!-- Linked Patients -->
           <div *ngIf="!isAdd" class="card-body">
             <div class="row">
               <div class="col">
                 <i class="far fa-user-plus fa-icon"></i>
                 <span class="Mes-informations"
-                >{{ labels.attached_info }}
+                  >{{ labels.attached_info }}
                 </span>
               </div>
               <div *ngIf="!disabled" class="col">
@@ -467,13 +473,13 @@
                       <div class="col col-12 col-sm-6">
                         <label class="col-12 col-form-label">{{
                           labels.last_name
-                          }}</label>
+                        }}</label>
                         <div class="col-12 pl-0">
                           <input
                             [ngClass]="{
-                                'is-invalid':
-                                  patientSubmitted && f1.firstName.errors
-                              }"
+                              'is-invalid':
+                                patientSubmitted && f1.firstName.errors
+                            }"
                             class="form-control"
                             formControlName="firstName"
                             id="first-Name-Attached"
@@ -493,7 +499,7 @@
                       <div class="col col-12 col-sm-6">
                         <label class="col-12 col-form-label">{{
                           labels.first_name
-                          }}</label>
+                        }}</label>
                         <div class="col-12 pr-0">
                           <input
                             [ngClass]="{
@@ -515,9 +521,8 @@
                           </div>
                         </div>
                       </div>
-
                     </div>
-                    <br/>
+                    <br />
                     <div class="row">
                       <!-- Civility -->
                       <div class="col col-12 col-sm-6">
@@ -600,13 +605,13 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <!-- Maiden name -->
                     <div *ngIf="displayMaidenName2" class="row">
                       <div class="col col-12 col-sm-12">
                         <label class="col-12 col-form-label">{{
                           labels.maiden_name
-                          }}</label>
+                        }}</label>
                         <div class="col-12 pr-0">
                           <input
                             class="form-control"
@@ -617,13 +622,13 @@
                         </div>
                       </div>
                     </div>
-                    <br *ngIf="displayMaidenName2"/>
+                    <br *ngIf="displayMaidenName2" />
                     <div class="row">
                       <!-- Correspondance field -->
                       <div class="col col-12 col-sm-12">
-                        <label class="col-12 col-form-label">{{
-                          labels.correspondence
-                          }} (*)</label>
+                        <label class="col-12 col-form-label"
+                          >{{ labels.correspondence }} (*)</label
+                        >
                         <div class="col-12">
                           <select
                             (change)="
@@ -663,7 +668,7 @@
                           </div>
                         </div>
                       </div>
-                      <br/>
+                      <br />
                       <!-- Other Corresspondance field -->
                       <div
                         *ngIf="displayOtherCorrespondence"
@@ -672,7 +677,7 @@
                         <label
                           class="col-12 col-form-label"
                           for="otherCorrespondence"
-                        >{{ labels.otherCorrespondence }}</label
+                          >{{ labels.otherCorrespondence }}</label
                         >
                         <div class="col-12">
                           <input
@@ -684,13 +689,13 @@
                         </div>
                       </div>
                     </div>
-                    <br *ngIf="displayOtherCorrespondence"/>
+                    <br *ngIf="displayOtherCorrespondence" />
                     <!-- Address -->
                     <div class="row">
                       <div class="col">
                         <label class="col-12 col-form-label">{{
                           labels._address
-                          }}</label>
+                        }}</label>
                         <div class="col-12">
                           <input
                             class="form-control"
@@ -701,13 +706,13 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <!-- Additional Address -->
                     <div class="row">
                       <div class="col">
                         <label class="col-12 col-form-label">{{
                           labels.additional_address
-                          }}</label>
+                        }}</label>
                         <div class="col-12">
                           <input
                             class="form-control"
@@ -718,7 +723,7 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div class="row">
                       <!-- Zipcode -->
                       <div class="col-12 col-sm-4">
@@ -749,7 +754,7 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <!-- Phone number -->
                     <div class="row">
                       <div class="col col-12">
@@ -781,9 +786,9 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                   </div>
-                  <br/>
+                  <br />
                 </div>
                 <div class="row justify-content-left">
                   <div class="col-md-12">
@@ -805,8 +810,8 @@
                 </div>
               </form>
             </div>
-            <br/>
-            <br/>
+            <br />
+            <br />
             <lib-hls-generic-list
               (cardAction)="cardClicked($event)"
               (detailAction)="cardClicked($event)"
@@ -839,13 +844,13 @@
                       <div class="col col-12 col-sm-6">
                         <label class="col-12 col-form-label">{{
                           labels.last_name
-                          }}</label>
+                        }}</label>
                         <div class="col-12 pl-0">
                           <input
                             [ngClass]="{
-                                'is-invalid':
-                                  patientUpdated && f2.firstName.errors
-                              }"
+                              'is-invalid':
+                                patientUpdated && f2.firstName.errors
+                            }"
                             class="form-control"
                             formControlName="firstName"
                             id="first-Name-Attached"
@@ -865,7 +870,7 @@
                       <div class="col col-12 col-sm-6">
                         <label class="col-12 col-form-label">{{
                           labels.first_name
-                          }}</label>
+                        }}</label>
                         <div class="col-12 pr-0">
                           <input
                             [ngClass]="{
@@ -886,9 +891,8 @@
                           </div>
                         </div>
                       </div>
-
                     </div>
-                    <br/>
+                    <br />
                     <div class="row">
                       <!-- Civility -->
                       <div class="col col-12 col-sm-6">
@@ -967,13 +971,13 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <!-- Maiden name -->
                     <div *ngIf="displayMaidenName2" class="row">
                       <div class="col col-12 col-sm-12">
                         <label class="col-12 col-form-label">{{
                           labels.maiden_name
-                          }}</label>
+                        }}</label>
                         <div class="col-12 pr-0">
                           <input
                             class="form-control"
@@ -984,13 +988,13 @@
                         </div>
                       </div>
                     </div>
-                    <br *ngIf="displayMaidenName2"/>
+                    <br *ngIf="displayMaidenName2" />
                     <div class="row">
                       <!-- Correspondance field -->
                       <div class="col col-12 col-sm-12">
-                        <label class="col-12 col-form-label">{{
-                          labels.correspondence
-                          }} (*)</label>
+                        <label class="col-12 col-form-label"
+                          >{{ labels.correspondence }} (*)</label
+                        >
                         <div class="col-12">
                           <select
                             (change)="
@@ -1030,7 +1034,7 @@
                           </div>
                         </div>
                       </div>
-                      <br/>
+                      <br />
                       <!-- Other Corresspondance field -->
                       <div
                         *ngIf="displayOtherCorrespondence"
@@ -1039,7 +1043,7 @@
                         <label
                           class="col-12 col-form-label"
                           for="otherCorrespondence"
-                        >{{ labels.otherCorrespondence }}</label
+                          >{{ labels.otherCorrespondence }}</label
                         >
                         <div class="col-12">
                           <input
@@ -1051,13 +1055,13 @@
                         </div>
                       </div>
                     </div>
-                    <br *ngIf="displayOtherCorrespondence"/>
+                    <br *ngIf="displayOtherCorrespondence" />
                     <!-- Address -->
                     <div class="row">
                       <div class="col">
                         <label class="col-12 col-form-label">{{
                           labels._address
-                          }}</label>
+                        }}</label>
                         <div class="col-12">
                           <input
                             class="form-control"
@@ -1068,13 +1072,13 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <!-- Additional Address -->
                     <div class="row">
                       <div class="col">
                         <label class="col-12 col-form-label">{{
                           labels.additional_address
-                          }}</label>
+                        }}</label>
                         <div class="col-12">
                           <input
                             class="form-control"
@@ -1085,7 +1089,7 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <div class="row">
                       <!-- Zipcode -->
                       <div class="col-12 col-sm-4">
@@ -1116,7 +1120,7 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                     <!-- Phone number -->
                     <div class="row">
                       <div class="col col-12">
@@ -1129,7 +1133,7 @@
                             [ngClass]="{
                               'is-invalid':
                                 patientUpdated && f2.phoneNumber.errors,
-                                'phones-disabled' : disabled
+                              'phones-disabled': disabled
                             }"
                             class="form-control"
                             formControlName="phoneNumber"
@@ -1149,9 +1153,9 @@
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                   </div>
-                  <br/>
+                  <br />
                 </div>
                 <div *ngIf="!disabled" class="row justify-content-left">
                   <div class="col-md-12">
@@ -1188,15 +1192,15 @@
               <i class="far fa-plus"></i>&nbsp;&nbsp;{{ labels.add_note }}
             </button>
           </div>
-          <br/>
+          <br />
           <div *ngIf="!isnoteList" class="card-body-note">
             <form [formGroup]="noteForm">
-              <br/>
+              <br />
               <div class="row">
                 <div class="col-7">
                   <label class="col-12 col-form-label" for="date">{{
                     labels.note_date
-                    }}</label>
+                  }}</label>
                   <div class="col-12 input-icons">
                     <i class="fa fa-calendar icon"></i>
                     <input
@@ -1228,7 +1232,7 @@
                   <!-- Note Field -->
                   <label class="col-12 col-form-label" for="value">{{
                     labels.note_value
-                    }}</label>
+                  }}</label>
                   <div class="col-12">
                     <textarea
                       [ngClass]="{
@@ -1250,7 +1254,7 @@
                   </div>
                 </div>
               </div>
-              <br/>
+              <br />
               <div class="row justify-content-center actions">
                 <button
                   (click)="NoteSubmit()"
@@ -1265,10 +1269,10 @@
                   {{ labels.cancel }}
                 </button>
               </div>
-              <br/>
+              <br />
             </form>
           </div>
-          <br *ngIf="!isnoteList"/>
+          <br *ngIf="!isnoteList" />
           <lib-hls-generic-list
             (archieveAction)="archieveNote($event)"
             (cardAction)="noteCardClicked($event)"

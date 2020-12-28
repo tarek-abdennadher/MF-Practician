@@ -411,6 +411,8 @@ export class PatientDetailComponent implements OnInit {
   ngOnDestroy(): void {
     this.notes.next([]);
     this.notes.complete();
+    this.patientFile.next();
+    this.patientFile.complete();
     this._destroyed$.next();
     this._destroyed$.complete();
   }
