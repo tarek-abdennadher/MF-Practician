@@ -305,7 +305,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       enableCheckAll: false,
       limitSelection: 100,
     };
-    this.dropdownSettingsCc = {...this.dropdownSettings};
+    this.dropdownSettingsCc = { ...this.dropdownSettings };
     this.dropdownSettingsPatientToList = {
       singleSelection: true,
       text: "Sélectionner un contact ",
@@ -451,7 +451,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               documentHeader: res.documentHeader,
               documentBody: res.documentBody ? res.documentBody : "",
               documentFooter: res.documentFooter,
-              signature: res.signature
+              signature: res.signature,
             });
           }
         } else {
@@ -472,7 +472,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               documentHeader: res.documentHeader,
               documentBody: res.documentBody ? res.documentBody : "",
               documentFooter: res.documentFooter,
-              signature: res.signature
+              signature: res.signature,
             });
           }
         }
@@ -703,7 +703,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         documentHeader: null,
         documentBody: "",
         documentFooter: null,
-        signature: null
+        signature: null,
       });
 
       this.selectContext = false;
@@ -997,7 +997,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         ["SUPERVISOR", "SUPER_SUPERVISOR", "TELESECRETARY"].includes(type)
       ) {
         if (this.isInstruction) {
-          this.objectsList = this.instructionObjectsList.filter(elm => elm.groupId == event.to[0].id);
+          this.objectsList = this.instructionObjectsList.filter(
+            (elm) => elm.groupId == event.to[0].id
+          );
         } else {
           this.objectsList = this.practicianObjectList.filter(
             (item) =>
@@ -1161,16 +1163,18 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             type: "TELESECRETARYGROUP",
           };
           itemList.push(item);
-          itemList.push(...secretaryGroupList.map(sec => {
-            let elm = {
-              id: sec.accountId,
-              fullName: sec.title,
-              isSelected: false,
-              img: null,
-              type: "TELESECRETARYGROUP",
-            };
-            return elm;
-          }));
+          itemList.push(
+            ...secretaryGroupList.map((sec) => {
+              let elm = {
+                id: sec.accountId,
+                fullName: sec.title,
+                isSelected: false,
+                img: null,
+                type: "TELESECRETARYGROUP",
+              };
+              return elm;
+            })
+          );
 
           this.practicianTLSGroup = itemList;
         }
@@ -1182,7 +1186,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((objects) => {
         this.instructionObjectsList = objects.map((e) => {
-          return { id: e.id, title: e.name, name: e.name, destination: "TLS", groupId : e.telesecretaryGroup.accountId };
+          return {
+            id: e.id,
+            title: e.name,
+            name: e.name,
+            destination: "TLS",
+            groupId: e.telesecretaryGroup.accountId,
+          };
         });
       });
   }
@@ -1201,7 +1211,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.dropdownSettings = {
               ...this.dropdownSettings,
               text: "Sélectionner le type d'envoi",
-              singleSelection : false
+              singleSelection: false,
             };
             this.isTypesVisible = true;
             this.isCCListVisible = true;
@@ -1216,7 +1226,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.dropdownSettings = {
               ...this.dropdownSettings,
               text: "Sélectionner le type d'envoi",
-              singleSelection : false
+              singleSelection: false,
             };
             this.isTypesVisible = true;
             this.isCCListVisible = false;
@@ -1231,7 +1241,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.dropdownSettings = {
               ...this.dropdownSettings,
               text: "Sélectionner le type d'envoi",
-              singleSelection : true
+              singleSelection: true,
             };
             this.isTypesVisible = true;
             this.isCCListVisible = true;
@@ -1257,6 +1267,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   sendInstruction(message) {
+    console.log(message);
     this.submited = true;
     if (this.sendMessageForm.invalid) {
       return;
@@ -1292,6 +1303,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.globalService.messagesDisplayScreen.other
       ? (newMessage.object = message.object[0].name)
       : (newMessage.object = message.freeObject);
+    newMessage.objectId = message.object[0].id;
     newMessage.body = message.body;
 
     this.messageService

@@ -19,6 +19,7 @@ export class Message {
   public uuid?: string;
   public hasFiles: boolean;
   public showFileToPatient: boolean;
+  public objectId: number;
 
   constructor();
   constructor(message?: any) {
@@ -39,5 +40,6 @@ export class Message {
     this.uuid = (message && message.uuid) || "";
     this.hasFiles = (message && message.hasFiles) || false;
     this.showFileToPatient = (message && message.showFileToPatient) || true;
+    this.objectId = (message && message.objectId) || null;
   }
 }
