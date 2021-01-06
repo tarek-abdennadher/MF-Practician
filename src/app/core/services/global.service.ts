@@ -102,6 +102,10 @@ export class GlobalService {
     mark_not_important_message_success: "Message marqué comme non important !",
     mark_important_message_error:
       "Votre message n'a pas pu être marqué comme important",
+    remove_mark_important_message_success:
+      "Message marqué comme non important.",
+    remove_mark_important_message_error:
+      "Votre message n'a pas pu être marqué comme non important",
     mark_not_important_message_error:
       "Votre message n'a pas pu être marqué comme non important",
     send_message_to_myself:
