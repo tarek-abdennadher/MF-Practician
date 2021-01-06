@@ -14,6 +14,7 @@ import { DialogService } from "../services/dialog.service";
 import { MyPatientsService } from "../services/my-patients.service";
 import { DomSanitizer, Title } from "@angular/platform-browser";
 import { FeaturesComponent } from "../features.component";
+import {MessageService} from '@app/features/services/message.service';
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -21,6 +22,7 @@ import { FeaturesComponent } from "../features.component";
 })
 export class MessagingDetailComponent implements OnInit, OnDestroy {
   message: any;
+  isMessageImportant: boolean;
   loading: boolean = false;
   showReplyActionsForTls: boolean = false;
   showReplyActionsForPatient: boolean = false;
@@ -86,7 +88,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     private patientService: MyPatientsService,
     private sanitizer: DomSanitizer,
     private featureComp: FeaturesComponent,
-    private title: Title
+    private title: Title,
+    private messageService: MessageService
   ) {
     this.title.setTitle(this.topText);
     this.loading = false;
@@ -268,6 +271,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .subscribe((message) => {
           if (context && context == "patient") {
             this.message = message;
+            this.isMessageImportant=message.important;
+
             this.showReplyActionsForPatient = false;
             this.showReplyActionsForTls = false;
             this.showRefuseForTls = false;
@@ -300,6 +305,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.loading = false;
           } else {
             this.message = message;
+            this.isMessageImportant=message.important;
+
             if (
               this.message.sender &&
               (this.message.sender.role == "TELESECRETARYGROUP" ||
@@ -393,7 +400,31 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       this.setParentImg(parent.parent);
     }
   }
-
+  removeImportantAction() {
+    this.messageService
+      .removeMarkMessageAsImportant([this.idMessage])
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (message) => {
+          this.isMessageImportant=false;
+          this.links.isImportant=true;
+          this.notifier.show({
+            message: this.globalService.toastrMessages
+              .remove_mark_important_message_success,
+            type: "info",
+            template: this.customNotificationTmpl,
+          });
+        },
+        (error) => {
+          this.notifier.show({
+            message: this.globalService.toastrMessages
+              .remove_mark_important_message_error,
+            type: "error",
+            template: this.customNotificationTmpl,
+          });
+        }
+      );
+  }
   getDefaultImage(user, userId) {
     this.documentService
       .getDefaultImage(userId)
@@ -528,8 +559,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     ids.push(this.idMessage);
     this.messagingDetailService.markMessageAsImportant(ids).subscribe(
       (message) => {
-        this.links.isImportant = false;
-
+        this.isMessageImportant=true;
+        this.links.isImportant=false;
         this.featureComp.setNotif(
           this.globalService.toastrMessages.mark_important_message_success
         );

@@ -9,6 +9,8 @@
     (backButtonAction)="goToBack()"
     (importantAction)="importantAction()"
     (archieveAction)="archieveActionClicked()"
+    [isMessageImportant]="isMessageImportant"
+    (removeImportantAction)="removeImportantAction()"
   ></lib-hlsLinks>
   <mat-progress-spinner
     class="spinner"
