@@ -1158,7 +1158,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           let item = {
             id: groupValue.accountId,
             fullName: groupValue.title,
-            isSelected: true,
+            isSelected: false,
             img: null,
             type: "TELESECRETARYGROUP",
           };
