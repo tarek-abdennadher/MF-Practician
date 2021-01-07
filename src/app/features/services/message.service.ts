@@ -12,7 +12,13 @@ export class MessageService {
   constructor(private globalService: GlobalService) {}
 
   ngOnInit() {}
-
+  public removeMarkMessageAsImportant(ids: number[]): Observable<boolean> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages + "removeImportant/all",
+      ids
+    );
+  }
   sentMessage(pageNo?, order?: OrderDirection): Observable<Array<Message>> {
     let params = {};
     if (pageNo && order) {
