@@ -151,12 +151,12 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           ? "Lu"
           : "Envoyé",
       value:
-        message.messageStatus == "IN_PROGRESS"
-          ? 80
-          : message.messageStatus == "TREATED" ||
-            (message.toReceivers[0].archived &&
-              message.toReceivers[0].role == "TELESECRETARYGROUP")
+        message.messageStatus == "TREATED" ||
+        (message.toReceivers[0].archived &&
+          message.toReceivers[0].role == "TELESECRETARYGROUP")
           ? 100
+          : message.messageStatus == "IN_PROGRESS"
+          ? 80
           : message.toReceivers[0].seen
           ? 50
           : 20
