@@ -94,6 +94,9 @@ export class LoginComponent implements OnInit {
   public redirectToPatient() {
     this.document.location.href = this.url.patient_connexion;
   }
+  public redirectToHelssySite() {
+    this.document.location.href = this.globalService.HELSSY_SITE;
+  }
   public redirectToSiteMap() {
     this.document.location.href = this.globalService.SITE_MAP;
   }
