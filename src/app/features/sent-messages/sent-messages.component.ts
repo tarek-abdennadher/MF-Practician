@@ -11,6 +11,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { DomSanitizer, Title } from "@angular/platform-browser";
 import { PaginationService } from "../services/pagination.service";
 import { DialogService } from "../services/dialog.service";
+import { Role } from "@app/shared/enmus/role";
 
 @Component({
   selector: "app-sent-messages",
@@ -150,10 +151,12 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
           ? "Lu"
           : "Envoyé",
       value:
-        message.messageStatus == "IN_PROGRESS"
-          ? 80
-          : message.messageStatus == "TREATED"
+        message.messageStatus == "TREATED" ||
+        (message.toReceivers[0].archived &&
+          message.toReceivers[0].role == "TELESECRETARYGROUP")
           ? 100
+          : message.messageStatus == "IN_PROGRESS"
+          ? 80
           : message.toReceivers[0].seen
           ? 50
           : 20
@@ -179,7 +182,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     messageSent.hasFiles = message.hasFiles;
     messageSent.hasViewDetail = message.hasViewDetail;
     messageSent.isArchieve = true;
-    messageSent.isPostal= message.sendType == "SEND_POSTAL" ? true : false;
+    messageSent.isPostal = message.sendType == "SEND_POSTAL" ? true : false;
     return messageSent;
   }
 
