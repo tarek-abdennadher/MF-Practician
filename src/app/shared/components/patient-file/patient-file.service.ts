@@ -36,7 +36,7 @@ export class PatientFileService {
     cordonnees: "Coordonnées",
     info_compl: "Informations complémentaires",
     send_invitation:
-      "Ne pas envoyer une invitation à votre patient lui permettant de vous contacter via la messagerie Helssy. \n (Veuillez fournir une adresse courriel valide du patient si vous souhaitez lui inviter sur Helssy) ",
+      "Ne pas envoyer une invitation à votre patient lui permettant de vous contacter via la messagerie Helssy. \n (Veuillez fournir une adresse courriel valide du patient si vous souhaitez lui inviter sur Helssy). ",
     history: "Historique",
     invite_patient: "Inviter le patient",
     link_patient: "Rattacher une personne",
