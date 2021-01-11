@@ -164,8 +164,8 @@
                 <label
                   class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-form-label"
                   for="email"
-                  >{{ labels._email_address }} (*)</label
-                >
+                  >{{ labels._email_address }}
+                </label>
                 <div class="col-12">
                   <input
                     [ngClass]="{
@@ -180,9 +180,6 @@
                     *ngIf="submitted && ctr.email.errors"
                     class="invalid-feedback"
                   >
-                    <div *ngIf="ctr.email.errors.required">
-                      {{ errors.required }}
-                    </div>
                     <div *ngIf="ctr.email.errors.email">
                       {{ errors.email_invalid_format }}
                     </div>
