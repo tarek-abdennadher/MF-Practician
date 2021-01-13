@@ -354,7 +354,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
     this.dropdownSettingsTypesList = {
       ...this.dropdownSettingsListObject,
-      text: "Sélectionner le type d'envoi",
+      text: "",
     };
 
     this.dropdownSettingsConcernList = {
@@ -1210,7 +1210,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           case SendType.MESSAGING:
             this.dropdownSettings = {
               ...this.dropdownSettings,
-              text: "Sélectionner le type d'envoi",
+              text: "",
               singleSelection: false,
             };
             this.isTypesVisible = true;
@@ -1225,7 +1225,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           case SendType.SEND_POSTAL:
             this.dropdownSettings = {
               ...this.dropdownSettings,
-              text: "Sélectionner le type d'envoi",
+              text: "",
               singleSelection: false,
             };
             this.isTypesVisible = true;
@@ -1240,7 +1240,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           case SendType.INSTRUCTION:
             this.dropdownSettings = {
               ...this.dropdownSettings,
-              text: "Sélectionner le type d'envoi",
+              text: "",
               singleSelection: true,
             };
             this.isTypesVisible = true;
