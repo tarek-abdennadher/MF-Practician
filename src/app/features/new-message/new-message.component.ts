@@ -886,7 +886,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.selectedPracticianId == contactPractician.id ? true : false,
           img: this.avatars.doctor,
         });
-        this.toList.next(myList);
       } else if (
         contactPractician.contactType == "SECRETARY" ||
         contactPractician.contactType == "TELESECRETARYGROUP" ||
@@ -900,7 +899,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.selectedPracticianId == contactPractician.id ? true : false,
           img: this.avatars.secretary,
         });
-        this.toList.next(myList);
       } else if (contactPractician.contactType == "PATIENT_FILE") {
         if (contactPractician.civility == "M") {
           myList.push({
@@ -911,7 +909,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.man,
           });
-          this.toList.next(myList);
         } else if (
           contactPractician.civility == "MME" ||
           contactPractician.civility == "Mme"
@@ -924,7 +921,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.women,
           });
-          this.toList.next(myList);
         } else if (contactPractician.civility == "CHILD") {
           myList.push({
             id: contactPractician.id,
@@ -934,12 +930,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.child,
           });
-          this.toList.next(myList);
         }
       }
     });
     this.practicianFullToList = myList;
-    this.toList.next(myList);
+    if (this.ctr.type.value[0].id == "MESSAGING") {
+      this.toList.next(myList);
+    }
   }
 
   getAllObjectList() {
