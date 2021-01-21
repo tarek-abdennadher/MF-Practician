@@ -936,6 +936,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.practicianFullToList = myList;
     if (this.ctr.type.value[0].id == "MESSAGING") {
       this.toList.next(myList);
+    } else if (this.ctr.type.value[0].id == "INSTRUCTION") {
+      this.isForListVisible = false;
     }
   }
 
