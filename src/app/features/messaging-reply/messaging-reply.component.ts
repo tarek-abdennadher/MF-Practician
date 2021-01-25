@@ -225,7 +225,8 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         };
       } else if (
         message.sender.role == "TELESECRETARYGROUP" ||
-        message.sender.role == "SUPERVISOR"
+        message.sender.role == "SUPERVISOR" ||
+        message.sender.role == "SUPER_SUPERVISOR"
       ) {
         requestDto = {
           patientId: message.sender.sendedForId,
