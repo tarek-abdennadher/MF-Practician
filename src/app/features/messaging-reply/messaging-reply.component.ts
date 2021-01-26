@@ -52,6 +52,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   objectsList = [];
   toList = new BehaviorSubject(null);
   paramObs = new BehaviorSubject("");
+  lastAction = "";
   avatars: {
     doctor: string;
     child: string;
@@ -81,8 +82,8 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     this.imageSource = this.avatars.user;
   }
   realTime() {
-    this.messagingDetailService.getIdObs().subscribe(resp => {
       this.route.queryParams.subscribe(params => {
+        this.lastAction = this.messagingDetailService.getIdValue();
         this.messagingDetail = window.history.state.data;
         if (!this.receiverId && this.messagingDetail) {
           this.receiverId = this.messagingDetail.toReceivers[0].receiverId;
@@ -104,11 +105,8 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
           this.forwardedResponse = true;
           this.getForwardToList();
         }
-        if (this.paramObs.getValue() != params["status"]) {
-          this.paramObs.next(params["status"]);
-        }
+        this.paramObs.next(params["status"]);
       });
-    });
   }
   ngOnInit(): void {
     this.realTime();
@@ -225,7 +223,8 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         };
       } else if (
         message.sender.role == "TELESECRETARYGROUP" ||
-        message.sender.role == "SUPERVISOR"
+        message.sender.role == "SUPERVISOR" ||
+        message.sender.role == "SUPER_SUPERVISOR"
       ) {
         requestDto = {
           patientId: message.sender.sendedForId,
