@@ -876,6 +876,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   parseContactsPractician(contactsPractician) {
     let myList = [];
+    let finalState = false;
     contactsPractician.forEach((contactPractician) => {
       if (contactPractician.contactType == "MEDICAL") {
         myList.push({
@@ -931,11 +932,15 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             img: this.avatars.child,
           });
         }
+        if (this.selectedPracticianId == contactPractician.id) {
+          finalState = true;
+        }
       }
     });
     this.practicianFullToList = myList;
     if (this.ctr.type.value[0].id == "MESSAGING") {
       this.toList.next(myList);
+      finalState ? this.onObjectChanedSelect() : null;
     } else if (this.ctr.type.value[0].id == "INSTRUCTION") {
       this.isForListVisible = false;
     }

@@ -466,12 +466,12 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
 
   replyAction() {
     this.loading = false;
-    this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
     if (this.showReplyActionsForPatient === true) {
       this.router.navigate(["messagerie-repondre"], {
         queryParams: {
           status: "accept",
+          context: "TLS",
         },
         relativeTo: this.route.parent,
         state: { data: this.messagingDetail },
@@ -486,7 +486,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
 
   forwardAction() {
     this.loading = false;
-    this.messagingDetailService.setId(this.idMessage);
     this.scrollToBottom();
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
@@ -508,10 +507,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     }
     this.loading = false;
 
-    this.messagingDetailService.setId(this.idMessage);
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         status: "accept",
+        context: "PATIENT",
       },
       relativeTo: this.route.parent,
       state: {
@@ -532,10 +531,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       this.newMessage.sender.civility = this.messagingDetail.sender.concernsCivility;
       this.newMessage.sender.concernsFullName = null;
     }
-    this.messagingDetailService.setId(this.idMessage);
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         status: "refus",
+        context: "PATIENT",
       },
       relativeTo: this.route.parent,
       state: { data: this.newMessage },
@@ -543,10 +542,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.scrollToBottom();
   }
   refuseAction() {
-    this.messagingDetailService.setId(this.idMessage);
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         status: "refus",
+        context: "TLS",
       },
       relativeTo: this.route.parent,
       state: { data: this.messagingDetail },
