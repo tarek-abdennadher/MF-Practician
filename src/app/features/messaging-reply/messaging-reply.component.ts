@@ -279,6 +279,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     const parent = new MessageParent();
     parent.id = message.id;
     parent.messageStatus = "TREATED";
+    parent.sendType = message.sendType;
     delete message.sender.img;
     parent.sender = message.sender;
     replyMessage.parent = parent;
