@@ -15,6 +15,7 @@ export class MessageDto {
   public requestTitleId?: number;
   public uuid?: string;
   public showFileToPatient: boolean;
+  public objectId: number;
   constructor();
   constructor(message?: any) {
     this.id = (message && message.id) || "";
@@ -32,5 +33,6 @@ export class MessageDto {
     this.requestTypeId = (message && message.requestTypeId) || "";
     this.requestTitleId = (message && message.requestTitleId) || "";
     this.uuid = (message && message.uuid) || "";
+    this.objectId = (message && message.objectId) || null;
   }
 }
