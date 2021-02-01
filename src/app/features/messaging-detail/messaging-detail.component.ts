@@ -14,7 +14,7 @@ import { DialogService } from "../services/dialog.service";
 import { MyPatientsService } from "../services/my-patients.service";
 import { DomSanitizer, Title } from "@angular/platform-browser";
 import { FeaturesComponent } from "../features.component";
-import {MessageService} from '@app/features/services/message.service';
+import { MessageService } from "@app/features/services/message.service";
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -244,6 +244,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             isArchieve: !this.isFromArchive,
             isImportant: this.isFromInbox ? !message.important : false,
             isAddNote: true,
+            isDesarchive: true,
           };
           if (
             this.messagingDetail.sender.senderId ==
@@ -271,7 +272,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .subscribe((message) => {
           if (context && context == "patient") {
             this.message = message;
-            this.isMessageImportant=message.important;
+            this.isMessageImportant = message.important;
 
             this.showReplyActionsForPatient = false;
             this.showReplyActionsForTls = false;
@@ -305,7 +306,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.loading = false;
           } else {
             this.message = message;
-            this.isMessageImportant=message.important;
+            this.isMessageImportant = message.important;
 
             if (
               this.message.sender &&
@@ -406,8 +407,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
         (message) => {
-          this.isMessageImportant=false;
-          this.links.isImportant=true;
+          this.isMessageImportant = false;
+          this.links.isImportant = true;
           this.notifier.show({
             message: this.globalService.toastrMessages
               .remove_mark_important_message_success,
@@ -558,8 +559,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     ids.push(this.idMessage);
     this.messagingDetailService.markMessageAsImportant(ids).subscribe(
       (message) => {
-        this.isMessageImportant=true;
-        this.links.isImportant=false;
+        this.isMessageImportant = true;
+        this.links.isImportant = false;
         this.featureComp.setNotif(
           this.globalService.toastrMessages.mark_important_message_success
         );
@@ -739,5 +740,38 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
   displayContact(contactId) {
     this.dialogService.openContactDetail("Détails Contact", contactId);
+  }
+  desarchiveMessages() {
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.dearchive_confirmation_message,
+        "Désarchivage"
+      )
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          let ids = [];
+          ids.push(this.idMessage);
+          this.messagingDetailService
+            .markMessageAsNoMoreArchived(ids)
+            .subscribe(
+              (resp) => {
+                this.router.navigate([this.previousURL]);
+                this.featureComp.setNotif(
+                  this.globalService.toastrMessages.desarchived_message_success
+                );
+                if (this.previousURL == "/messagerie-transferes") {
+                  this.featureService.numberOfForwarded =
+                    this.featureService.numberOfForwarded - 1;
+                }
+              },
+              (error) => {
+                this.featureComp.setNotif(
+                  this.globalService.toastrMessages.desarchived_message_error
+                );
+              }
+            );
+        }
+      });
   }
 }

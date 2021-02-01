@@ -91,7 +91,7 @@ export class GlobalService {
     instruction: this.BASE_URL_MA + "/instruction",
     instruction_object: this.BASE_URL_CA + "/instruction-object",
     instruction_category: this.BASE_URL_CA + "/instruction-category",
-    photo: this.BASE_URL_CA + "/photo/generate"
+    photo: this.BASE_URL_CA + "/photo/generate",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé !",
@@ -109,7 +109,9 @@ export class GlobalService {
     mark_not_important_message_error:
       "Votre message n'a pas pu être marqué comme non important",
     send_message_to_myself:
-      "Vous ne pouvez pas répondre à un message que vous avez envoyé"
+      "Vous ne pouvez pas répondre à un message que vous avez envoyé",
+    desarchived_message_success: "Message désarchivé !",
+    desarchived_message_error: "Votre message n'a pas pu être désarchivé",
   };
 
   public messagesDisplayScreen = {
@@ -142,7 +144,9 @@ export class GlobalService {
     free_object: "Objet libre",
     invitations: "Mes invitations",
     blocked_patients: "Patients Bloqués",
-    archived_patients: "Patients Archivés"
+    archived_patients: "Patients Archivés",
+    dearchive_confirmation_message:
+      "Voulez vous vraiment désarchiver ce(s) message(s) ",
   };
 
   public avatars = {
@@ -153,7 +157,7 @@ export class GlobalService {
     secretary: "assets/imgs/avatar_secrétaire.svg",
     tls: "assets/imgs/avatar_tls.svg",
     user: "assets/imgs/user.png",
-    telesecretary: "assets/imgs/etablissement.svg"
+    telesecretary: "assets/imgs/etablissement.svg",
   };
 
   public excludedExceptions = ["Le mot de passe saisi est invalide"];
@@ -174,7 +178,7 @@ export class GlobalService {
       }
       case RequestType.DELETE: {
         args[0] = {
-          responseType: "text"
+          responseType: "text",
         };
         return this.httpClient.delete<any>(url, args[0]);
       }
@@ -207,6 +211,6 @@ export class GlobalService {
     "(3)",
     "(3)",
     "(3)",
-    "(3)"
+    "(3)",
   ];
 }
