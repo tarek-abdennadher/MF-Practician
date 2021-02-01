@@ -59,6 +59,13 @@ export class MessagingDetailService {
       ids
     );
   }
+  public markMessageAsNoMoreArchived(ids: number[]): Observable<number> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages + "desarchive/all",
+      ids
+    );
+  }
 
   public getRefuseRequest(request): Observable<any> {
     return this.globalService.call(
