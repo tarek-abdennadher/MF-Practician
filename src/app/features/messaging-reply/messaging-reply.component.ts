@@ -284,6 +284,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     parent.sendType = message.sendType;
     delete message.sender.img;
     parent.sender = message.sender;
+    parent.assignedToId = message.assignedToId;
     replyMessage.parent = parent;
     replyMessage.body = message.body;
     replyMessage.showFileToPatient = true;
