@@ -55,7 +55,7 @@ export class MyPatientsService {
       }
     );
   }
-
+  // Sorted first Name then last name
   getPatientsProhibitedOfCurrentParactician(
     pageNo,
     order: OrderDirection = OrderDirection.DESC
@@ -63,6 +63,19 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.favorite + "myPatient/prohibitedV2",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
+  }
+  // Sorted last name then first name
+  getPatientsProhibitedOfCurrentParacticianV3(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "myPatient/prohibitedV3",
       {
         params: { pageNo: pageNo, order: order },
       }
@@ -89,6 +102,19 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.favorite + "invitationsV2",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
+  }
+
+  getPendingInvitationsV3(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.favorite + "invitationsV3",
       {
         params: { pageNo: pageNo, order: order },
       }
@@ -288,6 +314,19 @@ export class MyPatientsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.patientFile + "archivedV2",
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
+  }
+
+  getPatientFilesArchivedV3(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "archivedV3",
       {
         params: { pageNo: pageNo, order: order },
       }
