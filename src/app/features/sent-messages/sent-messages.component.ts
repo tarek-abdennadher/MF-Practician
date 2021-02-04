@@ -86,6 +86,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.featureService.setIsMessaging(true);
     });
+    this.loadPage();
   }
 
   countSentMessage() {
@@ -95,7 +96,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .subscribe(messages => {
         this.messagesNumber = messages;
         this.pagination.init(messages);
-        this.loadPage();
       });
   }
 

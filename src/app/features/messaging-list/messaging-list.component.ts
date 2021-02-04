@@ -333,12 +333,12 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       .subscribe(num => {
         this.pagination.init(num);
         this.messagesNumber = num;
-        this.messagesServ
+      });
+      this.messagesServ
           .getInboxByAccountId(
             accountId,
             this.userTypeTabsFilter,
-            this.pagination.pageNo,
-            this.pagination.direction
+            0
           )
           .pipe(takeUntil(this._destroyed$))
           .subscribe(retrievedMess => {
@@ -355,7 +355,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
             );
             this.filtredItemList = this.itemsList;
           });
-      });
   }
 
   getMyInboxNextPage(accountId) {
