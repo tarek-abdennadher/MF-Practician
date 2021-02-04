@@ -89,14 +89,16 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       .subscribe(messages => {
         this.messagesNumber = messages ;
         this.pagination.init(messages);
-        this.loadPage();
       });
+      this.loadPage();
   }
 
   getMyMessagesArchived() {
     this.loading = true;
+    const pageNo = this.pagination.pageNo ? this.pagination.pageNo : 0;
+    const direction = this.pagination.direction ? this.pagination.direction : null;
     this.archivedService
-      .getMyArchivedMessages(this.pagination.pageNo, this.pagination.direction)
+      .getMyArchivedMessages(pageNo , direction)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(messages => {
         this.loading = false;
