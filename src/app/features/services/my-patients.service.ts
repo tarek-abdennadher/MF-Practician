@@ -274,6 +274,34 @@ export class MyPatientsService {
       }
     );
   }
+
+  getPatientsOfCurrentParacticianV4(
+    id,
+    pageNo: number,
+    order: OrderDirection = OrderDirection.ASC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "my/v4/" + id,
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
+  }
+
+  getPatientsOfCurrentParacticianSearch(
+    id,
+    query: String
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "all/search/" + id,
+      {
+        params: { searchPatientFile: query },
+      }
+    );
+  }
+
   getAllPatientFilesByPracticianId(practicianId: number) {
     return this.globalService.call(
       RequestType.GET,

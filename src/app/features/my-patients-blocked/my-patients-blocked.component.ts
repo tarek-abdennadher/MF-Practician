@@ -166,4 +166,27 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
         this.number--;
       });
   }
+  getNextPatientsProhibitedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsProhibitedOfCurrentParacticianV3(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(myPatients => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach(elm => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+  onScroll() {
+    if (this.listLength != this.filtredPatients.length) {
+      this.listLength = this.filtredPatients.length;
+      this.pageNo++;
+      this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
+    }
+  }
+
 }

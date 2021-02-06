@@ -126,7 +126,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.myPatients = [];
     this.filtredPatients = [];
     this.myPatientsService
-      .getPatientsOfCurrentParacticianV5(
+      .getPatientsOfCurrentParacticianV4(
         this.featureService.getUserId(),
         pageNo,
         this.direction
@@ -144,17 +144,51 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         this.scroll = false;
       });
   }
+
   searchPatients() {
     this.featureService.getFilteredPatientsSearch().subscribe((res) => {
       if (res.length > 0) {
-        this.filtredPatients = this.filtredPatients.filter((x) =>
-          x.users[0].fullName.toLowerCase().includes(res[0])
-        );
-      } else {
-        this.filtredPatients = this.myPatients;
+        this.filtredPatients= []
+        this.myPatientsService
+        .getPatientsOfCurrentParacticianSearch(
+          this.featureService.getUserId(),
+          res[0]
+        )
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((myPatients) => {
+          this.number = myPatients.length;
+          myPatients.forEach((elm) => {
+            this.filtredPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+          this.scroll = false;
+        });
+      }else{
+          this.filtredPatients = this.myPatients;
+          this.scroll = false;
       }
-      this.scroll = false;
     });
+  }
+
+  getNextPagePatientsOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsOfCurrentParacticianV4(
+        this.featureService.getUserId(),
+        pageNo,
+        this.direction
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(myPatients => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach(elm => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
   }
 
   getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
@@ -308,6 +342,14 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       },
       relativeTo: this.route,
     });
+  }
+
+  onScroll() {
+    if (this.listLength != this.filtredPatients.length && this.featureService.searchPatientsFiltered.getValue().length == 0) {
+      this.listLength = this.filtredPatients.length;
+      this.pageNo++;
+      this.getNextPagePatientsOfCurrentParactician(this.pageNo);
+    }
   }
 
   getMyCategories() {
