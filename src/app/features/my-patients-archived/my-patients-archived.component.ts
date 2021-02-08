@@ -98,6 +98,28 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
       });
   }
 
+  getNextPatientsArchivedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientFilesArchivedV3(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(myPatients => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach(elm => {
+            this.myPatients.push(this.mappingMyPatients(elm, false, true));
+          });
+        }
+      });
+  }
+
+  onScroll() {
+    if (this.listLength != this.filtredPatients.length) {
+      this.listLength = this.filtredPatients.length;
+      this.pageNo++;
+      this.getNextPatientsArchivedOfCurrentParactician(this.pageNo);
+    }
+  }
+
   mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];

@@ -119,6 +119,30 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
       });
   }
 
+  getNextPatientsPendingOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPendingInvitationsV3(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(myPatients => {
+        if (myPatients.length > 0) {
+          this.number = this.number + myPatients.length;
+          myPatients.forEach(elm => {
+            this.myPatients.push(
+              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+            );
+          });
+        }
+      });
+  }
+
+  onScroll() {
+    if (this.listLength != this.filtredPatients.length) {
+      this.listLength = this.filtredPatients.length;
+      this.pageNo++;
+      this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
+    }
+  }
+
   mappingMyPatients(patient, prohibited, archived) {
     const myPatients = new MyPatients();
     myPatients.users = [];
