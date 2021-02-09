@@ -3,6 +3,7 @@ import { RequestType } from "@app/shared/enmus/requestType";
 import { GlobalService } from "@app/core/services/global.service";
 import { Observable, BehaviorSubject } from "rxjs";
 import { Speciality } from "@app/shared/models/speciality";
+import { OrderDirection } from "@app/shared/enmus/order-direction";
 
 @Injectable({
   providedIn: "root",
@@ -127,6 +128,17 @@ export class ContactsService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.contact_pro + "/contactsAndSupervisors"
+    );
+  }
+
+  getAllContactsPracticianWithSupervisorsV1(
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.contact_pro + "/contactsAndSupervisors/v1",{
+        params: { pageNo: pageNo, order: order }
+      }
     );
   }
 

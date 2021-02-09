@@ -74,6 +74,7 @@
         (onSelect)="onObjectChanedSelect()"
         (onDeSelect)="onObjectChanged()"
         (onOpen)="(null)"
+        (onScrollToEnd)="fetchMoreData($event)"
       >
         <c-item>
           <ng-template let-item="item">

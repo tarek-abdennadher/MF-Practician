@@ -23,7 +23,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
   myPatients = [];
   number = 0;
   filtredPatients = [];
-  scrollDown = true;
+  listLength = 0;
   direction: OrderDirection = OrderDirection.DESC;
   avatars: {
     doctor: string;
@@ -68,7 +68,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
-          this.scrollDown = true;
+          this.listLength = 0;
           this.pageNo = 0;
           this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -171,7 +171,6 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
       .getPatientsProhibitedOfCurrentParacticianV3(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(myPatients => {
-        this.scrollDown = true;
         if (myPatients.length > 0) {
           this.number = this.number + myPatients.length;
           myPatients.forEach(elm => {
@@ -184,8 +183,8 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
       });
   }
   onScroll() {
-    if (this.scrollDown) {
-      this.scrollDown = false;
+    if (this.listLength != this.filtredPatients.length) {
+      this.listLength = this.filtredPatients.length;
       this.pageNo++;
       this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
     }

@@ -67,6 +67,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   practicianObjectList = [];
   selectedFiles: any;
   selectedPracticianId: number;
+  pageNo = 0;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   @ViewChild("fileInput", { static: false }) fileInput: ElementRef;
   private readonly notifier: NotifierService;
@@ -259,7 +260,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     this.getAllPatientFilesByPracticianId();
-    forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
+    forkJoin(this.getAllContactsPractician(this.pageNo), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {});
     setTimeout(() => {
@@ -290,6 +291,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.concernListSubscription();
     this.selectedObjectSubscription();
     this.dropdownSettings = {
+      lazyLoading: true,
       singleSelection: false,
       text: this.innerWidth > 420 ? "" : "Sélectionner",
       searchPlaceholderText: "Rechercher",
@@ -648,6 +650,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   updateSelectionSeting(limitSelection) {
     this.dropdownSettings = {
+      lazyLoading: true,
       singleSelection: false,
       text: "Sélectionner des contacts",
       searchPlaceholderText: "Rechercher",
@@ -825,7 +828,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   ///
 
-  getAllContactsPractician() {
+  getAllContactsPractician(pageNo) {
     if (this.selectedPracticianId) {
       return this.contactsService
         .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
@@ -837,7 +840,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         );
     } else {
       return this.contactsService
-        .getAllContactsPracticianWithSupervisors()
+        .getAllContactsPracticianWithSupervisorsV1(pageNo)
         .pipe(takeUntil(this._destroyed$))
         .pipe(
           tap((contactsPractician: any) => {
@@ -846,6 +849,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         );
     }
   }
+
+  fetchMoreData(event){
+    if (this.toList.getValue().length>0 && event.endIndex === this.toList.getValue().length - 1) {
+      console.log(event)
+    }
+  }
+
   getAllPatientFilesByPracticianId() {
     if (this.localSt.retrieve("role") == "PRACTICIAN") {
       this.patientService
@@ -1213,6 +1223,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         switch (item.type[0].id) {
           case SendType.MESSAGING:
             this.dropdownSettings = {
+              lazyLoading: true,
               ...this.dropdownSettings,
               text: "",
               singleSelection: false,
@@ -1228,6 +1239,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             break;
           case SendType.SEND_POSTAL:
             this.dropdownSettings = {
+              lazyLoading: true,
               ...this.dropdownSettings,
               text: "",
               singleSelection: false,
@@ -1243,6 +1255,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             break;
           case SendType.INSTRUCTION:
             this.dropdownSettings = {
+              lazyLoading: true,
               ...this.dropdownSettings,
               text: "",
               singleSelection: true,
@@ -1357,6 +1370,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onResize(event) {
     this.innerWidth = window.innerWidth;
     this.dropdownSettings = {
+      lazyLoading: true,
       ...this.dropdownSettings,
       text: this.innerWidth > 420 ? "" : "Sélectionner",
     };
