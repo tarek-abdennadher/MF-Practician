@@ -38,6 +38,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   isNotMyMessage: boolean = false;
   senderRolePatient = false;
   messagingDetail: any;
+  originalMessageNode: any;
   newMessage: any;
   prohibited = false;
   patientsId: number[];
@@ -171,24 +172,24 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       }
       this.route.params.subscribe((params) => {
         this.patientFileAccountId = null;
-        if (this.message && this.message != null) {
+        if (this.originalMessageNode && this.originalMessageNode != null) {
           if (
-            this.message.sender &&
-            (this.message.sender.role == "TELESECRETARYGROUP" ||
-              this.message.sender.role == "SUPERVISOR" ||
-              this.message.sender.role == "SUPER_SUPERVISOR" ||
-              this.message.sender.role == "OPERATOR") &&
-            this.message.sender.concernsType &&
-            this.message.sender.concernsType == "PATIENT_FILE"
+            this.originalMessageNode.sender &&
+            (this.originalMessageNode.sender.role == "TELESECRETARYGROUP" ||
+              this.originalMessageNode.sender.role == "SUPERVISOR" ||
+              this.originalMessageNode.sender.role == "SUPER_SUPERVISOR" ||
+              this.originalMessageNode.sender.role == "OPERATOR") &&
+            this.originalMessageNode.sender.concernsType &&
+            this.originalMessageNode.sender.concernsType == "PATIENT_FILE"
           ) {
-            if (this.message.receiveDocument == true) {
+            if (this.originalMessageNode.receiveDocument == true) {
               this.showReplyActionsForTls = true;
               if (
-                this.message.sender.concernsId &&
-                this.message.sender.concernsId != null
+                this.originalMessageNode.sender.concernsId &&
+                this.originalMessageNode.sender.concernsId != null
               ) {
                 this.patientService
-                  .getAccountIdByPatientFileId(this.message.sender.concernsId)
+                  .getAccountIdByPatientFileId(this.originalMessageNode.sender.concernsId)
                   .pipe(takeUntil(this._destroyed$))
                   .subscribe((res) => {
                     this.showReplyActionsForPatient = true;
@@ -201,14 +202,14 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             }
           }
           this.showRefuseForTls =
-            (this.message.sender.role == "TELESECRETARYGROUP" ||
-              this.message.sender.role == "TELESECRETARYGROUP") &&
-            this.message.requestTypeId != null &&
-            this.message.requestTitleId != null;
+            (this.originalMessageNode.sender.role == "TELESECRETARYGROUP" ||
+              this.originalMessageNode.sender.role == "TELESECRETARYGROUP") &&
+            this.originalMessageNode.requestTypeId != null &&
+            this.originalMessageNode.requestTitleId != null;
           this.showAcceptRefuse =
-            this.message.sender.role == "PATIENT" &&
-            this.message.requestTypeId != null &&
-            this.message.requestTitleId != null;
+            this.originalMessageNode.sender.role == "PATIENT" &&
+            this.originalMessageNode.requestTypeId != null &&
+            this.originalMessageNode.requestTitleId != null;
           if (this.isFromArchive && this.showAcceptRefuse == false) {
             this.isFromInbox = true;
           } else {
@@ -270,6 +271,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .getMessagingDetailById(id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
+          this.findOriginalMessageNode(message, id);
           if (context && context == "patient") {
             this.message = message;
             this.isMessageImportant = message.important;
@@ -309,22 +311,22 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.isMessageImportant = message.important;
 
             if (
-              this.message.sender &&
-              (this.message.sender.role == "TELESECRETARYGROUP" ||
-                this.message.sender.role == "SUPERVISOR" ||
-                this.message.sender.role == "SUPER_SUPERVISOR" ||
-                this.message.sender.role == "OPERATOR") &&
-              this.message.sender.concernsType &&
-              this.message.sender.concernsType == "PATIENT_FILE"
+              this.originalMessageNode.sender &&
+              (this.originalMessageNode.sender.role == "TELESECRETARYGROUP" ||
+                this.originalMessageNode.sender.role == "SUPERVISOR" ||
+                this.originalMessageNode.sender.role == "SUPER_SUPERVISOR" ||
+                this.originalMessageNode.sender.role == "OPERATOR") &&
+              this.originalMessageNode.sender.concernsType &&
+              this.originalMessageNode.sender.concernsType == "PATIENT_FILE"
             ) {
-              if (this.message.receiveDocument == true) {
+              if (this.originalMessageNode.receiveDocument == true) {
                 this.showReplyActionsForTls = true;
                 if (
-                  this.message.sender.concernsId &&
-                  this.message.sender.concernsId != null
+                  this.originalMessageNode.sender.concernsId &&
+                  this.originalMessageNode.sender.concernsId != null
                 ) {
                   this.patientService
-                    .getAccountIdByPatientFileId(this.message.sender.concernsId)
+                    .getAccountIdByPatientFileId(this.originalMessageNode.sender.concernsId)
                     .pipe(takeUntil(this._destroyed$))
                     .subscribe((res) => {
                       this.showReplyActionsForPatient = true;
@@ -337,21 +339,21 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               }
             }
             this.showRefuseForTls =
-              (message.sender.role == "TELESECRETARYGROUP" ||
-                message.sender.role == "TELESECRETARYGROUP") &&
-              message.requestTypeId != null &&
-              message.requestTitleId != null;
+              (this.originalMessageNode.sender.role == "TELESECRETARYGROUP" ||
+              this.originalMessageNode.sender.role == "TELESECRETARYGROUP") &&
+              this.originalMessageNode.requestTypeId != null &&
+              this.originalMessageNode.requestTitleId != null;
             this.showAcceptRefuse =
-              message.sender.role == "PATIENT" &&
-              message.requestTypeId != null &&
-              message.requestTitleId != null;
+            this.originalMessageNode.sender.role == "PATIENT" &&
+            this.originalMessageNode.requestTypeId != null &&
+            this.originalMessageNode.requestTitleId != null;
             this.getAttachements(message.nodesId);
             this.senderRolePatient =
-              this.sentContext && message.toReceivers.length == 1
-                ? message.toReceivers[0].role == "PATIENT"
-                : message.sender.role == "PATIENT";
+              this.sentContext && this.originalMessageNode.toReceivers.length == 1
+                ? this.originalMessageNode.toReceivers[0].role == "PATIENT"
+                : this.originalMessageNode.sender.role == "PATIENT";
             this.messagingDetail = message;
-            this.prohibited = message.prohibited;
+            this.prohibited = this.originalMessageNode.prohibited;
             this.isFromInbox = this.IsinboxContext;
             this.links = {
               isArchieve: !this.isFromArchive,
@@ -465,9 +467,19 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  findOriginalMessageNode(message, id) {
+    if (message.id == id) {
+      this.originalMessageNode = JSON.parse(JSON.stringify(message));
+    } else {
+      message.parent ? this.findOriginalMessageNode(message.parent, id) : null;
+    }
+  }
+
   replyAction() {
     this.loading = false;
     this.scrollToBottom();
+    let messageToReply = JSON.parse(JSON.stringify(this.originalMessageNode));
+    messageToReply.id = this.messagingDetail.id;
     if (this.showReplyActionsForPatient === true) {
       this.router.navigate(["messagerie-repondre"], {
         queryParams: {
@@ -475,12 +487,12 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           context: "TLS",
         },
         relativeTo: this.route.parent,
-        state: { data: this.messagingDetail },
+        state: { data: messageToReply },
       });
     } else {
       this.router.navigate(["messagerie-repondre"], {
         relativeTo: this.route.parent,
-        state: { data: this.messagingDetail },
+        state: { data: messageToReply },
       });
     }
   }
@@ -488,22 +500,27 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   forwardAction() {
     this.loading = false;
     this.scrollToBottom();
+    let messageToReply = JSON.parse(JSON.stringify(this.originalMessageNode));
+    messageToReply.id = this.messagingDetail.id;
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         context: "forward",
       },
       relativeTo: this.route.parent,
-      state: { data: this.messagingDetail },
+      state: { data: messageToReply },
     });
   }
 
   acceptAction() {
-    this.newMessage = JSON.parse(JSON.stringify(this.messagingDetail));
+    let messageToReply = JSON.parse(JSON.stringify(this.originalMessageNode));
+    this.newMessage = JSON.parse(JSON.stringify(this.originalMessageNode));
+    this.newMessage.id = this.messagingDetail.id;
+    messageToReply.id = this.messagingDetail.id;
     if (this.showReplyActionsForPatient === true) {
-      this.newMessage.sender.fullName = this.messagingDetail.sender.concernsFullName;
+      this.newMessage.sender.fullName = this.originalMessageNode.sender.concernsFullName;
       this.newMessage.sender.role = "PATIENT";
       this.newMessage.sender.senderId = this.patientFileAccountId;
-      this.newMessage.sender.civility = this.messagingDetail.sender.concernsCivility;
+      this.newMessage.sender.civility = this.originalMessageNode.sender.concernsCivility;
       this.newMessage.sender.concernsFullName = null;
     }
     this.loading = false;
@@ -518,18 +535,19 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         data:
           this.showReplyActionsForPatient === true
             ? this.newMessage
-            : this.messagingDetail,
+            : messageToReply,
       },
     });
     this.scrollToBottom();
   }
   refuseToPatientAction() {
-    this.newMessage = JSON.parse(JSON.stringify(this.messagingDetail));
+    this.newMessage = JSON.parse(JSON.stringify(this.originalMessageNode));
+    this.newMessage.id = this.messagingDetail.id;
     if (this.showReplyActionsForPatient === true) {
-      this.newMessage.sender.fullName = this.messagingDetail.sender.concernsFullName;
+      this.newMessage.sender.fullName = this.originalMessageNode.sender.concernsFullName;
       this.newMessage.sender.role = "PATIENT";
       this.newMessage.sender.senderId = this.patientFileAccountId;
-      this.newMessage.sender.civility = this.messagingDetail.sender.concernsCivility;
+      this.newMessage.sender.civility = this.originalMessageNode.sender.concernsCivility;
       this.newMessage.sender.concernsFullName = null;
     }
     this.router.navigate(["messagerie-repondre"], {
@@ -543,13 +561,15 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.scrollToBottom();
   }
   refuseAction() {
+    let messageToReply = JSON.parse(JSON.stringify(this.originalMessageNode));
+    messageToReply.id = this.messagingDetail.id;
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
         status: "refus",
         context: "TLS",
       },
       relativeTo: this.route.parent,
-      state: { data: this.messagingDetail },
+      state: { data: messageToReply },
     });
     this.scrollToBottom();
   }
