@@ -107,6 +107,7 @@ export class MyPatientsArchivedComponent implements OnInit, OnDestroy {
           this.number = this.number + myPatients.length;
           myPatients.forEach(elm => {
             this.myPatients.push(this.mappingMyPatients(elm, false, true));
+            this.filtredPatients.push(this.mappingMyPatients(elm, false, true));
           });
         }
       });
