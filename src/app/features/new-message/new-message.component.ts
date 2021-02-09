@@ -68,6 +68,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   selectedFiles: any;
   selectedPracticianId: number;
   pageNo = 0;
+  listLength = 0;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   @ViewChild("fileInput", { static: false }) fileInput: ElementRef;
   private readonly notifier: NotifierService;
@@ -850,9 +851,29 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }
   }
 
-  fetchMoreData(event){
-    if (this.toList.getValue().length>0 && event.endIndex === this.toList.getValue().length - 1) {
-      console.log(event)
+  getAllContactsPracticianV1(pageNo) {
+    if (this.selectedPracticianId) {
+      return this.contactsService
+        .getAllContactsPracticianWithAditionalPatient(this.selectedPracticianId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((contactsPractician: any) => {
+          this.parseContactsPractician(contactsPractician);
+        })
+    } else {
+      this.contactsService
+        .getAllContactsPracticianWithSupervisorsV1(this.pageNo)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((contactsPractician: any) => {
+            this.parseContactsPractician(contactsPractician);
+          })
+    }
+  }
+
+  fetchMoreData(){
+    if (this.listLength != this.toList.getValue().length) {
+      this.listLength = this.toList.getValue().length;
+      this.pageNo++;
+      this.getAllContactsPracticianV1(this.pageNo);
     }
   }
 
@@ -949,7 +970,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     });
     this.practicianFullToList = myList;
     if (this.ctr.type.value[0].id == "MESSAGING") {
-      this.toList.next(myList);
+      const currentValue = this.toList.value;
+      const updatedValue = [...currentValue, ...myList];
+      this.toList.next(updatedValue);
       finalState ? this.onObjectChanedSelect() : null;
     } else if (this.ctr.type.value[0].id == "INSTRUCTION") {
       this.isForListVisible = false;
