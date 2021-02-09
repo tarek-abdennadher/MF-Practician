@@ -186,6 +186,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
+            this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
           });
         }
       });
