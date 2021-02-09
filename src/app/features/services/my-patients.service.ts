@@ -55,6 +55,15 @@ export class MyPatientsService {
       }
     );
   }
+
+  getPatientsOfCurrentParacticianByCategoryV1(
+    categoryId: number,
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "my/byCategory/v1/" + categoryId
+    );
+  }
   // Sorted first Name then last name
   getPatientsProhibitedOfCurrentParactician(
     pageNo,
