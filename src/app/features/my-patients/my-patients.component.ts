@@ -35,6 +35,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   number = 0;
   pageNo = 0;
   listLength = 0;
+  isFiltering = false;
   scroll = false;
   public searchForm: FormGroup;
   mesCategories = [];
@@ -99,6 +100,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             currentRoute = currentRoute.firstChild;
           this.listLength = 0;
           this.pageNo = 0;
+          this.isFiltering = false;
           this.getPatientsOfCurrentParactician(this.pageNo);
           setTimeout(() => {
             $(".selectpicker").selectpicker("refresh");
@@ -192,15 +194,13 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       });
   }
 
-  getPatientsOfCurrentParacticianByCategory(pageNo, categoryId) {
+  getPatientsOfCurrentParacticianByCategory(categoryId) {
     let category = new Category();
     category = this.categs.find((e) => e.name == categoryId);
     if (category) {
       this.myPatientsService
-        .getPatientsOfCurrentParacticianByCategory(
-          pageNo,
-          category.id,
-          this.direction
+        .getPatientsOfCurrentParacticianByCategoryV1(
+          category.id
         )
         .pipe(takeUntil(this._destroyed$))
         .subscribe((myPatients) => {
@@ -346,7 +346,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   onScroll() {
-    if (this.listLength != this.filtredPatients.length && this.featureService.searchPatientsFiltered.getValue().length == 0) {
+    if (this.listLength != this.filtredPatients.length && this.featureService.searchPatientsFiltered.getValue().length == 0 && !this.isFiltering) {
       this.listLength = this.filtredPatients.length;
       this.pageNo++;
       this.getNextPagePatientsOfCurrentParactician(this.pageNo);
@@ -363,11 +363,14 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
   listFilter(value: string) {
     this.pageNo = 0;
+    this.listLength = 0;
     this.filtredPatients = [];
     this.myPatients = [];
     if (value != "Tout") {
-      this.getPatientsOfCurrentParacticianByCategory(this.pageNo, value);
+      this.isFiltering = true;
+      this.getPatientsOfCurrentParacticianByCategory(value);
     } else {
+      this.isFiltering = false;
       this.getPatientsOfCurrentParactician(this.pageNo);
     }
   }
