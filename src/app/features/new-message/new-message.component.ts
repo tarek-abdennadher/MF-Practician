@@ -299,7 +299,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -316,7 +316,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -346,7 +346,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -657,7 +657,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -930,6 +930,18 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.child,
+          });
+        } else if (
+          contactPractician.civility == "" ||
+          contactPractician.civility == null
+        ) {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: this.avatars.man,
           });
         }
         if (this.selectedPracticianId == contactPractician.id) {
