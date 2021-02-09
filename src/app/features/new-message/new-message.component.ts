@@ -143,7 +143,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   set messageTypesList(messageTypesList: any) {
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+      //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [messageTypesList[0]] });
   }
@@ -255,7 +255,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+      // { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     this.getAllPatientFilesByPracticianId();
@@ -1151,7 +1151,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         if (group && group.group) {
           this._messageTypesList = [
             { id: SendType.MESSAGING, text: "Messagerie" },
-            { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+            //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
             { id: SendType.INSTRUCTION, text: "Consignes" },
           ];
           this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
