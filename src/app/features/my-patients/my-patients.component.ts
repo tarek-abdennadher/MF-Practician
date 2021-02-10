@@ -126,8 +126,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   getPatientsOfCurrentParactician(pageNo) {
-    this.myPatients = [];
-    this.filtredPatients = [];
     this.scrollDown = false;
     this.myPatientsService
       .getPatientsOfCurrentParacticianV4(
@@ -137,6 +135,8 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       )
       .pipe(takeUntil(this._destroyed$))
       .subscribe((result) => {
+        this.myPatients = [];
+        this.filtredPatients = [];
         this.number = result.listSize;
         this.gloabelNumber = result.listSize;
         result.list.forEach((elm) => {
@@ -153,6 +153,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   searchPatients() {
     this.featureService.getFilteredPatientsSearch().subscribe((res) => {
       if (res) {
+        this.filtredPatients = [];
         if (res.length > 0) {
           this.filtredPatients= []
           this.myPatientsService
@@ -171,7 +172,9 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             this.scroll = false;
           });
         }else{
-            this.filtredPatients = this.myPatients;
+          this.myPatients.forEach(element => {
+            this.filtredPatients.push(element)
+          });
             this.number = this.gloabelNumber;
             this.scroll = false;
         }
