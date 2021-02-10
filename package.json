@@ -41,7 +41,7 @@
     "hls-connexion": "^1.0.95",
     "hls-document-grid": "^1.0.2",
     "hls-documents": "^1.0.20",
-    "hls-generic-list": "^1.0.17",
+    "hls-generic-list": "^1.0.37",
     "hls-generic-list-links": "^1.0.15",
     "hls-links": "^1.0.94",
     "hls-messaging-detail": "^1.0.122",
