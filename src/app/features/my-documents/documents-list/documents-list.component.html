@@ -21,11 +21,12 @@
               emptyList="Vous n'avez aucun document attaché actuellement."
               (downloadAction)="downloadFile($event)"
               (visualizeAction)="visualizeFile($event)"
-              (cardAction)="downloadFile($event)"
+              (cardAction)="cardClicked($event)"
               [isCheckbox]="false"
             ></lib-hls-document-grid>
           </div>
         </div>
+        <ks-modal-gallery [id]="0" [modalImages]="images"></ks-modal-gallery>
       </div>
     </div>
   </div>

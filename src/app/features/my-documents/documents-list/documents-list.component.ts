@@ -32,7 +32,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   destinations = new Set();
   account: any;
   linkedPatients: any;
-
+  public images = [];
   pageNo = 0;
   listLength = 0;
   scroll = false;
@@ -327,6 +327,22 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         FileSaver.saveAs(blob, resultname);
       });
   }
+
+  cardClicked (attachement) {
+    this.documentsService
+      .downloadFile(attachement.nodeId)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        response => {
+          this.images.push("https://ibb.co/KKTpxKv");
+          // let myReader: FileReader = new FileReader();
+          // myReader.onloadend = e => {
+          // };
+          // let ok = myReader.readAsDataURL(response.body);
+        }
+      );
+  }
+
   getType(extention: string) {
     switch (extention.toLowerCase()) {
       case "pdf":
