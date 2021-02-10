@@ -1104,6 +1104,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       if (selectedObj.allowDocument) {
         this.loading = true;
         this.ctr.body.disable();
+        this.spinner.show();
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin([body, doc])
           .pipe(takeUntil(this._destroyed$))
@@ -1111,14 +1112,17 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.selectedObject.next(newData);
             this.loading = false;
             this.ctr.body.enable();
+            this.spinner.hide();
           });
       } else {
         this.loading = true;
         this.ctr.body.disable();
+        this.spinner.show();
         body.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
           this.selectedObject.next(newData);
           this.loading = false;
           this.ctr.body.enable();
+          this.spinner.hide();
         });
       }
     } else if (selectedObj) {
