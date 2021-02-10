@@ -159,13 +159,30 @@ export class MyObjectsComponent implements OnInit, OnDestroy {
             hasFiles: false,
             isViewDetail: false,
             isMarkAsSeen: false,
-            isChecked: false
+            isChecked: false,
+            object: this.mapDestinationProp(res.destination),
+            isPracticianObject: true
           });
         });
         this.itemsList.sort((a, b) =>
           a.users[0].fullName > b.users[0].fullName ? 1 : -1
         );
       });
+  }
+
+  mapDestinationProp(name) {
+    switch (name) {
+      case "PRACTICIAN" :
+        return this.messages.practician;
+        case "SECRETARY" :
+        return this.messages.secretary_tls;
+        case "PATIENT" :
+        return this.messages.patient;
+        case "OTHER" :
+        return this.messages.other;
+        default :
+        return name;
+    }
   }
 
   parseObject(res) {
