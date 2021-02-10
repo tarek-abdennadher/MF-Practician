@@ -93,7 +93,7 @@ export class AccountService {
     object: "Objet",
     content: "Message",
     docBody: "Corps du document",
-    docModel: "Modèle de document",
+    docModel: "",
     allowDocument: "Génération automatique d’un document",
     select_object: "Selectionnez un objet",
     title: "modèle de document",
