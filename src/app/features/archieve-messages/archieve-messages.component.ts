@@ -76,6 +76,11 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.links = {
+      isRefresh: true,
+      isPagination: true,
+      isDesarchive: true,
+    };
     this.featureService.setActiveChild("archived");
     setTimeout(() => {
       this.featureService.setIsMessaging(true);
@@ -278,6 +283,11 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   refreshMessagingList() {
+    this.links = {
+      isRefresh: true,
+      isPagination: true,
+      isDesarchive: true,
+    };
     this.itemsList = [];
     this.filtredItemList = [];
     this.ngOnInit();
