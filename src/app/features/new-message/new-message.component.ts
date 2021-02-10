@@ -158,6 +158,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   information: string = "information";
   texts: any;
+  textSpinner: "";
   file: any;
   isPatient: boolean = false;
   isMedical: boolean;
@@ -1101,6 +1102,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             newData.body = resBody.body;
           })
         );
+        this.textSpinner = this.texts.loading;
       if (selectedObj.allowDocument) {
         this.loading = true;
         this.ctr.body.disable();
@@ -1287,7 +1289,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   sendInstruction(message) {
-    console.log(message);
+    this.textSpinner = this.texts.sending;
     this.submited = true;
     if (this.sendMessageForm.invalid) {
       return;
@@ -1430,6 +1432,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }
   }
   sendMessage2(message) {
+    this.textSpinner = this.texts.sending;
     this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
