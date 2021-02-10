@@ -33,8 +33,9 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   page = "PATIENT";
   topText = this.globalService.messagesDisplayScreen.my_patients;
   number = 0;
+  gloabelNumber = 0;
   pageNo = 0;
-  listLength = 0;
+  scrollDown = true;
   isFiltering = false;
   scroll = false;
   public searchForm: FormGroup;
@@ -60,7 +61,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     private featureService: FeaturesService,
     private documentService: MyDocumentsService,
     private formBuilder: FormBuilder,
-    private featuresService: FeaturesService,
     private categoryService: CategoryService,
     private sanitizer: DomSanitizer,
     private messageWidgetService: NewMessageWidgetService,
@@ -98,7 +98,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
-          this.listLength = 0;
+          this.scrollDown = true;
           this.pageNo = 0;
           this.isFiltering = false;
           this.getPatientsOfCurrentParactician(this.pageNo);
@@ -124,9 +124,9 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       );
     });
   }
+
   getPatientsOfCurrentParactician(pageNo) {
-    this.myPatients = [];
-    this.filtredPatients = [];
+    this.scrollDown = false;
     this.myPatientsService
       .getPatientsOfCurrentParacticianV4(
         this.featureService.getUserId(),
@@ -134,41 +134,50 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         this.direction
       )
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
-        this.number = myPatients.length;
-        myPatients.forEach((elm) => {
+      .subscribe((result) => {
+        this.myPatients = [];
+        this.filtredPatients = [];
+        this.number = result.listSize;
+        this.gloabelNumber = result.listSize;
+        result.list.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
           );
+          this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived))
         });
-
-        this.filtredPatients = this.myPatients;
         this.scroll = false;
+        this.scrollDown = true;
       });
   }
 
   searchPatients() {
     this.featureService.getFilteredPatientsSearch().subscribe((res) => {
-      if (res.length > 0) {
-        this.filtredPatients= []
-        this.myPatientsService
-        .getPatientsOfCurrentParacticianSearch(
-          this.featureService.getUserId(),
-          res[0]
-        )
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((myPatients) => {
-          this.number = myPatients.length;
-          myPatients.forEach((elm) => {
-            this.filtredPatients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
+      if (res) {
+        this.filtredPatients = [];
+        if (res.length > 0) {
+          this.filtredPatients= []
+          this.myPatientsService
+          .getPatientsOfCurrentParacticianSearch(
+            this.featureService.getUserId(),
+            res[0]
+          )
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((myPatients) => {
+            this.number = myPatients.length;
+            myPatients.forEach((elm) => {
+              this.filtredPatients.push(
+                this.mappingMyPatients(elm, elm.prohibited, elm.archived)
+              );
+            });
+            this.scroll = false;
           });
-          this.scroll = false;
-        });
-      }else{
-          this.filtredPatients = this.myPatients;
-          this.scroll = false;
+        }else{
+          this.myPatients.forEach(element => {
+            this.filtredPatients.push(element)
+          });
+            this.number = this.gloabelNumber;
+            this.scroll = false;
+        }
       }
     });
   }
@@ -181,20 +190,23 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         this.direction
       )
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
+      .subscribe(result => {
+        this.number = result.listSize;
+        this.gloabelNumber = result.listSize;
+        if (result.list.length > 0) {
+          result.list.forEach(elm => {
             this.myPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
             this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
           });
         }
+        this.scrollDown = true;
       });
   }
 
   getPatientsOfCurrentParacticianByCategory(categoryId) {
+    this.filtredPatients = [];
     let category = new Category();
     category = this.categs.find((e) => e.name == categoryId);
     if (category) {
@@ -206,11 +218,10 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         .subscribe((myPatients) => {
           this.number = myPatients.length;
           myPatients.forEach((elm) => {
-            this.myPatients.push(
+            this.filtredPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
             );
           });
-          this.filtredPatients = this.myPatients;
         });
     }
   }
@@ -268,15 +279,20 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.messageWidgetService.toggleObs.next(item.users[0].accountId);
   }
   prohibitAction(item) {
+    this.scrollDown = false;
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((resp) => {
         if (resp == true) {
+          this.myPatients = this.myPatients.filter(
+            (elm) => elm.users[0].id != item.users[0].id
+          );
           this.filtredPatients = this.filtredPatients.filter(
             (elm) => elm.users[0].id != item.users[0].id
           );
           this.number--;
+          this.scrollDown = true;
         }
       });
   }
@@ -284,6 +300,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     this.cardClicked(item);
   }
   deleteAction(item) {
+    this.scrollDown = false;
     this.dialogService
       .openConfirmDialog(
         this.globalService.messagesDisplayScreen.delete_confirmation_patient,
@@ -296,16 +313,21 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             .deletePatientFromMyPatients(item.users[0].id)
             .pipe(takeUntil(this._destroyed$))
             .subscribe((resp) => {
+              this.myPatients = this.myPatients.filter(
+                (elm) => elm.users[0].id != item.users[0].id
+              );
               this.filtredPatients = this.filtredPatients.filter(
                 (elm) => elm.users[0].id != item.users[0].id
               );
               this.number--;
+              this.scrollDown = true;
             });
         }
       });
   }
 
   archivedAction(item) {
+    this.scrollDown = false;
     this.dialogService
       .openConfirmDialog(
         this.globalService.messagesDisplayScreen.archive_confirmation_patient,
@@ -319,10 +341,14 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._destroyed$))
             .subscribe((resp) => {
               if (resp == true) {
+                this.myPatients = this.myPatients.filter(
+                  (elm) => elm.users[0].id != item.users[0].id
+                );
                 this.filtredPatients = this.filtredPatients.filter(
                   (elm) => elm.users[0].id != item.users[0].id
                 );
                 this.number--;
+                this.scrollDown = true;
               }
             });
         }
@@ -346,8 +372,8 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   onScroll() {
-    if (this.listLength != this.filtredPatients.length && this.featureService.searchPatientsFiltered.getValue().length == 0 && !this.isFiltering) {
-      this.listLength = this.filtredPatients.length;
+    if (this.scrollDown  && (!this.featureService.searchPatientsFiltered.getValue() || (this.featureService.searchPatientsFiltered.getValue() && this.featureService.searchPatientsFiltered.getValue().length == 0)) && !this.isFiltering) {
+      this.scrollDown = false;
       this.pageNo++;
       this.getNextPagePatientsOfCurrentParactician(this.pageNo);
     }
@@ -363,7 +389,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
   listFilter(value: string) {
     this.pageNo = 0;
-    this.listLength = 0;
+    this.scrollDown = true;
     this.filtredPatients = [];
     this.myPatients = [];
     if (value != "Tout") {
