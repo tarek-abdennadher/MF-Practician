@@ -24,7 +24,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
   myPatients = [];
   number = 0;
   filtredPatients = [];
-  listLength = 0;
+  scrollDown = true;
   direction: OrderDirection = OrderDirection.DESC;
   avatars: {
     doctor: string;
@@ -69,7 +69,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
-          this.listLength = 0;
+            this.scrollDown = true;
           this.pageNo = 0;
           this.getPendingListRealTime(this.pageNo);
           setTimeout(() => {
@@ -96,26 +96,22 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
       });
   }
   getPendingListRealTime(pageNo) {
-    this.number = 0;
     this.getPatientsPendingOfCurrentParactician(pageNo);
   }
 
   getPatientsPendingOfCurrentParactician(pageNo) {
-    this.myPatients = [];
+    this.scrollDown = false;
     this.filtredPatients = [];
     this.myPatientsService
       .getPendingInvitationsV3(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
+      .subscribe((result) => {
         this.scroll = false;
-        this.number = myPatients.length;
-        this.myPatients = [];
-        myPatients.forEach((elm) => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
+        this.number = result.listSize;
+        result.list.forEach((elm) => {
+          this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
         });
-        this.filtredPatients = this.myPatients;
+        this.scrollDown = true;
       });
   }
 
@@ -123,22 +119,20 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     this.myPatientsService
       .getPendingInvitationsV3(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
-            this.myPatients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
+      .subscribe(result => {
+        this.number = result.listSize;
+        if (result.list.length > 0) {
+          result.list.forEach(elm => {
             this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
           });
         }
+        this.scrollDown = true;
       });
   }
 
   onScroll() {
-    if (this.listLength != this.filtredPatients.length) {
-      this.listLength = this.filtredPatients.length;
+    if (this.scrollDown) {
+      this.scrollDown = false;
       this.pageNo++;
       this.getNextPatientsPendingOfCurrentParactician(this.pageNo);
     }
@@ -200,6 +194,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
     });
   }
   acceptedAction(item) {
+    this.scrollDown = false;
     this.myPatientsService
       .acceptPatientInvitation(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
@@ -222,10 +217,12 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
           this.router.navigate(["/mes-invitations"], {
             queryParams: { loading: true },
           });
+          this.scrollDown = true;
         }
       });
   }
   refuseAction(item) {
+    this.scrollDown = false;
     this.myPatientsService
       .prohibitePatient(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
@@ -244,6 +241,7 @@ export class MyInvitationsComponent implements OnInit, OnDestroy {
           this.router.navigate(["/mes-invitations"], {
             queryParams: { loading: true },
           });
+          this.scrollDown = true;
         }
       });
   }

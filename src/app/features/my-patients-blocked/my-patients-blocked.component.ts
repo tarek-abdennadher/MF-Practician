@@ -23,7 +23,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
   myPatients = [];
   number = 0;
   filtredPatients = [];
-  listLength = 0;
+  scrollDown = true;
   direction: OrderDirection = OrderDirection.DESC;
   avatars: {
     doctor: string;
@@ -68,7 +68,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
-          this.listLength = 0;
+            this.scrollDown = true;
           this.pageNo = 0;
           this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -82,20 +82,18 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
   }
   getPatientsProhibitedOfCurrentParactician(pageNo) {
-    this.myPatients = [];
+    this.scrollDown = false;
     this.filtredPatients = [];
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParacticianV3(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((myPatients) => {
-        this.number = myPatients.length;
-        myPatients.forEach((elm) => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
+      .subscribe((result) => {
+        this.number = result.listSize;
+        result.list.forEach((elm) => {
+          this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
         });
-        this.filtredPatients = this.myPatients;
         this.scroll = false;
+        this.scrollDown = true;
       });
   }
 
@@ -154,6 +152,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     });
   }
   authorizeAction(item) {
+    this.scrollDown = false;
     this.myPatientsService
       .authorizePatient(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
@@ -164,27 +163,27 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
           );
         }
         this.number--;
+        this.scrollDown = true;
       });
   }
   getNextPatientsProhibitedOfCurrentParactician(pageNo) {
     this.myPatientsService
       .getPatientsProhibitedOfCurrentParacticianV3(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        if (myPatients.length > 0) {
-          this.number = this.number + myPatients.length;
-          myPatients.forEach(elm => {
-            this.myPatients.push(
-              this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-            );
+      .subscribe(result => {
+        this.number = result.listSize;
+        if (result.list.length > 0) {
+          result.list.forEach(elm => {
             this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
           });
         }
+        this.scrollDown = true;
       });
   }
+
   onScroll() {
-    if (this.listLength != this.filtredPatients.length) {
-      this.listLength = this.filtredPatients.length;
+    if (this.scrollDown) {
+      this.scrollDown = false;
       this.pageNo++;
       this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
     }
