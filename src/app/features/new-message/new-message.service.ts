@@ -31,7 +31,9 @@ export class HlsSendMessageService {
       "Cette messagerie, n’a pas pour but de gérer des demandes urgentes, ou de diagnostiquer une pathologie, votre praticien vous répondra dans un délai qui lui semblera opportun et en fonction de ses disponibilités.",
     warning_patient_message_2:
       "En cas d’urgence ou de symptômes inquiétants merci de contacter le cabinet directement au numéro habituel ou le 15 (SAMU - 7j/24h) en cas d’extrême urgence.",
-    required: "Champs obligatoire !"
+    required: "Champs obligatoire !",
+    loading: "Chargement en cours",
+    sending: "Envoi du message en cours"
   };
 
 }
