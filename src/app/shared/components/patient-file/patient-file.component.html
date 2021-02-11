@@ -214,9 +214,7 @@
                   <div class="col-10 col-sm-11">
                     <international-phone-number
                       *ngIf="!isAdd"
-                      [defaultCountry]="
-                        ctr.phoneNumber.value != null ? '' : 'fr'
-                      "
+                      [defaultCountry]="'fr'"
                       [required]="false"
                       [maxlength]="20"
                       [ngClass]="{
