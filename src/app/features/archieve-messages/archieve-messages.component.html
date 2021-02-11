@@ -13,6 +13,7 @@
   (refreshMessagingListAction)="refreshMessagingList()"
   (nextPageAction)="nextPageActionClicked()"
   (previousPageAction)="previousPageActionClicked()"
+  (desarchieveAction)="desarchiveMessages()"
 ></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
@@ -21,7 +22,6 @@
       [list]="filtredItemList"
       emptyList="Vous n'avez aucun message archivé actuellement."
       (cardAction)="cardClicked($event)"
-      [isCheckbox]="false"
       [imageSource]="imageSource"
       [hasPaging]="true"
       (upSortAction)="upSortClicked()"

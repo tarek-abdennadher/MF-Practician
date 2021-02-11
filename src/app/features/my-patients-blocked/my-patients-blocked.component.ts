@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
   selector: "app-my-patients-blocked",
   templateUrl: "./my-patients-blocked.component.html",
-  styleUrls: ["./my-patients-blocked.component.scss"]
+  styleUrls: ["./my-patients-blocked.component.scss"],
 })
 export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -23,7 +23,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
   myPatients = [];
   number = 0;
   filtredPatients = [];
-  listLength = 0;
+  scrollDown = true;
   direction: OrderDirection = OrderDirection.DESC;
   avatars: {
     doctor: string;
@@ -62,13 +62,13 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     this.initProhibitedPatients();
     // update list after detail view
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === "/mes-patients-bloques?loading=true") {
           let currentRoute = this.route;
           while (currentRoute.firstChild)
             currentRoute = currentRoute.firstChild;
-          this.listLength = 0;
+            this.scrollDown = true;
           this.pageNo = 0;
           this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
           setTimeout(() => {
@@ -82,20 +82,18 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     this.getPatientsProhibitedOfCurrentParactician(this.pageNo);
   }
   getPatientsProhibitedOfCurrentParactician(pageNo) {
-    this.myPatients = [];
+    this.scrollDown = false;
     this.filtredPatients = [];
     this.myPatientsService
-      .getPatientsProhibitedOfCurrentParactician(pageNo, this.direction)
+      .getPatientsProhibitedOfCurrentParacticianV3(pageNo, this.direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(myPatients => {
-        this.number = myPatients.length;
-        myPatients.forEach(elm => {
-          this.myPatients.push(
-            this.mappingMyPatients(elm, elm.prohibited, elm.archived)
-          );
+      .subscribe((result) => {
+        this.number = result.listSize;
+        result.list.forEach((elm) => {
+          this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
         });
-        this.filtredPatients = this.myPatients;
         this.scroll = false;
+        this.scrollDown = true;
       });
   }
 
@@ -108,7 +106,7 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
       patientId: patient.patient ? patient.patient.id : null,
       fullName: patient.fullName,
       img: this.avatars.user,
-      civility: patient.civility
+      civility: patient.civility,
     });
     myPatients.id = patient.id;
     myPatients.photoId = patient.photoId;
@@ -117,21 +115,21 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
     myPatients.isProhibited = prohibited;
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
-    myPatients.users.forEach(user => {
+    myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
-          response => {
+          (response) => {
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
+            myReader.onloadend = (e) => {
               user.img = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
             };
             let ok = myReader.readAsDataURL(response);
           },
-          error => {
+          (error) => {
             user.img = this.avatars.user;
           }
         );
@@ -142,28 +140,53 @@ export class MyPatientsBlockedComponent implements OnInit, OnDestroy {
   cardClicked(item) {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#appPatientFile").offset().top - 100
+        scrollTop: $("#appPatientFile").offset().top - 100,
       },
       1000
     );
     this.router.navigate(["fiche-patient"], {
       queryParams: {
-        id: this.featureService.encrypt(item.users[0].id)
+        id: this.featureService.encrypt(item.users[0].id),
       },
-      relativeTo: this.route
+      relativeTo: this.route,
     });
   }
   authorizeAction(item) {
+    this.scrollDown = false;
     this.myPatientsService
       .authorizePatient(item.users[0].patientId)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(resp => {
+      .subscribe((resp) => {
         if (resp == true) {
           this.filtredPatients = this.filtredPatients.filter(
-            elm => elm.users[0].id != item.users[0].id
+            (elm) => elm.users[0].id != item.users[0].id
           );
         }
         this.number--;
+        this.scrollDown = true;
       });
   }
+  getNextPatientsProhibitedOfCurrentParactician(pageNo) {
+    this.myPatientsService
+      .getPatientsProhibitedOfCurrentParacticianV3(pageNo, this.direction)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(result => {
+        this.number = result.listSize;
+        if (result.list.length > 0) {
+          result.list.forEach(elm => {
+            this.filtredPatients.push(this.mappingMyPatients(elm, elm.prohibited, elm.archived));
+          });
+        }
+        this.scrollDown = true;
+      });
+  }
+
+  onScroll() {
+    if (this.scrollDown) {
+      this.scrollDown = false;
+      this.pageNo++;
+      this.getNextPatientsProhibitedOfCurrentParactician(this.pageNo);
+    }
+  }
+
 }

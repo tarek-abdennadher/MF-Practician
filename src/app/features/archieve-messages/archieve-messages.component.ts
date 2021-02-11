@@ -12,11 +12,12 @@ import { PaginationService } from "../services/pagination.service";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { DialogService } from "../services/dialog.service";
 
 @Component({
   selector: "app-archieve-messages",
   templateUrl: "./archieve-messages.component.html",
-  styleUrls: ["./archieve-messages.component.scss"]
+  styleUrls: ["./archieve-messages.component.scss"],
 })
 export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
@@ -34,7 +35,8 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   itemsList = [];
   links = {
     isRefresh: true,
-    isPagination: true
+    isPagination: true,
+    isDesarchive: true,
   };
   filtredItemList = [];
   loading = false;
@@ -60,7 +62,8 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     public pagination: PaginationService,
     public roleObjectPipe: RoleObjectPipe,
-    private title: Title
+    private title: Title,
+    private dialogService: DialogService
   ) {
     this.title.setTitle(this.topText);
     this.avatars = this.globalService.avatars;
@@ -73,32 +76,40 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.links = {
+      isRefresh: true,
+      isPagination: true,
+      isDesarchive: true,
+    };
     this.featureService.setActiveChild("archived");
     setTimeout(() => {
       this.featureService.setIsMessaging(true);
     });
     this.countAllMyArchivedMessages();
     this.searchArchive();
-
   }
 
   countAllMyArchivedMessages() {
     this.archivedService
       .countAllMyArchivedMessages()
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(messages => {
-        this.messagesNumber = messages ;
+      .subscribe((messages) => {
+        this.messagesNumber = messages;
         this.pagination.init(messages);
-        this.loadPage();
       });
+    this.loadPage();
   }
 
   getMyMessagesArchived() {
     this.loading = true;
+    const pageNo = this.pagination.pageNo ? this.pagination.pageNo : 0;
+    const direction = this.pagination.direction
+      ? this.pagination.direction
+      : null;
     this.archivedService
-      .getMyArchivedMessages(this.pagination.pageNo, this.pagination.direction)
+      .getMyArchivedMessages(pageNo, direction)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(messages => {
+      .subscribe((messages) => {
         this.loading = false;
         this.number = this.featureService.numberOfArchieve;
         this.bottomText =
@@ -109,9 +120,9 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
           (m1, m2) =>
             new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
         );
-        messages.forEach(message => {
+        messages.forEach((message) => {
           const archivedMessage = this.mappingMessageArchived(message);
-          archivedMessage.users.forEach(user => {
+          archivedMessage.users.forEach((user) => {
             this.loadPhoto(user);
           });
           this.itemsList.push(archivedMessage);
@@ -140,8 +151,8 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
           senderRole == "PATIENT"
             ? message.senderDetail.patient.civility
             : null,
-        id: message.senderDetail.id
-      }
+        id: message.senderDetail.id,
+      },
     ];
     messageArchived.progress = {
       name: message.senderArchived.closed
@@ -157,11 +168,11 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
         ? 100
         : message.toReceiversArchived[0].seen
         ? 50
-        : 20
+        : 20,
     };
     messageArchived.object = {
       name: message.object,
-      isImportant: message.importantObject
+      isImportant: message.importantObject,
     };
     messageArchived.time = message.createdAt;
     messageArchived.isImportant = message.important;
@@ -177,16 +188,16 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       .getDefaultImage(user.id)
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
-        response => {
+        (response) => {
           let myReader: FileReader = new FileReader();
-          myReader.onloadend = e => {
+          myReader.onloadend = (e) => {
             user.img = this.sanitizer.bypassSecurityTrustUrl(
               myReader.result as string
             );
           };
           let ok = myReader.readAsDataURL(response);
         },
-        error => {
+        (error) => {
           user.img = this.avatars.user;
         }
       );
@@ -200,8 +211,8 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       ["/messagerie-lire/" + this.featureService.encrypt(item.id)],
       {
         queryParams: {
-          context: "archive"
-        }
+          context: "archive",
+        },
       }
     );
   }
@@ -211,10 +222,10 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   markMessageAsSeen(messageId) {
-    this.archivedService.markMessageAsSeen(messageId).subscribe(result => {
+    this.archivedService.markMessageAsSeen(messageId).subscribe((result) => {
       this.featureService.numberOfArchieve--;
       this.featureService.markAsSeen(this.featureService.searchArchive, [
-        messageId
+        messageId,
       ]);
     });
   }
@@ -237,7 +248,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   searchArchive() {
-    this.featureService.getFilteredArchiveSearch().subscribe(res => {
+    this.featureService.getFilteredArchiveSearch().subscribe((res) => {
       if (res == null) {
         this.filtredItemList = [];
         this.searchContext = true;
@@ -252,9 +263,9 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   mapAllMessages(messages) {
-    messages.forEach(message => {
+    messages.forEach((message) => {
       const archivedMessage = this.mappingMessageArchived(message);
-      archivedMessage.users.forEach(user => {
+      archivedMessage.users.forEach((user) => {
         this.loadPhoto(user);
       });
       this.filtredItemList.push(archivedMessage);
@@ -272,6 +283,11 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   refreshMessagingList() {
+    this.links = {
+      isRefresh: true,
+      isPagination: true,
+      isDesarchive: true,
+    };
     this.itemsList = [];
     this.filtredItemList = [];
     this.ngOnInit();
@@ -293,5 +309,31 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     this.itemsList = [];
     this.filtredItemList = [];
     this.getMyMessagesArchived();
+  }
+  desarchiveMessages() {
+    this.dialogService
+      .openConfirmDialog(
+        this.globalService.messagesDisplayScreen.dearchive_confirmation_message,
+        "Désarchivage"
+      )
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          let checkedMessages = this.filtredItemList.filter(
+            (e) => e.isChecked == true
+          );
+          const messagesId = checkedMessages.map((e) => e.id);
+          if (messagesId && messagesId.length > 0) {
+            this.archivedService
+              .markMessageAsNoMoreArchived(messagesId)
+              .subscribe(
+                (resp) => {
+                  this.refreshMessagingList();
+                },
+                (error) => {}
+              );
+          }
+        }
+      });
   }
 }

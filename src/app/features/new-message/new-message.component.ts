@@ -143,7 +143,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   set messageTypesList(messageTypesList: any) {
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+      //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [messageTypesList[0]] });
   }
@@ -158,6 +158,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   information: string = "information";
   texts: any;
+  textSpinner: "";
   file: any;
   isPatient: boolean = false;
   isMedical: boolean;
@@ -255,7 +256,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
-      { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+      // { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     this.getAllPatientFilesByPracticianId();
@@ -299,7 +300,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -316,7 +317,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -346,7 +347,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -657,7 +658,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       filterUnSelectAllText: "Désélectionner tous les résultats filtrés",
       classes: "myclass custom-class",
       searchEmptyResult: "Rien n'a été trouvé...",
-      noDataLabel: "Aucune données",
+      noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
       enableCheckAll: false,
@@ -931,6 +932,18 @@ export class NewMessageComponent implements OnInit, OnDestroy {
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.child,
           });
+        } else if (
+          contactPractician.civility == "" ||
+          contactPractician.civility == null
+        ) {
+          myList.push({
+            id: contactPractician.id,
+            fullName: contactPractician.fullName,
+            type: contactPractician.contactType,
+            isSelected:
+              this.selectedPracticianId == contactPractician.id ? true : false,
+            img: this.avatars.man,
+          });
         }
         if (this.selectedPracticianId == contactPractician.id) {
           finalState = true;
@@ -1089,9 +1102,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             newData.body = resBody.body;
           })
         );
+        this.textSpinner = this.texts.loading;
       if (selectedObj.allowDocument) {
         this.loading = true;
         this.ctr.body.disable();
+        this.spinner.show();
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin([body, doc])
           .pipe(takeUntil(this._destroyed$))
@@ -1099,14 +1114,17 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.selectedObject.next(newData);
             this.loading = false;
             this.ctr.body.enable();
+            this.spinner.hide();
           });
       } else {
         this.loading = true;
         this.ctr.body.disable();
+        this.spinner.show();
         body.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
           this.selectedObject.next(newData);
           this.loading = false;
           this.ctr.body.enable();
+          this.spinner.hide();
         });
       }
     } else if (selectedObj) {
@@ -1151,7 +1169,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         if (group && group.group) {
           this._messageTypesList = [
             { id: SendType.MESSAGING, text: "Messagerie" },
-            { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
+            //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
             { id: SendType.INSTRUCTION, text: "Consignes" },
           ];
           this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
@@ -1271,7 +1289,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   sendInstruction(message) {
-    console.log(message);
+    this.textSpinner = this.texts.sending;
     this.submited = true;
     if (this.sendMessageForm.invalid) {
       return;
@@ -1414,6 +1432,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }
   }
   sendMessage2(message) {
+    this.textSpinner = this.texts.sending;
     this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();

@@ -9,7 +9,7 @@
   <div class="card" id="card-gif">
     <div class="card-body">
       <img id="loading-img" [src]="'assets/imgs/Loading-helssy.gif'" />
-      <p class="loading">Envoi du message en cours...</p>
+      <p class="loading">{{ textSpinner }}...</p>
     </div>
   </div>
 </ngx-spinner>
@@ -335,7 +335,7 @@
         </div>
       </div>
     </mat-tab>
-    <mat-tab label="Corp du document">
+    <mat-tab label="Visualiser et corriger le document">
       <div class="row mb-2">
         <div class="col-md-12">
           <lib-hls-ckeditor
