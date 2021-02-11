@@ -17,7 +17,6 @@ import { AccountModule } from "./features/account/account.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 import { CachingInterceptor } from './core/interceptors/cache.interceptor';
-import {GalleryModule} from '@ks89/angular-modal-gallery';
 
 registerLocaleData(localeFr, "fr");
 @NgModule({
@@ -32,7 +31,6 @@ registerLocaleData(localeFr, "fr");
     FeaturesModule,
     AccountModule,
     BrowserAnimationsModule,
-    GalleryModule.forRoot()
   ],
   providers: [
     {

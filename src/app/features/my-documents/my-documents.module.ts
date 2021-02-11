@@ -14,7 +14,6 @@ import { HlsGenericListLinksModule } from "hls-generic-list-links";
 import { HlsGenericListModule } from "hls-generic-list";
 import { HlsDocumentGridModule } from "hls-document-grid";
 import { NgxSpinnerModule } from "ngx-spinner";
-import {GalleryModule} from '@ks89/angular-modal-gallery';
 
 @NgModule({
   declarations: [MyDocumentsComponent, DocumentsListComponent],
@@ -32,7 +31,6 @@ import {GalleryModule} from '@ks89/angular-modal-gallery';
     HlsGenericListModule,
     HlsDocumentGridModule,
     NgxSpinnerModule,
-    GalleryModule
   ],
   providers: [CivilityPipe]
 })
