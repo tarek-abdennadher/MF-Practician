@@ -135,10 +135,10 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
       )
       .pipe(takeUntil(this._destroyed$))
       .subscribe((result) => {
-        this.myPatients = [];
-        this.filtredPatients = [];
         this.number = result.listSize;
         this.gloabelNumber = result.listSize;
+        this.myPatients = [];
+        this.filtredPatients = [];
         result.list.forEach((elm) => {
           this.myPatients.push(
             this.mappingMyPatients(elm, elm.prohibited, elm.archived)
@@ -153,9 +153,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   searchPatients() {
     this.featureService.getFilteredPatientsSearch().subscribe((res) => {
       if (res) {
-        this.filtredPatients = [];
         if (res.length > 0) {
-          this.filtredPatients= []
           this.myPatientsService
           .getPatientsOfCurrentParacticianSearch(
             this.featureService.getUserId(),
@@ -164,6 +162,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this._destroyed$))
           .subscribe((myPatients) => {
             this.number = myPatients.length;
+            this.filtredPatients = [];
             myPatients.forEach((elm) => {
               this.filtredPatients.push(
                 this.mappingMyPatients(elm, elm.prohibited, elm.archived)
@@ -172,6 +171,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
             this.scroll = false;
           });
         }else{
+          this.filtredPatients = [];
           this.myPatients.forEach(element => {
             this.filtredPatients.push(element)
           });
@@ -206,7 +206,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   getPatientsOfCurrentParacticianByCategory(categoryId) {
-    this.filtredPatients = [];
     let category = new Category();
     category = this.categs.find((e) => e.name == categoryId);
     if (category) {
@@ -217,6 +216,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .subscribe((myPatients) => {
           this.number = myPatients.length;
+          this.filtredPatients = [];
           myPatients.forEach((elm) => {
             this.filtredPatients.push(
               this.mappingMyPatients(elm, elm.prohibited, elm.archived)
@@ -390,8 +390,6 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   listFilter(value: string) {
     this.pageNo = 0;
     this.scrollDown = true;
-    this.filtredPatients = [];
-    this.myPatients = [];
     if (value != "Tout") {
       this.isFiltering = true;
       this.getPatientsOfCurrentParacticianByCategory(value);
