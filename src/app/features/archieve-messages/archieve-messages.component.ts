@@ -311,19 +311,20 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     this.getMyMessagesArchived();
   }
   desarchiveMessages() {
-    this.dialogService
-      .openConfirmDialog(
-        this.globalService.messagesDisplayScreen.dearchive_confirmation_message,
-        "Désarchivage"
-      )
-      .afterClosed()
-      .subscribe((res) => {
-        if (res) {
-          let checkedMessages = this.filtredItemList.filter(
-            (e) => e.isChecked == true
-          );
-          const messagesId = checkedMessages.map((e) => e.id);
-          if (messagesId && messagesId.length > 0) {
+    let checkedMessages = this.filtredItemList.filter(
+      (e) => e.isChecked == true
+    );
+    const messagesId = checkedMessages.map((e) => e.id);
+    if (messagesId && messagesId.length > 0) {
+      this.dialogService
+        .openConfirmDialog(
+          this.globalService.messagesDisplayScreen
+            .dearchive_confirmation_message,
+          "Désarchivage"
+        )
+        .afterClosed()
+        .subscribe((res) => {
+          if (res) {
             this.archivedService
               .markMessageAsNoMoreArchived(messagesId)
               .subscribe(
@@ -333,7 +334,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
                 (error) => {}
               );
           }
-        }
-      });
+        });
+    }
   }
 }
