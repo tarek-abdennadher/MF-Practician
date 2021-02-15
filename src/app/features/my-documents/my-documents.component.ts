@@ -349,6 +349,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   }
   filter(value) {
     this.itemsList = [];
+    this.documentService.setObjectFilter(value)    ;
     if (this.filterDocumentsForm.value.destination != "" && value != "Tout") {
       this.getMySendersAndReceiversBySenderForAndObject(
         this.filterDocumentsForm.value.destination,
