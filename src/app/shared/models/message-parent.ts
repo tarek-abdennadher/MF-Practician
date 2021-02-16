@@ -1,8 +1,11 @@
+import { ReplyStatus } from "../enmus/reply-status";
+
 export class MessageParent {
   public id?: number;
   public sender?: any;
   public messageStatus: string;
   public sendType: string;
+  public replyStatus: ReplyStatus;
   public assignedToId: string | number;
 
   constructor();
