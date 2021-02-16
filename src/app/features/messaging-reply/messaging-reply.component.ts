@@ -16,6 +16,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NodeeService } from "../services/node.service";
 import { v4 as uuid } from "uuid";
 import { FeaturesComponent } from "../features.component";
+import { ReplyStatus } from "@app/shared/enmus/reply-status";
 
 @Component({
   selector: "app-messaging-reply",
@@ -274,6 +275,19 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  getReplyStatus() {
+    if (this.acceptResponse) {
+      return ReplyStatus.ACCEPTED;
+    } else if (this.refuseResponse) {
+      return ReplyStatus.REFUSED;
+    } else if (this.forwardedResponse) {
+      return ReplyStatus.FORWARDED;
+    } else {
+      return ReplyStatus.REPLY;
+    }
+  }
+
   replyMessage(message) {
     this.spinner.show();
     this.uuid = uuid();
@@ -282,6 +296,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     parent.id = message.id;
     parent.messageStatus = "TREATED";
     parent.sendType = message.sendType;
+    parent.replyStatus = this.getReplyStatus();
     delete message.sender.img;
     parent.sender = message.sender;
     parent.assignedToId = message.assignedToId;
