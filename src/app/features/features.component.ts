@@ -45,6 +45,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   practicians: any;
   patients: any;
   secretaryIds: any = [];
+  numberOfArchieve:any;
   public messaging: boolean = true;
   private readonly notifier: NotifierService;
   constructor(
@@ -109,7 +110,9 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.featuresService.getNumberOfInbox().subscribe(val => {
       this.inboxNumber = val;
     });
-
+    this.featuresService.getNumberOfArchieve().subscribe(val => {
+      this.numberOfArchieve = val;
+    });
     this.featuresService.currentSearch.subscribe((data: search) => {
       this.text = data.text;
       this.city = data.city;
@@ -298,8 +301,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
 
   countMyArchive() {
     this.featuresService.getCountOfMyArchieve().subscribe(resp => {
-      this.featuresService.numberOfArchieve = resp;
-    });
+      this.featuresService.setNumberOfArchieve(resp)    });
   }
 
   countMyPatientPending() {

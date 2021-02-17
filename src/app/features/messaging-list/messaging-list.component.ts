@@ -246,8 +246,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                   });
                 listToArchive.forEach(message => {
                   if (!message.isSeen) {
-                    this.featureService.numberOfArchieve++;
-                    this.featureService.setNumberOfInbox(this.number - 1);
+                    this.featureService.setNumberOfArchieve(
+                      this.featureService.getNumberOfArchieveValue() + 1
+                    );                    this.featureService.setNumberOfInbox(this.number - 1);
                     this.inboxNumber--;
                   }
                   this.featureService.listNotifications = this.featureService.listNotifications.filter(
@@ -494,8 +495,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               this.deleteElementsFromInbox([messageId]);
               this.featureService.archiveState.next(true);
               if (!event.isSeen) {
-                this.featureService.numberOfArchieve++;
-                this.featureService.setNumberOfInbox(
+                this.featureService.setNumberOfArchieve(
+                  this.featureService.getNumberOfArchieveValue() + 1
+                );                this.featureService.setNumberOfInbox(
                   this.featureService.getNumberOfInboxValue() - 1
                 );
                 this.inboxNumber--;
