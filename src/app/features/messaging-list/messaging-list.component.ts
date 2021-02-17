@@ -408,7 +408,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       isMarkAsSeen: true,
       isArchieve: this.isMyInbox,
       photoId: message.sender.photoId,
-      replyStatus: message.replyStatus
+      messageStatus: message.messageStatus,
+      automaticallyGenerated:message.automaticallyGenerated,
+
     };
     this.documentService
       .getDefaultImage(message.sender.senderId)
