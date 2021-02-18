@@ -180,6 +180,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     messageArchived.isViewDetail = message.hasViewDetail;
     messageArchived.isChecked = false;
 
+    messageArchived.automaticallyGenerated = message.automaticallyGenerated;
     return messageArchived;
   }
 
