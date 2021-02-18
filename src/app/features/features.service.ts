@@ -17,6 +17,7 @@ export class FeaturesService {
   public listNotifications = [];
   public selectedPracticianId = 0;
   private _numberOfInbox = new BehaviorSubject<number>(0);
+  private _numberOfArchieve = new BehaviorSubject<number>(0);
   numberOfForwarded: number = 0;
   numberOfArchieve: number = 0;
   numberOfAccepted: number = 0;
@@ -97,7 +98,17 @@ export class FeaturesService {
   setNumberOfInbox(number) {
     this._numberOfInbox.next(number);
   }
+  getNumberOfArchieveValue() {
+    return this._numberOfArchieve.getValue();
+  }
 
+  getNumberOfArchieve() {
+    return this._numberOfArchieve.asObservable();
+  }
+
+  setNumberOfArchieve(number) {
+    this._numberOfArchieve.next(number);
+  }
   // InboxSearch getter and setter
 
   getSearchInboxValue() {

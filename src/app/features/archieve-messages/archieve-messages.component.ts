@@ -330,11 +330,26 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
               .subscribe(
                 (resp) => {
                   this.refreshMessagingList();
+                  checkedMessages.forEach((message)=>{
+                    if(!message.isSeen){
+                      this.featureService.setNumberOfArchieve(
+                        this.featureService.getNumberOfArchieveValue() - 1
+                      );
+                      this.featureService.setNumberOfInbox(
+                        this.featureService.getNumberOfInboxValue() + 1
+                      );
+                    }
+                  })
                 },
                 (error) => {}
               );
           }
         });
     }
+  }
+  desarchiveMessagesClicked(){
+    this.featureService.setNumberOfInbox(
+      this.featureService.getNumberOfInboxValue() + 1
+    );
   }
 }
