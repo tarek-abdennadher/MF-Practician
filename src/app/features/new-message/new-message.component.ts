@@ -51,6 +51,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   @Input() id: number;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
+  confirmSend=true;
   public uuid: string;
   private _destroyed$ = new Subject();
   imageDropdown: string;
@@ -565,6 +566,18 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     if (this.sendMessageForm.invalid) {
       return;
     }
+    this.sendMessageForm.value.to.forEach((receiver) => {
+      if(receiver.type =='PATIENT' && receiver.canSend === false){
+        this.confirmSend =  this.confirmSend && receiver.canSend;
+      }
+    })
+    if(!this.confirmSend){
+      $("#refuseModal")
+        .appendTo("body")
+        .modal("toggle");
+      this.confirmSend=true;
+      return;
+    }
     if (
       this.sendMessageForm.value.object.length == 1 &&
       this.sendMessageForm.value.object[0].title.toLowerCase() != "Autre"
@@ -910,6 +923,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.man,
+            canSend:contactPractician.canSend
           });
         } else if (
           contactPractician.civility == "MME" ||
@@ -922,6 +936,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.women,
+            canSend:contactPractician.canSend
+
           });
         } else if (contactPractician.civility == "CHILD") {
           myList.push({
@@ -931,6 +947,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.child,
+            canSend:contactPractician.canSend
+
           });
         } else if (
           contactPractician.civility == "" ||
@@ -943,6 +961,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             isSelected:
               this.selectedPracticianId == contactPractician.id ? true : false,
             img: this.avatars.man,
+            canSend:contactPractician.canSend
+
           });
         }
         if (this.selectedPracticianId == contactPractician.id) {
