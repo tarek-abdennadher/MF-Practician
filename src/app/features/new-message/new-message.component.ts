@@ -49,6 +49,7 @@ declare var $: any;
 export class NewMessageComponent implements OnInit, OnDestroy {
   ctrl: FormControl = new FormControl();
   @Input() id: number;
+  @Input() isReceiverPatient: boolean;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
   confirmSend=true;
@@ -136,7 +137,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   dropdownSettingsConcernList: any;
   showFile: any;
   innerWidth: number;
-
   set objectsList(objectsList: any) {
     this._objectsList = objectsList;
     this.objectFilteredList = objectsList;
@@ -567,10 +567,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       return;
     }
     this.sendMessageForm.value.to.forEach((receiver) => {
-      if(receiver.type =='PATIENT' && receiver.canSend === false){
+      if((receiver.type =='PATIENT' ||receiver.type =='PATIENT_FILE') && receiver.canSend === false){
         this.confirmSend =  this.confirmSend && receiver.canSend;
       }
     })
+
     if(!this.confirmSend){
       $("#refuseModal")
         .appendTo("body")
@@ -915,55 +916,110 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           img: this.avatars.secretary,
         });
       } else if (contactPractician.contactType == "PATIENT_FILE") {
+
         if (contactPractician.civility == "M") {
-          myList.push({
-            id: contactPractician.id,
-            fullName: contactPractician.fullName,
-            type: "PATIENT",
-            isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.man,
-            canSend:contactPractician.canSend
-          });
+          if(this.isReceiverPatient){
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: "PATIENT",
+              isSelected:
+               this.selectedPracticianId == contactPractician.entityId,
+              img: this.avatars.man,
+              canSend:contactPractician.canSend
+            });
+          }else{
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: "PATIENT",
+              isSelected:
+                this.selectedPracticianId == contactPractician.id,
+              img: this.avatars.man,
+              canSend:contactPractician.canSend
+            });
+          }
+
         } else if (
           contactPractician.civility == "MME" ||
           contactPractician.civility == "Mme"
         ) {
-          myList.push({
+          if(this.isReceiverPatient){
+
+            myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
+              this.selectedPracticianId == contactPractician.entityId,
             img: this.avatars.women,
             canSend:contactPractician.canSend
 
-          });
+          });}else{
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id ? true : false,
+              img: this.avatars.women,
+              canSend:contactPractician.canSend
+
+            });
+          }
         } else if (contactPractician.civility == "CHILD") {
-          myList.push({
+          if(this.isReceiverPatient){
+
+            myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
+              this.selectedPracticianId == contactPractician.entityId,
             img: this.avatars.child,
             canSend:contactPractician.canSend
 
-          });
+          });}
+          else{
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id ? true : false,
+              img: this.avatars.child,
+              canSend:contactPractician.canSend
+
+            });
+          }
         } else if (
           contactPractician.civility == "" ||
           contactPractician.civility == null
         ) {
-          myList.push({
+          if(this.isReceiverPatient){
+
+            myList.push({
             id: contactPractician.id,
             fullName: contactPractician.fullName,
             type: contactPractician.contactType,
             isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
+              this.selectedPracticianId == contactPractician.entityId,
             img: this.avatars.man,
             canSend:contactPractician.canSend
 
-          });
+          });}
+          else{
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id ? true : false,
+              img: this.avatars.man,
+              canSend:contactPractician.canSend
+
+            });
+          }
         }
         if (this.selectedPracticianId == contactPractician.id) {
           finalState = true;
