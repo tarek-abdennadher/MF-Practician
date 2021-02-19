@@ -22,4 +22,5 @@ export class MessageArchived {
   hasFiles: boolean;
   isViewDetail: boolean;
   isChecked: boolean;
+  automaticallyGenerated: boolean
 }

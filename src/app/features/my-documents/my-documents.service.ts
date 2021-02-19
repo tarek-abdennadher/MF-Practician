@@ -11,6 +11,7 @@ import { OrderDirection } from "@app/shared/enmus/order-direction";
 export class MyDocumentsService {
   public person: any;
   public id = new BehaviorSubject(null);
+  private _objectFilter = new BehaviorSubject("");
   constructor(private globalService: GlobalService, private http: HttpClient) {}
   getIdValue() {
     return this.id.getValue();
@@ -20,6 +21,13 @@ export class MyDocumentsService {
   }
   setId(id) {
     this.id.next(id);
+  }
+
+  getObjectFilter()  {
+    return this._objectFilter.asObservable();
+  }
+  setObjectFilter(object) {
+    this._objectFilter.next(object);
   }
   getMyAttachements(pageNo: number): Observable<any[]> {
     return this.globalService.call(

@@ -180,6 +180,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     messageArchived.isViewDetail = message.hasViewDetail;
     messageArchived.isChecked = false;
 
+    messageArchived.automaticallyGenerated = message.automaticallyGenerated;
     return messageArchived;
   }
 
@@ -311,29 +312,45 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
     this.getMyMessagesArchived();
   }
   desarchiveMessages() {
-    this.dialogService
-      .openConfirmDialog(
-        this.globalService.messagesDisplayScreen.dearchive_confirmation_message,
-        "Désarchivage"
-      )
-      .afterClosed()
-      .subscribe((res) => {
-        if (res) {
-          let checkedMessages = this.filtredItemList.filter(
-            (e) => e.isChecked == true
-          );
-          const messagesId = checkedMessages.map((e) => e.id);
-          if (messagesId && messagesId.length > 0) {
+    let checkedMessages = this.filtredItemList.filter(
+      (e) => e.isChecked == true
+    );
+    const messagesId = checkedMessages.map((e) => e.id);
+    if (messagesId && messagesId.length > 0) {
+      this.dialogService
+        .openConfirmDialog(
+          this.globalService.messagesDisplayScreen
+            .dearchive_confirmation_message,
+          "Désarchivage"
+        )
+        .afterClosed()
+        .subscribe((res) => {
+          if (res) {
             this.archivedService
               .markMessageAsNoMoreArchived(messagesId)
               .subscribe(
                 (resp) => {
                   this.refreshMessagingList();
+                  checkedMessages.forEach((message)=>{
+                    if(!message.isSeen){
+                      this.featureService.setNumberOfArchieve(
+                        this.featureService.getNumberOfArchieveValue() - 1
+                      );
+                      this.featureService.setNumberOfInbox(
+                        this.featureService.getNumberOfInboxValue() + 1
+                      );
+                    }
+                  })
                 },
                 (error) => {}
               );
           }
-        }
-      });
+        });
+    }
+  }
+  desarchiveMessagesClicked(){
+    this.featureService.setNumberOfInbox(
+      this.featureService.getNumberOfInboxValue() + 1
+    );
   }
 }
