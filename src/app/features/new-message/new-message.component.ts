@@ -204,7 +204,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private accountService: AccountService,
     private objectsService: ObjectsService,
-    private messageWidgetService: NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService,
+    private newMessageService: HlsSendMessageService
   ) {
     this.texts = hlsSendMessageService.texts;
     this.sendMessageForm = this.formBuilder.group({
