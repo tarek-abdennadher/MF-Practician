@@ -205,7 +205,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private objectsService: ObjectsService,
     private messageWidgetService: NewMessageWidgetService,
-    private newMessageService: HlsSendMessageService
+    public newMessageService: HlsSendMessageService
   ) {
     this.texts = hlsSendMessageService.texts;
     this.sendMessageForm = this.formBuilder.group({
