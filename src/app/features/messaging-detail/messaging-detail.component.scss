@@ -1,3 +1,22 @@
 .reply {
   margin-top: -32px;
 }
+.image-name {
+  display: block;
+}
+.loading {
+  color: white;
+}
+.card-image {
+  max-width: 100vh;
+  max-height: 100vh;
+}
+.card-align {
+  text-align: center;
+}
+.card-body {
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: rgba(243, 243, 243, 0.5) !important;
+  padding: 0 !important;
+}

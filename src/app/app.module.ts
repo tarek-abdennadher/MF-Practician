@@ -30,7 +30,7 @@ registerLocaleData(localeFr, "fr");
     CoreModule,
     FeaturesModule,
     AccountModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   providers: [
     {
