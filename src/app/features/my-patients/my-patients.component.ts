@@ -276,7 +276,13 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   writeAction(item) {
-    this.messageWidgetService.toggleObs.next(item.users[0].accountId);
+    if(item.users[0].accountId)
+    {
+      this.messageWidgetService.toggleObs.next(item.users[0].accountId);
+    }else{
+      this.messageWidgetService.toggleObs.next( item.users[0].id);
+      this.messageWidgetService.isPatientFileNewMessageWidget.next( true);
+    }
   }
   prohibitAction(item) {
     this.scrollDown = false;

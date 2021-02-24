@@ -573,3 +573,33 @@
     </div>
   </div>
 </div>
+<!-- Refuse modal -->
+<div
+  class="modal fade"
+  id="refuseModal"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i
+          class="fas fa-exclamation-triangle fa-5x font"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></i>
+      </div>
+      <div class="modal-body" >
+        <p>
+          {{this.newMessageService.texts.incomplete_patient_file_error}}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-ok confirm">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

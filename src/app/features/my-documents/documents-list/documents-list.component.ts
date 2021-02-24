@@ -81,11 +81,6 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.idSenderReceiver = this.featureService.decrypt(params.id);
     });
-    this.route.queryParams.subscribe(params => {
-      this.filterDocumentsForm.patchValue({
-        documentType: params["type"]
-      });
-    });
     this.getPersonalInfo();
     this.getAccountDetails(this.idSenderReceiver);
     this.realTime();
@@ -455,76 +450,82 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       });
   }
   filter() {
-    this.pageNo = 0;
-    this.itemList = [];
-    if (
-      this.filterDocumentsForm.value.destination != "" &&
-      this.filterDocumentsForm.value.documentType != ""
-    ) {
-      this.getAttachementBySenderForAndObject(
-        this.idSenderReceiver,
-        this.filterDocumentsForm.value.destination,
-        this.filterDocumentsForm.value.documentType,
-        this.pageNo
-      );
-    } else if (
-      this.filterDocumentsForm.value.destination != "" &&
-      this.filterDocumentsForm.value.documentType == ""
-    ) {
-      this.getAttachementBySenderFor(
-        this.idSenderReceiver,
-        this.filterDocumentsForm.value.destination,
-        this.pageNo
-      );
-    } else if (
-      this.filterDocumentsForm.value.destination == "" &&
-      this.filterDocumentsForm.value.documentType != ""
-    ) {
-      this.getAttachementByObject(
-        this.idSenderReceiver,
-        this.filterDocumentsForm.value.documentType,
-        this.pageNo
-      );
-    } else {
-      this.getAttachementById(this.idSenderReceiver, this.pageNo);
-    }
+    this.documentsService.getObjectFilter().subscribe(
+      (value)=>{
+        this.pageNo = 0;
+        this.itemList = [];
+        if(value !="" && value!=='Tout'){
+          this.getAttachementByObject(
+            this.idSenderReceiver,
+            value,
+            this.pageNo
+          );}
+        else if (
+          this.filterDocumentsForm.value.destination != "" &&
+          value != ""
+        ) {
+          this.getAttachementBySenderForAndObject(
+            this.idSenderReceiver,
+            this.filterDocumentsForm.value.destination,
+            value,
+            this.pageNo
+          );
+        } else if (
+          this.filterDocumentsForm.value.destination != "" &&
+          value == ""
+        ) {
+          this.getAttachementBySenderFor(
+            this.idSenderReceiver,
+            this.filterDocumentsForm.value.destination,
+            this.pageNo
+          );
+        } else {
+          this.getAttachementById(this.idSenderReceiver, this.pageNo);
+        }
+      }
+    )
+
+
   }
 
   onScroll() {
-    if (this.listLength != this.itemList.length) {
-      this.listLength = this.itemList.length;
-      this.pageNo++;
-      if (
-        this.filterDocumentsForm.value.destination != "" &&
-        this.filterDocumentsForm.value.documentType != ""
-      ) {
-        this.getAttachementBySenderForAndObject(
-          this.idSenderReceiver,
-          this.filterDocumentsForm.value.destination,
-          this.filterDocumentsForm.value.documentType,
-          this.pageNo
-        );
-      } else if (
-        this.filterDocumentsForm.value.destination != "" &&
-        this.filterDocumentsForm.value.documentType == ""
-      ) {
-        this.getAttachementBySenderFor(
-          this.idSenderReceiver,
-          this.filterDocumentsForm.value.destination,
-          this.pageNo
-        );
-      } else if (
-        this.filterDocumentsForm.value.destination == "" &&
-        this.filterDocumentsForm.value.documentType != ""
-      ) {
-        this.getAttachementByObject(
-          this.idSenderReceiver,
-          this.filterDocumentsForm.value.documentType,
-          this.pageNo
-        );
-      } else {
-        this.getAttachementById(this.idSenderReceiver, this.pageNo);
-      }
-    }
+    this.documentsService.getObjectFilter().subscribe(
+      (value) => {
+        if (this.listLength != this.itemList.length) {
+          this.listLength = this.itemList.length;
+          this.pageNo++;
+          if (
+            this.filterDocumentsForm.value.destination != "" &&
+            value != ""
+          ) {
+            this.getAttachementBySenderForAndObject(
+              this.idSenderReceiver,
+              this.filterDocumentsForm.value.destination,
+              value,
+              this.pageNo
+            );
+          } else if (
+            this.filterDocumentsForm.value.destination != "" &&
+            value == ""
+          ) {
+            this.getAttachementBySenderFor(
+              this.idSenderReceiver,
+              this.filterDocumentsForm.value.destination,
+              this.pageNo
+            );
+          } else if (
+            this.filterDocumentsForm.value.destination == "" &&
+            value != ""
+          ) {
+            this.getAttachementByObject(
+              this.idSenderReceiver,
+              value,
+              this.pageNo
+            );
+          } else {
+            this.getAttachementById(this.idSenderReceiver, this.pageNo);
+          }
+        }
+      });
   }
 }
