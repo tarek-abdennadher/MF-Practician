@@ -267,7 +267,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         nodeId: attachement.nodeId,
         time: attachement.updatedAt,
         download: true,
-        visualize: true,
+        visualize: checkIsValidImageExtensions(node.name).isValid,
         realName: node.name
       };
     }
@@ -375,30 +375,6 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
             let ok = myReader.readAsDataURL(response.body);
           }
         );
-    }else{
-      this.documentsService
-      .downloadFile(attachement.nodeId)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(response => {
-        const filename = attachement.realName;
-        const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
-        const extension = filename.substring(dotIndex + 1, filename.length);
-
-        const blob = new Blob([response.body], {
-          type: this.getType(extension)
-        });
-
-        let resultname: string;
-        if (filenameDisplay !== "") {
-          resultname = filenameDisplay.includes(extension)
-            ? filenameDisplay
-            : filenameDisplay + "." + extension;
-        } else {
-          resultname = filename;
-        }
-        this.openFile("", filename, blob);
-      });
     }
 
   }
