@@ -505,6 +505,58 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       });
     }
   }
+  replyActionTLS() {
+    this.loading = false;
+    this.scrollToBottom();
+    let messageToReply = JSON.parse(JSON.stringify(this.originalMessageNode));
+    messageToReply.documentBody = null;
+    messageToReply.documentFooter = null;
+    messageToReply.documentHeader = null;
+    messageToReply.body = null;
+    console.log(messageToReply)
+      messageToReply.id = this.messagingDetail.id;
+    if (this.showReplyActionsForPatient === true) {
+      this.router.navigate(["messagerie-repondre"], {
+        queryParams: {
+          status: "",
+          context: "TLS",
+        },
+        relativeTo: this.route.parent,
+        state: { data: messageToReply },
+      });
+    } else {
+      this.router.navigate(["messagerie-repondre"], {
+        relativeTo: this.route.parent,
+        state: { data: messageToReply },
+      });
+    }
+  }
+  replyActionPatient() {
+    this.newMessage = JSON.parse(JSON.stringify(this.originalMessageNode));
+    this.newMessage.id = this.messagingDetail.id;
+    this.newMessage.sender.fullName = this.originalMessageNode.sender.concernsFullName;
+    this.newMessage.sender.role = "PATIENT";
+    this.newMessage.sender.senderId = this.patientFileAccountId;
+    this.newMessage.sender.civility = this.originalMessageNode.sender.concernsCivility;
+    this.newMessage.sender.concernsFullName = null;
+    this.newMessage.documentBody = null;
+    this.newMessage.documentFooter = null;
+    this.newMessage.documentHeader = null;
+    this.newMessage.body = null;
+    console.log(this.newMessage)
+    this.loading = false;
+    this.router.navigate(["messagerie-repondre"], {
+      queryParams: {
+        status: "",
+        context: "PATIENT",
+      },
+      relativeTo: this.route.parent,
+      state: {
+        data: this.newMessage,
+      },
+    });
+    this.scrollToBottom();
+  }
 
   forwardAction() {
     this.loading = false;
