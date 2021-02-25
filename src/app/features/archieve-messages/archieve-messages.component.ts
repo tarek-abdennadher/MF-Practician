@@ -73,6 +73,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
+    this.pagination.init(null);
   }
 
   ngOnInit(): void {
@@ -116,10 +117,6 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
           this.number > 1
             ? this.globalService.messagesDisplayScreen.newArchivedMessages
             : this.globalService.messagesDisplayScreen.newArchivedMessage;
-        messages.sort(
-          (m1, m2) =>
-            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
         messages.forEach((message) => {
           const archivedMessage = this.mappingMessageArchived(message);
           archivedMessage.users.forEach((user) => {
