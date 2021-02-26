@@ -106,10 +106,6 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((messages: any) => {
         this.loading = false;
-        messages.sort(
-          (m1, m2) =>
-            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
-        );
         messages.forEach(message => {
           const messageSent = this.mappingMessage(message);
           messageSent.id = message.id;
@@ -353,6 +349,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
+    this.pagination.init(null);
   }
 
   refreshMessagingList() {

@@ -235,6 +235,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .getMessageArchivedById(id)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((message) => {
+          this.findOriginalMessageNode(message, id);
           this.message = message;
           this.getAttachements(message.nodesId);
           this.messagingDetail = message;
