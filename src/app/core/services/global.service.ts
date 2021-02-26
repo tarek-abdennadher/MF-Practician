@@ -147,6 +147,7 @@ export class GlobalService {
     archived_patients: "Patients Archivés",
     dearchive_confirmation_message:
       "Voulez vous vraiment désarchiver ce(s) message(s) ",
+      loading: "Chargement en cours",
   };
 
   public avatars = {

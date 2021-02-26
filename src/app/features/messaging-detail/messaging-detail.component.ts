@@ -15,6 +15,9 @@ import { MyPatientsService } from "../services/my-patients.service";
 import { DomSanitizer, Title } from "@angular/platform-browser";
 import { FeaturesComponent } from "../features.component";
 import { MessageService } from "@app/features/services/message.service";
+import { checkIsValidImageExtensions } from "@app/shared/functions/functions";
+import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: "app-messaging-detail",
   templateUrl: "./messaging-detail.component.html",
@@ -51,6 +54,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   practicianId: number;
   patientId: number;
   page = this.globalService.messagesDisplayScreen.inbox;
+  loadingText = this.globalService.messagesDisplayScreen.loading;
   number = 0;
   topText = this.globalService.messagesDisplayScreen.MailDetail;
   bottomText =
@@ -62,7 +66,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   userRole = this.localSt.retrieve("role");
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   sentContext = false;
-  attachements: string[] = [];
+  attachements: any[] = [];
   avatars: {
     doctor: string;
     child: string;
@@ -75,6 +79,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   showRefuseForTls: boolean;
   public patientFileId: number;
   context: string;
+  image = {
+    imageName: "",
+    src: null
+  };
   constructor(
     private _location: Location,
     private router: Router,
@@ -90,7 +98,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private featureComp: FeaturesComponent,
     private title: Title,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private spinner: NgxSpinnerService,
   ) {
     this.title.setTitle(this.topText);
     this.loading = false;
@@ -396,7 +405,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               .getNodeDetailsFromAlfresco(id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe((node) => {
-                parent.attachements.push(node.entry.name);
+                parent.attachements.push({name: node.entry.name, visualize: checkIsValidImageExtensions(node.entry.name).isValid});
               });
           });
         }
@@ -662,6 +671,44 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  hideSpinner (){
+    this.spinner.hide();
+    this.image = {
+      imageName: "",
+      src: null
+    };
+  }
+
+
+  visualizeFile(nodesId: Array<string>) {
+    nodesId.forEach((nodeId) => {
+      this.spinner.show();
+      var nodeDetails;
+      this.documentService
+        .getNodeDetailsFromAlfresco(nodeId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((node) => {
+          nodeDetails = node;
+        });
+
+      this.documentService
+        .downloadFile(nodeId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((response) => {
+          const checked = checkIsValidImageExtensions(nodeDetails.entry.name);
+          if (checked.isValid) {
+            this.image.imageName = nodeDetails.entry.name;
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = e => {
+            if (checked.isSvg) this.image.src = this.sanitizer.bypassSecurityTrustUrl(myReader.result as string);
+            else this.image.src =  myReader.result;
+          };
+          let ok = myReader.readAsDataURL(response.body);
+          }
+        });
+    });
+  }
+
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
@@ -676,7 +723,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           .getNodeDetailsFromAlfresco(id)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((node) => {
-            this.attachements.push(node.entry.name);
+            this.attachements.push({name: node.entry.name, visualize: checkIsValidImageExtensions(node.entry.name).isValid});
           });
       });
     }
