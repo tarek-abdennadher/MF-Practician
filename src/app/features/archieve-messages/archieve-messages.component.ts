@@ -225,6 +225,9 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       this.featureService.markAsSeen(this.featureService.searchArchive, [
         messageId,
       ]);
+      this.featureService.setNumberOfArchieve(
+        this.featureService.getNumberOfArchieveValue() - 1
+      );
     });
   }
 
@@ -327,6 +330,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
               .markMessageAsNoMoreArchived(messagesId)
               .subscribe(
                 (resp) => {
+                  this.pagination.init(null);
                   this.refreshMessagingList();
                   checkedMessages.forEach((message)=>{
                     if(!message.isSeen){
