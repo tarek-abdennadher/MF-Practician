@@ -10,6 +10,9 @@ import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
 import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
 import { FeaturesService } from "@app/features/features.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { NgxSpinnerService } from "ngx-spinner";
+import { checkIsValidImageExtensions } from "@app/shared/functions/functions";
 
 @Component({
   selector: "app-documents-list",
@@ -21,6 +24,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   page = this.globalService.messagesDisplayScreen.documents;
   topText = this.globalService.messagesDisplayScreen.documents;
+  loading = this.globalService.messagesDisplayScreen.loading;
 
   backButton = true;
   observables = [];
@@ -34,6 +38,10 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   linkedPatients: any;
 
   pageNo = 0;
+  image = {
+    imageName: "",
+    src: null
+  };
   listLength = 0;
   scroll = false;
   avatars: {
@@ -53,7 +61,9 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private civilityPipe: CivilityPipe,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private sanitizer: DomSanitizer,
+    private spinner: NgxSpinnerService,
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
@@ -258,7 +268,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         nodeId: attachement.nodeId,
         time: attachement.updatedAt,
         download: true,
-        visualize: true,
+        visualize: checkIsValidImageExtensions(node.name).isValid,
         realName: node.name
       };
     }
@@ -322,6 +332,16 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         FileSaver.saveAs(blob, resultname);
       });
   }
+
+  hideSpinner (){
+    this.spinner.hide();
+    this.image = {
+      imageName: "",
+      src: null
+    };
+
+  }
+
   getType(extention: string) {
     switch (extention.toLowerCase()) {
       case "pdf":
@@ -337,29 +357,26 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     }
   }
   visualizeFile(attachement) {
-    this.documentsService
-      .downloadFile(attachement.nodeId)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe(response => {
-        const filename = attachement.realName;
-        const filenameDisplay = filename;
-        const dotIndex = filename.lastIndexOf(".");
-        const extension = filename.substring(dotIndex + 1, filename.length);
-
-        const blob = new Blob([response.body], {
-          type: this.getType(extension)
-        });
-
-        let resultname: string;
-        if (filenameDisplay !== "") {
-          resultname = filenameDisplay.includes(extension)
-            ? filenameDisplay
-            : filenameDisplay + "." + extension;
-        } else {
-          resultname = filename;
-        }
-        this.openFile("", filename, blob);
-      });
+    const checked = checkIsValidImageExtensions(attachement.realName);
+    if (checked.isValid) {
+      this.image.imageName = attachement.realName;
+      this.spinner.show();
+      this.documentsService
+        .downloadFile(attachement.nodeId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe(
+          response => {
+            let myReader: FileReader = new FileReader();
+            myReader.onloadend = e => {
+              if (checked.isSvg) this.image.src = this.sanitizer.bypassSecurityTrustUrl(
+                myReader.result as string
+              );
+              else this.image.src =  myReader.result;
+            };
+            let ok = myReader.readAsDataURL(response.body);
+          }
+        );
+    }
   }
 
   openFile(resData, fileName, blob) {

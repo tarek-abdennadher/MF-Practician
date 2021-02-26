@@ -44,9 +44,17 @@
     (acceptAction)="acceptAction()"
     (refuseAction)="refuseAction()"
     (downloadAction)="download($event)"
+    (visualizeAction)="visualizeFile($event)"
     [attachements]="attachements"
   >
   </lib-hlsMessagingDetail>
+  <ngx-spinner (click)="hideSpinner()" [fullScreen]="true" type="none" size="medium">
+    <div *ngIf="image.src" class="card-align">
+      <img class="card-image" [src]="image.src" />
+      <span class="card-body image-name" >{{image.imageName}}</span>
+    </div>
+      <span class="loading" *ngIf="!image.src">{{loadingText}} ...</span>
+  </ngx-spinner>
   <div id="reply" class="reply">
     <router-outlet></router-outlet>
   </div>
