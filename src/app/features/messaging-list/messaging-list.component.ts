@@ -344,11 +344,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this._destroyed$))
           .subscribe(retrievedMess => {
             this.loading = false;
-            retrievedMess.sort(
-              (m1, m2) =>
-                new Date(m2.updatedAt).getTime() -
-                new Date(m1.updatedAt).getTime()
-            );
             this.itemsList = new Array();
             this.filtredItemList = new Array();
             this.itemsList.push(
@@ -810,5 +805,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
+    this.pagination.init(null);
   }
 }
