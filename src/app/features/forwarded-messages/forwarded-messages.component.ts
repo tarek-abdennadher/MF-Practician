@@ -21,6 +21,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   private _destroyed$ = new Subject();
   imageSource: string;
+  searchContext= false;
   links = {
     isAllSelect: true,
     isFilter: false,
@@ -68,6 +69,7 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.featureService.setFilteredForwardedSearch([])
     this.featureService.setActiveChild("forwarded");
     this.countAllMyForwardedMessages();
     this.searchForwarded();
@@ -326,11 +328,15 @@ export class ForwardedMessagesComponent implements OnInit, OnDestroy {
   searchForwarded() {
     this.featureService.getFilteredForwardedSearch().subscribe(res => {
       if (res == null) {
+        this.searchContext = true;
         this.filtredItemList = [];
       } else if (res?.length > 0) {
         this.filtredItemList = res;
+        this.searchContext = true;
+
       } else {
         this.filtredItemList = this.itemsList;
+        this.searchContext = false;
       }
     });
   }

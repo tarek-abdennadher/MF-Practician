@@ -101,6 +101,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.featureService.setFilteredInboxSearch([]);
     this.featureService.setActiveChild("inbox");
     this.itemsList = new Array();
     this.route.params.subscribe(params => {
