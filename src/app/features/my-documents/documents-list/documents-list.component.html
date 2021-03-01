@@ -25,14 +25,15 @@
               [isCheckbox]="false"
             ></lib-hls-document-grid>
             <ngx-spinner (click)="hideSpinner()" [fullScreen]="true" type="none" size="medium">
-              <div *ngIf="image.src" class="card-align">
-                <img class="card-image" [src]="image.src" />
-                <span class="card-body image-name" >{{image.imageName}}</span>
-              </div>
-                <span class="loading" *ngIf="!image.src">{{loading}} ...</span>
-          </ngx-spinner>
+                <div *ngIf="image.src" class="card-align">
+                  <img class="card-image" [src]="image.src" />
+                  <span class="card-body image-name" >{{image.imageName}}</span>
+                </div>
+                  <span class="loading" *ngIf="!image.src">{{loading}} ...</span>
+            </ngx-spinner>
           </div>
         </div>
+
       </div>
     </div>
   </div>
