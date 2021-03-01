@@ -591,6 +591,9 @@ export class MessagingListComponent implements OnInit, OnDestroy {
                 }
               );
             this.filtredItemList.unshift(message);
+            this.filtredItemList.sort(function (m1, m2) {
+              return (new Date(m2.createdAt).getTime() - new Date(m1.createdAt).getTime());
+            });
             this.messagesNumber++;
             this.pagination.init(this.messagesNumber);
             this.bottomText =
