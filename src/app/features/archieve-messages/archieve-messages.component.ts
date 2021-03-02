@@ -77,6 +77,7 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.featureService.setFilteredArchiveSearch([])
     this.links = {
       isRefresh: true,
       isPagination: true,

@@ -71,6 +71,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.featureService.setFilteredSentSearch([])
     this.featureService.setActiveChild("sent");
     this.route.queryParams.subscribe(params => {
       if (params["status"] == "archiveSuccess") {

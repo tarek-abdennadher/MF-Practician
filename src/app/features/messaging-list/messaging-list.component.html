@@ -9,7 +9,7 @@
   [backButton]="backButton"
   [imageSource]="imageSource"
   [person]="person"
-  [paginationText]="searchContext ? '-' : pagination.text"
+  [paginationText]="this.searchContext ? '-' : pagination.text"
   [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
   [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
   (nextPageAction)="nextPageActionClicked()"
