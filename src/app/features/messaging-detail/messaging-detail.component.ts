@@ -514,7 +514,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     messageToReply.documentFooter = null;
     messageToReply.documentHeader = null;
     messageToReply.body = null;
-    console.log(messageToReply)
       messageToReply.id = this.messagingDetail.id;
     if (this.showReplyActionsForPatient === true) {
       this.router.navigate(["messagerie-repondre"], {
@@ -544,7 +543,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.newMessage.documentFooter = null;
     this.newMessage.documentHeader = null;
     this.newMessage.body = null;
-    console.log(this.newMessage)
     this.loading = false;
     this.router.navigate(["messagerie-repondre"], {
       queryParams: {
@@ -688,7 +686,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
 
   goToBack() {
-    this._location.back();
+    this.router.navigate(["/messagerie"]);
+
   }
 
   download(nodesId: Array<string>) {
