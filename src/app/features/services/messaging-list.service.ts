@@ -11,7 +11,7 @@ import { SenderRole } from "@app/shared/enmus/sender-role";
 import { Mutex } from "async-mutex";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MessagingListService {
   private notificationObs = new BehaviorSubject<Object>("");
@@ -57,7 +57,7 @@ export class MessagingListService {
           senderId: notification.senderId,
           picture: null,
           messageId: notification.messageId,
-          type: notification.type
+          type: notification.type,
         });
         this.featuresService.setNumberOfInbox(
           this.featuresService.getNumberOfInboxValue() + 1
@@ -82,7 +82,7 @@ export class MessagingListService {
           : notification.senderFullName,
         senderId: notification.senderId,
         picture: null,
-        type: notification.type
+        type: notification.type,
       });
       this.featuresService.setNumberOfPending(
         this.featuresService.getNumberOfPendingValue() + 1
@@ -104,7 +104,7 @@ export class MessagingListService {
         senderId: notification.senderId,
         picture: null,
         messageId: notification.messageId,
-        type: notification.type
+        type: notification.type,
       });
     }
   }
@@ -112,11 +112,11 @@ export class MessagingListService {
   removeInvitationNotificationObs(notification) {
     if (
       this.featuresService.listNotifications.findIndex(
-        notif => notif.id == notification.id
+        (notif) => notif.id == notification.id
       ) != -1
     ) {
       this.featuresService.listNotifications = this.featuresService.listNotifications.filter(
-        notif => notif.id != notification.id
+        (notif) => notif.id != notification.id
       );
       this.featuresService.setNumberOfPending(
         this.featuresService.getNumberOfPendingValue() - 1
@@ -155,7 +155,7 @@ export class MessagingListService {
       RequestType.GET,
       this.globalService.url.messages + "inbox-by-account/" + id,
       {
-        params: { pageNo: pageNo, order: order, senderRole: filter }
+        params: { pageNo: pageNo, order: order, senderRole: filter },
       }
     );
   }
@@ -175,7 +175,7 @@ export class MessagingListService {
         "/listSize/" +
         size,
       {
-        params: { pageNo: pageNo, order: order, senderRole: filter }
+        params: { pageNo: pageNo, order: order, senderRole: filter },
       }
     );
   }
@@ -189,8 +189,8 @@ export class MessagingListService {
       this.globalService.url.messages + "inbox-by-account/" + id + "/count",
       {
         params: {
-          senderRole: filter
-        }
+          senderRole: filter,
+        },
       }
     );
   }
@@ -265,7 +265,7 @@ export class MessagingListService {
   }
 
   changeFlagImportant(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id)) {
         elm.isImportant = true;
       }
@@ -273,7 +273,7 @@ export class MessagingListService {
   }
 
   changeFlagNotImportant(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id)) {
         elm.isImportant = false;
       }
@@ -289,7 +289,7 @@ export class MessagingListService {
       RequestType.GET,
       this.globalService.url.messages + "ByPatientFile/" + patientFileId,
       {
-        params: { pageNo: pageNo, order: order }
+        params: { pageNo: pageNo, order: order },
       }
     );
   }
@@ -338,5 +338,28 @@ export class MessagingListService {
         message.isChecked = false;
       }
     }
+  }
+  public countInboxByAccountIdAndCategory(id, category): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages +
+        "inbox/category/count/" +
+        id +
+        "/" +
+        category
+    );
+  }
+  public getInboxByCategory(
+    category,
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "myInbox/byCategory/" + category,
+      {
+        params: { pageNo: pageNo, order: order },
+      }
+    );
   }
 }
