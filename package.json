@@ -52,7 +52,7 @@
     "hls-password-strength": "^1.0.35",
     "hls-practician-detail": "^1.0.41",
     "hls-search": "^1.0.22",
-    "hls-side-bar": "^1.0.92",
+    "hls-side-bar": "^1.0.93",
     "install": "^0.13.0",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",

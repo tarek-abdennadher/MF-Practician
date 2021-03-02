@@ -148,7 +148,7 @@ export class GlobalService {
     dearchive_confirmation_message:
       "Voulez vous vraiment désarchiver ce(s) message(s) ",
     loading: "Chargement en cours",
-    Mailbox_demand: "demande de document",
+    Mailbox_demand: "Demande de document",
     Mailbox_phones: "Rappel téléphonique",
     Mailbox_appointment: "Demande de rdv",
     Mailbox_divers: "Divers",

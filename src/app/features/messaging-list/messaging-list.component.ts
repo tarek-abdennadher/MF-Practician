@@ -107,9 +107,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.messagesNumber = 0;
       this.inboxPracticianNumber = 0;
+      this.topText = this.globalService.messagesDisplayScreen.Mailbox;
       if (params["category"]) {
         this.messageCategory = params["category"];
-        switch (params["status"]) {
+        switch (params["category"]) {
           case "DEMAND": {
             this.topText = this.globalService.messagesDisplayScreen.Mailbox_demand;
             break;
@@ -128,6 +129,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           }
           case "DIVERS": {
             this.topText = this.globalService.messagesDisplayScreen.Mailbox_divers;
+            break;
+          }
+          default: {
+            this.topText = this.globalService.messagesDisplayScreen.Mailbox;
             break;
           }
         }
