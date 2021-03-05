@@ -273,10 +273,14 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
   deleteItemFromList(ids) {
     if (ids && ids.length > 0) {
-      this.itemsList = this.itemsList.filter(item => ids.includes(item.id));
+      this.itemsList = this.itemsList.filter(item => !ids.includes(item.id));
       this.filtredItemsList = this.filtredItemsList.filter(
         item => !ids.includes(item.id)
       );
+
+      if(this.filtredItemsList.length === 0){
+        this.listFilter(this.ALL_TYPES);
+      }
       this.getSpecialities();
     }
   }
