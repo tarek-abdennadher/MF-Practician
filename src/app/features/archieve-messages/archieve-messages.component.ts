@@ -13,6 +13,7 @@ import { RoleObjectPipe } from "@app/shared/pipes/role-object";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { DialogService } from "../services/dialog.service";
+import {SenderRole} from '@enum/sender-role';
 
 @Component({
   selector: "app-archieve-messages",
@@ -23,9 +24,11 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   imageSource: string;
   page = "ARCHIVE";
+  public selectedTabIndex = 0;
   number = 0;
   messagesNumber: number = 0;
   topText = "Messages archivés";
+  userTypeTabsFilter: SenderRole = SenderRole.ALL;
   bottomText =
     this.number > 1
       ? this.globalService.messagesDisplayScreen.newArchivedMessages
@@ -101,7 +104,112 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       });
     this.loadPage();
   }
+  public selectedTab($event) {
+    if ($event.index === 0) {
+      this.filterActionClickedV2("all");
+    } else if ($event.index === 1) {
+      this.filterActionClickedV2("secretary");
+    } else if ($event.index === 2) {
+      this.filterActionClickedV2("patient");
+    } else if ($event.index === 3) {
+      this.filterActionClickedV2("doctor");
+    }
+  }
+  filterActionClickedV2(event) {
+    this.filtredItemList =
+      event == "all"
+        ? this.itemsList
+        : this.itemsList.filter(item => {
+          switch (event) {
+            case "doctor":
+              return item.users[0].type.toLowerCase() == "medical";
+            case "secretary":
+              return (
+                item.users[0].type.toLowerCase() == "secretary" ||
+                item.users[0].type.toLowerCase() == "telesecretarygroup" ||
+                item.users[0].type.toLowerCase() == "supervisor" ||
+                item.users[0].type.toLowerCase() == "super_supervisor"
+              );
+            default:
+              return item.users[0].type.toLowerCase() == event;
+          }
+        });
+    switch (event) {
+      case "all":
+        this.userTypeTabsFilter = SenderRole.ALL;
+        break;
+      case "doctor":
+        this.userTypeTabsFilter = SenderRole.PRACTICIAN;
+        break;
+      case "secretary":
+        this.userTypeTabsFilter = SenderRole.SECRETARY;
+        break;
+      default:
+        this.userTypeTabsFilter = SenderRole.PATIENT;
+        break;
+    }
+    this.refreshCurrentPage();
+  }
+  private refreshCurrentPage() {
+    this.getMyMessagesArchivedV2();
+  }
 
+  getMyMessagesArchivedV2NextPage() {
+    this.loading = true;
+    this.archivedService
+      .getMyArchivedMessagesBySenderRole(this.pagination.pageNo, this.pagination.direction, this.userTypeTabsFilter)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(retrievedMess => {
+        this.loading = false;
+        retrievedMess.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+        this.itemsList.push(
+          ...retrievedMess.map(item => this.mappingMessageArchived((item))
+        ));
+        this.itemsList.forEach((item)=>{
+          item.users.forEach((user) => {
+            this.loadPhoto(user);
+          });
+        })
+        this.filtredItemList = this.itemsList;
+      });
+  }
+  getMyMessagesArchivedV2() {
+    this.resetData();
+    this.loading = true;
+    const pageNo = this.pagination.pageNo ? this.pagination.pageNo : 0;
+    const direction = this.pagination.direction
+      ? this.pagination.direction
+      : null;
+    this.archivedService
+      .countMyArchivedMessagesBySenderRole(this.userTypeTabsFilter)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(num => {
+        this.pagination.init(num);
+        this.messagesNumber = num;
+      });
+    this.archivedService
+      .getMyArchivedMessagesBySenderRole(pageNo, direction, this.userTypeTabsFilter)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((messages) => {
+        this.loading = false;
+        this.number = this.featureService.numberOfArchieve;
+        this.bottomText =
+          this.number > 1
+            ? this.globalService.messagesDisplayScreen.newArchivedMessages
+            : this.globalService.messagesDisplayScreen.newArchivedMessage;
+        messages.forEach((message) => {
+          const archivedMessage = this.mappingMessageArchived(message);
+          archivedMessage.users.forEach((user) => {
+            this.loadPhoto(user);
+          });
+          this.itemsList.push(archivedMessage);
+        });
+        this.filtredItemList = this.itemsList;
+      });
+  }
   getMyMessagesArchived() {
     this.loading = true;
     const pageNo = this.pagination.pageNo ? this.pagination.pageNo : 0;
@@ -306,11 +414,13 @@ export class ArchieveMessagesComponent implements OnInit, OnDestroy {
       this.loadPage();
     }
   }
-
-  loadPage() {
+   resetData() {
     this.itemsList = [];
     this.filtredItemList = [];
-    this.getMyMessagesArchived();
+  }
+  loadPage() {
+    this.resetData();
+    this.getMyMessagesArchivedV2NextPage();
   }
   desarchiveMessages() {
     let checkedMessages = this.filtredItemList.filter(

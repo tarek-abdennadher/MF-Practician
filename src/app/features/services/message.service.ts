@@ -4,6 +4,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { Observable } from "rxjs";
 import { Message } from "@app/shared/models/message";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
+import {SenderRole} from '@enum/sender-role';
 
 @Injectable({
   providedIn: "root",
@@ -30,7 +31,20 @@ export class MessageService {
       params
     );
   }
-
+  public getSentAccountId(
+    id,
+    filter: SenderRole,
+    pageNo,
+    order: OrderDirection = OrderDirection.DESC
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "sent-by-account/" + id,
+      {
+        params: { pageNo: pageNo, order: order, senderRole: filter }
+      }
+    );
+  }
   sentMessageFullSize(): Observable<Array<Message>> {
     let params = {};
     params = { params: { pageSize: 1000000 } };
@@ -102,7 +116,20 @@ export class MessageService {
       this.globalService.url.messages + "countSentInBox"
     );
   }
-
+  public countSentByAccountId(
+    id,
+    filter: SenderRole = SenderRole.ALL
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages + "sent-by-account/" + id + "/count",
+      {
+        params: {
+          senderRole: filter
+        }
+      }
+    );
+  }
   replyMessageWithFile(formData): Observable<any> {
     return this.globalService.call(
       RequestType.POST,

@@ -18,6 +18,18 @@
 ></lib-hlsLinks>
 <div class="card rectangle-custom">
   <div class="card-body custom-card-message">
+    <mat-tab-group
+      class="links"
+      mat-align-tabs="start"
+      [backgroundColor]="'primary'"
+      (selectedTabChange)="selectedTab($event)"
+      [(selectedIndex)]="selectedTabIndex"
+    >
+      <mat-tab label="TousMessages" >
+        <ng-template mat-tab-label>
+          <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
+          <span>Tous mes messages</span>
+        </ng-template>
     <lib-hlsMessagingList
       *ngIf="!loading"
       [list]="filtredItemList"
@@ -29,6 +41,60 @@
       (downSortAction)="downSortClicked()"
       [caller]="'archieve'"
     ></lib-hlsMessagingList>
+      </mat-tab>
+      <mat-tab label="Secrétaire" >
+        <ng-template mat-tab-label>
+          <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
+          <span>Secrétaire</span>
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          emptyList="Vous n'avez aucun message archivé actuellement."
+          (cardAction)="cardClicked($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+          [caller]="'archieve'"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+      <mat-tab label="Patients" >
+        <ng-template mat-tab-label>
+          <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
+          Patients
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          emptyList="Vous n'avez aucun message archivé actuellement."
+          (cardAction)="cardClicked($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+          [caller]="'archieve'"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+      <mat-tab label="Praticiens" >
+        <ng-template mat-tab-label>
+          <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
+          Praticiens
+        </ng-template>
+        <lib-hlsMessagingList
+          *ngIf="!loading"
+          [list]="filtredItemList"
+          emptyList="Vous n'avez aucun message archivé actuellement."
+          (cardAction)="cardClicked($event)"
+          [imageSource]="imageSource"
+          [hasPaging]="true"
+          (upSortAction)="upSortClicked()"
+          (downSortAction)="downSortClicked()"
+          [caller]="'archieve'"
+        ></lib-hlsMessagingList>
+      </mat-tab>
+    </mat-tab-group>
+
   </div>
 </div>
 
