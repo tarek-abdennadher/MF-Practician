@@ -42,6 +42,16 @@
     (helpEvent)="displayHelpAction()"
     (mycategoriesEvent)="myCategories()"
     (myObjectsEvent)="myObjects()"
+    [subCategorieDemandDocumentNumber]="
+      featuresService.subCategorieDemandDocumentNumber
+    "
+    [subCategoriePhonesNumber]="featuresService.subCategoriePhonesNumber"
+    [subCategorieAppointmentNumber]="
+      featuresService.subCategorieAppointmentNumber
+    "
+    [subCategorieConfreresNumber]="featuresService.subCategorieConfreresNumber"
+    [subCategorieDiversNumber]="featuresService.subCategorieDiversNumber"
+    (subCategoriesEvent)="displayMySubCategoriesAction($event)"
   >
   </lib-hlsSideBar>
   <app-new-message-widget></app-new-message-widget>

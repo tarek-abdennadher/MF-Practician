@@ -81,7 +81,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   context: string;
   image = {
     imageName: "",
-    src: null
+    src: null,
   };
   constructor(
     private _location: Location,
@@ -99,7 +99,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     private featureComp: FeaturesComponent,
     private title: Title,
     private messageService: MessageService,
-    private spinner: NgxSpinnerService,
+    private spinner: NgxSpinnerService
   ) {
     this.title.setTitle(this.topText);
     this.loading = false;
@@ -198,7 +198,9 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
                 this.originalMessageNode.sender.concernsId != null
               ) {
                 this.patientService
-                  .getAccountIdByPatientFileId(this.originalMessageNode.sender.concernsId)
+                  .getAccountIdByPatientFileId(
+                    this.originalMessageNode.sender.concernsId
+                  )
                   .pipe(takeUntil(this._destroyed$))
                   .subscribe((res) => {
                     this.showReplyActionsForPatient = true;
@@ -336,7 +338,9 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
                   this.originalMessageNode.sender.concernsId != null
                 ) {
                   this.patientService
-                    .getAccountIdByPatientFileId(this.originalMessageNode.sender.concernsId)
+                    .getAccountIdByPatientFileId(
+                      this.originalMessageNode.sender.concernsId
+                    )
                     .pipe(takeUntil(this._destroyed$))
                     .subscribe((res) => {
                       this.showReplyActionsForPatient = true;
@@ -350,16 +354,17 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             }
             this.showRefuseForTls =
               (this.originalMessageNode.sender.role == "TELESECRETARYGROUP" ||
-              this.originalMessageNode.sender.role == "TELESECRETARYGROUP") &&
+                this.originalMessageNode.sender.role == "TELESECRETARYGROUP") &&
               this.originalMessageNode.requestTypeId != null &&
               this.originalMessageNode.requestTitleId != null;
             this.showAcceptRefuse =
-            this.originalMessageNode.sender.role == "PATIENT" &&
-            this.originalMessageNode.requestTypeId != null &&
-            this.originalMessageNode.requestTitleId != null;
+              this.originalMessageNode.sender.role == "PATIENT" &&
+              this.originalMessageNode.requestTypeId != null &&
+              this.originalMessageNode.requestTitleId != null;
             this.getAttachements(message.nodesId);
             this.senderRolePatient =
-              this.sentContext && this.originalMessageNode.toReceivers.length == 1
+              this.sentContext &&
+              this.originalMessageNode.toReceivers.length == 1
                 ? this.originalMessageNode.toReceivers[0].role == "PATIENT"
                 : this.originalMessageNode.sender.role == "PATIENT";
             this.messagingDetail = message;
@@ -370,6 +375,18 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               isImportant: this.isFromInbox ? !message.important : false,
               isAddNote: true,
               isNotMyMessage: this.isNotMyMessage,
+              isMenuMoveToInbox:
+                this.isFromInbox && this.message.category != null,
+              isMenuMoveToDemand:
+                this.isFromInbox && this.message.category != "DEMAND",
+              isMenuMoveToPhones:
+                this.isFromInbox && this.message.category != "PHONES",
+              isMenuMoveToAppointment:
+                this.isFromInbox && this.message.category != "APPOINTMENT",
+              isMenuMoveToConfreres:
+                this.isFromInbox && this.message.category != "CONFRERES",
+              isMenuMoveToDivers:
+                this.isFromInbox && this.message.category != "DIVERS",
             };
             const filtredReceivers = this.messagingDetail.toReceivers.filter(
               (to) => to.receiverId != this.featureService.getUserId()
@@ -405,7 +422,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               .getNodeDetailsFromAlfresco(id)
               .pipe(takeUntil(this._destroyed$))
               .subscribe((node) => {
-                parent.attachements.push({name: node.entry.name, visualize: checkIsValidImageExtensions(node.entry.name).isValid});
+                parent.attachements.push({
+                  name: node.entry.name,
+                  visualize: checkIsValidImageExtensions(node.entry.name)
+                    .isValid,
+                });
               });
           });
         }
@@ -514,7 +535,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     messageToReply.documentFooter = null;
     messageToReply.documentHeader = null;
     messageToReply.body = null;
-      messageToReply.id = this.messagingDetail.id;
+    messageToReply.id = this.messagingDetail.id;
     if (this.showReplyActionsForPatient === true) {
       this.router.navigate(["messagerie-repondre"], {
         queryParams: {
@@ -687,7 +708,6 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
 
   goToBack() {
     this.router.navigate(["/messagerie"]);
-
   }
 
   download(nodesId: Array<string>) {
@@ -722,11 +742,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  hideSpinner (){
+  hideSpinner() {
     this.spinner.hide();
     this.image = {
       imageName: "",
-      src: null
+      src: null,
     };
   }
 
@@ -748,11 +768,14 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           if (checked.isValid) {
             this.image.imageName = nodeDetails.entry.name;
             let myReader: FileReader = new FileReader();
-            myReader.onloadend = e => {
-            if (checked.isSvg) this.image.src = this.sanitizer.bypassSecurityTrustUrl(myReader.result as string);
-            else this.image.src =  myReader.result;
-          };
-          let ok = myReader.readAsDataURL(response.body);
+            myReader.onloadend = (e) => {
+              if (checked.isSvg)
+                this.image.src = this.sanitizer.bypassSecurityTrustUrl(
+                  myReader.result as string
+                );
+              else this.image.src = myReader.result;
+            };
+            let ok = myReader.readAsDataURL(response.body);
           }
         });
     });
@@ -772,7 +795,10 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           .getNodeDetailsFromAlfresco(id)
           .pipe(takeUntil(this._destroyed$))
           .subscribe((node) => {
-            this.attachements.push({name: node.entry.name, visualize: checkIsValidImageExtensions(node.entry.name).isValid});
+            this.attachements.push({
+              name: node.entry.name,
+              visualize: checkIsValidImageExtensions(node.entry.name).isValid,
+            });
           });
       });
     }
@@ -889,6 +915,13 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               }
             );
         }
+      });
+  }
+  changeCategory(category) {
+    this.messagingDetailService
+      .changeCategory(this.idMessage, category)
+      .subscribe((result) => {
+        this.router.navigate([this.previousURL]);
       });
   }
 }

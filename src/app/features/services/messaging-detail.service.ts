@@ -96,4 +96,14 @@ export class MessagingDetailService {
       this.globalService.url.contact_pro + "/allSecretaries/" + id
     );
   }
+  public changeCategory(messageId, category) {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.messages +
+        "update/category/" +
+        messageId +
+        "/" +
+        category
+    );
+  }
 }
