@@ -27,6 +27,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   filtredItemsList: Array<any> = new Array<any>();
   types: Array<string> = [];
   imageSource: string;
+  showDetail=false;
   links = {
     isTypeFilter: true,
     isAdd: true
@@ -224,6 +225,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
 
   cardClicked(item) {
+    this.showDetail=true;
     jQuery([document.documentElement, document.body]).animate(
       { scrollTop: $("#contactPro").offset().top },
       1000
@@ -245,6 +247,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       .afterClosed()
       .subscribe(res => {
         if (res) {
+          this.showDetail=false;
           const practicianIds = [];
           practicianIds.push(event.id);
           if (practicianIds.length > 0) {
