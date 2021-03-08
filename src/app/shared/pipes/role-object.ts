@@ -11,13 +11,16 @@ export class RoleObjectPipe implements PipeTransform {
     let res: string;
     switch (value) {
       case "SUPERVISOR":
+      case "SUPER_SUPERVISOR":
+      case "SECRETARY":
+      case "OPERATOR":
         res = "telesecretary"
         break;
-      case "SUPER_SUPERVISOR":
-      res = "telesecretary"
-      break;
       case "TELESECRETARYGROUP":
         res = "telesecretaryGroup"
+        break;
+        case "MEDICAL":
+        res = "practician"
         break;
       case "SYSTEM":
       res = "systemUser"

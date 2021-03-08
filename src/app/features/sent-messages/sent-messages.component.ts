@@ -12,6 +12,7 @@ import { DomSanitizer, Title } from "@angular/platform-browser";
 import { PaginationService } from "../services/pagination.service";
 import { DialogService } from "../services/dialog.service";
 import { Role } from "@app/shared/enmus/role";
+import {SenderRole} from '@enum/sender-role';
 
 @Component({
   selector: "app-sent-messages",
@@ -23,6 +24,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   imageSource: string;
   messagesNumber: number = 0;
+  public selectedTabIndex = 0;
 
   links = {
     isAllSelect: true,
@@ -40,6 +42,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   selectedObjects: Array<any>;
   filtredItemList: Array<any> = new Array();
   private readonly notifier: NotifierService;
+  userTypeTabsFilter: SenderRole = SenderRole.ALL;
   avatars: {
     doctor: string;
     child: string;
@@ -49,6 +52,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
     user: string;
     tls: string;
   };
+  paramsId;
   searchContext = false;
   loading = false;
   constructor(
@@ -73,6 +77,7 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.featureService.setFilteredSentSearch([])
     this.featureService.setActiveChild("sent");
+    this.paramsId = this.featureService.getUserId();
     this.route.queryParams.subscribe(params => {
       if (params["status"] == "archiveSuccess") {
         this.notifier.show({
@@ -100,6 +105,32 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       });
   }
 
+  getSentMessage(accountId) {
+    this.loading = true;
+    this.messageService
+      .countSentByAccountId(accountId, this.userTypeTabsFilter)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(num => {
+        this.pagination.init(num);
+        this.messagesNumber = num;
+      });
+    this.messageService
+      .getSentAccountId(
+        accountId,
+        this.userTypeTabsFilter,
+        0
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(retrievedMess => {
+        this.loading = false;
+        this.itemsList = new Array();
+        this.filtredItemList = new Array();
+        this.itemsList.push(
+          ...this.parseMessages(retrievedMess)
+        );
+        this.filtredItemList = this.itemsList;
+      });
+  }
   sentMessage() {
     this.loading = true;
     this.messageService
@@ -279,6 +310,61 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
         });
     }
   }
+  public selectedTab($event) {
+    if ($event.index === 0) {
+      this.filterActionClickedV2("all");
+    } else if ($event.index === 1) {
+      this.filterActionClickedV2("secretary");
+    } else if ($event.index === 2) {
+      this.filterActionClickedV2("patient");
+    } else if ($event.index === 3) {
+      this.filterActionClickedV2("doctor");
+    }
+  }
+  filterActionClickedV2(event) {
+    this.filtredItemList =
+      event == "all"
+        ? this.itemsList
+        : this.itemsList.filter(item => {
+          switch (event) {
+            case "doctor":
+              return item.users[0].type.toLowerCase() == "medical";
+            case "secretary":
+              return (
+                item.users[0].type.toLowerCase() == "secretary" ||
+                item.users[0].type.toLowerCase() == "telesecretarygroup" ||
+                item.users[0].type.toLowerCase() == "supervisor" ||
+                item.users[0].type.toLowerCase() == "super_supervisor"
+              );
+            default:
+              return item.users[0].type.toLowerCase() == event;
+          }
+        });
+    switch (event) {
+      case "all":
+        this.userTypeTabsFilter = SenderRole.ALL;
+        break;
+      case "doctor":
+        this.userTypeTabsFilter = SenderRole.PRACTICIAN;
+        break;
+      case "secretary":
+        this.userTypeTabsFilter = SenderRole.SECRETARY;
+        break;
+      default:
+        this.userTypeTabsFilter = SenderRole.PATIENT;
+        break;
+    }
+    this.refreshCurrentPage();
+  }
+  private refreshCurrentPage() {
+    this.resetData();
+    this.getSentMessage(this.paramsId);
+  }
+  private resetData() {
+    this.itemsList = [];
+    this.filtredItemList = [];
+  }
+
   archieveMessage(event) {
     this.dialogService
       .openConfirmDialog(
@@ -370,10 +456,32 @@ export class SentMessagesComponent implements OnInit, OnDestroy {
       this.loadPage();
     }
   }
+  getSentNextPage(accountId) {
+    this.loading = true;
+    this.messageService
+      .getSentAccountId(
+        accountId,
+        this.userTypeTabsFilter,
+        this.pagination.pageNo,
+        this.pagination.direction
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(retrievedMess => {
+        this.loading = false;
+        retrievedMess.sort(
+          (m1, m2) =>
+            new Date(m2.updatedAt).getTime() - new Date(m1.updatedAt).getTime()
+        );
+        this.itemsList.push(
+          ...this.parseMessages(retrievedMess)
+        );
+        this.filtredItemList = this.itemsList;
+      });
+  }
   loadPage() {
     this.itemsList = [];
     this.filtredItemList = [];
-    this.sentMessage();
+    this.getSentNextPage(this.paramsId);
   }
 
   getFirstMessageInNextPage(size) {
