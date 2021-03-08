@@ -420,9 +420,22 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       );
     }
   }
-  goToBack() {
-    this._location.back();
+  scrollToTop(): void {
+    jQuery([document.documentElement, document.body]).animate(
+      {
+        scrollTop: $("#msgDetail").offset().top ,
+      },
+      800
+    );
   }
+  goToBack() {
+    if(this.messagingDetail){
+      this.scrollToTop()
+    this.router.navigate(
+      ["/messagerie-lire/" + this.featureService.encrypt(this.messagingDetail.id)]
+
+    );
+    }}
 
   // destory any pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
