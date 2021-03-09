@@ -1,5 +1,56 @@
 $sapphire: #1a56a7;
 $light-fill: #ffffff;
+$gradient: linear-gradient(102deg, #f761a1, #8c1bab 98%);
+
+@media (min-width: 580px) {
+  .fab-toggler {
+    float: right;
+    z-index: 100;
+    border-radius: 50%;
+    height: 60px !important;
+    width: 60px !important;
+    color: white;
+    background-image: $gradient;
+    font-size: x-large;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+    border: 0;
+    margin-right: 75px !important;
+  }
+  .file-clip {
+    align-items: center;
+    display: flex;
+    margin-left: -87px !important;
+  }
+}
+@media (max-width: 579px) {
+  .col-sm-3 {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+  }
+  .file-clip {
+    align-items: center;
+    display: flex;
+    margin-left: -66px !important;
+  }
+  .fab-toggler {
+    float: right;
+    z-index: 100;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    color: white;
+    background-image: $gradient;
+    font-size: x-large;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+    border: 0;
+    position: absolute;
+    bottom: -7px;
+  }
+}
 .label {
   height: 19px;
   font-size: 16px;
@@ -24,7 +75,7 @@ $light-fill: #ffffff;
 .modal-content {
   box-shadow: 0 2px 20px 6px rgba(56, 96, 165, 0.3);
   background-color: $light-fill;
-  margin:auto;
+  margin: auto;
 }
 .modal-header {
   justify-content: center;
@@ -73,7 +124,7 @@ $light-fill: #ffffff;
     }
   }
 }
-@media screen and (max-width: 374px)  {
+@media screen and (max-width: 374px) {
   #refuseModal {
     z-index: 999999;
     .modal-content {
