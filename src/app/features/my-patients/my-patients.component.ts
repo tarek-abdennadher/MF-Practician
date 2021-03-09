@@ -157,7 +157,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           this.myPatientsService
           .getPatientsOfCurrentParacticianSearch(
             this.featureService.getUserId(),
-            res[0]
+            encodeURIComponent(res[0])
           )
           .pipe(takeUntil(this._destroyed$))
           .subscribe((myPatients) => {
@@ -245,6 +245,8 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
     myPatients.isAddedByPatient = patient.addedByPatient;
+    myPatients.phoneNumber=patient.phoneNumber;
+    myPatients.email=patient.email;
     myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
