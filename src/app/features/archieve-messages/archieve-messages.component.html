@@ -25,7 +25,7 @@
       (selectedTabChange)="selectedTab($event)"
       [(selectedIndex)]="selectedTabIndex"
     >
-      <mat-tab label="TousMessages" >
+      <mat-tab label="TousMessages" [disabled]="loading" >
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
           <span>Tous mes messages</span>
@@ -42,7 +42,7 @@
       [caller]="'archieve'"
     ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Secrétaire" >
+      <mat-tab label="Secrétaire" [disabled]="loading" >
         <ng-template mat-tab-label>
           <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
           <span>Secrétaire</span>
@@ -59,7 +59,7 @@
           [caller]="'archieve'"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Patients" >
+      <mat-tab label="Patients" [disabled]="loading">
         <ng-template mat-tab-label>
           <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
           Patients
@@ -76,7 +76,7 @@
           [caller]="'archieve'"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Praticiens" >
+      <mat-tab label="Praticiens" [disabled]="loading">
         <ng-template mat-tab-label>
           <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
           Praticiens
