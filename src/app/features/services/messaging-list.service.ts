@@ -18,6 +18,7 @@ export class MessagingListService {
   private practicianNotifObs = new BehaviorSubject<any>("");
   public practicianNotifPreviousValue = "";
   private mutex = new Mutex();
+  public readMessageId = new BehaviorSubject(null);
   avatars: {
     doctor: string;
     child: string;
@@ -122,6 +123,12 @@ export class MessagingListService {
         this.featuresService.getNumberOfPendingValue() - 1
       );
     }
+  }
+
+  setMessageNotificationRead(notification) {
+    const list = this.featuresService.listNotifications.filter(notif => notif.messageId != notification.messageId);
+    this.featuresService.listNotifications = list;
+    this.readMessageId.next(notification.messageId);
   }
 
   public getMyInbox(): Observable<any> {

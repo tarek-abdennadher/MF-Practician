@@ -254,6 +254,10 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
               that.messageListService.removeInvitationNotificationObs(
                 notification
               );
+            } else if (notification.type == "MESSAGE_READ") {
+              that.messageListService.setMessageNotificationRead(
+                notification
+              );
             }
           }
         }
