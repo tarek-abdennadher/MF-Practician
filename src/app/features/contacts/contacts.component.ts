@@ -280,7 +280,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       this.filtredItemsList = this.filtredItemsList.filter(
         item => !ids.includes(item.id)
       );
-
+      this.number--;
       if(this.filtredItemsList.length === 0){
         this.listFilter(this.ALL_TYPES);
       }
