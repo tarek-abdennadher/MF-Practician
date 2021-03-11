@@ -359,25 +359,31 @@
   <br />
   <div class="row mb-2">
     <div class="col-5 col-sm-3 col-md-3">
+
       <button
-        *ngIf="!isInstruction"
-        id="send-button"
-        type="button"
-        class="btn btn-primary"
-        [attr.disabled]="loading ? true : null"
-        (click)="sendEmail()"
-      >
-        ENVOYER
-      </button>
-      <button
-        *ngIf="isInstruction"
-        id="send-button-instruction"
-        type="button"
-        class="btn btn-primary"
-        (click)="sendInstructionEmit()"
-      >
-        ENVOYER
-      </button>
+    placement="left"
+    type="button"
+
+    *ngIf="!isInstruction"    mat-fab
+    class="fab-toggler"
+    [attr.disabled]="loading ? true : null"
+
+    (click)="sendEmail()"
+  >
+  <i class="fal fa-paper-plane"></i>
+  </button>
+  <button
+  placement="left"
+  type="button"
+
+  *ngIf="isInstruction"    mat-fab
+  class="fab-toggler"
+  [attr.disabled]="loading ? true : null"
+
+  (click)="sendInstructionEmit()"
+>
+<i class="fal fa-paper-plane"></i>
+</button>
     </div>
     <div class="col-4 col-sm-3 col-md-2 file-clip">
       <svg
