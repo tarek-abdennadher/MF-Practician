@@ -6,6 +6,9 @@
 }
 .loading {
   color: white;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .card-image {
   max-width: 100vh;
@@ -13,10 +16,18 @@
 }
 .card-align {
   text-align: center;
+  z-index: 1000;
+}
+::ng-deep {
+  .loading-text {
+    height: 95%;
+    width: 95%;
+    text-align: center;
+  }
 }
 .card-body {
   margin-left: 0px;
   margin-right: 0px;
-  background-color: rgba(243, 243, 243, 0.5) !important;
+  color: WHITE !important;
   padding: 0 !important;
 }
