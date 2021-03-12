@@ -139,6 +139,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       } else {
         this.messageCategory = null;
         this.getRealTimeMessage();
+        this.messageReadFromMobile();
       }
       if (params["status"]) {
         let notifMessage = "";
@@ -647,6 +648,19 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           }
         }
       });
+  }
+
+  messageReadFromMobile() {
+    this.messagesServ.readMessageId.subscribe(id => {
+      if (id) {
+        let filtredIndex = this.filtredItemList.findIndex(
+          item => item.id == id
+        );
+        if (filtredIndex != -1) {
+          this.filtredItemList[filtredIndex].isSeen = true;
+        }
+      }
+    })
   }
 
   deleteElementsFromInbox(ids) {
