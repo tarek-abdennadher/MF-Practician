@@ -37,9 +37,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   account: any;
   linkedPatients: any;
   pageNo = 0;
-  image = {
-    imageName: "",
-    src: null
+  file = {
+    fileName: "",
+    src: null,
+    isImage: false,
+    isPdf:false
   };
   listLength = 0;
   scroll = false;
@@ -335,9 +337,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
   hideSpinner (){
     this.spinner.hide();
-    this.image = {
-      imageName: "",
-      src: null
+    this.file = {
+      fileName: "",
+      src: null,
+      isImage: false,
+      isPdf:false
     };
   }
 
@@ -358,7 +362,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   visualizeFile(attachement) {
     const checked = checkIsValidImageExtensions(attachement.realName);
     if (checked.isValid) {
-      this.image.imageName = attachement.realName;
+      this.file = {
+        ...this.file,
+        ...checked,
+      }
+      this.file.fileName = attachement.realName;
       this.spinner.show();
       this.documentsService
         .downloadFile(attachement.nodeId)
@@ -367,10 +375,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
           response => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              if (checked.isSvg) this.image.src = this.sanitizer.bypassSecurityTrustUrl(
+              if (checked.isSvg) this.file.src = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
-              else this.image.src =  myReader.result;
+              else if (checked.isPdf) this.file.src = myReader.result.toString().split(",")[1];
+              else this.file.src =  myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           }

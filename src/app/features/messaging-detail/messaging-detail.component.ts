@@ -23,6 +23,7 @@ import { NgxSpinnerService } from "ngx-spinner";
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"],
 })
+
 export class MessagingDetailComponent implements OnInit, OnDestroy {
   message: any;
   isMessageImportant: boolean;
@@ -79,9 +80,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   showRefuseForTls: boolean;
   public patientFileId: number;
   context: string;
-  image = {
-    imageName: "",
+  file = {
+    fileName: "",
     src: null,
+    isImage: false,
+    isPdf:false
   };
   constructor(
     private _location: Location,
@@ -744,9 +747,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
 
   hideSpinner() {
     this.spinner.hide();
-    this.image = {
-      imageName: "",
+    this.file = {
+      fileName: "",
       src: null,
+      isImage: false,
+      isPdf: false
     };
   }
 
@@ -766,14 +771,19 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         .subscribe((response) => {
           const checked = checkIsValidImageExtensions(nodeDetails.entry.name);
           if (checked.isValid) {
-            this.image.imageName = nodeDetails.entry.name;
+            this.file = {
+              ...this.file,
+              ...checked,
+            }
+            this.file.fileName = nodeDetails.entry.name;
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
               if (checked.isSvg)
-                this.image.src = this.sanitizer.bypassSecurityTrustUrl(
+                this.file.src = this.sanitizer.bypassSecurityTrustUrl(
                   myReader.result as string
                 );
-              else this.image.src = myReader.result;
+              else if (checked.isPdf) this.file.src = myReader.result.toString().split(",")[1];
+              else this.file.src = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           }
