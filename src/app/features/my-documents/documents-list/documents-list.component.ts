@@ -53,6 +53,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     secretary: string;
     user: string;
   };
+  shownSpinner = false;
   constructor(
     private globalService: GlobalService,
     private route: ActivatedRoute,
@@ -336,6 +337,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
 
   hideSpinner (){
+    this.shownSpinner = false;
     this.spinner.hide();
     this.file = {
       fileName: "",
@@ -360,6 +362,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     }
   }
   visualizeFile(attachement) {
+    this.shownSpinner = true;
     const checked = checkIsValidImageExtensions(attachement.realName);
     if (checked.isValid) {
       this.file = {
