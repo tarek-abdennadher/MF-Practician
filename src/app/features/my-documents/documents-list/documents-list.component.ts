@@ -362,13 +362,13 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     }
   }
   visualizeFile(attachement) {
-    this.shownSpinner = true;
     const checked = checkIsValidImageExtensions(attachement.realName);
     if (checked.isValid) {
       this.file = {
         ...this.file,
         ...checked,
       }
+      this.shownSpinner = true;
       this.file.fileName = attachement.realName;
       this.spinner.show();
       this.documentsService
