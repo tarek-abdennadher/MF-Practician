@@ -53,6 +53,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     secretary: string;
     user: string;
   };
+  shownSpinner = false;
   constructor(
     private globalService: GlobalService,
     private route: ActivatedRoute,
@@ -336,6 +337,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
 
 
   hideSpinner (){
+    this.shownSpinner = false;
     this.spinner.hide();
     this.file = {
       fileName: "",
@@ -366,6 +368,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
         ...this.file,
         ...checked,
       }
+      this.shownSpinner = true;
       this.file.fileName = attachement.realName;
       this.spinner.show();
       this.documentsService

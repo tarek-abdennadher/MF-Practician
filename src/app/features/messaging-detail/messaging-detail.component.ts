@@ -86,6 +86,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     isImage: false,
     isPdf:false
   };
+  shownSpinner = false;
   constructor(
     private _location: Location,
     private router: Router,
@@ -746,6 +747,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
 
   hideSpinner() {
+    this.shownSpinner =false;
     this.spinner.hide();
     this.file = {
       fileName: "",
@@ -756,8 +758,9 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
 
   visualizeFile(nodesId: Array<string>) {
+    this.shownSpinner = true;
+    this.spinner.show();
     nodesId.forEach((nodeId) => {
-      this.spinner.show();
       var nodeDetails;
       this.documentService
         .getNodeDetailsFromAlfresco(nodeId)

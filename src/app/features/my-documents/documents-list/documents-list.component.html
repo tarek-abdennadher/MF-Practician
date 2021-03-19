@@ -28,6 +28,8 @@
             [fullScreen]="true"
             type="none"
             size="medium"
+            class="message-details"
+            *ngIf="shownSpinner"
           >
             <div  *ngIf="file.src" class="card-align">
               <img (click)="$event.stopPropagation()" *ngIf="file.isImage" class="card-image" [src]="file.src" />
