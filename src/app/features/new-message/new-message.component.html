@@ -235,12 +235,14 @@
         [data]="objectsList"
         formControlName="object"
         [settings]="dropdownSettingsListObject"
+        [(ngModel)]="selecteditemModel"
         [ngClass]="{
           'is-invalid': submited && ctr.object.errors,
           invalid: submited && ctr.object.errors
         }"
-        (onSelect)="onObjectChanedSelect()"
-        (onDeSelect)="onObjectChanged()"
+        (onSelect)="toggleConfirmChangeObjectPopup($event)"
+        (onDeSelect)="toggleConfirmdeleteObjectPopup($event)"
+
       >
         <c-item>
           <ng-template let-item="item">
@@ -445,6 +447,72 @@
     </div>
   </div>
 </form>
+<!-- confirm/change object modal -->
+<div
+    class="modal fade"
+    id="confirmDeleteModal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <i
+            class="fas fa-exclamation-triangle fa-5x font"
+            data-dismiss="modal"
+            aria-label="Close"
+          ></i>
+        </div>
+        <div class="modal-body" >
+          <p>
+            {{this.newMessageService.texts.confirm_change_delete_object}}
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="btn btn-ok confirm" (click)="onObjectChanged()">
+            Continuer
+          </button>
+          <button type="button" data-dismiss="modal" class="btn btn-ok confirm" >
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- confirm/change object modal -->
+<div
+    class="modal fade"
+    id="confirmChangeModal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <i
+            class="fas fa-exclamation-triangle fa-5x font"
+            data-dismiss="modal"
+            aria-label="Close"
+          ></i>
+        </div>
+        <div class="modal-body" >
+          <p>
+            {{this.newMessageService.texts.confirm_change_delete_object}}
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="btn btn-ok confirm" (click)="onObjectChanedSelect()">
+            Continuer
+          </button>
+          <button type="button" data-dismiss="modal" class="btn btn-ok confirm" (click)="cancelObjectChange()">
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 <div
   class="modal fade"
   id="firstModal"
