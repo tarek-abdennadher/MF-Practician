@@ -472,6 +472,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           }
           this.sendMessageForm.patchValue({
             body: res.body ? res.body : "",
+            documentBody: res.documentBody ? res.documentBody : "",
           });
           if (res.documentBody) {
             this.sendMessageForm.patchValue({
