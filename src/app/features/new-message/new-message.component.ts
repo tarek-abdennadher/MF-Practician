@@ -54,6 +54,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   sendPostal: boolean = false;
   confirmSend=true;
   public uuid: string;
+  counter=0;
   private _destroyed$ = new Subject();
   imageDropdown: string;
   connectedUserType = "MEDICAL";
@@ -164,6 +165,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   isPatient: boolean = false;
   isMedical: boolean;
   isTls: boolean;
+  selecteditem=[];
+  selecteditemModel=[];
   isAddress: boolean;
   hasError: boolean;
   isInfoDisplay: boolean = false;
@@ -469,6 +472,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           }
           this.sendMessageForm.patchValue({
             body: res.body ? res.body : "",
+            documentBody: res.documentBody ? res.documentBody : "",
           });
           if (res.documentBody) {
             this.sendMessageForm.patchValue({
@@ -683,9 +687,32 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onObjectChanedSelect() {
     this.selectContext = true;
     this.onObjectChanged();
-  }
+    this.selecteditem=this.selecteditemModel;
 
+  }
+  cancelObjectChange(){
+
+    this.selecteditemModel=this.selecteditem;
+
+  }
+  toggleConfirmChangeObjectPopup(event){
+    if(this.selecteditem.length ==0) {
+      this.selecteditem.push(event);
+    }
+    if(this.counter>0){
+      $('#confirmChangeModal').appendTo("body").modal("toggle");
+    }else{
+      this.onObjectChanedSelect();
+    }
+    this.counter++;
+  }
+  toggleConfirmdeleteObjectPopup(event){
+    this.selecteditemModel.push(event);
+    $('#confirmDeleteModal').appendTo("body").modal("toggle");
+  }
   onObjectChanged() {
+
+    $('#confirmChangeModal').appendTo("body").modal("hide");
     if (this.sendMessageForm && this.sendMessageForm.value.to) {
       this.getSelectedToList(this.sendMessageForm.value);
       if (this.sendMessageForm.value.to.length > 0) {
@@ -827,6 +854,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         this.showPatientFile = true;
       }
     }
+
   }
   charactersRemainingKeyup() {
     this.charactersRemaining = 500 - this.sendMessageForm.value.body.length;

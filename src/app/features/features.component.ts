@@ -131,6 +131,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     this.forwardedMessage();
     this.observeState();
     this.subscribeIsMessaging();
+    this.countCategories();
     $("#main-container").on("click", function (e) {
       if (e.target.parentElement.id != "sideBar") {
         jQuery("#sidebar").addClass("hidden-side-bar");
@@ -255,9 +256,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
                 notification
               );
             } else if (notification.type == "MESSAGE_READ") {
-              that.messageListService.setMessageNotificationRead(
-                notification
-              );
+              that.messageListService.setMessageNotificationRead(notification);
             }
           }
         }
@@ -998,5 +997,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
         category: event,
       },
     });
+  }
+  countCategories() {
+    this.featuresService.countCategories();
   }
 }

@@ -376,7 +376,98 @@ a {
     }
   }
 }
+@media screen and (min-width: 580px) and (max-width: 804px) {
+  #confirmChangeModal {
+    z-index: 999999;
+    .modal-content {
+      margin-left: 61px;
+      width: 78%;
+    }
+    .modal-body {
+      font-size: 15px !important;
+    }
+    .modal-backdrop {
+      z-index: 10400 !important;
+    }
+  }
+}
+@media screen and (min-width: 375px) and (max-width: 579px) {
+  #confirmChangeModal {
+    z-index: 999999;
+    .modal-content {
+      width: 55%;
+      margin-left: 116px;
+    }
+    .modal-body {
+      font-size: 13px !important;
+    }
+    .modal-backdrop {
+      z-index: 10400 !important;
+    }
 
+  }
+}
+@media screen and (max-width: 374px)  {
+  #confirmChangeModal {
+    z-index: 999999;
+    .modal-content {
+      width: 42%;
+      margin-left: 34px;
+    }
+    .modal-body {
+      font-size: 11px !important;
+    }
+    .modal-backdrop {
+      z-index: 10400 !important;
+    }
+
+  }
+}
+@media screen and (min-width: 580px) and (max-width: 804px) {
+  #confirmDeleteModal {
+    z-index: 999999;
+    .modal-content {
+      margin-left: 61px;
+      width: 78%;
+    }
+    .modal-body {
+      font-size: 15px !important;
+    }
+    .modal-backdrop {
+      z-index: 10400 !important;
+    }
+  }
+}
+@media screen and (min-width: 375px) and (max-width: 579px) {
+  #confirmDeleteModal {
+    z-index: 999999;
+    .modal-content {
+      width: 55%;
+      margin-left: 116px;
+    }
+    .modal-body {
+      font-size: 13px !important;
+    }
+    .modal-backdrop {
+      z-index: 10400 !important;
+    }
+  }
+}
+@media screen and (max-width: 374px)  {
+  #confirmDeleteModal {
+    z-index: 999999;
+    .modal-content {
+      width: 42%;
+      margin-left: 34px;
+    }
+    .modal-body {
+      font-size: 11px !important;
+    }
+    .modal-backdrop {
+      z-index: 10400 !important;
+    }
+  }
+}
 @media (max-width: 399px) {
   ::ng-deep {
     .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
