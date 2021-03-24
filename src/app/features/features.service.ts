@@ -401,4 +401,43 @@ export class FeaturesService {
       console.log(e);
     }
   }
+  public countInboxByAccountIdAndCategory(id, category): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages +
+        "inbox/category/count/" +
+        id +
+        "/" +
+        category
+    );
+  }
+  countCategories() {
+    this.countInboxByAccountIdAndCategory(this.getUserId(), "DEMAND").subscribe(
+      (num) => {
+        this.subCategorieDemandDocumentNumber = num;
+      }
+    );
+    this.countInboxByAccountIdAndCategory(this.getUserId(), "PHONES").subscribe(
+      (num) => {
+        this.subCategoriePhonesNumber = num;
+      }
+    );
+    this.countInboxByAccountIdAndCategory(
+      this.getUserId(),
+      "APPOINTMENT"
+    ).subscribe((num) => {
+      this.subCategorieAppointmentNumber = num;
+    });
+    this.countInboxByAccountIdAndCategory(
+      this.getUserId(),
+      "CONFRERES"
+    ).subscribe((num) => {
+      this.subCategorieConfreresNumber = num;
+    });
+    this.countInboxByAccountIdAndCategory(this.getUserId(), "DIVERS").subscribe(
+      (num) => {
+        this.subCategorieDiversNumber = num;
+      }
+    );
+  }
 }
