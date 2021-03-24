@@ -23,7 +23,6 @@ import { NgxSpinnerService } from "ngx-spinner";
   templateUrl: "./messaging-detail.component.html",
   styleUrls: ["./messaging-detail.component.scss"],
 })
-
 export class MessagingDetailComponent implements OnInit, OnDestroy {
   message: any;
   isMessageImportant: boolean;
@@ -84,7 +83,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     fileName: "",
     src: null,
     isImage: false,
-    isPdf:false
+    isPdf: false,
   };
   shownSpinner = false;
   constructor(
@@ -747,13 +746,13 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
 
   hideSpinner() {
-    this.shownSpinner =false;
+    this.shownSpinner = false;
     this.spinner.hide();
     this.file = {
       fileName: "",
       src: null,
       isImage: false,
-      isPdf: false
+      isPdf: false,
     };
   }
 
@@ -777,7 +776,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.file = {
               ...this.file,
               ...checked,
-            }
+            };
             this.file.fileName = nodeDetails.entry.name;
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
@@ -785,7 +784,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
                 this.file.src = this.sanitizer.bypassSecurityTrustUrl(
                   myReader.result as string
                 );
-              else if (checked.isPdf) this.file.src = myReader.result.toString().split(",")[1];
+              else if (checked.isPdf)
+                this.file.src = myReader.result.toString().split(",")[1];
               else this.file.src = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
@@ -934,6 +934,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.messagingDetailService
       .changeCategory(this.idMessage, category)
       .subscribe((result) => {
+        this.featureService.countCategories();
         this.router.navigate([this.previousURL]);
       });
   }
