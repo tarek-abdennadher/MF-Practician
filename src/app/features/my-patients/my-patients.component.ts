@@ -433,5 +433,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
+    this.featureService.setFilteredPatientsSearch([]);
+
   }
 }
