@@ -217,7 +217,7 @@ a {
   border-radius: 15px;
   border: solid 1px $sapphire;
   background-color: rgba(198, 213, 233, 0.3);
-  position: absolute;
+  // position: absolute;
   bottom: 8px;
   width: 100% !important;
   overflow: hidden;
@@ -404,10 +404,9 @@ a {
     .modal-backdrop {
       z-index: 10400 !important;
     }
-
   }
 }
-@media screen and (max-width: 374px)  {
+@media screen and (max-width: 374px) {
   #confirmChangeModal {
     z-index: 999999;
     .modal-content {
@@ -420,7 +419,6 @@ a {
     .modal-backdrop {
       z-index: 10400 !important;
     }
-
   }
 }
 @media screen and (min-width: 580px) and (max-width: 804px) {
@@ -453,7 +451,7 @@ a {
     }
   }
 }
-@media screen and (max-width: 374px)  {
+@media screen and (max-width: 374px) {
   #confirmDeleteModal {
     z-index: 999999;
     .modal-content {
@@ -476,4 +474,10 @@ a {
       overflow-y: auto;
     }
   }
+}
+.invalid-feedback-2 {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
 }
