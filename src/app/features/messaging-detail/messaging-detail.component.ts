@@ -444,6 +444,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       .subscribe(
         (message) => {
           this.isMessageImportant = false;
+          this.messagingDetail.important=!this.messagingDetail.important;
           this.links.isImportant = true;
           this.notifier.show({
             message: this.globalService.toastrMessages
@@ -664,6 +665,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.messagingDetailService.markMessageAsImportant(ids).subscribe(
       (message) => {
         this.isMessageImportant = true;
+        this.messagingDetail.important=!this.messagingDetail.important;
         this.links.isImportant = false;
         this.featureComp.setNotif(
           this.globalService.toastrMessages.mark_important_message_success
