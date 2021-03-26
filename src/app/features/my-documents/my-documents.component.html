@@ -31,6 +31,6 @@
     </mat-progress-spinner>
   </div>
   <div id="documentRecu" class="col-md-7 list">
-    <router-outlet></router-outlet>
+    <router-outlet *ngIf=" !filtering"></router-outlet>
   </div>
 </div>
