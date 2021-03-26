@@ -263,6 +263,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.filesError = false;
     this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
+    this.id ? this.toListSubscription() : null
     this._messageTypesList = [
       { id: SendType.MESSAGING, text: "Messagerie" },
       // { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
