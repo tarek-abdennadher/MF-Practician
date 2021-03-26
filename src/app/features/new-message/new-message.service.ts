@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class HlsSendMessageService {
-  constructor() { }
+  constructor() {}
   public texts = {
     from: "De : ",
     to: "A : ",
@@ -34,8 +34,10 @@ export class HlsSendMessageService {
     required: "Champs obligatoire !",
     loading: "Chargement en cours",
     sending: "Envoi du message en cours",
-    confirm_change_delete_object: "Le changement de l'object va changer le corps du message, voulez vous continuer ?",
-    incomplete_patient_file_error: 'Attention, la fiche patient n’est pas complète ou conforme pour l’envoi d’un message via Helssy.Merci de vérifier que toutes les informations soient complétées.'
+    confirm_change_delete_object:
+      "Le changement de l'object va changer le corps du message, voulez vous continuer ?",
+    incomplete_patient_file_error:
+      "Attention, la fiche patient n’est pas complète ou conforme pour l’envoi d’un message via Helssy.Merci de vérifier que toutes les informations soient complétées.",
+    filesError: "Maximum 10 pièces jointes par message",
   };
-
 }
