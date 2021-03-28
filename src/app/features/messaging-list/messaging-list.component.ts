@@ -656,7 +656,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         let filtredIndex = this.filtredItemList.findIndex(
           item => item.id == id
         );
-        if (filtredIndex != -1 && !this.filtredItemList[filtredIndex].isSeen) {
+        if (filtredIndex != -1) {
           this.filtredItemList[filtredIndex].isSeen = true;
           this.featureService.setNumberOfInbox(
             this.featureService.getNumberOfInboxValue() - 1
