@@ -751,9 +751,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.sendMessageForm.patchValue({
         object: "",
       });
-      this.sendMessageForm.patchValue({
-        file: null,
-      });
+      //   this.sendMessageForm.patchValue({
+      // //   file: null,
+      //  });
       this.sendMessageForm.patchValue({
         documentHeader: null,
         documentBody: "",
@@ -1199,7 +1199,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         id: selectedObj.id,
         name: selectedObj.title,
         body: "",
-        file: null,
+        // file: null,
         documentHeader: null,
         documentBody: "",
         documentFooter: null,
