@@ -658,10 +658,6 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         );
         if (filtredIndex != -1) {
           this.filtredItemList[filtredIndex].isSeen = true;
-          this.featureService.setNumberOfInbox(
-            this.featureService.getNumberOfInboxValue() - 1
-          );
-          this.inboxNumber -= 1;
         }
       }
     })
