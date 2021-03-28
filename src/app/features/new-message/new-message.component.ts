@@ -54,6 +54,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
   confirmSend = true;
+  deleteObject=false;
   public uuid: string;
   counter = 0;
   private _destroyed$ = new Subject();
@@ -701,17 +702,44 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     };
   }
   onObjectChanedSelect() {
+    if (this.selecteditem.length == 0) {
+      this.selecteditem.push(event);
+    }
     this.selectContext = true;
     this.onObjectChanged();
     this.selecteditem = this.selecteditemModel;
   }
-  cancelObjectChange() {
-    this.selecteditemModel = this.selecteditem;
+  onObjectDelete(){
+    this.deleteObject=true;
+    this.selecteditemModel=[];
+    this.selecteditem=[]
+    this.sendMessageForm.patchValue({
+      object: "",
+    });
+    this.sendMessageForm.patchValue({
+      file: null,
+    });
+    this.sendMessageForm.patchValue({
+      documentHeader: null,
+      documentBody: "",
+      documentFooter: null,
+      signature: null,
+      body:''
+    });
+    this.selectContext = false;
+    this.deleteObject=false;
+
   }
-  toggleConfirmChangeObjectPopup(event) {
-    if (this.selecteditem.length == 0) {
-      this.selecteditem.push(event);
+  cancelObjectChange() {
+    if(this.selecteditem.length>0)
+    this.selecteditemModel = this.selecteditem;
+    else{
+      this.selecteditemModel=[]
     }
+  }
+
+  toggleConfirmChangeObjectPopup(event) {
+
     if (this.counter > 0) {
       $("#confirmChangeModal").appendTo("body").modal("toggle");
     } else {
