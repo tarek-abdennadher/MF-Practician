@@ -166,6 +166,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.hideTo = false;
             this.hidefrom = false;
             this.isFromArchive = true;
+            this.previousURL = "/messagerie-archives";
             break;
           }
           case "patient": {
