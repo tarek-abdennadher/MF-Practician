@@ -46,6 +46,7 @@
         (selectItemAction)="selectItem($event)"
         [imageSource]="imageSource"
         [hasPaging]="true"
+        [isSent]="true"
       ></lib-hlsMessagingList>
     </mat-tab>
     <mat-tab label="Secrétaire" [disabled]="loading">
@@ -63,6 +64,8 @@
         (selectItemAction)="selectItem($event)"
         [imageSource]="imageSource"
         [hasPaging]="true"
+        [isSent]="true"
+
       ></lib-hlsMessagingList>
     </mat-tab>
     <mat-tab label="Patients" [disabled]="loading">
@@ -80,6 +83,8 @@
         (selectItemAction)="selectItem($event)"
         [imageSource]="imageSource"
         [hasPaging]="true"
+        [isSent]="true"
+
       ></lib-hlsMessagingList>
     </mat-tab>
     <mat-tab label="Praticiens" [disabled]="loading" >
@@ -96,7 +101,7 @@
         (archieveAction)="archieveMessage($event)"
         (selectItemAction)="selectItem($event)"
         [imageSource]="imageSource"
-        [hasPaging]="true"
+        [isSent]="true"
       ></lib-hlsMessagingList>
     </mat-tab>
     </mat-tab-group>

@@ -240,6 +240,7 @@
           'is-invalid': submited && ctr.object.errors,
           invalid: submited && ctr.object.errors
         }"
+        [deleteObject]="deleteObject"
         (onSelect)="toggleConfirmChangeObjectPopup($event)"
         (onDeSelect)="toggleConfirmdeleteObjectPopup($event)"
       >
@@ -478,11 +479,11 @@
           type="button"
           data-dismiss="modal"
           class="btn btn-ok confirm"
-          (click)="onObjectChanedSelect()"
+          (click)="onObjectDelete()"
         >
           Continuer
         </button>
-        <button type="button" data-dismiss="modal" class="btn btn-ok confirm">
+        <button type="button" data-dismiss="modal" class="btn btn-ok confirm" >
           Fermer
         </button>
       </div>
