@@ -54,7 +54,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
   confirmSend = true;
-  deleteObject=false;
+  deleteObject = false;
   public uuid: string;
   counter = 0;
   private _destroyed$ = new Subject();
@@ -272,7 +272,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {this.id ? this.toListSubscription() : null});
+      .subscribe((res) => {
+        this.id ? this.toListSubscription() : null;
+      });
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
@@ -709,10 +711,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.onObjectChanged();
     this.selecteditem = this.selecteditemModel;
   }
-  onObjectDelete(){
-    this.deleteObject=true;
-    this.selecteditemModel=[];
-    this.selecteditem=[]
+  onObjectDelete() {
+    this.deleteObject = true;
+    this.selecteditemModel = [];
+    this.selecteditem = [];
     this.sendMessageForm.patchValue({
       object: "",
     });
@@ -724,22 +726,20 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       documentBody: "",
       documentFooter: null,
       signature: null,
-      body:''
+      body: "",
     });
     this.selectContext = false;
-    this.deleteObject=false;
-
+    this.deleteObject = false;
   }
   cancelObjectChange() {
-    if(this.selecteditem.length>0)
-    this.selecteditemModel = this.selecteditem;
-    else{
-      this.selecteditemModel=[]
+    if (this.selecteditem.length > 0)
+      this.selecteditemModel = this.selecteditem;
+    else {
+      this.selecteditemModel = [];
     }
   }
 
   toggleConfirmChangeObjectPopup(event) {
-
     if (this.counter > 0) {
       $("#confirmChangeModal").appendTo("body").modal("toggle");
     } else {
@@ -1637,7 +1637,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     newMessage.documentBody = message.documentBody ? message.documentBody : "";
     newMessage.documentFooter = message.documentFooter;
     newMessage.signature = message.signature;
-    if (message.file !== undefined && message.file !== null) {
+    if (
+      message.file !== undefined &&
+      message.file !== null &&
+      message.file != "" &&
+      message.file != []
+    ) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
 
