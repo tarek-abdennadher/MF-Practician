@@ -47,8 +47,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     isAllSelectCarret: true,
     isRefresh: true,
     isPagination: true,
-    isMenuImportant: false,
-    isMenuNotSeen: false,
+    isMenuImportant: this.messageCategory == null,
+    isMenuNotSeen: this.messageCategory == null,
   };
   page = "INBOX";
   number: number = 0;
@@ -179,8 +179,8 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         isAllSelectCarret: true,
         isRefresh: true,
         isPagination: true,
-        isMenuImportant: false,
-        isMenuNotSeen: false,
+        isMenuImportant: this.messageCategory == null,
+        isMenuNotSeen: this.messageCategory == null,
       };
       this.featureService.selectedPracticianId = 0;
       this.isMyInbox = true;
