@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { MyDocumentsService } from "../my-documents.service";
 import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
 import { GlobalService } from "@app/core/services/global.service";
-import { forkJoin, of, Subject } from "rxjs";
-import { catchError, takeUntil } from "rxjs/operators";
+import {  Subject } from "rxjs";
+import {  takeUntil } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
 import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
@@ -36,11 +36,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   destinations = new Set();
   account: any;
   linkedPatients: any;
-
   pageNo = 0;
-  image = {
-    imageName: "",
-    src: null
+  file = {
+    fileName: "",
+    src: null,
+    isImage: false,
+    isPdf:false
   };
   listLength = 0;
   scroll = false;
@@ -52,9 +53,9 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     secretary: string;
     user: string;
   };
+  shownSpinner = false;
   constructor(
     private globalService: GlobalService,
-    private router: Router,
     private route: ActivatedRoute,
     public documentsService: MyDocumentsService,
     private _location: Location,
@@ -64,6 +65,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     private featureService: FeaturesService,
     private sanitizer: DomSanitizer,
     private spinner: NgxSpinnerService,
+
   ) {
     this.filterDocumentsForm = this.formBuilder.group({
       documentType: [""],
@@ -333,13 +335,16 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  hideSpinner (){
-    this.spinner.hide();
-    this.image = {
-      imageName: "",
-      src: null
-    };
 
+  hideSpinner (){
+    this.shownSpinner = false;
+    this.spinner.hide();
+    this.file = {
+      fileName: "",
+      src: null,
+      isImage: false,
+      isPdf:false
+    };
   }
 
   getType(extention: string) {
@@ -359,7 +364,12 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
   visualizeFile(attachement) {
     const checked = checkIsValidImageExtensions(attachement.realName);
     if (checked.isValid) {
-      this.image.imageName = attachement.realName;
+      this.file = {
+        ...this.file,
+        ...checked,
+      }
+      this.shownSpinner = true;
+      this.file.fileName = attachement.realName;
       this.spinner.show();
       this.documentsService
         .downloadFile(attachement.nodeId)
@@ -368,15 +378,17 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
           response => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              if (checked.isSvg) this.image.src = this.sanitizer.bypassSecurityTrustUrl(
+              if (checked.isSvg) this.file.src = this.sanitizer.bypassSecurityTrustUrl(
                 myReader.result as string
               );
-              else this.image.src =  myReader.result;
+              else if (checked.isPdf) this.file.src = myReader.result.toString().split(",")[1];
+              else this.file.src =  myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           }
         );
     }
+
   }
 
   openFile(resData, fileName, blob) {

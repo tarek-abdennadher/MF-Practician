@@ -235,12 +235,14 @@
         [data]="objectsList"
         formControlName="object"
         [settings]="dropdownSettingsListObject"
+        [(ngModel)]="selecteditemModel"
         [ngClass]="{
           'is-invalid': submited && ctr.object.errors,
           invalid: submited && ctr.object.errors
         }"
-        (onSelect)="onObjectChanedSelect()"
-        (onDeSelect)="onObjectChanged()"
+        [deleteObject]="deleteObject"
+        (onSelect)="toggleConfirmChangeObjectPopup($event)"
+        (onDeSelect)="toggleConfirmdeleteObjectPopup($event)"
       >
         <c-item>
           <ng-template let-item="item">
@@ -355,28 +357,34 @@
       </div>
     </mat-tab>
   </mat-tab-group>
-
+  <div *ngIf="filesError" class="invalid-feedback-2">
+    {{ texts.filesError }}
+  </div>
   <br />
   <div class="row mb-2">
     <div class="col-5 col-sm-3 col-md-3">
       <button
-        *ngIf="!isInstruction"
-        id="send-button"
+        placement="left"
         type="button"
-        class="btn btn-primary"
+        *ngIf="!isInstruction"
+        mat-fab
+        class="fab-toggler"
         [attr.disabled]="loading ? true : null"
         (click)="sendEmail()"
       >
-        ENVOYER
+        <i class="fal fa-paper-plane"></i>
       </button>
+
       <button
-        *ngIf="isInstruction"
-        id="send-button-instruction"
+        placement="left"
         type="button"
-        class="btn btn-primary"
+        *ngIf="isInstruction"
+        mat-fab
+        class="fab-toggler"
+        [attr.disabled]="loading ? true : null"
         (click)="sendInstructionEmit()"
       >
-        ENVOYER
+        <i class="fal fa-paper-plane"></i>
       </button>
     </div>
     <div class="col-4 col-sm-3 col-md-2 file-clip">
@@ -400,8 +408,10 @@
         [hidden]="true"
         id="file-input"
         type="file"
+        multiple="multiple"
         (change)="onFileChange($event)"
       />
+
       <i
         *ngIf="sendMessageForm.get('file').value"
         id="clear-button"
@@ -414,31 +424,115 @@
       class="col-3 col-sm-5 col-md-5 attach"
     >
       <div
-        id="attachement"
         *ngFor="let file of sendMessageForm.get('file').value; let i = index"
       >
-        <p id="attachement-label">
-          <svg
-            width="1.3em"
-            height="1.3em"
-            viewBox="0 0 16 16"
-            class="bi bi-paperclip"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z"
-            />
-          </svg>
-          {{
-            file.name.length < 20 ? file.name : file.name.substr(0, 19) + "..."
-          }}
-        </p>
+        <div class="col" id="attachement">
+          <p id="attachement-label">
+            <svg
+              width="1.3em"
+              height="1.3em"
+              viewBox="0 0 16 16"
+              class="bi bi-paperclip"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z"
+              />
+            </svg>
+            {{
+              file.name.length < 20
+                ? file.name
+                : file.name.substr(0, 19) + "..."
+            }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </form>
+<!-- confirm/change object modal -->
+<div
+  class="modal fade"
+  id="confirmDeleteModal"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i
+          class="fas fa-exclamation-triangle fa-5x font"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></i>
+      </div>
+      <div class="modal-body">
+        <p>
+          {{ this.newMessageService.texts.confirm_change_delete_object }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          data-dismiss="modal"
+          class="btn btn-ok confirm"
+          (click)="onObjectDelete()"
+        >
+          Continuer
+        </button>
+        <button type="button" data-dismiss="modal" class="btn btn-ok confirm" >
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- confirm/change object modal -->
+<div
+  class="modal fade"
+  id="confirmChangeModal"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i
+          class="fas fa-exclamation-triangle fa-5x font"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></i>
+      </div>
+      <div class="modal-body">
+        <p>
+          {{ this.newMessageService.texts.confirm_change_delete_object }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          data-dismiss="modal"
+          class="btn btn-ok confirm"
+          (click)="onObjectChanedSelect()"
+        >
+          Continuer
+        </button>
+        <button
+          type="button"
+          data-dismiss="modal"
+          class="btn btn-ok confirm"
+          (click)="cancelObjectChange()"
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <div
   class="modal fade"
   id="firstModal"
@@ -564,6 +658,36 @@
           utilisation
         </p>
         <p>Le service clients</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-ok confirm">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Refuse modal -->
+<div
+  class="modal fade"
+  id="refuseModal"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i
+          class="fas fa-exclamation-triangle fa-5x font"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></i>
+      </div>
+      <div class="modal-body">
+        <p>
+          {{ this.newMessageService.texts.incomplete_patient_file_error }}
+        </p>
       </div>
       <div class="modal-footer">
         <button type="button" data-dismiss="modal" class="btn btn-ok confirm">

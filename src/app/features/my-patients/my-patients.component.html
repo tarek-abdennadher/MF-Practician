@@ -12,7 +12,7 @@
     >
     </lib-hls-generic-list-links>
     <lib-hls-generic-list
-      *ngIf="!scroll"
+      *ngIf="!scroll && !loading"
       [caller]="'my-patients'"
       [isCheckbox]="false"
       [list]="filtredPatients"
@@ -45,7 +45,7 @@
   (scrolled)="onScroll()"
 ></div>
 <mat-progress-spinner
-  *ngIf="scroll"
+  *ngIf="scroll || loading"
   diameter="20"
   mode="indeterminate"
   value="100"

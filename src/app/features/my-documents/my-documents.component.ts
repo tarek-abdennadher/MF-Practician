@@ -25,6 +25,7 @@ import { Subject } from "rxjs";
 export class MyDocumentsComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
   attachements = [];
+  filtering=false;
   page = this.globalService.messagesDisplayScreen.documents;
   topText = this.globalService.messagesDisplayScreen.documents;
 
@@ -200,6 +201,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   }
 
   cardClicked(item) {
+    this.filtering=false;
     jQuery([document.documentElement, document.body]).animate(
       {
         scrollTop: $("#documentRecu").offset().top - 100
@@ -218,6 +220,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
   }
 
   searchAction(value) {
+    this.filtering=true;
     if (this.filtredItemsList.length < this.itemsList.length) {
       this.filtredItemsList = this.itemsList;
     }

@@ -9,7 +9,7 @@ import { SafeUrl } from "@angular/platform-browser";
 import * as CryptoJS from "crypto-js";
 import { HttpUrlEncodingCodec } from "@angular/common/http";
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class FeaturesService {
   public photosArray = new Map();
@@ -24,6 +24,11 @@ export class FeaturesService {
   private _numberOfPending = new BehaviorSubject<number>(0);
   numberOfProhibited: number = 0;
   numberOfArchivedPatient: number = 0;
+  subCategorieDemandDocumentNumber: number = 0;
+  subCategoriePhonesNumber: number = 0;
+  subCategorieAppointmentNumber: number = 0;
+  subCategorieConfreresNumber: number = 0;
+  subCategorieDiversNumber: number = 0;
   myPracticians: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public imageSource: string | ArrayBuffer | SafeUrl;
   private searchSource = new BehaviorSubject(new search());
@@ -205,7 +210,7 @@ export class FeaturesService {
 
   markAsSeen(obsList, ids) {
     let val = obsList.getValue();
-    val.forEach(elm => {
+    val.forEach((elm) => {
       if (ids.includes(elm.id)) {
         elm.isSeen = true;
       }
@@ -214,7 +219,7 @@ export class FeaturesService {
   }
 
   markAsSeenById(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id) && !elm.isSeen) {
         elm.isSeen = true;
         this.setNumberOfInbox(this.getNumberOfInboxValue() - 1);
@@ -223,7 +228,7 @@ export class FeaturesService {
   }
 
   markAsNotSeenById(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id) && elm.isSeen) {
         elm.isSeen = false;
         this.setNumberOfInbox(this.getNumberOfInboxValue() + 1);
@@ -245,7 +250,7 @@ export class FeaturesService {
   }
 
   addNotificationByIdMessage(obsList, ids) {
-    obsList.forEach(elm => {
+    obsList.forEach((elm) => {
       if (ids.includes(elm.id)) {
         let notif = {
           civility: elm.users[0].civility,
@@ -255,7 +260,7 @@ export class FeaturesService {
           picture: elm.users[0].img,
           role: elm.users[0].type,
           sender: elm.users[0].fullName,
-          type: "MESSAGE"
+          type: "MESSAGE",
         };
         this.listNotifications.push(notif);
       }
@@ -265,7 +270,7 @@ export class FeaturesService {
   updateNumberOfInboxForPractician(accountId, inboxNumber) {
     let list: any[] = this.myPracticians.getValue();
     if (list && list.length > 0) {
-      list.find(p => p.id == accountId).number = inboxNumber;
+      list.find((p) => p.id == accountId).number = inboxNumber;
     }
     this.myPracticians.next(list);
   }
@@ -395,5 +400,44 @@ export class FeaturesService {
     } catch (e) {
       console.log(e);
     }
+  }
+  public countInboxByAccountIdAndCategory(id, category): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.messages +
+        "inbox/category/count/" +
+        id +
+        "/" +
+        category
+    );
+  }
+  countCategories() {
+    this.countInboxByAccountIdAndCategory(this.getUserId(), "DEMAND").subscribe(
+      (num) => {
+        this.subCategorieDemandDocumentNumber = num;
+      }
+    );
+    this.countInboxByAccountIdAndCategory(this.getUserId(), "PHONES").subscribe(
+      (num) => {
+        this.subCategoriePhonesNumber = num;
+      }
+    );
+    this.countInboxByAccountIdAndCategory(
+      this.getUserId(),
+      "APPOINTMENT"
+    ).subscribe((num) => {
+      this.subCategorieAppointmentNumber = num;
+    });
+    this.countInboxByAccountIdAndCategory(
+      this.getUserId(),
+      "CONFRERES"
+    ).subscribe((num) => {
+      this.subCategorieConfreresNumber = num;
+    });
+    this.countInboxByAccountIdAndCategory(this.getUserId(), "DIVERS").subscribe(
+      (num) => {
+        this.subCategorieDiversNumber = num;
+      }
+    );
   }
 }

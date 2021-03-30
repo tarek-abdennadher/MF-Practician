@@ -34,9 +34,12 @@
     >
     </mat-progress-spinner>
   </div>
-  <div id="contactPro" class="col-md-7 objects">
+  <div id="contactPro"  class="col-md-7 objects">
+
     <!-- content for object details -->
-    <router-outlet></router-outlet>
+    <div *ngIf="showDetail">
+    <router-outlet ></router-outlet>
+    </div>
   </div>
 </div>
 <notifier-container></notifier-container>

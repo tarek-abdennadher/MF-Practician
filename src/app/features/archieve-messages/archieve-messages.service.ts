@@ -3,6 +3,7 @@ import { GlobalService } from "@app/core/services/global.service";
 import { RequestType } from "@app/shared/enmus/requestType";
 import { Observable } from "rxjs";
 import { OrderDirection } from "@app/shared/enmus/order-direction";
+import {SenderRole} from '@enum/sender-role';
 
 @Injectable({
   providedIn: "root",
@@ -21,6 +22,21 @@ export class ArchieveMessagesService {
         params: { pageNo: pageNo, order: order },
       }
     );
+
+  }
+  getMyArchivedMessagesBySenderRole(
+    pageNo: number,
+    order: OrderDirection = OrderDirection.DESC,
+    filter: SenderRole = SenderRole.ALL
+
+  ): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.archived_messages + "myBySenderRole",
+      {
+        params: { pageNo: pageNo, order: order,senderRole: filter },
+      }
+    );
   }
 
   getAllMyArchivedMessages(): Observable<any> {
@@ -34,6 +50,17 @@ export class ArchieveMessagesService {
     return this.globalService.call(
       RequestType.GET,
       this.globalService.url.archived_messages + "myCount"
+    );
+  }
+ countMyArchivedMessagesBySenderRole( filter: SenderRole = SenderRole.ALL): Observable<any> {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.archived_messages + "countMineByRole",
+      {
+        params: {
+          senderRole: filter
+        }
+      }
     );
   }
 

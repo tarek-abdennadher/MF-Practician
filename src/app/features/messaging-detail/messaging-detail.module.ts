@@ -11,6 +11,7 @@ import { HlsNewMessageDetailModule } from "hls-new-message-detail";
 import { MessageDetailRoutingModule } from "./messaging-detail-routing";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
+import { NgxExtendedPdfViewerModule } from "ngx-extended-pdf-viewer";
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -63,7 +64,8 @@ const notifierOptions: NotifierOptions = {
     HlsMessagingDetailModule,
     HlsNewMessageDetailModule,
     NgxSpinnerModule,
-    NotifierModule.withConfig(notifierOptions)
+    NotifierModule.withConfig(notifierOptions),
+    NgxExtendedPdfViewerModule
   ],
   providers: []
 })

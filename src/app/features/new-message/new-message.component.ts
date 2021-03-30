@@ -47,11 +47,16 @@ declare var $: any;
   styleUrls: ["./new-message.component.scss"],
 })
 export class NewMessageComponent implements OnInit, OnDestroy {
+  filesError = false;
   ctrl: FormControl = new FormControl();
   @Input() id: number;
+  @Input() isReceiverPatient: boolean;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
+  confirmSend = true;
+  deleteObject = false;
   public uuid: string;
+  counter = 0;
   private _destroyed$ = new Subject();
   imageDropdown: string;
   connectedUserType = "MEDICAL";
@@ -66,6 +71,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   selectedObject = new BehaviorSubject<any>(null);
   practicianObjectList = [];
   selectedFiles: any;
+  files = [];
   selectedPracticianId: number;
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   @ViewChild("fileInput", { static: false }) fileInput: ElementRef;
@@ -135,7 +141,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   dropdownSettingsConcernList: any;
   showFile: any;
   innerWidth: number;
-
   set objectsList(objectsList: any) {
     this._objectsList = objectsList;
     this.objectFilteredList = objectsList;
@@ -163,6 +168,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   isPatient: boolean = false;
   isMedical: boolean;
   isTls: boolean;
+  selecteditem = [];
+  selecteditemModel = [];
   isAddress: boolean;
   hasError: boolean;
   isInfoDisplay: boolean = false;
@@ -203,8 +210,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private accountService: AccountService,
     private objectsService: ObjectsService,
-    private messageWidgetService: NewMessageWidgetService
+    private messageWidgetService: NewMessageWidgetService,
+    public newMessageService: HlsSendMessageService
   ) {
+    this.filesError = false;
     this.texts = hlsSendMessageService.texts;
     this.sendMessageForm = this.formBuilder.group({
       type: ["", Validators.required],
@@ -252,6 +261,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     return this.sendMessageForm.controls;
   }
   ngOnInit(): void {
+    this.filesError = false;
     this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
@@ -262,7 +272,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {});
+      .subscribe((res) => {
+        this.id ? this.toListSubscription() : null;
+      });
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
@@ -467,6 +479,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           }
           this.sendMessageForm.patchValue({
             body: res.body ? res.body : "",
+            documentBody: res.documentBody ? res.documentBody : "",
           });
           if (res.documentBody) {
             this.sendMessageForm.patchValue({
@@ -504,12 +517,23 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.onObjectChanged();
   }
   onFileChange(event) {
+    this.filesError = false;
+    if (event.target.files && event.target.files.length > 10) {
+      this.filesError = true;
+    } else if (!this.files || this.files.length == 0) {
+      this.files = event.target.files;
+    } else if (this.files.length + event.target.files.length > 10) {
+      this.filesError = true;
+    } else {
+      this.files = event.target.files;
+    }
     this.sendMessageForm.patchValue({
-      file: event.target.files,
+      file: this.files,
     });
   }
 
   public removeAttachment() {
+    this.filesError = false;
     this.fileInput.nativeElement.value = "";
     this.sendMessageForm.patchValue({
       file: "",
@@ -563,6 +587,20 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.submited = true;
     this.checkObjectValidator();
     if (this.sendMessageForm.invalid) {
+      return;
+    }
+    this.sendMessageForm.value.to.forEach((receiver) => {
+      if (
+        (receiver.type == "PATIENT" || receiver.type == "PATIENT_FILE") &&
+        receiver.canSend === false
+      ) {
+        this.confirmSend = this.confirmSend && receiver.canSend;
+      }
+    });
+
+    if (!this.confirmSend) {
+      $("#refuseModal").appendTo("body").modal("toggle");
+      this.confirmSend = true;
       return;
     }
     if (
@@ -666,11 +704,55 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     };
   }
   onObjectChanedSelect() {
+    if (this.selecteditem.length == 0) {
+      this.selecteditem.push(event);
+    }
     this.selectContext = true;
     this.onObjectChanged();
+    this.selecteditem = this.selecteditemModel;
+  }
+  onObjectDelete() {
+    this.deleteObject = true;
+    this.selecteditemModel = [];
+    this.selecteditem = [];
+    this.sendMessageForm.patchValue({
+      object: "",
+    });
+    this.sendMessageForm.patchValue({
+      file: null,
+    });
+    this.sendMessageForm.patchValue({
+      documentHeader: null,
+      documentBody: "",
+      documentFooter: null,
+      signature: null,
+      body: "",
+    });
+    this.selectContext = false;
+    this.deleteObject = false;
+  }
+  cancelObjectChange() {
+    if (this.selecteditem.length > 0)
+      this.selecteditemModel = this.selecteditem;
+    else {
+      this.selecteditemModel = [];
+    }
   }
 
+  toggleConfirmChangeObjectPopup(event) {
+    if (this.counter > 0) {
+      $("#confirmChangeModal").appendTo("body").modal("toggle");
+    } else {
+      this.onObjectChanedSelect();
+    }
+    this.counter++;
+  }
+  toggleConfirmdeleteObjectPopup(event) {
+    this.selecteditemModel.push(event);
+    $("#confirmDeleteModal").appendTo("body").modal("toggle");
+  }
   onObjectChanged() {
+    $("#confirmChangeModal").appendTo("body").modal("hide");
     if (this.sendMessageForm && this.sendMessageForm.value.to) {
       this.getSelectedToList(this.sendMessageForm.value);
       if (this.sendMessageForm.value.to.length > 0) {
@@ -697,9 +779,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.sendMessageForm.patchValue({
         object: "",
       });
-      this.sendMessageForm.patchValue({
-        file: null,
-      });
+      //   this.sendMessageForm.patchValue({
+      // //   file: null,
+      //  });
       this.sendMessageForm.patchValue({
         documentHeader: null,
         documentBody: "",
@@ -903,47 +985,104 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         });
       } else if (contactPractician.contactType == "PATIENT_FILE") {
         if (contactPractician.civility == "M") {
-          myList.push({
-            id: contactPractician.id,
-            fullName: contactPractician.fullName,
-            type: "PATIENT",
-            isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.man,
-          });
+          if (this.isReceiverPatient) {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: "PATIENT",
+              isSelected:
+                this.selectedPracticianId == contactPractician.entityId,
+              img: this.avatars.man,
+              canSend: contactPractician.canSend,
+            });
+          } else {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: "PATIENT",
+              isSelected: this.selectedPracticianId == contactPractician.id,
+              img: this.avatars.man,
+              canSend: contactPractician.canSend,
+            });
+          }
         } else if (
           contactPractician.civility == "MME" ||
           contactPractician.civility == "Mme"
         ) {
-          myList.push({
-            id: contactPractician.id,
-            fullName: contactPractician.fullName,
-            type: contactPractician.contactType,
-            isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.women,
-          });
+          if (this.isReceiverPatient) {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.entityId,
+              img: this.avatars.women,
+              canSend: contactPractician.canSend,
+            });
+          } else {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: this.avatars.women,
+              canSend: contactPractician.canSend,
+            });
+          }
         } else if (contactPractician.civility == "CHILD") {
-          myList.push({
-            id: contactPractician.id,
-            fullName: contactPractician.fullName,
-            type: contactPractician.contactType,
-            isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.child,
-          });
+          if (this.isReceiverPatient) {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.entityId,
+              img: this.avatars.child,
+              canSend: contactPractician.canSend,
+            });
+          } else {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: this.avatars.child,
+              canSend: contactPractician.canSend,
+            });
+          }
         } else if (
           contactPractician.civility == "" ||
           contactPractician.civility == null
         ) {
-          myList.push({
-            id: contactPractician.id,
-            fullName: contactPractician.fullName,
-            type: contactPractician.contactType,
-            isSelected:
-              this.selectedPracticianId == contactPractician.id ? true : false,
-            img: this.avatars.man,
-          });
+          if (this.isReceiverPatient) {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.entityId,
+              img: this.avatars.man,
+              canSend: contactPractician.canSend,
+            });
+          } else {
+            myList.push({
+              id: contactPractician.id,
+              fullName: contactPractician.fullName,
+              type: contactPractician.contactType,
+              isSelected:
+                this.selectedPracticianId == contactPractician.id
+                  ? true
+                  : false,
+              img: this.avatars.man,
+              canSend: contactPractician.canSend,
+            });
+          }
         }
         if (this.selectedPracticianId == contactPractician.id) {
           finalState = true;
@@ -1088,7 +1227,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         id: selectedObj.id,
         name: selectedObj.title,
         body: "",
-        file: null,
+        // file: null,
         documentHeader: null,
         documentBody: "",
         documentFooter: null,
@@ -1102,7 +1241,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             newData.body = resBody.body;
           })
         );
-        this.textSpinner = this.texts.loading;
+      this.textSpinner = this.texts.loading;
       if (selectedObj.allowDocument) {
         this.loading = true;
         this.ctr.body.disable();
@@ -1498,7 +1637,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     newMessage.documentBody = message.documentBody ? message.documentBody : "";
     newMessage.documentFooter = message.documentFooter;
     newMessage.signature = message.signature;
-    if (message.file !== undefined && message.file !== null) {
+    if (
+      message.file !== undefined &&
+      message.file !== null &&
+      message.file != "" &&
+      message.file != []
+    ) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
 
@@ -1506,15 +1650,22 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       if (this.selectedFiles) {
         newMessage.hasFiles = true;
         formData.append("model", JSON.stringify(newMessage));
-        formData.append(
-          "file",
-          this.selectedFiles[0],
-          this.selectedFiles[0].name
-        );
+        for (var i = 0; i < this.selectedFiles.length; i++) {
+          formData.append(
+            "file",
+            this.selectedFiles[i],
+            this.selectedFiles[i].name
+          );
+        }
+        //  formData.append(
+        //  "file",
+        // this.selectedFiles[0],
+        // this.selectedFiles[0].name
+        //  );
       }
 
       this.nodeService
-        .saveFileInMemory(this.uuid, formData)
+        .saveFileInMemoryV2(this.uuid, formData)
         .pipe(takeUntil(this._destroyed$))
         .subscribe(
           (mess) => {

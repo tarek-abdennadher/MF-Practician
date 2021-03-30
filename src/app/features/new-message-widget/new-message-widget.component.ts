@@ -27,6 +27,7 @@ export class NewMessageWidgetComponent implements OnInit {
     bottom: 0,
     overflow: "hidden",
   };
+  isReceiverPatient:boolean;
   maximize = {};
   constructor(
     private globalService: GlobalService,
@@ -38,6 +39,8 @@ export class NewMessageWidgetComponent implements OnInit {
     this.messageWidgetService.toggleObs.subscribe((data) => {
       this.onToggleFab(data);
     });
+     this.messageWidgetService.isPatientFileNewMessageWidget.subscribe((data:boolean) => {
+      this.isReceiverPatient = data ;});
   }
 
   showItems() {

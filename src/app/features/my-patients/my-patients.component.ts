@@ -38,6 +38,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   scrollDown = true;
   isFiltering = false;
   scroll = false;
+  loading = false;
   public searchForm: FormGroup;
   mesCategories = [];
   categs: Array<Category>;
@@ -126,6 +127,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   getPatientsOfCurrentParactician(pageNo) {
+    this.loading=true;
     this.scrollDown = false;
     this.myPatientsService
       .getPatientsOfCurrentParacticianV4(
@@ -147,6 +149,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         });
         this.scroll = false;
         this.scrollDown = true;
+        this.loading=false;
       });
   }
 
@@ -157,7 +160,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
           this.myPatientsService
           .getPatientsOfCurrentParacticianSearch(
             this.featureService.getUserId(),
-            res[0]
+            encodeURIComponent(res[0])
           )
           .pipe(takeUntil(this._destroyed$))
           .subscribe((myPatients) => {
@@ -245,6 +248,8 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     myPatients.isArchived = archived;
     myPatients.isPatientFile = patient.patient ? false : true;
     myPatients.isAddedByPatient = patient.addedByPatient;
+    myPatients.phoneNumber=patient.phoneNumber;
+    myPatients.email=patient.email;
     myPatients.users.forEach((user) => {
       this.documentService
         .getDefaultImageEntity(user.id, "PATIENT_FILE")
@@ -276,7 +281,13 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   writeAction(item) {
-    this.messageWidgetService.toggleObs.next(item.users[0].accountId);
+    if(item.users[0].accountId)
+    {
+      this.messageWidgetService.toggleObs.next(item.users[0].accountId);
+    }else{
+      this.messageWidgetService.toggleObs.next( item.users[0].id);
+      this.messageWidgetService.isPatientFileNewMessageWidget.next( true);
+    }
   }
   prohibitAction(item) {
     this.scrollDown = false;
@@ -425,5 +436,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroyed$.next(true);
     this._destroyed$.unsubscribe();
+    this.featureService.setFilteredPatientsSearch([]);
+
   }
 }

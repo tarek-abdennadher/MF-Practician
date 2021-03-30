@@ -1,4 +1,4 @@
-<div>
+<div id="msgDetail">
   <lib-hlsLinks
     [links]="links"
     [page]="page"
@@ -12,6 +12,7 @@
     [isMessageImportant]="isMessageImportant"
     (removeImportantAction)="removeImportantAction()"
     (desarchieveAction)="desarchiveMessages()"
+    (changeCategoryAction)="changeCategory($event)"
   ></lib-hlsLinks>
   <mat-progress-spinner
     class="spinner"
@@ -40,6 +41,8 @@
     (displayForPatientFile)="displayForPatientFile($event)"
     (displayContact)="displayContact($event)"
     (replyAction)="replyAction()"
+    (replyActionTLS)="replyActionTLS()"
+    (replyActionPatient)="replyActionPatient()"
     (forwardAction)="forwardAction()"
     (acceptAction)="acceptAction()"
     (refuseAction)="refuseAction()"
@@ -48,12 +51,31 @@
     [attachements]="attachements"
   >
   </lib-hlsMessagingDetail>
-  <ngx-spinner (click)="hideSpinner()" [fullScreen]="true" type="none" size="medium">
-    <div *ngIf="image.src" class="card-align">
-      <img class="card-image" [src]="image.src" />
-      <span class="card-body image-name" >{{image.imageName}}</span>
+  <ngx-spinner
+    (click)="hideSpinner()"
+    [fullScreen]="true"
+    type="none"
+    size="medium"
+    class="message-details"
+    *ngIf="shownSpinner"
+  >
+    <div *ngIf="file.src" class="card-align">
+      <img (click)="$event.stopPropagation()" *ngIf="file.isImage" class="card-image" [src]="file.src" />
+        <ngx-extended-pdf-viewer
+        (click)="$event.stopPropagation()"
+        *ngIf="file.isPdf"
+        [base64Src]="file.src"
+        [zoom]="'page-width'"
+        [filenameForDownload]="file.fileName"
+        language="fr"
+        [showOpenFileButton]="false"
+        [showBookmarkButton]="false"
+        [showSecondaryToolbarButton]="false"
+        [showHandToolButton]="true">
+      </ngx-extended-pdf-viewer>
+      <span class="card-body image-name">{{ file.fileName }}</span>
     </div>
-      <span class="loading" *ngIf="!image.src">{{loadingText}} ...</span>
+    <span class="loading" *ngIf="!file.src">{{ loadingText }} ...</span>
   </ngx-spinner>
   <div id="reply" class="reply">
     <router-outlet></router-outlet>

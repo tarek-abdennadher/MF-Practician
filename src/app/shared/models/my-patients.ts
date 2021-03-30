@@ -11,7 +11,10 @@ export class MyPatients {
   photoId: string;
   fullInfo: any;
   id: number;
-  isAddedByPatient : boolean
+  isAddedByPatient : boolean;
+  phoneNumber: any;
+  email:any;
+  linkedPatientFiles:any;
 }
 
 export class PatientSerch {

@@ -15,7 +15,7 @@
   (archieveAction)="archieveActionClicked()"
   (filterAction)="filterActionClicked($event)"
   (refreshMessagingListAction)="refreshMessagingList()"
-  [paginationText]=" pagination.text"
+  [paginationText]="searchContext ? '-' : pagination.text"
   [isPreviousPageAllowed]="pagination.hasPrevious && !loading"
   [isNextPageAllowed]="pagination.hasNext && !loading"
   (nextPageAction)="nextPageActionClicked()"
