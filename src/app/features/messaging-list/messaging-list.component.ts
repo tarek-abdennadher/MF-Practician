@@ -43,7 +43,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     isArchieve: true,
     isImportant: false,
     isFilter: true,
-    isMenuDisplay: true,
+    isMenuDisplay: this.messageCategory == null,
     isAllSelectCarret: true,
     isRefresh: true,
     isPagination: true,
@@ -175,7 +175,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         isArchieve: true,
         isImportant: false,
         isFilter: true,
-        isMenuDisplay: true,
+        isMenuDisplay: this.messageCategory == null,
         isAllSelectCarret: true,
         isRefresh: true,
         isPagination: true,
@@ -637,7 +637,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               );
             this.filtredItemList.unshift(message);
             this.filtredItemList.sort(function (m1, m2) {
-              return (new Date(m2.createdAt).getTime() - new Date(m1.createdAt).getTime());
+              return (
+                new Date(m2.createdAt).getTime() -
+                new Date(m1.createdAt).getTime()
+              );
             });
             this.messagesNumber++;
             this.pagination.init(this.messagesNumber);
@@ -651,10 +654,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
 
   messageReadFromMobile() {
-    this.messagesServ.readMessageId.subscribe(id => {
+    this.messagesServ.readMessageId.subscribe((id) => {
       if (id) {
         let filtredIndex = this.filtredItemList.findIndex(
-          item => item.id == id
+          (item) => item.id == id
         );
         if (filtredIndex != -1 && !this.filtredItemList[filtredIndex].isSeen) {
           this.filtredItemList[filtredIndex].isSeen = true;
@@ -664,7 +667,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           this.inboxNumber -= 1;
         }
       }
-    })
+    });
   }
 
   deleteElementsFromInbox(ids) {
