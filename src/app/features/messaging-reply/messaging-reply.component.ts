@@ -381,8 +381,8 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         for (var i = 0; i < this.selectedFiles.length; i++) {
           formData.append(
             "file",
-            this.selectedFiles.item[i],
-            this.selectedFiles.item[i].name
+            this.selectedFiles[i],
+            this.selectedFiles[i].name
           );
         }
       }
