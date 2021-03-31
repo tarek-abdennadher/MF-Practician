@@ -712,24 +712,30 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.selecteditem = this.selecteditemModel;
   }
   onObjectDelete() {
-    this.deleteObject = true;
-    this.selecteditemModel = [];
-    this.selecteditem = [];
-    this.sendMessageForm.patchValue({
-      object: "",
-    });
-    this.sendMessageForm.patchValue({
-      file: null,
-    });
-    this.sendMessageForm.patchValue({
-      documentHeader: null,
-      documentBody: "",
-      documentFooter: null,
-      signature: null,
-      body: "",
-    });
-    this.selectContext = false;
-    this.deleteObject = false;
+    this.spinner.show();
+    setTimeout(() => {
+      this.deleteObject = true;
+      this.selecteditemModel = [];
+      this.selecteditem = [];
+      this.sendMessageForm.patchValue({
+        object: "",
+      });
+      this.sendMessageForm.patchValue({
+        file: null,
+      });
+      this.sendMessageForm.patchValue({
+        documentHeader: null,
+        documentBody: "",
+        documentFooter: null,
+        signature: null,
+        body: "",
+      });
+      this.selectContext = false;
+      this.deleteObject = false;
+      this.otherObject=false;
+      this.newFlag=false;
+      this.spinner.hide();
+    }, 1000);
   }
   cancelObjectChange() {
     if (this.selecteditem.length > 0)
@@ -740,7 +746,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   toggleConfirmChangeObjectPopup(event) {
-    if (this.counter > 0) {
+
+    if (this.counter > 0 && this.selecteditem.length >0) {
       $("#confirmChangeModal").appendTo("body").modal("toggle");
     } else {
       this.onObjectChanedSelect();
@@ -748,7 +755,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.counter++;
   }
   toggleConfirmdeleteObjectPopup(event) {
-    this.selecteditemModel.push(event);
+    if(this.selecteditemModel.length==0){
+      this.selecteditemModel.push(event);
+
+    }
     $("#confirmDeleteModal").appendTo("body").modal("toggle");
   }
   onObjectChanged() {
