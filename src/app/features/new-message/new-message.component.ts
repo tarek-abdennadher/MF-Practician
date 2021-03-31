@@ -54,7 +54,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
   confirmSend = true;
-  deleteObject=false;
+  deleteObject = false;
   public uuid: string;
   counter = 0;
   private _destroyed$ = new Subject();
@@ -272,7 +272,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.getAllPatientFilesByPracticianId();
     forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => {this.id ? this.toListSubscription() : null});
+      .subscribe((res) => {
+        this.id ? this.toListSubscription() : null;
+      });
     setTimeout(() => {
       this.featureService.setIsMessaging(false);
     });
@@ -736,10 +738,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }, 1000);
   }
   cancelObjectChange() {
-    if(this.selecteditem.length>0)
-    this.selecteditemModel = this.selecteditem;
-    else{
-      this.selecteditemModel=[]
+    if (this.selecteditem.length > 0)
+      this.selecteditemModel = this.selecteditem;
+    else {
+      this.selecteditemModel = [];
     }
   }
 
@@ -787,9 +789,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.sendMessageForm.patchValue({
         object: "",
       });
-      this.sendMessageForm.patchValue({
-        file: null,
-      });
+      //   this.sendMessageForm.patchValue({
+      // //   file: null,
+      //  });
       this.sendMessageForm.patchValue({
         documentHeader: null,
         documentBody: "",
@@ -1235,7 +1237,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         id: selectedObj.id,
         name: selectedObj.title,
         body: "",
-        file: null,
+        // file: null,
         documentHeader: null,
         documentBody: "",
         documentFooter: null,
@@ -1645,7 +1647,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     newMessage.documentBody = message.documentBody ? message.documentBody : "";
     newMessage.documentFooter = message.documentFooter;
     newMessage.signature = message.signature;
-    if (message.file !== undefined && message.file !== null) {
+    if (
+      message.file !== undefined &&
+      message.file !== null &&
+      message.file != "" &&
+      message.file != []
+    ) {
       newMessage.uuid = this.uuid;
       this.selectedFiles = message.file;
 

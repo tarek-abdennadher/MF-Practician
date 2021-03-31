@@ -41,7 +41,9 @@
         <ng-template mat-tab-label>
           <i class="fas fa-inbox my-tab-icon pr-custom-11px"></i>
           <span>Tous mes messages</span>
-          <span class="number" *ngIf="inboxPracticianNumber > 0">{{ inboxPracticianNumber }}</span>
+          <span class="number" *ngIf="inboxPracticianNumber > 0">{{
+            inboxPracticianNumber
+          }}</span>
         </ng-template>
         <lib-hlsMessagingList
           *ngIf="!loading"
@@ -58,7 +60,11 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Secrétaire" [disabled]="loading">
+      <mat-tab
+        *ngIf="messageCategory == null"
+        label="Secrétaire"
+        [disabled]="loading"
+      >
         <ng-template mat-tab-label>
           <i class="fas fa-user-nurse my-tab-icon pr-custom-11px"></i>
           <span>Secrétaire</span>
@@ -78,7 +84,11 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Patients" [disabled]="loading">
+      <mat-tab
+        *ngIf="messageCategory == null"
+        label="Patients"
+        [disabled]="loading"
+      >
         <ng-template mat-tab-label>
           <i class="fas fa-user my-tab-icon pr-custom-11px"></i>
           Patients
@@ -98,7 +108,11 @@
           (downSortAction)="downSortClicked()"
         ></lib-hlsMessagingList>
       </mat-tab>
-      <mat-tab label="Praticiens" [disabled]="loading">
+      <mat-tab
+        *ngIf="messageCategory == null"
+        label="Praticiens"
+        [disabled]="loading"
+      >
         <ng-template mat-tab-label>
           <i class="fas fa-user-md my-tab-icon pr-custom-11px"></i>
           Praticiens

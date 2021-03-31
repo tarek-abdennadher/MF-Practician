@@ -38,6 +38,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   scrollDown = true;
   isFiltering = false;
   scroll = false;
+  loading = false;
   public searchForm: FormGroup;
   mesCategories = [];
   categs: Array<Category>;
@@ -126,6 +127,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
   }
 
   getPatientsOfCurrentParactician(pageNo) {
+    this.loading=true;
     this.scrollDown = false;
     this.myPatientsService
       .getPatientsOfCurrentParacticianV4(
@@ -147,6 +149,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
         });
         this.scroll = false;
         this.scrollDown = true;
+        this.loading=false;
       });
   }
 

@@ -43,12 +43,12 @@ export class MessagingListComponent implements OnInit, OnDestroy {
     isArchieve: true,
     isImportant: false,
     isFilter: true,
-    isMenuDisplay: true,
+    isMenuDisplay: this.messageCategory == null,
     isAllSelectCarret: true,
     isRefresh: true,
     isPagination: true,
-    isMenuImportant: false,
-    isMenuNotSeen: false,
+    isMenuImportant: this.messageCategory == null,
+    isMenuNotSeen: this.messageCategory == null,
   };
   page = "INBOX";
   number: number = 0;
@@ -175,12 +175,12 @@ export class MessagingListComponent implements OnInit, OnDestroy {
         isArchieve: true,
         isImportant: false,
         isFilter: true,
-        isMenuDisplay: true,
+        isMenuDisplay: this.messageCategory == null,
         isAllSelectCarret: true,
         isRefresh: true,
         isPagination: true,
-        isMenuImportant: false,
-        isMenuNotSeen: false,
+        isMenuImportant: this.messageCategory == null,
+        isMenuNotSeen: this.messageCategory == null,
       };
       this.featureService.selectedPracticianId = 0;
       this.isMyInbox = true;
@@ -559,20 +559,23 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
   selectItem(event) {
     this.selectedObjects = event.filter((a) => a.isChecked == true);
-    this.selectedObjects.length == 0
-      ? (this.links.isMenuDisplay = false)
-      : (this.links.isMenuDisplay = true);
-    let isSeenTable = [];
-    let isImportantTable = [];
-    this.selectedObjects.forEach((elm) => {
-      isSeenTable.push(elm.isSeen);
-      isImportantTable.push(elm.isImportant);
-    });
-    this.links.isMenuImportant =
-      isImportantTable.filter((elm) => elm == false).length == 0;
-    this.links.isMenuNotSeen =
-      isSeenTable.filter((elm) => elm == true).length == 0;
-    this.links.isAllSeen = isSeenTable.filter((elm) => elm == false).length > 0;
+    if (this.messageCategory == null) {
+      this.selectedObjects.length == 0
+        ? (this.links.isMenuDisplay = false)
+        : (this.links.isMenuDisplay = true);
+      let isSeenTable = [];
+      let isImportantTable = [];
+      this.selectedObjects.forEach((elm) => {
+        isSeenTable.push(elm.isSeen);
+        isImportantTable.push(elm.isImportant);
+      });
+      this.links.isMenuImportant =
+        isImportantTable.filter((elm) => elm == false).length == 0;
+      this.links.isMenuNotSeen =
+        isSeenTable.filter((elm) => elm == true).length == 0;
+      this.links.isAllSeen =
+        isSeenTable.filter((elm) => elm == false).length > 0;
+    }
   }
 
   getFirstMessageInNextPage(accountId, size) {
@@ -637,7 +640,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
               );
             this.filtredItemList.unshift(message);
             this.filtredItemList.sort(function (m1, m2) {
-              return (new Date(m2.createdAt).getTime() - new Date(m1.createdAt).getTime());
+              return (
+                new Date(m2.createdAt).getTime() -
+                new Date(m1.createdAt).getTime()
+              );
             });
             this.messagesNumber++;
             this.pagination.init(this.messagesNumber);
@@ -651,10 +657,10 @@ export class MessagingListComponent implements OnInit, OnDestroy {
   }
 
   messageReadFromMobile() {
-    this.messagesServ.readMessageId.subscribe(id => {
+    this.messagesServ.readMessageId.subscribe((id) => {
       if (id) {
         let filtredIndex = this.filtredItemList.findIndex(
-          item => item.id == id
+          (item) => item.id == id
         );
         if (filtredIndex != -1 && !this.filtredItemList[filtredIndex].isSeen) {
           this.filtredItemList[filtredIndex].isSeen = true;
@@ -664,7 +670,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
           this.inboxNumber -= 1;
         }
       }
-    })
+    });
   }
 
   deleteElementsFromInbox(ids) {

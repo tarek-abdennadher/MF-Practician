@@ -365,7 +365,12 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         ? message.sender.concernsType
         : null;
     }
-    if (message.file !== undefined) {
+    if (
+      message.file !== undefined &&
+      message.file !== null &&
+      message.file !== "" &&
+      message.file !== []
+    ) {
       this.selectedFiles = message.file;
 
       const formData = new FormData();
@@ -373,13 +378,15 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
         replyMessage.hasFiles = true;
         replyMessage.uuid = this.uuid;
         formData.append("model", JSON.stringify(replyMessage));
-        formData.append(
-          "file",
-          this.selectedFiles.item(0),
-          this.selectedFiles.item(0).name
-        );
+        for (var i = 0; i < this.selectedFiles.length; i++) {
+          formData.append(
+            "file",
+            this.selectedFiles[i],
+            this.selectedFiles[i].name
+          );
+        }
       }
-      this.nodeService.saveFileInMemory(this.uuid, formData).subscribe(
+      this.nodeService.saveFileInMemoryV2(this.uuid, formData).subscribe(
         (message) => {
           if (this.forwardedResponse) {
             this.featureService.numberOfForwarded =
@@ -423,19 +430,20 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   scrollToTop(): void {
     jQuery([document.documentElement, document.body]).animate(
       {
-        scrollTop: $("#msgDetail").offset().top ,
+        scrollTop: $("#msgDetail").offset().top,
       },
       800
     );
   }
   goToBack() {
-    if(this.messagingDetail){
-      this.scrollToTop()
-    this.router.navigate(
-      ["/messagerie-lire/" + this.featureService.encrypt(this.messagingDetail.id)]
-
-    );
-    }}
+    if (this.messagingDetail) {
+      this.scrollToTop();
+      this.router.navigate([
+        "/messagerie-lire/" +
+          this.featureService.encrypt(this.messagingDetail.id),
+      ]);
+    }
+  }
 
   // destory any pipe(takeUntil(this._destroyed$)).subscribe to avoid memory leak
   ngOnDestroy(): void {
