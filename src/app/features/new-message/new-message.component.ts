@@ -48,6 +48,7 @@ declare var $: any;
 })
 export class NewMessageComponent implements OnInit, OnDestroy {
   filesError = false;
+  sizeError = false;
   ctrl: FormControl = new FormControl();
   @Input() id: number;
   @Input() isReceiverPatient: boolean;
@@ -214,6 +215,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     public newMessageService: HlsSendMessageService
   ) {
     this.filesError = false;
+    this.sizeError = false;
     this.texts = hlsSendMessageService.texts;
     this.sendMessageForm = this.formBuilder.group({
       type: ["", Validators.required],
@@ -262,6 +264,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.filesError = false;
+    this.sizeError = false;
     this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
@@ -499,6 +502,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   private otherObjectUpdate() {
+    this.filesError = false;
+    this.sizeError = false;
     this.otherObject =
       this.sendMessageForm.value.object.length == 1
         ? this.sendMessageForm.value.object[0].title.toLowerCase() ===
@@ -518,6 +523,17 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   onFileChange(event) {
     this.filesError = false;
+    this.sizeError = false;
+    let totalSize = 0;
+    if (event.target.files) {
+      for (var i = 0; i < event.target.files.length; i++) {
+        totalSize = totalSize + event.target.files[i].size;
+      }
+    }
+    if (totalSize >= 10485760) {
+      this.sizeError = true;
+      return;
+    }
     if (event.target.files && event.target.files.length > 10) {
       this.filesError = true;
     } else if (!this.files || this.files.length == 0) {
@@ -534,6 +550,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   public removeAttachment() {
     this.filesError = false;
+    this.sizeError = false;
     this.fileInput.nativeElement.value = "";
     this.sendMessageForm.patchValue({
       file: "",
@@ -541,6 +558,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   send() {
+    this.filesError = false;
+    this.sizeError = false;
     if (this.sendMessageForm.invalid) {
       this.steps.hasError = true;
     }
@@ -584,6 +603,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }
   }
   sendEmail() {
+    this.filesError = false;
+    this.sizeError = false;
     this.submited = true;
     this.checkObjectValidator();
     if (this.sendMessageForm.invalid) {
@@ -620,6 +641,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }
   }
   sendInstructionEmit() {
+    this.filesError = false;
+    this.sizeError = false;
     this.submited = true;
     this.checkObjectValidator();
 
@@ -634,12 +657,16 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   search(query: string) {
+    this.filesError = false;
+    this.sizeError = false;
     let result = this.select(query);
     this.toList.subscribe((elm) => {
       elm = result;
     });
   }
   select(query: string): string[] {
+    this.filesError = false;
+    this.sizeError = false;
     let result: string[] = [];
     this.toList.subscribe((areas) => {
       for (let a of areas) {
@@ -660,6 +687,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         ).length;
   }
   onForChanged() {
+    this.filesError = false;
+    this.sizeError = false;
     if (this.isSecretary()) {
       let selectedTo = [];
       let selectedFor = this.sendMessageForm.value.for;
@@ -686,6 +715,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     }
   }
   updateSelectionSeting(limitSelection) {
+    this.filesError = false;
+    this.sizeError = false;
     this.dropdownSettings = {
       singleSelection: false,
       text: "Sélectionner des contacts",
@@ -704,6 +735,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     };
   }
   onObjectChanedSelect() {
+    this.filesError = false;
+    this.sizeError = false;
     if (this.selecteditem.length == 0) {
       this.selecteditem.push(event);
     }
@@ -712,6 +745,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.selecteditem = this.selecteditemModel;
   }
   onObjectDelete() {
+    this.filesError = false;
+    this.sizeError = false;
     this.spinner.show();
     setTimeout(() => {
       this.deleteObject = true;
@@ -732,12 +767,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       });
       this.selectContext = false;
       this.deleteObject = false;
-      this.otherObject=false;
-      this.newFlag=false;
+      this.otherObject = false;
+      this.newFlag = false;
       this.spinner.hide();
     }, 1000);
   }
   cancelObjectChange() {
+    this.filesError = false;
+    this.sizeError = false;
     if (this.selecteditem.length > 0)
       this.selecteditemModel = this.selecteditem;
     else {
@@ -746,8 +783,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   toggleConfirmChangeObjectPopup(event) {
-
-    if (this.counter > 0 && this.selecteditem.length >0) {
+    this.filesError = false;
+    this.sizeError = false;
+    if (this.counter > 0 && this.selecteditem.length > 0) {
       $("#confirmChangeModal").appendTo("body").modal("toggle");
     } else {
       this.onObjectChanedSelect();
@@ -755,13 +793,16 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.counter++;
   }
   toggleConfirmdeleteObjectPopup(event) {
-    if(this.selecteditemModel.length==0){
+    this.filesError = false;
+    this.sizeError = false;
+    if (this.selecteditemModel.length == 0) {
       this.selecteditemModel.push(event);
-
     }
     $("#confirmDeleteModal").appendTo("body").modal("toggle");
   }
   onObjectChanged() {
+    this.filesError = false;
+    this.sizeError = false;
     $("#confirmChangeModal").appendTo("body").modal("hide");
     if (this.sendMessageForm && this.sendMessageForm.value.to) {
       this.getSelectedToList(this.sendMessageForm.value);
@@ -910,6 +951,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   onConcernChanged() {}
   onTypeChanged() {
+    this.filesError = false;
+    this.sizeError = false;
     this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
     this.sendMessageForm.get("cc").reset();
@@ -1224,6 +1267,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   objectSelection(item) {
+    this.filesError = false;
+    this.sizeError = false;
     let selectedObj = item.object[0];
     if (selectedObj && selectedObj.title != "autre" && !this.isInstruction) {
       const objectDto = {
@@ -1301,6 +1346,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   goToBack() {
+    this.filesError = false;
+    this.sizeError = false;
     this._location.back();
   }
 
@@ -1369,6 +1416,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   typeSelection(item) {
+    this.filesError = false;
+    this.sizeError = false;
     if (
       item !== null &&
       item.type &&
