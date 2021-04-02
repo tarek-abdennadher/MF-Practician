@@ -262,6 +262,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       });
   }
   addContact() {
+    this.showDetail=true;
     jQuery([document.documentElement, document.body]).animate(
       { scrollTop: $("#contactPro").offset().top },
       1000
