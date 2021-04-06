@@ -105,6 +105,19 @@
       ></lib-hlsMessagingList>
     </mat-tab>
     </mat-tab-group>
+    <lib-hlsMessagingList
+    class="mobile-links"
+    *ngIf="!loading"
+    [list]="filtredItemList"
+    [hasPaging]="true"
+    emptyList="Vous n'avez aucun nouveau message actuellement."
+    (cardAction)="cardClicked($event)"
+    (archieveAction)="archieveMessage($event)"
+    (selectItemAction)="selectItem($event)"
+    [imageSource]="imageSource"
+    [hasPaging]="true"
+    [isSent]="true"
+  ></lib-hlsMessagingList>
   </div>
 </div>
 <notifier-container></notifier-container>
@@ -121,3 +134,27 @@
   value="100"
 >
 </mat-progress-spinner>
+<lib-hlsLinks
+class="mobile-links"
+  [links]="links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [messagesNumber]="this.messagesNumber"
+  [backButton]="backButton"
+  [paginationText]="searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
+  (nextPageAction)="nextPageActionClicked()"
+  (previousPageAction)="previousPageActionClicked()"
+  (selectAllAction)="selectAllActionClicked()"
+  (deSelectAllAction)="deSelectAllActionClicked()"
+  (seenAction)="seenActionClicked()"
+  (seenAllAction)="seenAllActionClicked()"
+  (importantAction)="importantActionClicked()"
+  (deleteAction)="deleteActionClicked()"
+  (archieveAction)="archieveActionClicked()"
+  (filterAction)="filterActionClicked($event)"
+  (refreshMessagingListAction)="refreshMessagingList()"
+></lib-hlsLinks>

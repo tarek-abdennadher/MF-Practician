@@ -38,6 +38,8 @@ export class HlsSendMessageService {
       "Le changement de l'object va changer le corps du message, voulez vous continuer ?",
     incomplete_patient_file_error:
       "Attention, la fiche patient n’est pas complète ou conforme pour l’envoi d’un message via Helssy.Merci de vérifier que toutes les informations soient complétées.",
-    filesError: "Maximum 10 pièces jointes par message",
+    filesError: "Vous avez dépassé le nombre de fichiers autorisés (10)",
+    sizeError:
+      "Le(s) fichier(s) que vous joignez est plus volumineux que le serveur ne l’autorise (10 MO)",
   };
 }

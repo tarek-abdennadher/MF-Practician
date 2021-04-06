@@ -360,6 +360,9 @@
   <div *ngIf="filesError" class="invalid-feedback-2">
     {{ texts.filesError }}
   </div>
+  <div *ngIf="sizeError" class="invalid-feedback-2">
+    {{ texts.sizeError }}
+  </div>
   <br />
   <div class="row mb-2">
     <div class="col-5 col-sm-3 col-md-3">
@@ -483,7 +486,7 @@
         >
           Continuer
         </button>
-        <button type="button" data-dismiss="modal" class="btn btn-ok confirm" >
+        <button type="button" data-dismiss="modal" class="btn btn-ok confirm">
           Fermer
         </button>
       </div>
