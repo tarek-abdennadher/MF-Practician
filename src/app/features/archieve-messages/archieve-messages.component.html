@@ -94,7 +94,18 @@
         ></lib-hlsMessagingList>
       </mat-tab>
     </mat-tab-group>
-
+    <lib-hlsMessagingList
+    class="mobile-links"
+    *ngIf="!loading"
+    [list]="filtredItemList"
+    emptyList="Vous n'avez aucun message archivé actuellement."
+    (cardAction)="cardClicked($event)"
+    [imageSource]="imageSource"
+    [hasPaging]="true"
+    (upSortAction)="upSortClicked()"
+    (downSortAction)="downSortClicked()"
+    [caller]="'archieve'"
+  ></lib-hlsMessagingList>
   </div>
 </div>
 
@@ -105,3 +116,22 @@
   value="100"
 >
 </mat-progress-spinner>
+<lib-hlsLinks
+  class="mobile-links"
+  [page]="page"
+  [topText]="topText"
+  [bottomText]="bottomText"
+  [number]="number"
+  [messagesNumber]="this.messagesNumber"
+  [backButton]="backButton"
+  (backButtonAction)="BackButton()"
+  [links]="links"
+  [paginationText]="searchContext ? '-' : pagination.text"
+  [isPreviousPageAllowed]="pagination.hasPrevious && !loading && !searchContext"
+  [isNextPageAllowed]="pagination.hasNext && !loading && !searchContext"
+  (refreshMessagingListAction)="refreshMessagingList()"
+  (nextPageAction)="nextPageActionClicked()"
+  (previousPageAction)="previousPageActionClicked()"
+  (desarchieveAction)="desarchiveMessages()"
+  (desarchieveActionClicked)="desarchiveMessagesClicked()"
+></lib-hlsLinks>
