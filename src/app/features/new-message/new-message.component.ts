@@ -380,6 +380,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           ? "Sélectionner un patient concerné si nécessaire"
           : "Sélectionner",
     };
+    this.ctr.body.disable();
+  }
+
+  freeObjectChange(freeObject){
+    if (freeObject && freeObject.length>0) 
+      this.ctr.body.enable();
+    else
+      this.ctr.body.disable();
   }
 
   ccListSubscription() {
@@ -479,6 +487,10 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.sendMessageForm.patchValue({
               object: selectedElements,
             });
+            if (selectedElements[0].id == 0) 
+              this.ctr.body.disable();
+            else 
+              this.ctr.body.enable();
           }
           this.sendMessageForm.patchValue({
             body: res.body ? res.body : "",
@@ -497,6 +509,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         this.sendMessageForm.patchValue({
           object: "",
         });
+        this.ctr.body.disable();
       }
     });
   }
@@ -511,6 +524,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           ? true
           : false
         : null;
+        if (this.otherObject) 
+          this.ctr.body.disable();
+        
     this.hasError = false;
     //this.sendMessageForm.controls["body"].enable();
     this.sendMessageForm.patchValue({
@@ -755,6 +771,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.sendMessageForm.patchValue({
         object: "",
       });
+      this.ctr.body.disable();
       this.sendMessageForm.patchValue({
         file: null,
       });
@@ -830,6 +847,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.sendMessageForm.patchValue({
         object: "",
       });
+      this.ctr.body.disable();
       //   this.sendMessageForm.patchValue({
       // //   file: null,
       //  });
@@ -864,6 +882,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           freeObject: "",
           body: "",
         });
+        this.ctr.body.disable();
       }
     }
     if (
@@ -877,6 +896,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             ? true
             : false
           : null;
+          if (this.otherObject) 
+            this.ctr.body.disable();
+          
       this.newFlag = this.otherObject;
       this.maxlengthBody = this.isPatient
         ? this.sendMessageForm.value.object.length == 1 &&
@@ -1299,7 +1321,6 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       this.textSpinner = this.texts.loading;
       if (selectedObj.allowDocument) {
         this.loading = true;
-        this.ctr.body.disable();
         this.spinner.show();
         const doc = this.getPdfAsHtml(objectDto, newData);
         forkJoin([body, doc])
@@ -1307,17 +1328,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           .subscribe((res) => {
             this.selectedObject.next(newData);
             this.loading = false;
-            this.ctr.body.enable();
             this.spinner.hide();
           });
       } else {
         this.loading = true;
-        this.ctr.body.disable();
         this.spinner.show();
         body.pipe(takeUntil(this._destroyed$)).subscribe((res) => {
           this.selectedObject.next(newData);
           this.loading = false;
-          this.ctr.body.enable();
           this.spinner.hide();
         });
       }
