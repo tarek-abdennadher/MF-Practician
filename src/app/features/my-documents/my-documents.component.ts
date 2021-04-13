@@ -105,6 +105,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
           this.itemsList.push(senderAndReceiver);
         });
         this.number = this.itemsList.length;
+        this.itemsList.length > 0 ? this.documentService.setId(this.itemsList[0].id) : null;
         this.itemsList.forEach(item => {
           item.users.forEach(user => {
             this.documentService
@@ -236,6 +237,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
+        this.itemsList.length > 0 ? this.documentService.setId(this.itemsList[0].id) : null;
         this.itemsList.forEach(item => {
           item.users.forEach(user => {
             this.documentService
@@ -268,6 +270,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
+        this.itemsList.length > 0 ? this.documentService.setId(this.itemsList[0].id) : null;
         this.itemsList.forEach(item => {
           item.users.forEach(user => {
             this.documentService
@@ -300,6 +303,7 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
           let senderAndReceiver = this.mappingSendersAndReceivers(element);
           this.itemsList.push(senderAndReceiver);
         });
+        this.itemsList.length > 0 ? this.documentService.setId(this.itemsList[0].id) : null;
         this.itemsList.forEach(item => {
           item.users.forEach(user => {
             this.documentService
