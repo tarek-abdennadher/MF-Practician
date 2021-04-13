@@ -5,7 +5,7 @@ import * as FileSaver from "file-saver";
 import { Location } from "@angular/common";
 import { GlobalService } from "@app/core/services/global.service";
 import {  Subject } from "rxjs";
-import {  takeUntil } from "rxjs/operators";
+import {  first, takeUntil } from "rxjs/operators";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { AccountService } from "@app/features/services/account.service";
 import { CivilityPipe } from "@app/shared/pipes/civility.pipe";
@@ -463,7 +463,7 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
       });
   }
   filter() {
-    this.documentsService.getObjectFilter().subscribe(
+    this.documentsService.getObjectFilter().pipe(first()).subscribe(
       (value)=>{
         this.pageNo = 0;
         this.itemList = [];
