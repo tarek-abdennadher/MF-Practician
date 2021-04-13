@@ -41,7 +41,5 @@ export class HlsSendMessageService {
     filesError: "Vous avez dépassé le nombre de fichiers autorisés (10)",
     sizeError:
       "Le(s) fichier(s) que vous joignez est plus volumineux que le serveur ne l’autorise (10 MO)",
-    already_exist:
-      "Le(s) fichier(s) que vous joignez existe déjà",
   };
 }

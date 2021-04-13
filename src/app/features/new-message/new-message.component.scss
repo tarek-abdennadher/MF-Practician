@@ -23,6 +23,7 @@ $gradient: linear-gradient(102deg, #f761a1, #8c1bab 98%);
     display: flex;
     margin-left: -87px !important;
     height: 61px !important;
+
   }
 }
 @media (max-width: 396px) {
@@ -33,7 +34,7 @@ $gradient: linear-gradient(102deg, #f761a1, #8c1bab 98%);
   .file-clip {
     align-items: center;
     display: flex;
-    margin-left: -6px !important;
+    margin-left: -6px !important
   }
   .fab-toggler {
     float: right;
@@ -250,8 +251,6 @@ a {
   width: 100% !important;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
 }
 
 .col-3.col-sm-5.col-md-5.attach {
@@ -263,7 +262,6 @@ a {
   color: $sapphire;
   font-weight: 1000;
   font-size: 12px;
-  margin: 0;
 }
 
 #attachement-button,
@@ -435,9 +433,10 @@ a {
     .modal-backdrop {
       z-index: 10400 !important;
     }
+
   }
 }
-@media screen and (max-width: 374px) {
+@media screen and (max-width: 374px)  {
   #confirmChangeModal {
     z-index: 999999;
     .modal-content {
@@ -450,6 +449,7 @@ a {
     .modal-backdrop {
       z-index: 10400 !important;
     }
+
   }
 }
 @media screen and (min-width: 580px) and (max-width: 804px) {
@@ -482,7 +482,7 @@ a {
     }
   }
 }
-@media screen and (max-width: 374px) {
+@media screen and (max-width: 374px)  {
   #confirmDeleteModal {
     z-index: 999999;
     .modal-content {
@@ -511,8 +511,4 @@ a {
   margin-top: 0.25rem;
   font-size: 80%;
   color: #dc3545;
-}
-.icon-close {
-  margin-right: 10px;
-  cursor: pointer;
 }
