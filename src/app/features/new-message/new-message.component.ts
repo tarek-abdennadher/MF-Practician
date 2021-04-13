@@ -49,6 +49,7 @@ declare var $: any;
 export class NewMessageComponent implements OnInit, OnDestroy {
   filesError = false;
   sizeError = false;
+  alreadyExist = false;
   ctrl: FormControl = new FormControl();
   @Input() id: number;
   @Input() isReceiverPatient: boolean;
@@ -216,6 +217,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   ) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.texts = hlsSendMessageService.texts;
     this.sendMessageForm = this.formBuilder.group({
       type: ["", Validators.required],
@@ -265,6 +267,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
@@ -517,6 +520,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   private otherObjectUpdate() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.otherObject =
       this.sendMessageForm.value.object.length == 1
         ? this.sendMessageForm.value.object[0].title.toLowerCase() ===
@@ -540,42 +544,61 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onFileChange(event) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     let totalSize = 0;
     if (event.target.files) {
-      for (var i = 0; i < event.target.files.length; i++) {
-        totalSize = totalSize + event.target.files[i].size;
+      const localFiles = [];
+      for (var i = 0; i < this.files.length; i++) {
+        localFiles.push(this.files[i]);
       }
+      for (var i = 0; i < event.target.files.length; i++) {
+        if (localFiles.some(x=>x.name == event.target.files[i].name)) {
+          this.alreadyExist = true;
+          break;
+        }
+        localFiles.push(event.target.files[i]);
+      }
+      if (this.alreadyExist) return;
+      for (var i = 0; i < localFiles.length; i++) {
+        totalSize = totalSize + localFiles[i].size;
+      }
+      if (localFiles.length > 10) {
+        this.filesError = true;
+        return;
+      }
+      if (totalSize >= 10485760) {
+        this.sizeError = true;
+        return;
+      }
+      this.files = localFiles;
+      this.sendMessageForm.patchValue({
+        file: this.files,
+      });
     }
-    if (totalSize >= 10485760) {
-      this.sizeError = true;
-      return;
-    }
-    if (event.target.files && event.target.files.length > 10) {
-      this.filesError = true;
-    } else if (!this.files || this.files.length == 0) {
-      this.files = event.target.files;
-    } else if (this.files.length + event.target.files.length > 10) {
-      this.filesError = true;
-    } else {
-      this.files = event.target.files;
-    }
-    this.sendMessageForm.patchValue({
-      file: this.files,
-    });
   }
 
   public removeAttachment() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.fileInput.nativeElement.value = "";
     this.sendMessageForm.patchValue({
       file: "",
+    });
+    this.files= [];
+  }
+
+  delete(file){
+    this.files = this.files.filter(x=>x.name != file.name);
+    this.sendMessageForm.patchValue({
+      file: this.files,
     });
   }
 
   send() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (this.sendMessageForm.invalid) {
       this.steps.hasError = true;
     }
@@ -621,6 +644,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   sendEmail() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.submited = true;
     this.checkObjectValidator();
     if (this.sendMessageForm.invalid) {
@@ -659,6 +683,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   sendInstructionEmit() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.submited = true;
     this.checkObjectValidator();
 
@@ -675,6 +700,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   search(query: string) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     let result = this.select(query);
     this.toList.subscribe((elm) => {
       elm = result;
@@ -683,6 +709,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   select(query: string): string[] {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     let result: string[] = [];
     this.toList.subscribe((areas) => {
       for (let a of areas) {
@@ -705,6 +732,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onForChanged() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (this.isSecretary()) {
       let selectedTo = [];
       let selectedFor = this.sendMessageForm.value.for;
@@ -733,6 +761,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   updateSelectionSeting(limitSelection) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.dropdownSettings = {
       singleSelection: false,
       text: "Sélectionner des contacts",
@@ -753,6 +782,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onObjectChanedSelect() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (this.selecteditem.length == 0) {
       this.selecteditem.push(event);
     }
@@ -763,6 +793,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onObjectDelete() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.spinner.show();
     setTimeout(() => {
       this.deleteObject = true;
@@ -792,6 +823,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   cancelObjectChange() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (this.selecteditem.length > 0)
       this.selecteditemModel = this.selecteditem;
     else {
@@ -802,6 +834,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   toggleConfirmChangeObjectPopup(event) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (this.counter > 0 && this.selecteditem.length > 0) {
       $("#confirmChangeModal").appendTo("body").modal("toggle");
     } else {
@@ -812,6 +845,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   toggleConfirmdeleteObjectPopup(event) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (this.selecteditemModel.length == 0) {
       this.selecteditemModel.push(event);
     }
@@ -820,6 +854,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onObjectChanged() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     $("#confirmChangeModal").appendTo("body").modal("hide");
     if (this.sendMessageForm && this.sendMessageForm.value.to) {
       this.getSelectedToList(this.sendMessageForm.value);
@@ -975,6 +1010,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   onTypeChanged() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
     this.sendMessageForm.get("cc").reset();
@@ -1291,6 +1327,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   objectSelection(item) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     let selectedObj = item.object[0];
     if (selectedObj && selectedObj.title != "autre" && !this.isInstruction) {
       const objectDto = {
@@ -1366,6 +1403,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   goToBack() {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     this._location.back();
   }
 
@@ -1436,6 +1474,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   typeSelection(item) {
     this.filesError = false;
     this.sizeError = false;
+    this.alreadyExist = false;
     if (
       item !== null &&
       item.type &&
