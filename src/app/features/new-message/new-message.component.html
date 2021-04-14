@@ -364,6 +364,9 @@
   <div *ngIf="sizeError" class="invalid-feedback-2">
     {{ texts.sizeError }}
   </div>
+  <div *ngIf="alreadyExist" class="invalid-feedback-2">
+    {{ texts.already_exist }}
+  </div>
   <br />
   <div class="row mb-2">
     <div class="col-5 col-sm-3 col-md-3">
@@ -428,9 +431,10 @@
       class="col-3 col-sm-5 col-md-5 attach"
     >
       <div
+      id="attachement"
         *ngFor="let file of sendMessageForm.get('file').value; let i = index"
       >
-        <div class="col" id="attachement">
+        <div class="col">
           <p id="attachement-label">
             <svg
               width="1.3em"
@@ -452,6 +456,7 @@
             }}
           </p>
         </div>
+        <i (click)="delete(file)" class="far fa-times icon-close"></i>
       </div>
     </div>
   </div>
