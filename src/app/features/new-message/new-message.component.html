@@ -282,6 +282,7 @@
         [readonly]="this.sendMessageForm.controls.to.value.length == 0"
         type="text"
         id="input-free-object"
+        (input)="freeObjectChange($event.target.value)"
         [ngClass]="{
           'is-invalid': submited && ctr.freeObject.errors,
           invalid: submited && ctr.freeObject.errors
