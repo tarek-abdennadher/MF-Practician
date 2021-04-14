@@ -779,12 +779,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       limitSelection: limitSelection,
     };
   }
-  onObjectChanedSelect() {
+  onObjectChanedSelect(event?) {
     this.filesError = false;
     this.sizeError = false;
     this.alreadyExist = false;
     if (this.selecteditem.length == 0) {
-      this.selecteditem.push(event);
+      this.selecteditem = [event];
     }
     this.selectContext = true;
     this.onObjectChanged();
@@ -1376,9 +1376,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           this.spinner.hide();
         });
       }
-    } else if (selectedObj) {
+    } else if (selectedObj &&  this.isInstruction) {
+      this.selectedObject.next(selectedObj);
+    }else {
       this.selectedObject.next({
-        id: null,
+        id: 0,
         title: "Autre",
         name: "Autre",
         body: "",
