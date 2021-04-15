@@ -219,6 +219,7 @@ export class MessagingListComponent implements OnInit, OnDestroy {
       {
         queryParams: {
           context: "inbox",
+          subContext: this.messageCategory
         },
       }
     );
