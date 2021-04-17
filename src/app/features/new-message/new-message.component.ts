@@ -590,6 +590,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
 
   delete(file){
     this.files = this.files.filter(x=>x.name != file.name);
+    if (this.files.length == 0) {
+      this.fileInput.nativeElement.value = "";
+      this.sendMessageForm.patchValue({
+        file: "",
+      });
+    }else
     this.sendMessageForm.patchValue({
       file: this.files,
     });
