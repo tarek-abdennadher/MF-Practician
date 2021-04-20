@@ -79,6 +79,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   showRefuseForTls: boolean;
   public patientFileId: number;
   context: string;
+  subContext: string;
   file = {
     fileName: "",
     src: null,
@@ -123,6 +124,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       if (params["context"]) {
         this.context = params["context"];
+        this.subContext = params["subContext"];
         switch (params["context"]) {
           case "sent": {
             this.isFromInbox = false;
@@ -693,7 +695,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
           ids.push(this.idMessage);
           this.messagingDetailService.markMessageAsArchived(ids).subscribe(
             (resp) => {
-              this.router.navigate([this.previousURL]);
+              this.goToBack();
               this.featureComp.setNotif(
                 this.globalService.toastrMessages.archived_message_success
               );
@@ -713,7 +715,13 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   }
 
   goToBack() {
-    this.router.navigate([this.previousURL]);
+    if (this.subContext) 
+      this.router.navigate([this.previousURL], {
+        queryParams: {
+          category: this.subContext,
+        },
+      });
+    else this.router.navigate([this.previousURL]);
   }
 
   download(nodesId: Array<string>) {
@@ -915,7 +923,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             .markMessageAsNoMoreArchived(ids)
             .subscribe(
               (resp) => {
-                this.router.navigate([this.previousURL]);
+                this.goToBack();
                 this.featureComp.setNotif(
                   this.globalService.toastrMessages.desarchived_message_success
                 );
@@ -938,7 +946,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
       .changeCategory(this.idMessage, category)
       .subscribe((result) => {
         this.featureService.countCategories();
-        this.router.navigate([this.previousURL]);
+        this.goToBack();
       });
   }
 }
