@@ -187,6 +187,10 @@ $color-helssy-grey: #6e819bd4;
     outline: none !important;
   }
 
+  .bootstrap-select .dropdown-menu.inner {
+    width: 300px;
+  }
+
   .dropdown-item:hover,
   .dropdown-item:focus {
     outline: none !important;
