@@ -396,3 +396,11 @@ $sapphire: #1a56a7;
     overflow-x: hidden;
   }
 }
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+.message-container {
+  overflow-y: auto;
+  height: 625px;
+}
