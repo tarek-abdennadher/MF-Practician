@@ -264,6 +264,9 @@ a {
   font-weight: 1000;
   font-size: 12px;
   margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #attachement-button,
@@ -516,4 +519,7 @@ a {
   margin-right: 10px;
   cursor: pointer;
   color: #1a56a7;
+}
+.attachement-col {
+  max-width: 90%;
 }
