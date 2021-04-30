@@ -235,6 +235,14 @@ export class MyPatientsService {
       this.globalService.url.patientFile + "v2/" + id
     );
   }
+
+  getPatientFileByIdWithoutAutorization(id) {
+    return this.globalService.call(
+      RequestType.GET,
+      this.globalService.url.patientFile + "messaging/" + id
+    );
+  }
+
   getPatientsByParentId(patientId: number) {
     return this.globalService.call(
       RequestType.GET,
