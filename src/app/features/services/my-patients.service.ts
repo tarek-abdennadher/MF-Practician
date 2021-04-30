@@ -239,7 +239,7 @@ export class MyPatientsService {
   getPatientFileByIdWithoutAutorization(id) {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.patientFile + "messaging/" + id
+      this.globalService.url.patientFile + "noAuth/" + id
     );
   }
 
