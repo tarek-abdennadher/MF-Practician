@@ -387,7 +387,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
 
   freeObjectChange(freeObject){
-    if (freeObject && freeObject.length>0) 
+    if (freeObject && freeObject.length>0 && freeObject.trim().length>0)
       this.ctr.body.enable();
     else
       this.ctr.body.disable();
@@ -490,9 +490,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.sendMessageForm.patchValue({
               object: selectedElements,
             });
-            if (selectedElements[0].id == 0) 
+            if (selectedElements[0].id == 0)
               this.ctr.body.disable();
-            else 
+            else
               this.ctr.body.enable();
           }
           this.sendMessageForm.patchValue({
@@ -528,9 +528,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           ? true
           : false
         : null;
-        if (this.otherObject) 
+        if (this.otherObject)
           this.ctr.body.disable();
-        
+
     this.hasError = false;
     //this.sendMessageForm.controls["body"].enable();
     this.sendMessageForm.patchValue({
@@ -937,9 +937,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             ? true
             : false
           : null;
-          if (this.otherObject) 
+          if (this.otherObject)
             this.ctr.body.disable();
-          
+
       this.newFlag = this.otherObject;
       this.maxlengthBody = this.isPatient
         ? this.sendMessageForm.value.object.length == 1 &&
