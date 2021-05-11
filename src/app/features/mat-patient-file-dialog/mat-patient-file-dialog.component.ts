@@ -82,29 +82,21 @@ export class MatPatientFileDialogComponent implements OnInit {
       this.disabled = true;
     }
     if (data.info.patientFileId != null) {
-      this.patientService
+      if (this.disabled) {
+        this.patientService
+        .getPatientFileByIdWithoutAutorization(data.info.patientFileId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((patientFile) => {
+          this.processPatientFile(patientFile, data);
+        });
+      } else {
+        this.patientService
         .getPatientFileById(data.info.patientFileId)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((patientFile) => {
-          this.patientFile.next(patientFile);
-          this.userRole = data.info.userRole;
-          this.patientFileId = patientFile.id;
-          this.notesList = [];
-          if (patientFile.notes && patientFile.notes.length > 0) {
-            patientFile.notes.forEach((elm) => {
-              this.notesList.push(this.mappingNote(elm));
-            });
-          }
-          this.notes.next(this.notesList);
-          this.linkedPatientList = [];
-          this.linkedPatients.next(null);
-          if (patientFile.linkedPatientFiles) {
-            patientFile.linkedPatientFiles.forEach((elm) => {
-              this.linkedPatientList.push(this.mappingLinkedPatients(elm));
-            });
-            this.linkedPatients.next(this.linkedPatientList);
-          }
+          this.processPatientFile(patientFile, data);
         });
+      }
     } else {
       this.patientService
         .getPatientFileByPracticianId(
@@ -138,6 +130,27 @@ export class MatPatientFileDialogComponent implements OnInit {
       .subscribe((res) => {
         this.categoryList.next(res);
       });
+  }
+
+  processPatientFile(patientFile, data) {
+    this.patientFile.next(patientFile);
+    this.userRole = data.info.userRole;
+    this.patientFileId = patientFile.id;
+    this.notesList = [];
+    if (patientFile.notes && patientFile.notes.length > 0) {
+      patientFile.notes.forEach((elm) => {
+        this.notesList.push(this.mappingNote(elm));
+      });
+    }
+    this.notes.next(this.notesList);
+    this.linkedPatientList = [];
+    this.linkedPatients.next(null);
+    if (patientFile.linkedPatientFiles) {
+      patientFile.linkedPatientFiles.forEach((elm) => {
+        this.linkedPatientList.push(this.mappingLinkedPatients(elm));
+      });
+      this.linkedPatients.next(this.linkedPatientList);
+    }
   }
   mappingNote(note) {
     return {
