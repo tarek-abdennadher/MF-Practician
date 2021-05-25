@@ -64,6 +64,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
   backButton = true;
   private readonly notifier: NotifierService;
   userRole = this.localSt.retrieve("role");
+  userAccountId = this.featureService.getUserId();
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   sentContext = false;
   attachements: any[] = [];
