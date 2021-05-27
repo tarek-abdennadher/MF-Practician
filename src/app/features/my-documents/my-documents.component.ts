@@ -155,6 +155,8 @@ export class MyDocumentsComponent implements OnInit, OnDestroy {
         return senderDetail.telesecretary;
       case "SUPER_SUPERVISOR":
         return senderDetail.telesecretary;
+      case "SYSTEM":
+        return senderDetail.systemUser;
       default:
         return null;
     }
