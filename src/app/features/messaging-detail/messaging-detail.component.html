@@ -49,6 +49,7 @@
     (downloadAction)="download($event)"
     (visualizeAction)="visualizeFile($event)"
     [attachements]="attachements"
+    [userAccountId]="userAccountId"
   >
   </lib-hlsMessagingDetail>
   <ngx-spinner
@@ -57,6 +58,7 @@
     type="none"
     size="medium"
     class="message-details"
+    id="message-details"
     *ngIf="shownSpinner"
   >
     <div *ngIf="file.src" class="card-align">
