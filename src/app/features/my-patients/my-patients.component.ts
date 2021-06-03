@@ -210,7 +210,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
 
   getPatientsOfCurrentParacticianByCategory(categoryId) {
     let category = new Category();
-    category = this.categs.find((e) => e.name == categoryId);
+    category = this.categs.find((e) => e.name.trim() == categoryId.trim());
     if (category) {
       this.myPatientsService
         .getPatientsOfCurrentParacticianByCategoryV1(
