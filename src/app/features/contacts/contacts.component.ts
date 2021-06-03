@@ -107,7 +107,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe(
         contacts => {
-          this.users = contacts;
+          this.users = contacts.filter(contact=>!contact.isHiddenForPracticians);
           this.itemsList = this.users.map(elm => {
             return {
               id: elm.id,
