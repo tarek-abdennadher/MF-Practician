@@ -1041,6 +1041,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .pipe(
           tap((contactsPractician: any) => {
+            contactsPractician = contactsPractician.filter(contact=>!contact.isHiddenForPracticians)
             this.parseContactsPractician(contactsPractician);
           })
         );
