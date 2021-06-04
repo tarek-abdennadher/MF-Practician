@@ -47,7 +47,7 @@ export class PracticianSearchService {
   getSearchListPractician(): Observable<any> {
     return this.globalService.call(
       RequestType.GET,
-      this.globalService.url.practician + "practician-search"
+      this.globalService.url.practician + "practician-search-for-practician"
     );
   }
 }
