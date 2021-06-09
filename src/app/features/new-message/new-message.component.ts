@@ -1050,7 +1050,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .pipe(
           tap((contactsPractician: any) => {
-            contactsPractician = contactsPractician.filter(contact=>!contact.isHiddenForPracticians)
+            contactsPractician = contactsPractician
             this.parseContactsPractician(contactsPractician);
             if (!contactsPractician.some(c => c.contactType == "PATIENT" || c.contactType == "PATIENT_FILE")) {
               this._messageTypesList = this._messageTypesList.filter(e => e.id !== SendType.MESSAGING_PATIENT);
