@@ -523,3 +523,9 @@ a {
 .attachement-col {
   max-width: 90%;
 }
+
+::ng-deep {
+  label[for=selectAll] {
+    pointer-events:none;
+  }
+}

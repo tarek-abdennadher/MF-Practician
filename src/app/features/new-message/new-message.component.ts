@@ -70,6 +70,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   forList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   concernList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   forFieldList = [];
+  selectedType = SendType.MESSAGING_PATIENT;
   selectedObject = new BehaviorSubject<any>(null);
   practicianObjectList = [];
   selectedFiles: any;
@@ -325,8 +326,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
-      enableCheckAll: false,
-      limitSelection: 100,
+      enableCheckAll: this.selectedType == SendType.MESSAGING_PATIENT ? true : false,
+      selectAllText: 'Sélectionner tous les patients',
+      unSelectAllText: 'déselectionner tous les patients',
     };
     this.dropdownSettingsCc = { ...this.dropdownSettings };
     this.dropdownSettingsPatientToList = {
@@ -1025,6 +1027,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.typeSelection(this.sendMessageForm.value);
     this.sendMessageForm.get("cc").reset();
     this.sendMessageForm.get("for").reset();
+    this.selectedType = this.ctr.type.value[0].id;
+    this.dropdownSettings.enableCheckAll= this.selectedType == SendType.MESSAGING_PATIENT ? true : false;
   }
 
   ///
