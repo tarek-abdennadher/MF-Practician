@@ -70,6 +70,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   forList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   concernList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   forFieldList = [];
+  selectedType = SendType.MESSAGING_PATIENT;
   selectedObject = new BehaviorSubject<any>(null);
   practicianObjectList = [];
   selectedFiles: any;
@@ -149,7 +150,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   }
   set messageTypesList(messageTypesList: any) {
     this._messageTypesList = [
-      { id: SendType.MESSAGING, text: "Messagerie" },
+      { id: SendType.MESSAGING_PATIENT, text: "Patients" },
+      { id: SendType.MESSAGING_MEDICAL, text: "Confrères" },
+      { id: SendType.MESSAGING_TLS, text: "Télésecrétaires" },
       //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [messageTypesList[0]] });
@@ -271,12 +274,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.innerWidth = window.innerWidth;
     this.selectedPracticianId = this.id || null;
     this._messageTypesList = [
-      { id: SendType.MESSAGING, text: "Messagerie" },
+      { id: SendType.MESSAGING_PATIENT, text: "Patients" },
+      { id: SendType.MESSAGING_MEDICAL, text: "Confrères" },
+      { id: SendType.MESSAGING_TLS, text: "Télésecrétaires" },
       // { id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     this.getAllPatientFilesByPracticianId();
-    forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
+    forkJoin([this.getAllContactsPractician(), this.getAllObjectList()])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         this.id ? this.toListSubscription() : null;
@@ -321,8 +326,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       noDataLabel: "Aucune donnée",
       badgeShowLimit: 3,
       maxHeight: "auto",
-      enableCheckAll: false,
-      limitSelection: 100,
+      enableCheckAll: this.selectedType == SendType.MESSAGING_PATIENT ? true : false,
+      selectAllText: 'Sélectionner tous les patients',
+      unSelectAllText: 'déselectionner tous les patients',
     };
     this.dropdownSettingsCc = { ...this.dropdownSettings };
     this.dropdownSettingsPatientToList = {
@@ -1017,10 +1023,12 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.filesError = false;
     this.sizeError = false;
     this.alreadyExist = false;
-    this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
+    this.onObjectChanged();
     this.sendMessageForm.get("cc").reset();
     this.sendMessageForm.get("for").reset();
+    this.selectedType = this.ctr.type.value[0].id;
+    this.dropdownSettings.enableCheckAll= this.selectedType == SendType.MESSAGING_PATIENT ? true : false;
   }
 
   ///
@@ -1033,6 +1041,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         .pipe(
           tap((contactsPractician: any) => {
             this.parseContactsPractician(contactsPractician);
+            if (!contactsPractician.some(c => c.contactType == "PATIENT" || c.contactType == "PATIENT_FILE")) {
+              this._messageTypesList = this._messageTypesList.filter(e => e.id != SendType.MESSAGING_PATIENT);
+              this.sendMessageForm.patchValue({ type: [this._messageTypesList.find(elm => elm.id == SendType.MESSAGING_MEDICAL)] });
+              this.toList.next(this.practicianFullToList.filter(e => e.type == "MEDICAL"));
+            }
           })
         );
     } else {
@@ -1041,7 +1054,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .pipe(
           tap((contactsPractician: any) => {
+            contactsPractician = contactsPractician
             this.parseContactsPractician(contactsPractician);
+            if (!contactsPractician.some(c => c.contactType == "PATIENT" || c.contactType == "PATIENT_FILE")) {
+              this._messageTypesList = this._messageTypesList.filter(e => e.id !== SendType.MESSAGING_PATIENT);
+              this.sendMessageForm.patchValue({ type: [this._messageTypesList.find(elm => elm.id == SendType.MESSAGING_MEDICAL)] });
+              this.toList.next(this.practicianFullToList.filter(e => e.type == "MEDICAL"));
+            }
           })
         );
     }
@@ -1207,8 +1226,14 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       }
     });
     this.practicianFullToList = myList;
-    if (this.ctr.type.value[0].id == "MESSAGING") {
-      this.toList.next(myList);
+    if (this.ctr.type.value[0].id.includes("MESSAGING")) {
+      if (this.ctr.type.value[0].id == SendType.MESSAGING_TLS) {
+        this.toList.next(this.practicianFullToList.filter(e => e.type == "TELESECRETARY"));
+      } else if (this.ctr.type.value[0].id == SendType.MESSAGING_MEDICAL) {
+        this.toList.next(this.practicianFullToList.filter(e => e.type == "MEDICAL"));
+      } else if (this.ctr.type.value[0].id == SendType.MESSAGING_PATIENT) {
+        this.toList.next(this.practicianFullToList.filter(e => e.type == "PATIENT"));
+      }
       finalState ? this.onObjectChanedSelect() : null;
     } else if (this.ctr.type.value[0].id == "INSTRUCTION") {
       this.isForListVisible = false;
@@ -1428,9 +1453,11 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       .subscribe((group: any) => {
         if (group && group.group) {
           this._messageTypesList = [
-            { id: SendType.MESSAGING, text: "Messagerie" },
             //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
-            { id: SendType.INSTRUCTION, text: "Consignes" },
+            { id: SendType.MESSAGING_PATIENT, text: "Patients" },
+            { id: SendType.MESSAGING_MEDICAL, text: "Confrères" },
+            { id: SendType.MESSAGING_TLS, text: "Télésecrétaires" },
+            { id: SendType.INSTRUCTION, text: "Consignes" }
           ];
           this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
           const groupValue = group.group;
@@ -1440,7 +1467,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
           let item = {
             id: groupValue.accountId,
             fullName: groupValue.title,
-            isSelected: false,
+            isSelected: true,
             img: null,
             type: "TELESECRETARYGROUP",
           };
@@ -1492,7 +1519,9 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       if (this.lastSendType !== item.type[0].id) {
         this.lastSendType = item.type[0].id;
         switch (item.type[0].id) {
-          case SendType.MESSAGING:
+          case SendType.MESSAGING_MEDICAL:
+          case SendType.MESSAGING_TLS:
+          case SendType.MESSAGING_PATIENT:
             this.dropdownSettings = {
               ...this.dropdownSettings,
               text: "",
@@ -1505,7 +1534,13 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             this.isObjectSelectVisible = this.isSecretary() ? false : true;
             this.isInstruction = false;
             this.objectsList = this.lastObjectList;
-            this.toList.next(this.practicianFullToList);
+            if (item.type[0].id == SendType.MESSAGING_TLS) {
+              this.toList.next(this.practicianFullToList.filter(e => e.type == "TELESECRETARY"));
+            } else if (item.type[0].id == SendType.MESSAGING_MEDICAL) {
+              this.toList.next(this.practicianFullToList.filter(e => e.type == "MEDICAL"));
+            } else if (item.type[0].id == SendType.MESSAGING_PATIENT) {
+              this.toList.next(this.practicianFullToList.filter(e => e.type == "PATIENT"));
+            }
             break;
           case SendType.SEND_POSTAL:
             this.dropdownSettings = {
@@ -1699,7 +1734,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.uuid = uuid();
     const newMessage = new Message();
-    newMessage.sendType = this.lastSendType;
+    newMessage.sendType = SendType.MESSAGING;
     message.to.forEach((to) => {
       newMessage.toReceivers.push({ receiverId: to.id });
     });
