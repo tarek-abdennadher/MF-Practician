@@ -281,7 +281,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     ];
     this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
     this.getAllPatientFilesByPracticianId();
-    forkJoin(this.getAllContactsPractician(), this.getAllObjectList())
+    forkJoin([this.getAllContactsPractician(), this.getAllObjectList()])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((res) => {
         this.id ? this.toListSubscription() : null;
@@ -1023,8 +1023,8 @@ export class NewMessageComponent implements OnInit, OnDestroy {
     this.filesError = false;
     this.sizeError = false;
     this.alreadyExist = false;
-    this.onObjectChanged();
     this.typeSelection(this.sendMessageForm.value);
+    this.onObjectChanged();
     this.sendMessageForm.get("cc").reset();
     this.sendMessageForm.get("for").reset();
     this.selectedType = this.ctr.type.value[0].id;
