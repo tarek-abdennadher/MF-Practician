@@ -1125,7 +1125,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             myList.push({
               id: contactPractician.id,
               fullName: contactPractician.fullName,
-              type: "PATIENT",
+              type: contactPractician.contactType,
               isSelected:
                 this.selectedPracticianId == contactPractician.entityId,
               img: this.avatars.man,
@@ -1135,7 +1135,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             myList.push({
               id: contactPractician.id,
               fullName: contactPractician.fullName,
-              type: "PATIENT",
+              type: contactPractician.contactType,
               isSelected: this.selectedPracticianId == contactPractician.id,
               img: this.avatars.man,
               canSend: contactPractician.canSend,
@@ -1232,7 +1232,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       } else if (this.ctr.type.value[0].id == SendType.MESSAGING_MEDICAL) {
         this.toList.next(this.practicianFullToList.filter(e => e.type == "MEDICAL"));
       } else if (this.ctr.type.value[0].id == SendType.MESSAGING_PATIENT) {
-        this.toList.next(this.practicianFullToList.filter(e => e.type == "PATIENT"));
+        this.toList.next(this.practicianFullToList.filter(e => e.type == "PATIENT" || e.type == "PATIENT_FILE"));
       }
       finalState ? this.onObjectChanedSelect() : null;
     } else if (this.ctr.type.value[0].id == "INSTRUCTION") {
