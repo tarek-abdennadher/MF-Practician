@@ -19,6 +19,7 @@ export class NewMessageWidgetComponent implements OnInit {
   fabTogglerState = "inactive";
   messages: any;
   id: number;
+  isContact: boolean = false;
 
   toggle: boolean = false;
   minimize = {
@@ -36,8 +37,13 @@ export class NewMessageWidgetComponent implements OnInit {
     this.messages = this.globalService.messagesDisplayScreen;
   }
   ngOnInit(): void {
-    this.messageWidgetService.toggleObs.subscribe((data) => {
-      this.onToggleFab(data);
+    this.messageWidgetService.toggleObs.subscribe((data: any) => {
+      if (typeof data === 'object' && data.isContact) {
+        this.isContact = data.isContact;
+        this.onToggleFab(data.id);
+      } else {
+        this.onToggleFab(data);
+      }
     });
      this.messageWidgetService.isPatientFileNewMessageWidget.subscribe((data:boolean) => {
       this.isReceiverPatient = data ;});
