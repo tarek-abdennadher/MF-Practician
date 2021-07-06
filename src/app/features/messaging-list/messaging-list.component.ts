@@ -321,9 +321,21 @@ export class MessagingListComponent implements OnInit, OnDestroy {
 
                 this.featureService.archiveState.next(true);
                 this.messagesServ.uncheckMessages(checkedMessages);
+                this.notifier.show({
+                  message: this.globalService.toastrMessages
+                    .archived_message_success,
+                  type: "info",
+                  template: this.customNotificationTmpl,
+                });
               },
               (error) => {
                 //We have to find a way to notify user by this error
+                this.notifier.show({
+                  message: this.globalService.toastrMessages
+                    .archived_message_error,
+                  type: "error",
+                  template: this.customNotificationTmpl,
+                });
               }
             );
           }
