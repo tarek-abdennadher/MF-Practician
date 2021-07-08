@@ -64,6 +64,7 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
     tls: string;
   };
   public uuid: string;
+  public cryptedId;
   constructor(
     private _location: Location,
     private featureService: FeaturesService,
@@ -126,6 +127,9 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
       1000
     );
     this.getParamObs();
+    this.route.parent.params.subscribe(value => {
+        this.cryptedId = value.id
+    })
   }
 
   getParamObs() {
@@ -438,10 +442,11 @@ export class MessagingReplyComponent implements OnInit, OnDestroy {
   goToBack() {
     if (this.messagingDetail) {
       this.scrollToTop();
-      this.router.navigate([
-        "/messagerie-lire/" +
-          this.featureService.encrypt(this.messagingDetail.id),
-      ]);
+        this.router.navigate([
+          "/messagerie-lire/" +
+          (this.cryptedId ? this.cryptedId : this.featureService.encrypt(this.messagingDetail.id)),
+        ]);
+
     }
   }
 

@@ -52,6 +52,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
   alreadyExist = false;
   ctrl: FormControl = new FormControl();
   @Input() id: number;
+  @Input() isContact: boolean;
   @Input() isReceiverPatient: boolean;
   addOptionConfirmed: boolean = false;
   sendPostal: boolean = false;
@@ -155,7 +156,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
       { id: SendType.MESSAGING_TLS, text: "Télésecrétaires" },
       //{ id: SendType.SEND_POSTAL, text: "Envoi Postal" },
     ];
-    this.sendMessageForm.patchValue({ type: [messageTypesList[0]] });
+    this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
   }
 
   sendPostalAction = new EventEmitter();
@@ -1459,7 +1460,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             { id: SendType.MESSAGING_TLS, text: "Télésecrétaires" },
             { id: SendType.INSTRUCTION, text: "Consignes" }
           ];
-          this.sendMessageForm.patchValue({ type: [this.messageTypesList[0]] });
+          this.sendMessageForm.patchValue(!this.isContact ? { type: [this.messageTypesList[0]] } : { type: [this.messageTypesList[1]] });
           const groupValue = group.group;
           const secretaryGroupList = group.secretaries;
           this.getInstructionObjectListByTLSGroupId();
