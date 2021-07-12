@@ -41,7 +41,7 @@
 $custom-typography: mat-typography-config(
   $font-family: "Montserrat",
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500)
+  $body-1: mat-typography-level(16px, 24px, 500),
 );
 @include mat-base-typography($custom-typography);
 @include mat-checkbox-typography($custom-typography);
@@ -572,5 +572,29 @@ $selected-background: #e9f4ff;
     -moz-transform-origin: top left;
     width: 110.6%;
     height: 111%;
+  }
+}
+
+app-messaging-detail-print {
+  display: none;
+}
+@media print {
+  /* invert the display (show/hide) properties of the main */
+  /* aplication component and the printing component       */
+  // app-features {
+  //   display: none;
+  // }
+
+  lib-hlsMessagingDetail {
+    display: none;
+  }
+  lib-hlslinks {
+    display: none;
+  }
+  app-messaging-detail-print {
+    display: block;
+    lib-hlsMessagingDetail {
+      display: block;
+    }
   }
 }

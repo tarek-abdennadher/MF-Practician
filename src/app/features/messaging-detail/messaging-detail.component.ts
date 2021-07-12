@@ -121,6 +121,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit(): void {
+    window.onafterprint = function(event) { window.close() };
     this.loading = false;
     this.route.queryParams.subscribe((params) => {
       if (params["context"]) {
@@ -949,5 +950,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         this.featureService.countCategories();
         this.goToBack();
       });
+  }
+  printAction(){
+    window.print();
   }
 }

@@ -22,6 +22,24 @@
     value="100"
   >
   </mat-progress-spinner>
+  <app-messaging-detail-print
+    [imageSource]="imageSource"
+    [messagingDetail]="messagingDetail"
+    [isFromInbox]="isFromInbox"
+    [role]="role"
+    [hideTo]="hideTo"
+    [hidefrom]="hidefrom"
+    [senderRolePatient]="senderRolePatient"
+    [attachements]="attachements"
+    [userAccountId]="userAccountId"
+    [showAcceptRefuse]="showAcceptRefuse"
+    [showRefuseForTls]="showRefuseForTls"
+    [hideButtons]="prohibited"
+    [showReplyActionsForPatient]="showReplyActionsForPatient"
+    [showReplyActionsForTls]="showReplyActionsForTls"
+    [isPrinting]="true"
+  >
+  </app-messaging-detail-print>
   <lib-hlsMessagingDetail
     *ngIf="!loading"
     [imageSource]="imageSource"
@@ -48,6 +66,7 @@
     (refuseAction)="refuseAction()"
     (downloadAction)="download($event)"
     (visualizeAction)="visualizeFile($event)"
+    (printAction)="printAction()"
     [attachements]="attachements"
     [userAccountId]="userAccountId"
   >
