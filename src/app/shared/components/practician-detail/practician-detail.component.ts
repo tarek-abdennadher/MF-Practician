@@ -116,7 +116,7 @@ export class PracticianDetailComponent implements OnInit {
     }
   }
   sendMessageClicked(item) {
-    this.messageWidgetService.toggleObs.next(item.accountId);
+    this.messageWidgetService.toggleObs.next({id: item.accountId, isContact: true});
   }
   archieveClicked(item) {
     let array = [];
