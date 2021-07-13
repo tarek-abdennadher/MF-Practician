@@ -1540,7 +1540,7 @@ export class NewMessageComponent implements OnInit, OnDestroy {
             } else if (item.type[0].id == SendType.MESSAGING_MEDICAL) {
               this.toList.next(this.practicianFullToList.filter(e => e.type == "MEDICAL"));
             } else if (item.type[0].id == SendType.MESSAGING_PATIENT) {
-              this.toList.next(this.practicianFullToList.filter(e => e.type == "PATIENT"));
+              this.toList.next(this.practicianFullToList.filter(e => e.type == "PATIENT" || e.type == "PATIENT_FILE"));
             }
             break;
           case SendType.SEND_POSTAL:
