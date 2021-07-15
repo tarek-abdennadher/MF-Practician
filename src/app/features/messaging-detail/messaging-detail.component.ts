@@ -793,13 +793,11 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
             this.file.fileName = nodeDetails.entry.name;
             let myReader: FileReader = new FileReader();
             myReader.onloadend = (e) => {
-              if (checked.isSvg)
-                this.file.src = this.sanitizer.bypassSecurityTrustUrl(
+              if (checked.isPdf)
+                this.file.src = myReader.result.toString().split(",")[1];
+              else  this.file.src = this.sanitizer.bypassSecurityTrustUrl(
                   myReader.result as string
                 );
-              else if (checked.isPdf)
-                this.file.src = myReader.result.toString().split(",")[1];
-              else this.file.src = myReader.result;
             };
             let ok = myReader.readAsDataURL(response.body);
           }
