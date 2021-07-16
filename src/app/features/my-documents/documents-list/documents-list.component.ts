@@ -378,10 +378,11 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
           response => {
             let myReader: FileReader = new FileReader();
             myReader.onloadend = e => {
-              if (checked.isPdf) this.file.src = myReader.result.toString().split(",")[1];
-              else this.file.src = this.sanitizer.bypassSecurityTrustUrl(
-                myReader.result as string
-              );
+              if (checked.isPdf)
+                this.file.src = myReader.result.toString().split(",")[1];
+              else  this.file.src = this.sanitizer.bypassSecurityTrustUrl(
+                  myReader.result as string
+                );
             };
             let ok = myReader.readAsDataURL(response.body);
           }
