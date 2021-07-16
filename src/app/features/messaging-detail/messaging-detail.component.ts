@@ -121,6 +121,7 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit(): void {
+    window.onafterprint = function(event) { window.close() };
     this.loading = false;
     this.route.queryParams.subscribe((params) => {
       if (params["context"]) {
@@ -309,13 +310,13 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               isImportant: this.isFromInbox ? !message.important : false,
               isAddNote: true,
             };
-            const filtredReceivers = this.messagingDetail.toReceivers.filter(
-              (to) => to.receiverId != this.featureService.getUserId()
-            );
-            if (filtredReceivers.length > 0) {
-              this.hideTo = false;
-              this.messagingDetail.toReceivers = filtredReceivers;
-            }
+            // const filtredReceivers = this.messagingDetail.toReceivers.filter(
+            //   (to) => to.receiverId != this.featureService.getUserId()
+            // );
+            // if (filtredReceivers.length > 0) {
+            //   this.hideTo = false;
+            //   this.messagingDetail.toReceivers = filtredReceivers;
+            // }
             this.setParentImg(this.messagingDetail.parent);
             this.messagingDetail.toReceivers.forEach((receiver) => {
               this.getDefaultImage(receiver, receiver.receiverId);
@@ -395,13 +396,13 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
               isMenuMoveToDivers:
                 this.isFromInbox && this.message.category != "DIVERS",
             };
-            const filtredReceivers = this.messagingDetail.toReceivers.filter(
-              (to) => to.receiverId != this.featureService.getUserId()
-            );
-            if (filtredReceivers.length > 0) {
-              this.hideTo = false;
-              this.messagingDetail.toReceivers = filtredReceivers;
-            }
+            // const filtredReceivers = this.messagingDetail.toReceivers.filter(
+            //   (to) => to.receiverId != this.featureService.getUserId()
+            // );
+            // if (filtredReceivers.length > 0) {
+            //   this.hideTo = false;
+            //   this.messagingDetail.toReceivers = filtredReceivers;
+            // }
             this.setParentImg(this.messagingDetail.parent);
             this.messagingDetail.toReceivers.forEach((receiver) => {
               this.getDefaultImage(receiver, receiver.receiverId);
@@ -947,5 +948,8 @@ export class MessagingDetailComponent implements OnInit, OnDestroy {
         this.featureService.countCategories();
         this.goToBack();
       });
+  }
+  printAction(){
+    window.print();
   }
 }
