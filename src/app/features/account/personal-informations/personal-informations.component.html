@@ -796,6 +796,7 @@
                   class="form-control"
                   id="pract-email"
                   [ngClass]="{ 'is-invalid': submitted && ctr.email.errors }"
+                  (input)="changeEmail($event)"
                 />
                 <div
                   *ngIf="submitted && ctr.email.errors"

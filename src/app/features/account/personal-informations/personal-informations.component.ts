@@ -76,6 +76,7 @@ export class PersonalInformationsComponent
   accountId: number;
   public fieldTextType: boolean;
   public fieldTextType2: boolean;
+  email: any;
   constructor(
     public router: Router,
     public accountService: AccountService,
@@ -216,6 +217,7 @@ export class PersonalInformationsComponent
           this.otherPhones = account.otherPhones;
           this.hasImage = true;
           this.getPictureProfile(account.id);
+          this.email = account.email ? account.email : "";
           this.infoForm.patchValue({
             id: account.practician.id ? account.practician.id : null,
             email: account.email ? account.email : "",
@@ -279,6 +281,15 @@ export class PersonalInformationsComponent
       this.isLabelShow = true;
     }
   }
+
+  changeEmail(event){
+    this.submitted = true;
+    if(this.email!=event.target.value){
+      this.infoForm.controls['email'].setErrors({'incorrect': true});
+      this.infoForm.setErrors({email:true})
+    }
+  }
+
   submit() {
     this.submitted = true;
     if (!this.isPhonesValid) {
@@ -296,7 +307,7 @@ export class PersonalInformationsComponent
     let model;
     if (this.isPractician) {
       model = {
-        email: this.infoForm.value.email,
+        email: this.email,
         phoneNumber: this.infoForm.value.phone,
         otherPhones: this.phones,
         practician: {
@@ -320,7 +331,7 @@ export class PersonalInformationsComponent
       };
     } else {
       model = {
-        email: this.infoForm.value.email,
+        email: this.email,
         phoneNumber: this.infoForm.value.phone,
         otherPhones: this.phones,
         secretary: {

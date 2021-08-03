@@ -12,6 +12,7 @@ import { MessageDetailRoutingModule } from "./messaging-detail-routing";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { NgxExtendedPdfViewerModule } from "ngx-extended-pdf-viewer";
+import { MessagingDetailPrintComponent } from './messaging-detail-print/messaging-detail-print.component';
 const notifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -51,7 +52,7 @@ const notifierOptions: NotifierOptions = {
   }
 };
 @NgModule({
-  declarations: [MessagingDetailComponent, MessagingReplyComponent],
+  declarations: [MessagingDetailComponent, MessagingReplyComponent, MessagingDetailPrintComponent],
   imports: [
     CommonModule,
     HlsLinksModule,
