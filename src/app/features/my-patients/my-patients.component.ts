@@ -284,6 +284,7 @@ export class MyPatientsComponent implements OnInit, OnDestroy {
     if(item.users[0].accountId)
     {
       this.messageWidgetService.toggleObs.next(item.users[0].accountId);
+      this.messageWidgetService.isPatientFileNewMessageWidget.next(false);
     }else{
       this.messageWidgetService.toggleObs.next( item.users[0].id);
       this.messageWidgetService.isPatientFileNewMessageWidget.next( true);
