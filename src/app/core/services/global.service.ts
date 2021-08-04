@@ -92,6 +92,7 @@ export class GlobalService {
     instruction_object: this.BASE_URL_CA + "/instruction-object",
     instruction_category: this.BASE_URL_CA + "/instruction-category",
     photo: this.BASE_URL_CA + "/photo/generate",
+    browserToken: this.BASE_URL_CA + "/browserToken",
   };
   public toastrMessages = {
     send_message_success: "Message envoyé !",

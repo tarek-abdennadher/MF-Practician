@@ -27,12 +27,16 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
+import { SwPush } from "@angular/service-worker";
+import { environment } from "@env/environment";
+
 @Component({
   selector: "app-features",
   templateUrl: "./features.component.html",
   styleUrls: ["./features.component.scss"],
 })
 export class FeaturesComponent implements OnInit, AfterViewInit {
+
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   collapedSideBar: boolean;
   account: any;
@@ -65,12 +69,22 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     private messageWidgetService: NewMessageWidgetService,
     private cdr: ChangeDetectorRef,
     notifierService: NotifierService,
-    public roleObjectPipe: RoleObjectPipe
+    public roleObjectPipe: RoleObjectPipe,
+    private swPush: SwPush,
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
     this.initializeWebSocketConnection();
   }
+
+  subscribeToNotifications() {
+
+    this.swPush.requestSubscription({
+        serverPublicKey: environment.VAPID_PUBLIC_KEY
+    })
+    .then(sub => this.featuresService.addPushSubscriber(sub).subscribe())
+    .catch(err => console.error("Could not subscribe to notifications", err));
+}
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
@@ -91,6 +105,9 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   private stompClientList = [];
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.subscribeToNotifications();
+    }, 500);
     let firstNameRefactored = this.featuresService.firstLetterUpper(
       this.user?.firstName
     );

@@ -17,6 +17,8 @@ import { AccountModule } from "./features/account/account.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 import { CachingInterceptor } from './core/interceptors/cache.interceptor';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 registerLocaleData(localeFr, "fr");
 @NgModule({
@@ -31,6 +33,7 @@ registerLocaleData(localeFr, "fr");
     FeaturesModule,
     AccountModule,
     BrowserAnimationsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     {

@@ -411,6 +411,13 @@ export class FeaturesService {
         category
     );
   }
+  public addPushSubscriber(subscription): Observable<any> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.browserToken ,
+      subscription
+    );
+  }
   countCategories() {
     this.countInboxByAccountIdAndCategory(this.getUserId(), "DEMAND").subscribe(
       (num) => {
