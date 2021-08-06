@@ -591,6 +591,14 @@ app-messaging-detail-print {
   lib-hlslinks {
     display: none;
   }
+  lib-hlssidebar {
+    display: none;
+  }
+  body,
+  html {
+    height: 100%;
+    overflow: visible !important;
+  }
   app-messaging-detail-print {
     display: block;
     lib-hlsMessagingDetail {
