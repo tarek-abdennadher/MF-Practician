@@ -27,7 +27,6 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NewMessageWidgetService } from "./new-message-widget/new-message-widget.service";
 import { NotifierService } from "angular-notifier";
 import { RoleObjectPipe } from "@app/shared/pipes/role-object";
-import { SwPush } from "@angular/service-worker";
 import { environment } from "@env/environment";
 
 @Component({
@@ -36,7 +35,6 @@ import { environment } from "@env/environment";
   styleUrls: ["./features.component.scss"],
 })
 export class FeaturesComponent implements OnInit, AfterViewInit {
-
   @ViewChild("customNotification", { static: true }) customNotificationTmpl;
   collapedSideBar: boolean;
   account: any;
@@ -52,6 +50,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   numberOfArchieve: any;
   public messaging: boolean = true;
   private readonly notifier: NotifierService;
+  isGranted = Notification.permission === "granted";
   constructor(
     public router: Router,
     private localSt: LocalStorageService,
@@ -69,8 +68,7 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
     private messageWidgetService: NewMessageWidgetService,
     private cdr: ChangeDetectorRef,
     notifierService: NotifierService,
-    public roleObjectPipe: RoleObjectPipe,
-    private swPush: SwPush,
+    public roleObjectPipe: RoleObjectPipe
   ) {
     this.notifier = notifierService;
     this.avatars = this.globalService.avatars;
@@ -78,13 +76,62 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
   }
 
   subscribeToNotifications() {
+    if (this.isGranted)
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.pushManager.getSubscription().then((pushSubscription) => {
+          if (!pushSubscription) {
+            //the user was never subscribed
+            this.subscribe(registration);
+          } else {
+            //check if user was subscribed with a different key
+            let json = pushSubscription.toJSON();
+            let public_key = json.keys.p256dh;
+            if (public_key != environment.VAPID_PUBLIC_KEY) {
+              pushSubscription
+                .unsubscribe()
+                .then((successful) => {
+                  // You've successfully unsubscribed
+                  this.featuresService
+                    .deletePushSubscriber(pushSubscription)
+                    .subscribe();
+                  this.subscribe(registration);
+                })
+                .catch((e) => {
+                  // Unsubscription failed
+                });
+            }
+          }
+        });
+      });
+  }
 
-    this.swPush.requestSubscription({
-        serverPublicKey: environment.VAPID_PUBLIC_KEY
-    })
-    .then(sub => this.featuresService.addPushSubscriber(sub).subscribe())
-    .catch(err => console.error("Could not subscribe to notifications", err));
-}
+  urlBase64ToUint8Array(base64String) {
+    var padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    var base64 = (base64String + padding)
+      .replace(/\-/g, "+")
+      .replace(/_/g, "/");
+
+    var rawData = window.atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
+
+    for (var i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  subscribe(registration) {
+    registration.pushManager
+      .subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: this.urlBase64ToUint8Array(
+          environment.VAPID_PUBLIC_KEY
+        ),
+      })
+      .then((pushSubscription) => {
+        this.featuresService.addPushSubscriber(pushSubscription).subscribe();
+      });
+  }
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
@@ -709,9 +756,8 @@ export class FeaturesComponent implements OnInit, AfterViewInit {
       (response) => {
         let myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
-          this.featuresService.imageSource = this.sanitizer.bypassSecurityTrustUrl(
-            myReader.result as string
-          );
+          this.featuresService.imageSource =
+            this.sanitizer.bypassSecurityTrustUrl(myReader.result as string);
         };
         let ok = myReader.readAsDataURL(response);
       },

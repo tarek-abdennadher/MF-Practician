@@ -414,10 +414,19 @@ export class FeaturesService {
   public addPushSubscriber(subscription): Observable<any> {
     return this.globalService.call(
       RequestType.POST,
-      this.globalService.url.browserToken ,
+      this.globalService.url.browserToken,
       subscription
     );
   }
+
+  public deletePushSubscriber(oldSubscription): Observable<any> {
+    return this.globalService.call(
+      RequestType.POST,
+      this.globalService.url.browserToken + "/delete",
+      oldSubscription
+    );
+  }
+
   countCategories() {
     this.countInboxByAccountIdAndCategory(this.getUserId(), "DEMAND").subscribe(
       (num) => {
